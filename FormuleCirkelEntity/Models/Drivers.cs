@@ -13,6 +13,7 @@ namespace FormuleCirkelEntity.Models
         public int DriverNumber { get; set; }
         public string Name { get; set; }
         public string Abbreviation { get; set; }
+        public bool IsActive { get; set; }
 
         public int QualyId { get; set; }
         public Qualification Qualification { get; set; }

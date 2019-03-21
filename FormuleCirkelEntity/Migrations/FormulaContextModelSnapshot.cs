@@ -66,6 +66,8 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("DriverNumber");
 
+                    b.Property<bool>("IsActive");
+
                     b.Property<string>("Name");
 
                     b.Property<int>("QualyId");
