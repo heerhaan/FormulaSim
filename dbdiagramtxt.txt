@@ -1,0 +1,84 @@
+Table Drivers {
+  id int PK
+  name varchar
+  number int
+}
+
+Table Tracks {
+  id int PK
+  name varchar
+}
+
+Table Seasons {
+  id int PK
+  year int
+  team int
+  driver int
+  engine int
+}
+
+Table Races {
+  id int PK
+  track int
+  season int
+}
+
+Table DriverResult {
+  id int PK
+  driver int
+  race int
+}
+
+Table Teams {
+  id int PK
+  name varchar
+}
+
+Table TeamResult {
+  id int PK
+  team int PK
+  race int
+}
+
+Table Engines {
+  id int PK
+  name varchar
+}
+
+Table SeasonDriver {
+  id int PK
+  driver int
+  skill int 
+}
+
+Table SeasonTeam {
+  id int PK
+  team int
+  engine int
+  chassis int
+}
+
+Table SeasonEngine {
+  id int PK
+  engine int
+  team int
+  power int
+}
+
+Table Qualification {
+  id int PK
+}
+
+Ref: Races.track > Tracks.id
+Ref: Races.season > Seasons.id
+Ref: DriverResult.driver > Drivers.id
+Ref: DriverResult.race > Races.id
+Ref: TeamResult.team > Teams.id
+Ref: TeamResult.race > Races.id
+Ref: SeasonDriver.driver > Drivers.id
+Ref: SeasonTeam.team > Teams.id
+Ref: SeasonEngine.engine > Engines.id
+Ref: SeasonTeam.engine > SeasonEngine.id
+Ref: SeasonDriver.id > Seasons.driver
+Ref: SeasonEngine.id > Seasons.engine
+Ref: SeasonTeam.id > Seasons.team
