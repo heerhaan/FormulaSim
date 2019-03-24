@@ -9,7 +9,7 @@ namespace FormuleCirkelEntity.Models
     public enum DNFodds { Increased, Neutral, Decreased }
     public enum RNGodds { Increased, Neutral, Decreased }
     public enum Specification { Topspeed, Acceleration, Stability, Handling }
-    public class Tracks
+    public class Track
     {
         [Key]
         public int TrackId { get; set; }
@@ -20,7 +20,6 @@ namespace FormuleCirkelEntity.Models
         [EnumDataType(typeof(Specification))]
         public Specification Specification { get; set; }
 
-        public int RaceId { get; set; }
-        public Races Races { get; set; }
+        public virtual ICollection<Race> Races { get; set; }
     }
 }

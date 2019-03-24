@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public class EngineDetails
+    public class SeasonEngine
     {
         [Key]
-        public int EngineDetailId { get; set; }
+        public int SeasonEngineId { get; set; }
         public int Power { get; set; }
 
-        public int SeasonId { get; set; }
-        public Seasons Seasons { get; set; }
+        public int EngineId { get; set; }
+        public Engine Engine { get; set; }
 
-        public ICollection<Engines> Engines { get; set; }
+        public virtual ICollection<SeasonTeam> SeasonTeams { get; set; }
     }
 }

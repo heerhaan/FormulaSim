@@ -11,20 +11,18 @@ namespace FormuleCirkelEntity.DAL
     {
         public FormulaContext(DbContextOptions<FormulaContext> options) : base(options) { }
 
-        public DbSet<DriverDetails> DriverDetails { get; set; }
-        public DbSet<Drivers> Drivers { get; set; }
-        public DbSet<DriverStandings> DriverStandings { get; set; }
-        public DbSet<EngineDetails> EngineDetails { get; set; }
-        public DbSet<Engines> Engines { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
+
+        public DbSet<Engine> Engines { get; set; }
         public DbSet<Qualification> Qualifications { get; set; }
-        public DbSet<Races> Races { get; set; }
-        public DbSet<Results> Results { get; set; }
-        public DbSet<Seasons> Seasons { get; set; }
-        public DbSet<Status> Statuses { get; set; }
-        public DbSet<TeamDetails> TeamDetails { get; set; }
-        public DbSet<Teams> Teams { get; set; }
-        public DbSet<TeamStandings> TeamStandings { get; set; }
-        public DbSet<Tracks> Tracks { get; set; }
+        public DbSet<Race> Races { get; set; }
+
+        public DbSet<Season> Seasons { get; set; }
+
+
+        public DbSet<Team> Teams { get; set; }
+
+        public DbSet<Track> Tracks { get; set; }
 
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)

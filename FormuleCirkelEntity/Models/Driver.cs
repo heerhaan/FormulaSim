@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public class Drivers
+    public class Driver
     {
         [Key]
         public int DriverId { get; set; }
@@ -15,13 +15,6 @@ namespace FormuleCirkelEntity.Models
         public string Abbreviation { get; set; }
         public bool IsActive { get; set; }
 
-        public int QualyId { get; set; }
-        public Qualification Qualification { get; set; }
-
-        public int ResultId { get; set; }
-        public Results Results { get; set; }
-
-        public int DriverDetailId { get; set; }
-        public DriverDetails DriverDetails { get; set; }
+        public virtual ICollection<SeasonDriver> SeasonDrivers { get; set; }
     }
 }
