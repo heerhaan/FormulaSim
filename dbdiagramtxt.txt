@@ -12,9 +12,6 @@ Table Tracks {
 Table Seasons {
   id int PK
   year int
-  team int
-  driver int
-  engine int
 }
 
 Table Races {
@@ -48,11 +45,13 @@ Table Engines {
 Table SeasonDriver {
   id int PK
   driver int
-  skill int 
+  skill int
+  team int
 }
 
 Table SeasonTeam {
   id int PK
+  season int
   team int
   engine int
   chassis int
@@ -61,7 +60,6 @@ Table SeasonTeam {
 Table SeasonEngine {
   id int PK
   engine int
-  team int
   power int
 }
 
@@ -71,14 +69,14 @@ Table Qualification {
 
 Ref: Races.track > Tracks.id
 Ref: Races.season > Seasons.id
-Ref: DriverResult.driver > Drivers.id
+Ref: DriverResult.driver > SeasonDriver.id
 Ref: DriverResult.race > Races.id
-Ref: TeamResult.team > Teams.id
+Ref: TeamResult.team > SeasonTeam.id
 Ref: TeamResult.race > Races.id
 Ref: SeasonDriver.driver > Drivers.id
 Ref: SeasonTeam.team > Teams.id
+Ref: SeasonTeam.season > Seasons.id
 Ref: SeasonEngine.engine > Engines.id
 Ref: SeasonTeam.engine > SeasonEngine.id
-Ref: SeasonDriver.id > Seasons.driver
-Ref: SeasonEngine.id > Seasons.engine
-Ref: SeasonTeam.id > Seasons.team
+Ref: SeasonDriver.team > SeasonTeam.id
+Ref: Qualification.id > DriverResult.id
