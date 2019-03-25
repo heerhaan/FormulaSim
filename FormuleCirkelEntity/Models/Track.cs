@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public enum DNFodds { Increased, Neutral, Decreased }
-    public enum RNGodds { Increased, Neutral, Decreased }
-    public enum Specification { Topspeed, Acceleration, Stability, Handling }
+    public enum DNFodds { Verhoogd, Neutraal, Verlaagd }
+    public enum RNGodds { Verhoogd, Neutraal, Verlaagd }
+    public enum Specification { Topsnelheid, Optrekking, Stabiliteit, Handeling }
     public class Track
     {
         [Key]
@@ -19,6 +19,8 @@ namespace FormuleCirkelEntity.Models
         public RNGodds RNGodds { get; set; }
         [EnumDataType(typeof(Specification))]
         public Specification Specification { get; set; }
+        public string Name { get; set; }
+        public string Location { get; set; }
 
         public virtual ICollection<Race> Races { get; set; }
     }

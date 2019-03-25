@@ -3,14 +3,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190325145910_UpdatedTeamModel")]
+    partial class UpdatedTeamModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,10 +247,6 @@ namespace FormuleCirkelEntity.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("DNFodds");
-
-                    b.Property<string>("Location");
-
-                    b.Property<string>("Name");
 
                     b.Property<int>("RNGodds");
 
