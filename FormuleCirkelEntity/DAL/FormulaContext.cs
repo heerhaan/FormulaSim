@@ -27,6 +27,11 @@ namespace FormuleCirkelEntity.DAL
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DriverResult>()
+                .HasOne(a => a.Qualification)
+                .WithOne(ab => ab.DriverResult)
+                .HasForeignKey<Qualification>(c => c.DriverRef);
+
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;

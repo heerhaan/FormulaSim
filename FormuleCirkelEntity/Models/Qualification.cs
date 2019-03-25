@@ -13,7 +13,7 @@ namespace FormuleCirkelEntity.Models
         public int QualyId { get; set; }
         public int Position { get; set; }
 
-        [ForeignKey("DriverResult")]
+        public int DriverRef { get; set; }
         public virtual DriverResult DriverResult { get; set; }
     }
 }
