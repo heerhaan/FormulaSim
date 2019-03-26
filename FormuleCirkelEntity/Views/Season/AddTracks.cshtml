@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Races toevoegen";
+    int id = 0;
 }
 
 <h1>Races toevoegen</h1>
@@ -33,26 +34,34 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Location)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DNFodds)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RNGodds)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Specification)
-                </td>
-                <td>
-                    <a asp-action="AddTracks" asp-route-trackid="@item.TrackId" class="btn btn-secondary">Voeg toe</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DNFodds)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RNGodds)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Specification)
+            </td>
+            <td>
+                @Html.ActionLink(
+               "Toevoegen",
+               "AddRace",
+               "Season",
+               new {
+                   trackid = item.TrackId
+               },
+               null
+               )
+            </td>
+        </tr>
         }
     </tbody>
 </table>

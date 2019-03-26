@@ -37,46 +37,34 @@ namespace FormuleCirkelEntity.Controllers
             return View(_context.Tracks.ToList());
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddTracks(int? trackid)
+        public IActionResult AddRace(int? trackid)
         {
             if (trackid == null)
             {
                 return NotFound();
             }
-            var track = await _context.Tracks.FindAsync(trackid);
-            if (track == null)
-            {
-                return NotFound();
-            }
-            return RedirectToAction(nameof(AddRace), new { trackid });
-        }
+            var track = _context.Tracks
+                .FirstOrDefault(m => m.TrackId == trackid);
 
-        public async Task<IActionResult> AddRace(int? trackid)
-        {
-            if (trackid == null)
-            {
-                return NotFound();
-            }
-            var track = await _context.Tracks
-                .FirstOrDefaultAsync(m => m.TrackId == trackid);
+            var season = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
 
-            var season = await _context.Seasons.FirstOrDefaultAsync(s => s.CurrentSeason == true);
-
-            var race = await _context.Races.LastOrDefaultAsync(r => r.SeasonId == season.SeasonId);
+            var race = _context.Races.LastOrDefault(r => r.SeasonId == season.SeasonId);
             if (track == null || season == null)
             {
                 return NotFound();
             }
 
-            if(race == null)
+            ViewBag.TrackId = track.TrackId;
+            ViewBag.SeasonId = season.SeasonId;
+
+            if (race == null)
             {
                 ViewBag.Round = 1;
             } else
             {
                 ViewBag.Round = (race.Round + 1);
             }
-            return View(track);
+            return View();
         }
 
         [HttpPost]
