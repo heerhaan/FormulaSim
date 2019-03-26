@@ -1,0 +1,58 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Track>
+
+@{
+    ViewData["Title"] = "Races toevoegen";
+}
+
+<h1>Races toevoegen</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Naam
+            </th>
+            <th>
+                Locatie
+            </th>
+            <th>
+                DNF
+            </th>
+            <th>
+                RNG
+            </th>
+            <th>
+                Specificatie
+            </th>
+            <th>
+                Seizoen
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Location)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DNFodds)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RNGodds)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Specification)
+                </td>
+                <td>
+                    <a asp-action="AddTracks" asp-route-trackid="@item.TrackId" class="btn btn-secondary">Voeg toe</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -3,22 +3,31 @@
 @{
     ViewData["Title"] = "Seizoen";
     bool Active = false;
+    int seasonid = 1;
 }
 
-@foreach (var item in Model)
+@if(Model != null)
 {
-    if (item.CurrentSeason == true)
+    foreach (var item in Model)
     {
-        Active = true;
-        break;
+        seasonid++;
+        if (item.CurrentSeason == true)
+        {
+            Active = true;
+            break;
+        }
     }
 }
 
 @if (Active == false)
 {
     <div class="text-center">
-        <form asp-action="Create">
-
+        <form asp-action="Main">
+            <label>Nieuwe seizoen: @seasonid</label>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Begin seizoen" class="btn btn-secondary" />
+            </div>
         </form>
     </div>
 }

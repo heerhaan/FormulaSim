@@ -16,14 +16,5 @@ namespace FormuleCirkelEntity.Controllers
         {
             _context = context;
         }
-        public IActionResult AddTracks()
-        {
-            return View(_context.Tracks.ToList());
-        }
-
-        /*public async Task<IActionResult> AddTracks(int seasonid)
-        {
-            return View();
-        }*/
     }
 }

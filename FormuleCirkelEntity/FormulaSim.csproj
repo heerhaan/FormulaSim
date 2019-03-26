@@ -21,4 +21,9 @@
     <None Include="wwwroot\images\FormuleCirkeltrekLogo.png" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Views\Races\" />
+  </ItemGroup>
+
 </Project>
