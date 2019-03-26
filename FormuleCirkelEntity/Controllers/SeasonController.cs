@@ -34,7 +34,25 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult AddTracks()
         {
-            return View(_context.Tracks.ToList());
+            var season = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
+            var race = _context.Races.LastOrDefault(r => r.SeasonId == season.SeasonId);
+            ViewBag.rounds = race.Round;
+
+            var tracks = _context.Tracks.ToList();
+            var races = _context.Races.ToList();
+            var unusedtracks = _context.Tracks.ToList();
+
+            foreach(var item in tracks)
+            {
+                foreach(var rees in races)
+                {
+                    if(item.TrackId == rees.TrackId)
+                    {
+                        unusedtracks.Remove(item);
+                    }
+                }
+            }
+            return View(unusedtracks);
         }
 
         public IActionResult AddRace(int? trackid)
@@ -77,6 +95,59 @@ namespace FormuleCirkelEntity.Controllers
                 return RedirectToAction(nameof(AddTracks));
             }
             return View(race);
+        }
+
+        public IActionResult AddEngines()
+        {
+            var engines = _context.Engines.ToList();
+            var seasonengines = _context.SeasonEngine.ToList();
+            var unusedengines = _context.Engines.ToList();
+
+            foreach(var engine in engines)
+            {
+                foreach(var item in seasonengines)
+                {
+                    if(engine.EngineId == item.EngineId)
+                    {
+                        unusedengines.Remove(engine);
+                    }
+                }
+            }
+            return View(unusedengines);
+        }
+
+        public IActionResult EngineToSeason(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.id = id;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EngineToSeason(SeasonEngine seasonEngine)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.SeasonEngine.Add(seasonEngine);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(AddEngines));
+            }
+            return View(seasonEngine);
+        }
+
+        public IActionResult AddTeams()
+        {
+            return View(_context.Teams.ToList());
+        }
+
+        public async Task<IActionResult> TeamToSeason()
+        {
+            return View();
         }
     }
 }

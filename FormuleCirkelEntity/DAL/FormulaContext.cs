@@ -37,5 +37,11 @@ namespace FormuleCirkelEntity.DAL
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
         }
+
+        
+        public DbSet<FormuleCirkelEntity.Models.SeasonTeam> SeasonTeam { get; set; }
+
+        
+        public DbSet<FormuleCirkelEntity.Models.SeasonEngine> SeasonEngine { get; set; }
     }
 }

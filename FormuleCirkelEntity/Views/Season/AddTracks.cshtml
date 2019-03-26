@@ -2,10 +2,11 @@
 
 @{
     ViewData["Title"] = "Races toevoegen";
-    int id = 0;
+    int rounds = ViewBag.rounds;
 }
 
 <h1>Races toevoegen</h1>
+<h4>Huidig aantal toegevoegde rondes: @rounds</h4>
 
 <table class="table">
     <thead>
@@ -65,3 +66,7 @@
         }
     </tbody>
 </table>
+
+<div>
+    <a asp-action="AddEngines" class="btn btn-secondary">Kalender voltooien!</a>
+</div>

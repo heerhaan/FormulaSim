@@ -1,0 +1,56 @@
+﻿@model FormuleCirkelEntity.Models.SeasonTeam
+
+@{
+    ViewData["Title"] = "TeamToSeason";
+}
+
+<h1>TeamToSeason</h1>
+
+<h4>SeasonTeam</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="TeamToSeason">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Chassis" class="control-label"></label>
+                <input asp-for="Chassis" class="form-control" />
+                <span asp-validation-for="Chassis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Relability" class="control-label"></label>
+                <input asp-for="Relability" class="form-control" />
+                <span asp-validation-for="Relability" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Specificatie</label>
+                @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label asp-for="Points" class="control-label"></label>
+                <input asp-for="Points" class="form-control" />
+                <span asp-validation-for="Points" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SeasonId" class="control-label"></label>
+                <select asp-for="SeasonId" class ="form-control" asp-items="ViewBag.SeasonId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TeamId" class="control-label"></label>
+                <select asp-for="TeamId" class ="form-control" asp-items="ViewBag.TeamId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SeasonEngineId" class="control-label"></label>
+                <select asp-for="SeasonEngineId" class ="form-control" asp-items="ViewBag.SeasonEngineId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="AddTeams">Terug naar lijst</a>
+</div>
+
