@@ -2,11 +2,17 @@
 
 @{
     ViewData["Title"] = "TeamToSeason";
+    int current = 0;
+    int id = 0;
+    if (ViewBag.current != null) { current = ViewBag.current; }
+    if (ViewBag.id != null) { id = ViewBag.id; }
+    var engines = ViewBag.engines;
 }
 
-<h1>TeamToSeason</h1>
+<h1>Team inschrijving</h1>
 
-<h4>SeasonTeam</h4>
+<h4>Team naam</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -27,24 +33,23 @@
                 @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
             </div>
             <div class="form-group">
-                <label asp-for="Points" class="control-label"></label>
-                <input asp-for="Points" class="form-control" />
+                <input type="hidden" asp-for="Points" value="0" class="form-control" />
                 <span asp-validation-for="Points" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SeasonId" class="control-label"></label>
-                <select asp-for="SeasonId" class ="form-control" asp-items="ViewBag.SeasonId"></select>
+                <input type="hidden" asp-for="SeasonId" value="@current" class="form-control" />
+                <span asp-validation-for="SeasonId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TeamId" class="control-label"></label>
-                <select asp-for="TeamId" class ="form-control" asp-items="ViewBag.TeamId"></select>
+                <input type="hidden" asp-for="TeamId" value="@id" class="form-control" />
+                <span asp-validation-for="TeamId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SeasonEngineId" class="control-label"></label>
-                <select asp-for="SeasonEngineId" class ="form-control" asp-items="ViewBag.SeasonEngineId"></select>
+                <label asp-for="SeasonEngineId" value="Motor" class="control-label"></label>
+                <select asp-for="SeasonEngineId" asp-items="@engines"><option>Kies een!</option></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Team toevoegen" class="btn btn-primary" />
             </div>
         </form>
     </div>

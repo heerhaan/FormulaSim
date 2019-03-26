@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -32,6 +34,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(AddTracks));
         }
 
+        //Methods to adding circuits to season
         public IActionResult AddTracks()
         {
             var season = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
@@ -54,7 +57,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             return View(unusedtracks);
         }
-
+        
         public IActionResult AddRace(int? trackid)
         {
             if (trackid == null)
@@ -97,11 +100,14 @@ namespace FormuleCirkelEntity.Controllers
             return View(race);
         }
 
+        //Methods for adding engines to season
         public IActionResult AddEngines()
         {
             var engines = _context.Engines.ToList();
             var seasonengines = _context.SeasonEngine.ToList();
             var unusedengines = _context.Engines.ToList();
+
+            ViewBag.season = _context.SeasonEngine.Count();
 
             foreach(var engine in engines)
             {
@@ -140,14 +146,55 @@ namespace FormuleCirkelEntity.Controllers
             return View(seasonEngine);
         }
 
+        //Methods for adding teams to season
         public IActionResult AddTeams()
         {
-            return View(_context.Teams.ToList());
+            var teams = _context.Teams.ToList();
+            var seasonteams = _context.SeasonTeam.ToList();
+            var unusedteams = _context.Teams.ToList();
+
+            ViewBag.season = _context.SeasonTeam.Count();
+
+            foreach(var team in teams)
+            {
+                foreach(var item in seasonteams)
+                {
+                    if(team.TeamId == item.TeamId)
+                    {
+                        unusedteams.Remove(team);
+                    }
+                }
+            }
+            return View(unusedteams);
+        }
+        
+        public IActionResult TeamToSeason(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var current = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
+
+            ViewBag.id = id;
+            ViewBag.current = current.SeasonId;
+
+            var engines =
+                (from e in _context.Engines
+                 join s in _context.SeasonEngine on e.EngineId equals s.EngineId
+                 select new { s.SeasonEngineId, e.Name });
+
+            ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+
+            return View();
         }
 
-        public async Task<IActionResult> TeamToSeason()
+        [HttpPost]
+        public async Task<IActionResult> TeamToSeason(SeasonTeam seasonTeam)
         {
-            return View();
+                _context.SeasonTeam.Add(seasonTeam);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(AddTeams));
         }
     }
 }

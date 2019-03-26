@@ -1,10 +1,12 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Team>
 
 @{
-    ViewData["Title"] = "AddTeams";
+    ViewData["Title"] = "Voeg teams toe";
+    int aantal = ViewBag.season;
 }
 
-<h1>AddTeams</h1>
+<h1>Teams aan seizoen toevoegen</h1>
+<h4>Huidige aantal deelnemende teams: @aantal</h4>
 
 <table class="table">
     <thead>
