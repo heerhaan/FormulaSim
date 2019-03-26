@@ -10,6 +10,7 @@ namespace FormuleCirkelEntity.Models
     {
         [Key]
         public int SeasonId { get; set; }
+        public bool CurrentSeason { get; set; }
 
         public virtual ICollection<Race> Races { get; set; }
     }

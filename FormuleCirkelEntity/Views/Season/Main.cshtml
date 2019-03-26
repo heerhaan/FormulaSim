@@ -1,0 +1,30 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Season>
+
+@{
+    ViewData["Title"] = "Seizoen";
+    bool Active = false;
+}
+
+@foreach (var item in Model)
+{
+    if (item.CurrentSeason == true)
+    {
+        Active = true;
+        break;
+    }
+}
+
+@if (Active == false)
+{
+    <div class="text-center">
+        <form asp-action="Create">
+
+        </form>
+    </div>
+}
+@if (Active == true)
+{
+    <div class="text-center">
+        <a class="btn btn-secondary btn-sm">Naar seizoen</a>
+    </div>
+}

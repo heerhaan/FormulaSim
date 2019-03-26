@@ -147,5 +147,13 @@ namespace FormuleCirkelEntity.Controllers
         {
             return _context.Tracks.Any(e => e.TrackId == id);
         }
+
+        public void AddTrackToRaces(Track track)
+        {
+            //Soortgelijk aan driver aan table toevoegen.
+            //Neem een nieuwe view wanneer Voegtoe klik, neem TrackId en SeasonId mee
+            //Voeg waarden in bij Races zoals het gaat bij Create.cshtml
+            //Sla op, keer terug naar lijst met Races en laat via label of whatsoever zien hoeveel races erin zitten
+        }
     }
 }
