@@ -6,7 +6,6 @@
     int id = 0;
     if (ViewBag.current != null) { current = ViewBag.current; }
     if (ViewBag.id != null) { id = ViewBag.id; }
-    var engines = ViewBag.engines;
 }
 
 <h1>Team inschrijving</h1>
@@ -46,7 +45,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="SeasonEngineId" value="Motor" class="control-label"></label>
-                <select asp-for="SeasonEngineId" asp-items="@engines"><option>Kies een!</option></select>
+                <select asp-for="SeasonEngineId" asp-items="@ViewBag.engines"><option>Kies een!</option></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Team toevoegen" class="btn btn-primary" />
@@ -59,3 +58,4 @@
     <a asp-action="AddTeams">Terug naar lijst</a>
 </div>
 
+@Html.Raw(TempData["msg"])

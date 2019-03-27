@@ -1,0 +1,37 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Driver>
+
+@{
+    ViewData["Title"] = "Coureurs toevoegen";
+}
+
+<h1>Coureurs toevoegen</h1>
+<h4>Huidige aantal toegevoegde coureurs: @ViewBag.season</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Coureurnummer
+            </th>
+            <th>
+                Volledige naam
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DriverNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a asp-action="DriverToSeason" asp-route-id="@item.DriverId">Edit</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

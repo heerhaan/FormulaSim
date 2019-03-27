@@ -12,19 +12,18 @@ namespace FormuleCirkelEntity.DAL
         public FormulaContext(DbContextOptions<FormulaContext> options) : base(options) { }
 
         public DbSet<Driver> Drivers { get; set; }
-
         public DbSet<Engine> Engines { get; set; }
         public DbSet<Qualification> Qualifications { get; set; }
         public DbSet<Race> Races { get; set; }
-
         public DbSet<Season> Seasons { get; set; }
-
-
         public DbSet<Team> Teams { get; set; }
-
         public DbSet<Track> Tracks { get; set; }
+        public DbSet<SeasonEngine> SeasonEngines { get; set; }
+        public DbSet<SeasonTeam> SeasonTeams { get; set; }
+        public DbSet<SeasonDriver> SeasonDrivers { get; set; }
+        public DbSet<DriverResult> DriverResults { get; set; }
+        public DbSet<TeamResult> TeamResults { get; set; }
 
-        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DriverResult>()
@@ -37,11 +36,5 @@ namespace FormuleCirkelEntity.DAL
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
         }
-
-        
-        public DbSet<FormuleCirkelEntity.Models.SeasonTeam> SeasonTeam { get; set; }
-
-        
-        public DbSet<FormuleCirkelEntity.Models.SeasonEngine> SeasonEngine { get; set; }
     }
 }

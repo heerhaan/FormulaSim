@@ -1,0 +1,57 @@
+﻿@model FormuleCirkelEntity.Models.SeasonDriver
+
+@{
+    ViewData["Title"] = "Seizoen coureur";
+    int current = 0;
+    int id = 0;
+    if (ViewBag.current != null) { current = ViewBag.current; }
+    if (ViewBag.id != null) { id = ViewBag.id; }
+}
+
+<h1>Coureur inschrijving</h1>
+
+<h4>Coureur naam</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="DriverToSeason">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Skill" class="control-label"></label>
+                <input asp-for="Skill" class="form-control" />
+                <span asp-validation-for="Skill" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Style" class="control-label">Stijl</label>
+                @Html.DropDownListFor(model => model.Style, new SelectList(Enum.GetValues(typeof(Style))), new { @class = "form-control" })
+                <span asp-validation-for="Style" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tires" class="control-label">Bandenvoorkeur</label>
+                @Html.DropDownListFor(model => model.Tires, new SelectList(Enum.GetValues(typeof(Tires))), new { @class = "form-control" })
+                <span asp-validation-for="Tires" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="Points" value="0" class="form-control" />
+                <span asp-validation-for="Points" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="DriverId" class="form-control" value="@id" />
+                <span asp-validation-for="DriverId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SeasonTeamId" class="control-label">Team</label>
+                <select asp-for="SeasonTeamId" class="form-control" asp-items="ViewBag.teams"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Coureur toevoegen" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="AddDrivers">Terug naar coureurlijst</a>
+</div>
+
+@Html.Raw(TempData["msg"])

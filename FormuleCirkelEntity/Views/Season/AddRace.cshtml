@@ -1,15 +1,15 @@
 ﻿@model FormuleCirkelEntity.Models.Race
 
 @{
-    ViewData["Title"] = "AddRace";
+    ViewData["Title"] = "Rees toevoegen";
     int round = ViewBag.Round;
     int track = ViewBag.TrackId;
     int season = ViewBag.SeasonId;
 }
 
-<h1>AddRace</h1>
+<h1>Rees toevoegen</h1>
 
-<h4>Race</h4>
+<h4>Rees</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -39,3 +39,4 @@
     </div>
 </div>
 
+@Html.Raw(TempData["msg"])
