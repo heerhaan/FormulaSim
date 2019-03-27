@@ -1,0 +1,39 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+
+@{
+    ViewData["Title"] = "Overzicht";
+}
+
+<h1>Seizoen overzicht</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Coureur
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Motor
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Drivers.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SeasonTeam.Team.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SeasonTeam.SeasonEngine.Engine.Name)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

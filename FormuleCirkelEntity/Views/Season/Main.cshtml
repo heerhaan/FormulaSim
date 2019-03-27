@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Seizoen";
     bool Active = false;
-    int seasonid = 1;
+    int seasonid = 0;
 }
 
 @if(Model != null)
@@ -34,6 +34,14 @@
 @if (Active == true)
 {
     <div class="text-center">
-        <a class="btn btn-secondary btn-sm">Naar seizoen</a>
+        <h2>Huidige seizoen: @seasonid</h2>
+    </div>
+    <br />
+    <div class="text-center">
+        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary" style="padding-top : 5px; padding-bottom : 5px">Naar seizoen</a>
+    </div>
+    <br />
+    <div class="text-center">
+        <a asp-action="AddTracks" class="btn btn-secondary" style="padding-top : 5px; padding-bottom : 5px">Seizoen bewerken</a>
     </div>
 }
