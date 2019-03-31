@@ -106,6 +106,7 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult AddEngines()
         {
             var engines = _context.Engines.ToList();
+            //Known problem: new season means that it will still remove past seasonengines from view
             var seasonengines = _context.SeasonEngines.ToList();
             var unusedengines = _context.Engines.ToList();
 
@@ -155,10 +156,10 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult AddTeams()
         {
             var teams = _context.Teams.ToList();
-            var seasonteams = _context.SeasonTeams.ToList();
+            var seasonteams = _context.SeasonTeams.Where(t => t.Season.CurrentSeason == true).ToList();
             var unusedteams = _context.Teams.ToList();
 
-            ViewBag.season = _context.SeasonTeams.Count();
+            ViewBag.season = seasonteams.Count();
 
             foreach(var team in teams)
             {

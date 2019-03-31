@@ -13,7 +13,6 @@ namespace FormuleCirkelEntity.DAL
 
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Engine> Engines { get; set; }
-        public DbSet<Qualification> Qualifications { get; set; }
         public DbSet<Race> Races { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Team> Teams { get; set; }
@@ -26,11 +25,6 @@ namespace FormuleCirkelEntity.DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DriverResult>()
-                .HasOne(a => a.Qualification)
-                .WithOne(ab => ab.DriverResult)
-                .HasForeignKey<Qualification>(c => c.DriverRef);
-
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;

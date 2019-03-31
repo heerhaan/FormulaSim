@@ -24,25 +24,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             return View(await _context.Tracks.ToListAsync());
         }
-
-        // GET: Tracks/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var track = await _context.Tracks
-                .FirstOrDefaultAsync(m => m.TrackId == id);
-            if (track == null)
-            {
-                return NotFound();
-            }
-
-            return View(track);
-        }
-
+        
         // GET: Tracks/Create
         public IActionResult Create()
         {

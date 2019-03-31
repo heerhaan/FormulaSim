@@ -1,0 +1,35 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+
+@{
+    ViewData["Title"] = "Race Weekend";
+}
+
+<h1>Race Weekend</h1>
+<br />
+<div>
+    <h5>Kwalificatie | Deelnemers</h5>
+    <ol>
+        @foreach(var driver in Model)
+        {
+            <li>@driver.Drivers.Name | @driver.SeasonTeam.Team.Name</li>
+        }
+    </ol>
+    <a asp-action="Q1" class="btn btn-secondary">Kwalificatie</a>
+</div>
+
+<div>
+    <h5>Circuit informatie</h5>
+    <dl>
+        <dt>Lengte</dt>
+        <dd>3 KM</dd>
+        <dt>Weer</dt>
+        <dd>Droog</dd>
+        <dt>Vorige winnaar</dt>
+        <dd>Karel Trommel</dd>
+    </dl>
+</div>
+
+<div>
+    <h5>Race</h5>
+    <a asp-action="Race" class="btn btn-secondary">Race</a>
+</div>

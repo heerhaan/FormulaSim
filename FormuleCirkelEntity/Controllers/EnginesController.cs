@@ -18,40 +18,17 @@ namespace FormuleCirkelEntity.Controllers
         {
             _context = context;
         }
-
-        // GET: Engines
+        
         public async Task<IActionResult> Index()
         {
             return View(await _context.Engines.ToListAsync());
         }
-
-        // GET: Engines/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var engine = await _context.Engines
-                .FirstOrDefaultAsync(m => m.EngineId == id);
-            if (engine == null)
-            {
-                return NotFound();
-            }
-
-            return View(engine);
-        }
-
-        // GET: Engines/Create
+        
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Engines/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EngineId,Name")] Engine engine)
@@ -64,8 +41,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             return View(engine);
         }
-
-        // GET: Engines/Edit/5
+        
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,10 +56,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             return View(engine);
         }
-
-        // POST: Engines/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("EngineId,Name")] Engine engine)

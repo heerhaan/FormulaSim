@@ -18,9 +18,6 @@
             <th>
                 Afkorting
             </th>
-            <th>
-                Actief
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -34,12 +31,9 @@
                 @Html.DisplayFor(modelItem => item.Abbreviation)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TeamId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TeamId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TeamId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.TeamId">Aanpassen</a> |
+                <a asp-action="Stats" asp-route-id="@item.TeamId">Stats</a> |
+                <a asp-action="Delete" asp-route-id="@item.TeamId">Verwijderen</a>
             </td>
         </tr>
 }

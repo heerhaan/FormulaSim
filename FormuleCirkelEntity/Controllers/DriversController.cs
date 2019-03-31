@@ -25,8 +25,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(await _context.Drivers.ToListAsync());
         }
 
-        // GET: Drivers/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Stats(int? id)
         {
             if (id == null)
             {
@@ -52,7 +51,7 @@ namespace FormuleCirkelEntity.Controllers
         // POST: Drivers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DriverId,DriverNumber,Name,Abbreviation,IsActive")] Driver driver)
+        public async Task<IActionResult> Create([Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
         {
             if (ModelState.IsValid)
             {
@@ -82,7 +81,7 @@ namespace FormuleCirkelEntity.Controllers
         // POST: Drivers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DriverId,DriverNumber,Name,Abbreviation,IsActive")] Driver driver)
+        public async Task<IActionResult> Edit(int id, [Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
         {
             if (id != driver.DriverId)
             {

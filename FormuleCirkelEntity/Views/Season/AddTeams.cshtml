@@ -11,7 +11,7 @@
     <thead>
         <tr>
             <th>
-                Teamnaam
+                Team
             </th>
             <th></th>
         </tr>
@@ -23,7 +23,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-action="TeamToSeason" asp-route-id="@item.TeamId">Voeg aan kampioenschap toe.</a>
+                <a asp-action="TeamToSeason" asp-route-id="@item.TeamId">Toevoegen</a>
             </td>
         </tr>
 }
@@ -31,5 +31,6 @@
 </table>
 
 <div>
-    <a asp-action="AddDrivers" class="btn btn-secondary">Teams toevoegen voltooien!</a>
+    <a asp-action="AddEngines" class="btn btn-secondary">Terug</a>
+    <a asp-action="AddDrivers" class="btn btn-secondary">Volgende</a>
 </div>

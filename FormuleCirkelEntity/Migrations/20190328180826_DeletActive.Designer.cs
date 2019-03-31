@@ -3,14 +3,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190328180826_DeletActive")]
+    partial class DeletActive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,8 +43,6 @@ namespace FormuleCirkelEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Grid");
-
                     b.Property<int>("Position");
 
                     b.Property<int>("RaceId");
@@ -71,6 +71,24 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasKey("EngineId");
 
                     b.ToTable("Engines");
+                });
+
+            modelBuilder.Entity("FormuleCirkelEntity.Models.Qualification", b =>
+                {
+                    b.Property<int>("QualyId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DriverRef");
+
+                    b.Property<int>("Position");
+
+                    b.HasKey("QualyId");
+
+                    b.HasIndex("DriverRef")
+                        .IsUnique();
+
+                    b.ToTable("Qualifications");
                 });
 
             modelBuilder.Entity("FormuleCirkelEntity.Models.Race", b =>
@@ -251,6 +269,14 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasOne("FormuleCirkelEntity.Models.SeasonDriver", "SeasonDriver")
                         .WithMany("DriverResults")
                         .HasForeignKey("SeasonDriverId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("FormuleCirkelEntity.Models.Qualification", b =>
+                {
+                    b.HasOne("FormuleCirkelEntity.Models.DriverResult", "DriverResult")
+                        .WithOne("Qualification")
+                        .HasForeignKey("FormuleCirkelEntity.Models.Qualification", "DriverRef")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

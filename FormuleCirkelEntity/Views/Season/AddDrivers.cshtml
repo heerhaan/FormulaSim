@@ -11,10 +11,10 @@
     <thead>
         <tr>
             <th>
-                Coureurnummer
+                Racenummer
             </th>
             <th>
-                Volledige naam
+                Naam
             </th>
             <th></th>
         </tr>
@@ -29,7 +29,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a asp-action="DriverToSeason" asp-route-id="@item.DriverId">Edit</a>
+                <a asp-action="DriverToSeason" asp-route-id="@item.DriverId">Toevoegen</a>
             </td>
         </tr>
 }
@@ -37,5 +37,6 @@
 </table>
 
 <div>
-    <a asp-action="AddSummary" class="btn btn-secondary">Naar overzicht</a>
+    <a asp-action="AddTeams" class="btn btn-secondary">Terug</a>
+    <a asp-action="AddSummary" class="btn btn-secondary">Volgende</a>
 </div>

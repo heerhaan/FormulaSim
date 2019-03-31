@@ -1,10 +1,10 @@
 ﻿@model FormuleCirkelEntity.Models.Driver
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Coureur";
 }
 
-<h1>Create</h1>
+<h1>Coureur toevoegen</h1>
 
 <h4>Driver</h4>
 <hr />
@@ -13,24 +13,19 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="DriverNumber" class="control-label"></label>
+                <label asp-for="DriverNumber" class="control-label">Racenummer</label>
                 <input asp-for="DriverNumber" class="form-control" />
                 <span asp-validation-for="DriverNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Naam</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Abbreviation" class="control-label"></label>
+                <label asp-for="Abbreviation" class="control-label">Afkorting</label>
                 <input asp-for="Abbreviation" class="form-control" />
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

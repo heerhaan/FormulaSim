@@ -25,8 +25,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(await _context.Teams.ToListAsync());
         }
 
-        // GET: Teams/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Stats(int? id)
         {
             if (id == null)
             {
@@ -52,7 +51,7 @@ namespace FormuleCirkelEntity.Controllers
         // POST: Teams/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TeamId,Name,Abbreviation,IsActive")] Team team)
+        public async Task<IActionResult> Create([Bind("TeamId,Name,Abbreviation")] Team team)
         {
             if (ModelState.IsValid)
             {
@@ -82,7 +81,7 @@ namespace FormuleCirkelEntity.Controllers
         // POST: Teams/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TeamId,Name,Abbreviation,IsActive")] Team team)
+        public async Task<IActionResult> Edit(int id, [Bind("TeamId,Name,Abbreviation")] Team team)
         {
             if (id != team.TeamId)
             {
