@@ -1,8 +1,7 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Qualification>
 
 @{
     ViewData["Title"] = "Qualification";
-    int position = 1;
 }
 
 <h1>Q1 in </h1>
@@ -25,17 +24,28 @@
             </th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@(position++)</td>
-                <td>@Html.DisplayFor(modelItem => item.SeasonTeam.Team.Abbreviation)</td>
-                <td>@Html.DisplayFor(modelItem => item.Drivers.Name)</td>
-                <td></td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <tbody id="q1table">
+        </tbody>
+    </table>
+<button id="generate">Start Q1!</button>
 
 <a asp-action="Q2" class="btn btn-secondary">Q2</a>
+
+<script>
+    $(document).ready(function () {
+        $('#generate').click(function () {
+            $.ajax({
+                url: "/Races/GetRacingDrivers",
+                type: "GET",
+                success: function (drivers) {
+                    $.each(drivers, function (index, driver) {
+                        var row = "<tr><td>" + driver.position + "</td><td>" + driver.teamName + "</td><td>"
+                            + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                        $("#q1table").append(row);
+                    });
+                    $("#generate").hide();
+                }
+            });
+        });
+    });
+</script>
