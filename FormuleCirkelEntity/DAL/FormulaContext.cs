@@ -22,6 +22,7 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<SeasonDriver> SeasonDrivers { get; set; }
         public DbSet<DriverResult> DriverResults { get; set; }
         public DbSet<TeamResult> TeamResults { get; set; }
+        public DbSet<Qualification> Qualification { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

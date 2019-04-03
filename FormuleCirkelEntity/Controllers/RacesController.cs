@@ -54,11 +54,21 @@ namespace FormuleCirkelEntity.Controllers
             _context.DriverResults.AddRange(driverresults);
             _context.SaveChanges();
             
-            return RedirectToAction(nameof(RaceWeekend));
+            return RedirectToAction("RaceWeekend", new { id });
         }
 
-        public IActionResult RaceWeekend()
+        public IActionResult RaceWeekend(int? id)
         {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var race = _context.Races.FirstOrDefault(r => r.RaceId == id);
+            ViewBag.track = race.Track;
+            ViewBag.race = race;
+            ViewBag.id = id;
+
             return View(_context.SeasonDrivers.Include(s => s.Drivers).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
                 .ToList());
         }
@@ -68,36 +78,18 @@ namespace FormuleCirkelEntity.Controllers
             return View();
         }
 
-        public IActionResult Q2()
-        {
-            return View();
-        }
-
-        public IActionResult Q3()
-        {
-            return View();
-        }
-
-        public int QualyCalc(int id)
-        {
-            int result = 0;
-            var driver = _context.SeasonDrivers.Where(s => s.SeasonDriverId == id)
-                .Include(s => s.SeasonTeam).FirstOrDefault();
-            result += driver.Skill;
-            result += driver.SeasonTeam.Chassis;
-            result += rng.Next(0, 60);
-            return result;
-        }
-
         [HttpGet]
-        public JsonResult GetRacingDrivers()
+        public JsonResult GetRacingDrivers(string source)
         {
+            if(source == null)
+            {
+                return null;
+            }
+
             int result = 0;
             int position = 1;
             var qualy = new List<Qualification>();
-            //var drivers = _context.DriverResults.Where(r => r.RaceId == raceid).Include(r => r.SeasonDriver).ToList();
-            
-            //To fill result of DriverResult it needs to have the SeasonDriverId and the RaceId
+
             var drivers = _context.SeasonDrivers.Include(s => s.Drivers).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
                 .Include(d => d.SeasonDriverId).Select(d => new
                 {
@@ -108,34 +100,93 @@ namespace FormuleCirkelEntity.Controllers
                     chassis = d.SeasonTeam.Chassis
                 }).ToList();
 
-            foreach(var driver in drivers)
+            foreach(var driver in drivers.ToList())
+            {
+                switch (source)
+                {
+                    case "Q1":
+                        break;
+                    case "Q2":
+                        foreach (var item in _context.Qualification.Where(q => q.RaceId == 1))
+                        {
+                            if (driver.id == item.DriverId)
+                            {
+                                if (item.Position > 3)
+                                {
+                                    drivers.Remove(driver);
+                                }
+                            }
+                        }
+                        break;
+                    case "Q3":
+                        foreach (var item in _context.Qualification.Where(q => q.RaceId == 1))
+                        {
+                            if (driver.id == item.DriverId)
+                            {
+                                if (item.Position > 2)
+                                {
+                                    drivers.Remove(driver);
+                                }
+                            }
+                        }
+                        break;
+
+                }
+            }
+            foreach (var driver in drivers.ToList())
             {
                 result = driver.skill;
                 result += driver.chassis;
                 result += rng.Next(0, 60);
                 qualy.Add(new Qualification()
                 {
-                    Id = driver.id,
+                    DriverId = driver.id,
+                    RaceId = 1,
                     TeamName = driver.team,
                     DriverName = driver.name,
                     Score = result
                 });
             }
-            var ordered = qualy.OrderByDescending(q => q.Score);
-            foreach(var driver in ordered)
+            qualy = qualy.OrderByDescending(q => q.Score).ToList();
+            foreach (var driver in qualy)
             {
                 driver.Position = position;
                 position++;
             }
-            return Json(ordered);
+            
+            UpdateQualy(source, qualy);
+
+            return Json(qualy);
         }
 
-        [HttpGet]
-        public JsonResult Test()
+        private void UpdateQualy(string source, List<Qualification> qualy)
         {
-            return Json("Piemel");
+            if (source == "Q1")
+            {
+                foreach (var driver in qualy)
+                {
+                    _context.Qualification.Add(driver);
+                }
+            }
+            else if (source == "Q2" || source == "Q3")
+            {
+                foreach (var driver in qualy)
+                {
+                    try
+                    {
+                        //var related = _context.Qualification.FirstOrDefault(q => q.RaceId == 1 && q.DriverId == driver.DriverId);
+                        //driver.QualyId = related.QualyId;
+                        _context.Qualification.Update(driver);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            _context.SaveChanges();
         }
-
+        
         public IActionResult Race()
         {
             return View();

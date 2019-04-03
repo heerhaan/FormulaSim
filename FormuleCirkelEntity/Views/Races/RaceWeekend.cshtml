@@ -1,10 +1,12 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
 
 @{
-    ViewData["Title"] = "Race Weekend";
+    ViewData["Title"] = "RaceWeekend";
+    string racename = ViewBag.race.Name;
+
 }
 
-<h1>Race Weekend</h1>
+<h1>@racename</h1>
 <br />
 <div>
     <h5>Kwalificatie | Deelnemers</h5>
