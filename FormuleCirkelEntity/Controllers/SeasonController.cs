@@ -38,7 +38,13 @@ namespace FormuleCirkelEntity.Controllers
         {
             var season = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
             var race = _context.Races.LastOrDefault(r => r.SeasonId == season.SeasonId);
-            ViewBag.rounds = race.Round;
+            if (race == null)
+            {
+                ViewBag.rounds = 0;
+            } else
+            {
+                ViewBag.rounds = race.Round;
+            }
 
             var tracks = _context.Tracks.ToList();
             var races = _context.Races.ToList();
