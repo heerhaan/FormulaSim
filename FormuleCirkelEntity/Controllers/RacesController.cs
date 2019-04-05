@@ -178,6 +178,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult Return()
         {
+            //Also should save the result of Qualification to the Grid value of DriverResults
             return RedirectToAction("RaceWeekend", new { id = 1 });
         }
         
