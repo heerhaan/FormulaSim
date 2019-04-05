@@ -175,6 +175,11 @@ namespace FormuleCirkelEntity.Controllers
             result += rng.Next(0, 60);
             return result;
         }
+
+        public IActionResult Return()
+        {
+            return RedirectToAction("RaceWeekend", new { id = 1 });
+        }
         
         public IActionResult Race()
         {
