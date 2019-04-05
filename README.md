@@ -1,24 +1,9 @@
 # FormulaSim
 Project to practice C# skill, purpose is to have a nice formula 1 simulator.
 
-# Current progress
+# Note
 
-Currently at the "Race" part of the simulator. The idea is that you see one table when opening the Race view which is sorted according to
-the qualifying that is connected with that race. There are supposed to be buttons to progress the race. It goes from
-View with startgrid order -> stint 1, table gets updated according to the calls that have been made -> pitstops, the current progress
-is caught and pitstops are added and the result is shown again in the table -> stint 2, also gets the current progress and then does
-the same as stint 1 -> Finish race, returns to the RaceWeekend overview and then shows all the current results from that weekend, so
-the qualifying results and race results -> Finish RaceWeekend, raceresults will be saved to the standings and such.
-
-# Finished parts
-
-- Lists with Drivers, Teams, Tracks and Engines in the current F1 database. New items can be added there.
-- Creating a season, here you can add everything that is going to be part of the season. Which tracks are going to be driven on, which
-drivers are going to participate for which teams who use which engines. And so on.
-- Qualifying functionality works now, going from Q1 to Q3 works as it should and the results of that are for now saved in a table without
-relations; Qualificatioms.
-
-PS: Those parts can still be expanded and upgraded. For now it means that the functionality is there. Master contains solely the base, for progress see Development branch.
+The ReadMe in the development branch is relevant to the current progress of the simulator. The master branch also currently contains just the base setup of the application, which is probably outdated now too since the database has been modified over development.
 
 # User stories (in Dutch)
 Als gebruiker wil ik coureurs, teams, motoren en circuits kunnen toevoegen zodat ze gebruikt kunnen worden voor een raceseizoen.
