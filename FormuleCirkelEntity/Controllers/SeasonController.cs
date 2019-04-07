@@ -19,7 +19,7 @@ namespace FormuleCirkelEntity.Controllers
             _context = context;
         }
 
-        public IActionResult Main()
+        public IActionResult Index()
         {
             return View(_context.Seasons.ToList());
         }
