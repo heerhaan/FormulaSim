@@ -23,7 +23,19 @@ namespace FormuleCirkelEntity.Controllers
         {
             return View(_context.Seasons.ToList());
         }
-        
+
+        public async Task<IActionResult> Detail(int? id)
+        {
+            var season = await _context.Seasons
+                .Include(s => s.Races)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (season == null)
+                return NotFound();
+
+            return View("Detail", season);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Main([Bind("SeasonId")]Season season)
         {
@@ -32,8 +44,7 @@ namespace FormuleCirkelEntity.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(AddTracks));
         }
-
-        //Methods to adding circuits to season
+        
         public IActionResult AddTracks()
         {
             var season = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);

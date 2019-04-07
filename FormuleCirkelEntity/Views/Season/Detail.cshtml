@@ -1,0 +1,28 @@
+﻿@model FormuleCirkelEntity.Models.Season
+
+@{
+    ViewData["Title"] = "Seizoen";
+}
+
+<div class="col-12">
+    <h2>Drivers</h2>
+</div>
+<div class="col-12">
+    <h2>Races</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Ronde</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var race in Model.Races) {
+                <tr>
+                    <td>@race.Name</td>
+                    <td>@race.Round</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
