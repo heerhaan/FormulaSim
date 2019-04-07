@@ -29,6 +29,8 @@ namespace FormuleCirkelEntity.Controllers
         {
             var season = await _context.Seasons
                 .Include(s => s.Races)
+                .Include(s => s.Drivers)
+                    .ThenInclude(dr => dr.Driver)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (season == null)

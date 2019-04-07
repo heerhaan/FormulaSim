@@ -3,17 +3,53 @@
 @{
     ViewData["Title"] = "Seizoen " + Model.SeasonId;
 }
-<section class="col-12">
+<section class="row">
     <header>
         <h1>Seizoen: @Model.SeasonId</h1>
     </header>
 </section>
 
-<section class="col-12 btn-group">
+<section class="row btn-group">
     <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-primary">Races toevoegen</a>
+    <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-primary">Coureurs toevoegen</a>
 </section>
-<section class="col-12">
-    <h2>Races</h2>
+
+<section class="row">
+    <h3>Coureurs</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Positie</th>
+                <th>Punten</th>
+                <th>Coureur</th>
+                <th>Vaardigheid</th>
+                <th>Stijl</th>
+                <th>Banden</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var orderedDrivers = Model.Drivers.OrderBy(d => d.Points).ToList();
+                for (int pos = 0; pos < orderedDrivers.Count; pos++)
+                {
+                    SeasonDriver @driver = orderedDrivers[pos];
+                    <tr>
+                        <td>@((pos + 1).ToString())</td>
+                        <td>@driver.Points</td>
+                        <td><span class="badge">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
+                        <td>@driver.Skill</td>
+                        <td>@driver.Style</td>
+                        <td>@driver.Tires</td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+</section>
+
+<section class="row">
+    <h3>Races</h3>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -22,7 +58,8 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var race in Model.Races) {
+            @foreach (var race in Model.Races)
+            {
                 <tr>
                     <td>@race.Name</td>
                     <td>@race.Round</td>
