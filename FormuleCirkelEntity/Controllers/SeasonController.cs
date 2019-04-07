@@ -35,15 +35,6 @@ namespace FormuleCirkelEntity.Controllers
 
             return View("Detail", season);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Main([Bind("SeasonId")]Season season)
-        {
-            season.CurrentSeason = true;
-            _context.Seasons.Add(season);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(AddTracks));
-        }
         
         public IActionResult AddTracks()
         {
