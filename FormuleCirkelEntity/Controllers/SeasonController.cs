@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.DAL;
@@ -36,72 +37,40 @@ namespace FormuleCirkelEntity.Controllers
             return View("Detail", season);
         }
         
-        public IActionResult AddTracks()
+        public async Task<IActionResult> AddTracks(int? id)
         {
-            var season = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
-            var race = _context.Races.LastOrDefault(r => r.SeasonId == season.SeasonId);
-            ViewBag.rounds = race.Round;
+            var season = await _context.Seasons
+                   .Include(s => s.Races)
+                   .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            var tracks = _context.Tracks.ToList();
-            var races = _context.Races.ToList();
-            var unusedtracks = _context.Tracks.ToList();
-
-            foreach(var item in tracks)
-            {
-                foreach(var rees in races)
-                {
-                    if(item.TrackId == rees.TrackId)
-                    {
-                        unusedtracks.Remove(item);
-                    }
-                }
-            }
-            return View(unusedtracks);
-        }
-        
-        public IActionResult AddRace(int? trackid)
-        {
-            if (trackid == null)
-            {
+            if (season == null)
                 return NotFound();
-            }
-            var track = _context.Tracks
-                .FirstOrDefault(m => m.TrackId == trackid);
 
-            var season = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
+            var existingTrackIds = season.Races.Select(r => r.TrackId);
+            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId)).ToList();
 
-            var race = _context.Races.LastOrDefault(r => r.SeasonId == season.SeasonId);
-            if (track == null || season == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.TrackId = track.TrackId;
-            ViewBag.SeasonId = season.SeasonId;
-
-            if (race == null)
-            {
-                ViewBag.Round = 1;
-            } else
-            {
-                ViewBag.Round = (race.Round + 1);
-            }
-            return View();
+            ViewBag.seasonId = id;
+            return View(unusedTracks);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRace([Bind("RaceId,Round,Name,TrackId,SeasonId")]Race race)
+        public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] Track track)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Races.Add(race);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(AddTracks));
-            } else
-            {
-                TempData["msg"] = "<script>alert('Race toevoegen mislukt!');</script>";
-                return RedirectToAction(nameof(AddTracks));
-            }
+            track = await _context.Tracks.SingleOrDefaultAsync(m => m.TrackId == track.TrackId);
+
+            var season = await _context.Seasons
+                .Include(s => s.Races)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (track == null || season == null)
+                return NotFound();
+
+            var race = new Race();
+            race.Track = track;
+            race.Name = track.Name;
+            season.Races.Add(race);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(AddTracks), new { id });
         }
 
         //Methods for adding engines to season
