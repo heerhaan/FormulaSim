@@ -1,13 +1,20 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Season>
 
-@foreach (var item in Model)
-{
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.SeasonId)
-        </td>
-        <td>
-            <a asp-action="Detail" asp-route-id="@item.SeasonId">Details</a>
-        </td>
-    </tr>
-}
+<section class="col-12">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.SeasonId)</td>
+                    <td><a asp-action="Detail" asp-route-id="@item.SeasonId">Details</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+</section>
