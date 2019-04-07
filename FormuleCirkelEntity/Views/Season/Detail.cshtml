@@ -4,10 +4,10 @@
     ViewData["Title"] = "Seizoen";
 }
 
-<div class="col-12">
-    <h2>Drivers</h2>
-</div>
-<div class="col-12">
+<section class="col-12 btn-group">
+    <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-primary">Toevoegen...</a>
+</section>
+<section class="col-12">
     <h2>Races</h2>
     <table class="table table-striped">
         <thead>
@@ -25,4 +25,4 @@
             }
         </tbody>
     </table>
-</div>
+</section>
