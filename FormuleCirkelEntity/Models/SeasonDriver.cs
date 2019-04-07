@@ -20,7 +20,7 @@ namespace FormuleCirkelEntity.Models
         public int Points { get; set; }
 
         public int DriverId { get; set; }
-        public Driver Drivers { get; set; }
+        public Driver Driver { get; set; }
         public int SeasonTeamId { get; set; }
         public SeasonTeam SeasonTeam { get; set; }
 

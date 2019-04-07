@@ -239,7 +239,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult AddSummary()
         {
-            var summary = _context.SeasonDrivers.Include(s => s.Drivers).Include(s => s.SeasonTeam.Team).Include(s => s.SeasonTeam.SeasonEngine.Engine).ToList();
+            var summary = _context.SeasonDrivers.Include(s => s.Driver).Include(s => s.SeasonTeam.Team).Include(s => s.SeasonTeam.SeasonEngine.Engine).ToList();
             return View(summary.OrderByDescending(s => s.SeasonTeam.Team.TeamId));
         }
     }

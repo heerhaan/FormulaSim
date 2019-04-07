@@ -13,7 +13,7 @@
     <ol>
         @foreach(var driver in Model)
         {
-            <li>@driver.Drivers.Name | @driver.SeasonTeam.Team.Name</li>
+            <li>@driver.Driver.Name | @driver.SeasonTeam.Team.Name</li>
         }
     </ol>
     <a asp-action="Q1" class="btn btn-secondary">Kwalificatie</a>

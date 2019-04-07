@@ -69,7 +69,7 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.race = race;
             ViewBag.id = id;
 
-            return View(_context.SeasonDrivers.Include(s => s.Drivers).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
+            return View(_context.SeasonDrivers.Include(s => s.Driver).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
                 .ToList());
         }
 
@@ -90,12 +90,12 @@ namespace FormuleCirkelEntity.Controllers
             int position = 1;
             var qualy = new List<Qualification>();
 
-            var drivers = _context.SeasonDrivers.Include(s => s.Drivers).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
+            var drivers = _context.SeasonDrivers.Include(s => s.Driver).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
                 .Include(d => d.SeasonDriverId).Select(d => new
                 {
                     id = d.SeasonDriverId,
                     team = d.SeasonTeam.Team.Name,
-                    name = d.Drivers.Name,
+                    name = d.Driver.Name,
                     skill = d.Skill,
                     chassis = d.SeasonTeam.Chassis
                 }).ToList();

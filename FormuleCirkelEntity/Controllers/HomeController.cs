@@ -29,7 +29,7 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.rounds = _context.Races.Include(r => r.Track).ToList();
 
             return View(_context.SeasonDrivers.Where(s => s.SeasonTeam.Season.CurrentSeason == true)
-                .Include(s => s.DriverResults).Include(s => s.Drivers).Include(s => s.SeasonTeam.Team)
+                .Include(s => s.DriverResults).Include(s => s.Driver).Include(s => s.SeasonTeam.Team)
                 .ToList().OrderByDescending(s => s.Points));
         }
 
