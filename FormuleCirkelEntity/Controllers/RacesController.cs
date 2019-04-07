@@ -73,118 +73,113 @@ namespace FormuleCirkelEntity.Controllers
                 .ToList());
         }
 
-        public IActionResult Q1()
+        public IActionResult Qualifying()
         {
             return View();
         }
 
         [HttpGet]
-        public JsonResult GetRacingDrivers(string source)
+        public async Task<IActionResult> GetRacingDrivers(string source)
         {
-            if(source == null)
+            if (string.IsNullOrWhiteSpace(source))
+                return BadRequest();
+
+            try
             {
-                return null;
-            }
+                // Get all drivers of the season.
+                var drivers = _context.SeasonDrivers
+                .Include(s => s.Driver)
+                .Include(t => t.SeasonTeam)
+                .ThenInclude(t => t.Team)
+                .ToList();
 
-            int result = 0;
-            int position = 1;
-            var qualy = new List<Qualification>();
+                // Get the existing qualification results of the current race.
+                var currentQualifyingResult = _context.Qualification.Where(q => q.RaceId == 1).ToList();
 
-            var drivers = _context.SeasonDrivers.Include(s => s.Driver).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
-                .Include(d => d.SeasonDriverId).Select(d => new
+                // If there are no qualifying results yet, initialize them.
+                if (!currentQualifyingResult.Any())
                 {
-                    id = d.SeasonDriverId,
-                    team = d.SeasonTeam.Team.Name,
-                    name = d.Driver.Name,
-                    skill = d.Skill,
-                    chassis = d.SeasonTeam.Chassis
-                }).ToList();
-
-            foreach(var driver in drivers.ToList())
-            {
-                switch (source)
-                {
-                    case "Q1":
-                        break;
-                    case "Q2":
-                        foreach (var item in _context.Qualification.Where(q => q.RaceId == 1))
-                        {
-                            if (driver.id == item.DriverId)
-                            {
-                                if (item.Position > 3)
-                                {
-                                    drivers.Remove(driver);
-                                }
-                            }
-                        }
-                        break;
-                    case "Q3":
-                        foreach (var item in _context.Qualification.Where(q => q.RaceId == 1))
-                        {
-                            if (driver.id == item.DriverId)
-                            {
-                                if (item.Position > 2)
-                                {
-                                    drivers.Remove(driver);
-                                }
-                            }
-                        }
-                        break;
-
+                    currentQualifyingResult.AddRange(GetQualificationsFromDrivers(drivers));
                 }
-            }
-            foreach (var driver in drivers.ToList())
-            {
-                result = driver.skill;
-                result += driver.chassis;
-                result += rng.Next(0, 60);
-                qualy.Add(new Qualification()
-                {
-                    DriverId = driver.id,
-                    RaceId = 1,
-                    TeamName = driver.team,
-                    DriverName = driver.name,
-                    Score = result
-                });
-            }
-            qualy = qualy.OrderByDescending(q => q.Score).ToList();
-            foreach (var driver in qualy)
-            {
-                driver.Position = position;
-                position++;
-            }
-            
-            UpdateQualy(source, qualy);
 
-            return Json(qualy);
+                var driverLimit = GetQualifyingDriverLimit(source);
+
+                // Take the current result, then order descending to place highest score first, lowest score last. 
+                // From the resulting ordered list, take the amount of drivers allowed to continue to the next qualifying round.
+                var qualificationResultsToUpdate = currentQualifyingResult
+                    .OrderBy(q => q.Position)
+                    .Take(driverLimit);
+
+                // Apply qualifying RNG on the drivers in the round.
+                foreach (var qualificationResult in qualificationResultsToUpdate)
+                {
+                    var qualifyingDriver = drivers.Single(d => d.SeasonDriverId == qualificationResult.DriverId);
+                    qualificationResult.Score = GenerateDriverScore(qualifyingDriver);  
+                }
+
+                var qualificationResults = qualificationResultsToUpdate.OrderByDescending(q => q.Score).ToList();
+
+                // Using a for loop, use the loop index to set the position.
+                for (int i = 0; i < qualificationResultsToUpdate.Count(); i++)
+                {
+                    var resultToUpdate = qualificationResults[i];
+                    resultToUpdate.Position = i + 1;
+                }
+
+                // Update everything and save.
+                _context.UpdateRange(qualificationResultsToUpdate);
+                await _context.SaveChangesAsync();
+                return new JsonResult(qualificationResultsToUpdate);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         }
 
-        private void UpdateQualy(string source, List<Qualification> qualy)
+        IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers)
         {
-            if (source == "Q1")
+            var result = new List<Qualification>();
+            foreach (var driver in drivers.ToList())
             {
-                foreach (var driver in qualy)
+                result.Add(new Qualification()
                 {
-                    _context.Qualification.Add(driver);
-                }
+                    DriverId = driver.SeasonDriverId,
+                    RaceId = 1,
+                    TeamName = driver.SeasonTeam.Team.Name,
+                    DriverName = driver.Driver.Name,
+                    Score = 0
+                });
             }
-            else if (source == "Q2" || source == "Q3")
-            {
-                foreach (var driver in qualy)
-                {
-                    try
-                    {
-                        //var related = _context.Qualification.FirstOrDefault(q => q.RaceId == 1 && q.DriverId == driver.DriverId);
-                        //driver.QualyId = related.QualyId;
-                        _context.Qualification.Update(driver);
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                }
-            }
-            _context.SaveChanges();
+            return result;
+        }
+
+        int GetQualifyingDriverLimit(string qualifyingStage)
+        {
+            const int Q1_LIMIT = 4;
+            const int Q2_LIMIT = 3;
+            const int Q3_LIMIT = 2;
+
+            if (qualifyingStage == "Q2")
+                return Q2_LIMIT;
+            if (qualifyingStage == "Q3")
+                return Q3_LIMIT;
+            return Q1_LIMIT;
+        }
+
+        int GenerateDriverScore(SeasonDriver driver)
+        {
+            var result = 0;
+            result += driver.Skill;
+            result += driver.SeasonTeam.Chassis;
+            result += rng.Next(0, 60);
+            return result;
+        }
+
+        public IActionResult Return()
+        {
+            //Also should save the result of Qualification to the Grid value of DriverResults
+            return RedirectToAction("RaceWeekend", new { id = 1 });
         }
         
         public IActionResult Race()
