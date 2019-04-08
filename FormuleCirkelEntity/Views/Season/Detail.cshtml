@@ -12,10 +12,13 @@
 <section class="row btn-group">
     <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-primary">Races toevoegen</a>
     <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-primary">Coureurs toevoegen</a>
+    <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-primary">Teams toevoegen</a>
 </section>
 
 <section class="row">
-    <h3>Coureurs</h3>
+    <header>
+        <h3>Coureurs</h3>
+    </header>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -45,13 +48,14 @@
                     </tr>
                 }
             }
-
         </tbody>
     </table>
 </section>
 
 <section class="row">
-    <h3>Races</h3>
+    <header>
+        <h3>Races</h3>
+    </header>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -66,6 +70,43 @@
                     <td>@race.Name</td>
                     <td>@race.Round</td>
                 </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<section class="row">
+    <header>
+        <h3>Teams</h3>
+    </header>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Positie</th>
+                <th>Punten</th>
+                <th>Team</th>
+                <th>Chassis</th>
+                <th>Betrouwbaarheid</th>
+                <th>Motor</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var orderedTeams = Model.Teams.OrderBy(t => t.Points).ToList();
+                for (int pos = 0; pos < orderedTeams.Count; pos++)
+                {
+                    SeasonTeam team = orderedTeams[pos];
+                    <tr>
+                        <td>@((pos + 1).ToString())</td>
+                        <td>@team.Points</td>
+                        <td>@team.Team.Name</td>
+                        <td>@team.Chassis</td>
+                        <td>@team.Reliability</td>
+                        <td>@team.SeasonEngine.Engine.Name</td>
+                        <td><a asp-action="UpdateTeam" asp-route-id="@Model.SeasonId" asp-route-teamId="@team.SeasonTeamId">Bewerken</a></td>
+                    </tr>
+                }
             }
         </tbody>
     </table>

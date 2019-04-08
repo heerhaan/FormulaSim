@@ -30,6 +30,11 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Races)
                 .Include(s => s.Drivers)
                     .ThenInclude(dr => dr.Driver)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.SeasonEngine)
+                        .ThenInclude(se => se.Engine)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (season == null)
@@ -124,61 +129,131 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        //Methods for adding teams to season
-        public IActionResult AddTeams()
+        [Route("[Controller]/{id}/Teams/Add")]
+        public async Task<IActionResult> AddTeams(int? id)
         {
-            var teams = _context.Teams.ToList();
-            var seasonteams = _context.SeasonTeams.Where(t => t.Season.CurrentSeason == true).ToList();
-            var unusedteams = _context.Teams.ToList();
+            var season = await _context.Seasons
+                    .Include(s => s.Teams)
+                    .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            ViewBag.season = seasonteams.Count();
-
-            foreach(var team in teams)
-            {
-                foreach(var item in seasonteams)
-                {
-                    if(team.TeamId == item.TeamId)
-                    {
-                        unusedteams.Remove(team);
-                    }
-                }
-            }
-            return View(unusedteams);
-        }
-        
-        public IActionResult TeamToSeason(int? id)
-        {
-            if (id == null)
-            {
+            if (season == null)
                 return NotFound();
-            }
-            var current = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
 
-            ViewBag.id = id;
-            ViewBag.current = current.SeasonId;
+            var existingTeamIds = season.Teams.Select(t => t.TeamId);
+            var unregisteredTeams = _context.Teams
+                .Where(t => !existingTeamIds.Contains(t.TeamId)).ToList();
 
-            var engines =
-                (from e in _context.Engines
-                 join s in _context.SeasonEngines on e.EngineId equals s.EngineId
-                 select new { s.SeasonEngineId, e.Name });
+            ViewBag.seasonId = id;
+            return View(unregisteredTeams);
+        }
 
+        [Route("[Controller]/{id}/Teams/Add/{globalTeamId}")]
+        public async Task<IActionResult> AddTeam(int? id, int? globalTeamId)
+        {
+            var season = await _context.Seasons
+                .Include(s => s.Engines)
+                    .ThenInclude(t => t.Engine)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.TeamId == globalTeamId);
+
+            if (season == null || globalTeam == null)
+                return NotFound();
+
+            var engines = season.Engines.Select(e => new { e.SeasonEngineId, e.Engine.Name });
             ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
 
-            return View();
+            var seasonTeam = new SeasonTeam();
+            seasonTeam.Team = globalTeam;
+            seasonTeam.Season = season;
+            return View("AddOrUpdateTeam", seasonTeam);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> TeamToSeason(SeasonTeam seasonTeam)
+        [HttpPost("[Controller]/{id}/Teams/Add/{globalTeamId}")]
+        public async Task<IActionResult> AddTeam(int id, int? globalTeamId, [Bind] SeasonTeam seasonTeam)
         {
+            // Get and validate URL parameter objects.
+            var season = await _context.Seasons
+                .Include(s => s.Engines)
+                    .ThenInclude(e => e.Engine)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.TeamId == globalTeamId);
+
+            if (season == null || globalTeam == null)
+                return NotFound();
+
+            if (season.Teams.Select(d => d.TeamId).Contains(seasonTeam.TeamId))
+                return UnprocessableEntity();
+
             if (ModelState.IsValid)
             {
-                _context.SeasonTeams.Add(seasonTeam);
+                // Set the Season and global Driver again as these are not bound in the view.
+                seasonTeam.SeasonId = id;
+                seasonTeam.TeamId = globalTeamId ?? throw new ArgumentNullException(nameof(globalTeamId));
+
+                // Persist the new SeasonDriver and return to AddDrivers page.
+                await _context.AddAsync(seasonTeam);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(AddTeams));
-            } else
+                return RedirectToAction(nameof(AddTeams), new { id });
+            }
+            else
             {
-                TempData["msg"] = "<script>alert('Team toevoegen mislukt!');</script>";
-                return RedirectToAction(nameof(AddTeams));
+                var engines = season.Engines.Select(e => new { e.SeasonEngineId, e.Engine.Name });
+                ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+                return View("AddOrUpdateTeam", seasonTeam);
+            }
+        }
+
+        [Route("[Controller]/{id}/Teams/Update/{teamId}")]
+        public async Task<IActionResult> UpdateTeam(int id, int? teamId)
+        {
+            // Get and validate URL parameter objects.
+            var season = await _context.Seasons
+                .Include(s => s.Engines)
+                    .ThenInclude(e => e.Engine)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+            var team = season.Teams.SingleOrDefault(t => t.SeasonTeamId == teamId);
+
+            if (season == null || team == null)
+                return NotFound();
+
+            var engines = season.Engines.Select(t => new { t.SeasonEngineId, t.Engine.Name });
+            ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+            return View("AddOrUpdateTeam", team);
+        }
+
+        [HttpPost("[Controller]/{id}/Teams/Update/{teamId}")]
+        public async Task<IActionResult> UpdateTeam(int id, int? teamId, [Bind] SeasonTeam updatedTeam)
+        {
+            // Get and validate URL parameter objects.
+            var season = await _context.Seasons
+                .Include(s => s.Engines)
+                    .ThenInclude(e => e.Engine)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+            var team = season.Teams.SingleOrDefault(d => d.SeasonTeamId == teamId);
+
+            if (season == null || team == null)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                team.Chassis = updatedTeam.Chassis;
+                team.Reliability = updatedTeam.Reliability;
+                team.SeasonEngineId = updatedTeam.SeasonEngineId;
+                _context.Update(team);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Detail), new { id });
+            }
+            else
+            {
+                var engines = season.Engines.Select(t => new { t.SeasonEngineId, t.Engine.Name });
+                ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+                return View("AddOrUpdateDriver", team);
             }
         }
 
@@ -186,8 +261,8 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddDrivers(int? id)
         {
             var season = await _context.Seasons
-                    .Include(s => s.Drivers)
-                    .SingleOrDefaultAsync(s => s.SeasonId == id);
+                .Include(s => s.Drivers)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (season == null)
                 return NotFound();

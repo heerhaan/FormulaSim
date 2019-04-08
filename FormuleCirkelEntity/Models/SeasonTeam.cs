@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
@@ -10,15 +9,18 @@ namespace FormuleCirkelEntity.Models
     {
         public int SeasonTeamId { get; set; }
         public int Chassis { get; set; }
-        public int Relability { get; set; }
+        public int Reliability { get; set; }
+        public int Points { get; set; }
+
         [EnumDataType(typeof(Specification))]
         public Specification Specification { get; set; }
-        public int Points { get; set; }
 
         public int SeasonId { get; set; }
         public Season Season { get; set; }
+
         public int TeamId { get; set; }
         public Team Team { get; set; }
+
         public int SeasonEngineId { get; set; }
         public SeasonEngine SeasonEngine { get; set; }
 
