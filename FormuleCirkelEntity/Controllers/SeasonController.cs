@@ -218,11 +218,11 @@ namespace FormuleCirkelEntity.Controllers
             var seasonDriver = new SeasonDriver();
             seasonDriver.Driver = globalDriver;
             seasonDriver.Season = season;
-            return View(seasonDriver);
+            return View("AddOrUpdateDriver", seasonDriver);
         }
 
         [HttpPost("[Controller]/{id}/Drivers/Add/{globalDriverId}")]
-        public async Task<IActionResult> AddDriver(int id, int globalDriverId, [Bind] SeasonDriver seasonDriver)
+        public async Task<IActionResult> AddDriver(int id, int? globalDriverId, [Bind] SeasonDriver seasonDriver)
         {
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
@@ -243,7 +243,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 // Set the Season and global Driver again as these are not bound in the view.
                 seasonDriver.SeasonId = id;
-                seasonDriver.DriverId = globalDriverId;
+                seasonDriver.DriverId = globalDriverId ?? throw new ArgumentNullException(nameof(globalDriverId));
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
                 await _context.AddAsync(seasonDriver);
@@ -254,7 +254,60 @@ namespace FormuleCirkelEntity.Controllers
             {
                 var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Team.Name });
                 ViewBag.teams = new SelectList(teams, "SeasonTeamId", "Name");
-                return View(seasonDriver);
+                return View("AddOrUpdateDriver", seasonDriver);
+            }
+        }
+
+        [Route("[Controller]/{id}/Drivers/Update/{driverId}")]
+        public async Task<IActionResult> UpdateDriver(int id, int? driverId)
+        {
+            // Get and validate URL parameter objects.
+            var season = await _context.Seasons
+                .Include(s => s.Drivers)
+                    .ThenInclude(d => d.Driver)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+            var driver = season.Drivers.SingleOrDefault(d => d.SeasonDriverId == driverId);
+
+            if (season == null || driver == null)
+                return NotFound();
+
+            var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Team.Name });
+            ViewBag.teams = new SelectList(teams, "SeasonTeamId", "Name");
+            return View("AddOrUpdateDriver", driver);
+        }
+
+        [HttpPost("[Controller]/{id}/Drivers/Update/{driverId}")]
+        public async Task<IActionResult> UpdateDriver(int id, int? driverId, [Bind] SeasonDriver updatedDriver)
+        {
+            // Get and validate URL parameter objects.
+            var season = await _context.Seasons
+                .Include(s => s.Drivers)
+                    .ThenInclude(d => d.Driver)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+            var driver = season.Drivers.SingleOrDefault(d => d.SeasonDriverId == driverId);
+
+            if (season == null || driver == null)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                driver.SeasonTeamId = updatedDriver.SeasonTeamId;
+                driver.Skill = updatedDriver.Skill;
+                driver.Tires = updatedDriver.Tires;
+                driver.Style = updatedDriver.Style;
+                _context.Update(driver);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Detail), new { id });
+            }
+            else
+            {
+                var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Team.Name });
+                ViewBag.teams = new SelectList(teams, "SeasonTeamId", "Name");
+                return View("AddOrUpdateDriver", driver);
             }
         }
 

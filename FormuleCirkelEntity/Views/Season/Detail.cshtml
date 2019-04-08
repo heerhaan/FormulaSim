@@ -25,6 +25,7 @@
                 <th>Vaardigheid</th>
                 <th>Stijl</th>
                 <th>Banden</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -40,6 +41,7 @@
                         <td>@driver.Skill</td>
                         <td>@driver.Style</td>
                         <td>@driver.Tires</td>
+                        <td><a asp-action="UpdateDriver" asp-route-id="@Model.SeasonId" asp-route-driverId="@driver.SeasonDriverId">Bewerken</a></td>
                     </tr>
                 }
             }
