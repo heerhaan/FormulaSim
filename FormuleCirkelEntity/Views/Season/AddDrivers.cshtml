@@ -1,42 +1,27 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Driver>
+@{ViewData["Title"] = "Coureurs toevoegen";}
 
-@{
-    ViewData["Title"] = "Coureurs toevoegen";
-}
-
-<h1>Coureurs toevoegen</h1>
-<h4>Huidige aantal toegevoegde coureurs: @ViewBag.season</h4>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Racenummer
-            </th>
-            <th>
-                Naam
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DriverNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="DriverToSeason" asp-route-id="@item.DriverId">Toevoegen</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-
-<div>
-    <a asp-action="AddTeams" class="btn btn-secondary">Terug</a>
-    <a asp-action="AddSummary" class="btn btn-secondary">Volgende</a>
-</div>
+<section>
+    <header>
+        <h3>Seizoen @ViewBag.seasonId - Coureurs toevoegen</h3>
+    </header>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Racenummer</th>
+                <th>Naam</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.DriverNumber)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td><a asp-action="AddDriver" asp-route-id="@ViewBag.seasonId" asp-route-globalDriverId="@item.DriverId" class="btn btn-outline-primary btn-sm">Toevoegen</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

@@ -12,7 +12,8 @@ namespace FormuleCirkelEntity.Models
         public int SeasonId { get; set; }
         public bool CurrentSeason { get; set; }
 
-        public virtual ICollection<Race> Races { get; set; }
+        public virtual IList<Race> Races { get; set; }
         public virtual IList<SeasonDriver> Drivers { get; set; }
+        public virtual IList<SeasonTeam> Teams { get; set; }
     }
 }

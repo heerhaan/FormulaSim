@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.DAL;
@@ -183,59 +182,79 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        //Methods for adding drivers to season
-        public IActionResult AddDrivers()
+        [Route("[Controller]/{id}/Drivers/Add")]
+        public async Task<IActionResult> AddDrivers(int? id)
         {
-            var drivers = _context.Drivers.ToList();
-            var seasondrivers = _context.SeasonDrivers.ToList();
-            var unentereddrivers = _context.Drivers.ToList();
+            var season = await _context.Seasons
+                    .Include(s => s.Drivers)
+                    .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            ViewBag.season = _context.SeasonDrivers.Count();
+            if (season == null)
+                return NotFound();
 
-            foreach (var driver in drivers)
-            {
-                foreach (var item in seasondrivers)
-                {
-                    if (driver.DriverId == item.DriverId)
-                    {
-                        unentereddrivers.Remove(driver);
-                    }
-                }
-            }
-            return View(unentereddrivers);
+            var existingTrackIds = season.Drivers.Select(d => d.DriverId);
+            var unregisteredDrivers = _context.Drivers
+                .Where(d => !existingTrackIds.Contains(d.DriverId)).ToList();
+
+            ViewBag.seasonId = id;
+            return View(unregisteredDrivers);
         }
 
-        public IActionResult DriverToSeason(int? id)
+        [Route("[Controller]/{id}/Drivers/Add/{globalDriverId}")]
+        public async Task<IActionResult> AddDriver(int? id, int? globalDriverId)
         {
-            if(id == null)
-            {
-                return NotFound();
-            }
-            var current = _context.Seasons.FirstOrDefault(s => s.CurrentSeason == true);
-            ViewBag.id = id;
-            ViewBag.current = current.SeasonId;
+            var season = await _context.Seasons
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.DriverId == globalDriverId);
 
-            var teams = (
-                from t in _context.Teams
-                join s in _context.SeasonTeams on t.TeamId equals s.TeamId
-                select new { s.SeasonTeamId, t.Name });
+            if (season == null || globalDriver == null)
+                return NotFound();
+
+            var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Team.Name });
             ViewBag.teams = new SelectList(teams, "SeasonTeamId", "Name");
 
-            return View();
+            var seasonDriver = new SeasonDriver();
+            seasonDriver.Driver = globalDriver;
+            seasonDriver.Season = season;
+            return View(seasonDriver);
         }
 
-        [HttpPost]
-        public IActionResult DriverToSeason(SeasonDriver seasonDriver)
+        [HttpPost("[Controller]/{id}/Drivers/Add/{globalDriverId}")]
+        public async Task<IActionResult> AddDriver(int id, int globalDriverId, [Bind] SeasonDriver seasonDriver)
         {
+            // Get and validate URL parameter objects.
+            var season = await _context.Seasons
+                .Include(s => s.Drivers)
+                    .ThenInclude(d => d.Driver)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.DriverId == globalDriverId);
+
+            if (season == null || globalDriver == null)
+                return NotFound();
+
+            if (season.Drivers.Select(d => d.DriverId).Contains(seasonDriver.DriverId))
+                return UnprocessableEntity();
+
             if (ModelState.IsValid)
             {
-                _context.SeasonDrivers.Add(seasonDriver);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(AddDrivers));
-            } else
+                // Set the Season and global Driver again as these are not bound in the view.
+                seasonDriver.SeasonId = id;
+                seasonDriver.DriverId = globalDriverId;
+
+                // Persist the new SeasonDriver and return to AddDrivers page.
+                await _context.AddAsync(seasonDriver);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(AddDrivers), new { id });
+            }
+            else
             {
-                TempData["msg"] = "<script>alert('Coureur toevoegen mislukt!');</script>";
-                return RedirectToAction(nameof(AddDrivers));
+                var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Team.Name });
+                ViewBag.teams = new SelectList(teams, "SeasonTeamId", "Name");
+                return View(seasonDriver);
             }
         }
 
