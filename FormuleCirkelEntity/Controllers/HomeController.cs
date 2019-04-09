@@ -28,9 +28,19 @@ namespace FormuleCirkelEntity.Controllers
         {
             ViewBag.rounds = _context.Races.Include(r => r.Track).ToList();
 
-            return View(_context.SeasonDrivers.Where(s => s.SeasonTeam.Season.CurrentSeason == true)
-                .Include(s => s.DriverResults).Include(s => s.Driver).Include(s => s.SeasonTeam.Team)
-                .ToList().OrderByDescending(s => s.Points));
+            var currentSeason = _context.Seasons
+                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
+                .OrderBy(s => s.SeasonStart)
+                .FirstOrDefault();
+
+            var standings = _context.SeasonDrivers
+                .Include(s => s.DriverResults)
+                .Include(s => s.Driver)
+                .Include(s => s.SeasonTeam.Team)
+                .Where(s => s.SeasonId == currentSeason.SeasonId)
+                .OrderByDescending(s => s.Points)
+                .ToList();
+            return View(standings);
         }
 
         public IActionResult TeamStandings()
@@ -38,9 +48,20 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.rounds = _context.Races.Include(r => r.Track).ToList();
             ViewBag.drivers = _context.SeasonDrivers;
 
-            return View(_context.SeasonTeams.Where(s => s.Season.CurrentSeason == true)
-                .Include(t => t.Team).Include(t => t.SeasonDrivers).ThenInclude(s => s.DriverResults)
-                .ToList().OrderByDescending(t => t.Points));
+            var currentSeason = _context.Seasons
+                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
+                .OrderBy(s => s.SeasonStart)
+                .FirstOrDefault();
+
+            var standings = _context.SeasonTeams
+                .Include(t => t.Team)
+                .Include(t => t.SeasonDrivers)
+                    .ThenInclude(s => s.DriverResults)
+                .Where(s => s.SeasonId == currentSeason.SeasonId)
+                .OrderByDescending(t => t.Points)
+                .ToList();
+
+            return View(standings);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

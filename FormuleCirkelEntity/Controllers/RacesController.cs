@@ -21,8 +21,16 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult RacePreview()
         {
-            var nextrace = _context.Races.Where(r => r.Season.CurrentSeason == true)
-                .Include(r => r.Track).ToList().OrderBy(r => r.Round).FirstOrDefault(r => r.DriverResults == null);
+            var currentSeason = _context.Seasons
+                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
+                .OrderBy(s => s.SeasonStart)
+                .FirstOrDefault();
+
+            var nextrace = _context.Races
+                .Include(r => r.Track)
+                .Where(r => r.SeasonId == currentSeason.SeasonId)
+                .OrderBy(r => r.Round)
+                .FirstOrDefault(r => r.DriverResults == null);
             return View(nextrace);
         }
 

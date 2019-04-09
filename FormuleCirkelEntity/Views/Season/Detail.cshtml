@@ -3,20 +3,24 @@
 @{
     ViewData["Title"] = "Seizoen " + Model.SeasonId;
 }
-<section class="row">
+<section class="row my-1">
     <header>
         <h1>Seizoen: @Model.SeasonId</h1>
     </header>
 </section>
 
-<section class="row btn-group">
+<section class="row btn-group my-1">
+    @if (Model.State == SeasonState.Draft)
+    {
+        <a asp-action="Start" asp-route-id="@Model.SeasonId" class="btn btn-info">Start seizoen!</a>
+    }
     <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-primary">Races toevoegen</a>
     <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-primary">Coureurs toevoegen</a>
     <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-primary">Teams toevoegen</a>
     <a asp-action="AddEngines" asp-route-id="@Model.SeasonId" class="btn btn-primary">Motoren toevoegen</a>
 </section>
 
-<section class="row">
+<section class="row my-1">
     <header>
         <h3>Coureurs</h3>
     </header>
@@ -53,7 +57,7 @@
     </table>
 </section>
 
-<section class="row">
+<section class="row my-1">
     <header>
         <h3>Races</h3>
     </header>
@@ -76,7 +80,7 @@
     </table>
 </section>
 
-<section class="row">
+<section class="row my-1">
     <header>
         <h3>Teams</h3>
     </header>

@@ -1,17 +1,26 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Season>
 
-<section class="col-12">
+<section class="row my-1">
     <header>
         <h1>Seizoenen</h1>
     </header>
+</section>
+
+<section class="row btn-group my-1">
+    <a class="btn btn-primary" asp-action="Create">Nieuw seizoen</a>
+</section>
+
+<section class="row my-1">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>#</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model) {
+            @foreach (var item in Model)
+            {
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.SeasonId)</td>
                     <td><a asp-action="Detail" asp-route-id="@item.SeasonId">Details</a></td>
@@ -19,5 +28,4 @@
             }
         </tbody>
     </table>
-    
 </section>

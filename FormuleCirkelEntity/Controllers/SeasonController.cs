@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FormuleCirkelEntity.DAL;
+﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -22,6 +21,27 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult Index()
         {
             return View(_context.Seasons.ToList());
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            var season = new Season();
+            await _context.AddAsync(season);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
+        }
+
+        public async Task<IActionResult> Start(int? id)
+        {
+            var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
+            if (season == null)
+                return NotFound();
+
+            season.SeasonStart = DateTime.Now;
+            season.State = SeasonState.Progress;
+            _context.Update(season);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Detail), new { id });
         }
 
         public async Task<IActionResult> Detail(int? id)
@@ -40,9 +60,9 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return NotFound();
 
-            return View("Detail", season);
+            return View(nameof(Detail), season);
         }
-        
+
         public async Task<IActionResult> AddTracks(int? id)
         {
             var season = await _context.Seasons
@@ -89,11 +109,11 @@ namespace FormuleCirkelEntity.Controllers
 
             ViewBag.season = _context.SeasonEngines.Count();
 
-            foreach(var engine in engines)
+            foreach (var engine in engines)
             {
-                foreach(var item in seasonengines)
+                foreach (var item in seasonengines)
                 {
-                    if(engine.EngineId == item.EngineId)
+                    if (engine.EngineId == item.EngineId)
                     {
                         unusedengines.Remove(engine);
                     }
@@ -104,7 +124,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult EngineToSeason(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -122,7 +142,8 @@ namespace FormuleCirkelEntity.Controllers
                 _context.SeasonEngines.Add(seasonEngine);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(AddEngines));
-            } else
+            }
+            else
             {
                 TempData["msg"] = "<script>alert('Motor toevoegen mislukt!');</script>";
                 return RedirectToAction(nameof(AddEngines));
