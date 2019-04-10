@@ -127,7 +127,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
-            ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+            ViewBag.engines = new SelectList(engines, "EngineId", "Name");
 
             var seasonTeam = new SeasonTeam();
             seasonTeam.Team = globalTeam;
@@ -165,7 +165,7 @@ namespace FormuleCirkelEntity.Controllers
             else
             {
                 var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
-                ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+                ViewBag.engines = new SelectList(engines, "EngineId", "Name");
                 return View("AddOrUpdateTeam", seasonTeam);
             }
         }
