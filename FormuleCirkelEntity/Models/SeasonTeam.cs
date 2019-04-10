@@ -21,8 +21,8 @@ namespace FormuleCirkelEntity.Models
         public int TeamId { get; set; }
         public Team Team { get; set; }
 
-        public int SeasonEngineId { get; set; }
-        public SeasonEngine SeasonEngine { get; set; }
+        public int EngineId { get; set; }
+        public Engine Engine { get; set; }
 
         public virtual ICollection<SeasonDriver> SeasonDrivers { get; set; }
         public virtual ICollection<TeamResult> TeamResults { get; set; }

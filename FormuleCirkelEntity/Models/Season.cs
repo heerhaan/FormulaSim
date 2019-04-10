@@ -24,6 +24,5 @@ namespace FormuleCirkelEntity.Models
         public virtual IList<Race> Races { get; set; }
         public virtual IList<SeasonDriver> Drivers { get; set; }
         public virtual IList<SeasonTeam> Teams { get; set; }
-        public virtual IList<SeasonEngine> Engines { get; set; }
     }
 }

@@ -17,7 +17,6 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Track> Tracks { get; set; }
-        public DbSet<SeasonEngine> SeasonEngines { get; set; }
         public DbSet<SeasonTeam> SeasonTeams { get; set; }
         public DbSet<SeasonDriver> SeasonDrivers { get; set; }
         public DbSet<DriverResult> DriverResults { get; set; }
