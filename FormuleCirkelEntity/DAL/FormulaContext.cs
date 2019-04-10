@@ -24,12 +24,24 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<TeamResult> TeamResults { get; set; }
         public DbSet<Qualification> Qualification { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            //Removes the Cascade Delete functionality related to relations between tables
+            foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
+
+            //Makes table property unique
+            builder.Entity<Driver>()
+                .HasIndex(d => d.Abbreviation)
+                .IsUnique();
+            builder.Entity<Team>()
+                .HasIndex(t => t.Abbreviation)
+                .IsUnique();
+            builder.Entity<Engine>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
         }
     }
 }

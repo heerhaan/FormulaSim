@@ -19,6 +19,11 @@ namespace FormuleCirkelEntity.Controllers
             _context = context;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         public IActionResult RacePreview()
         {
             var currentSeason = _context.Seasons
@@ -31,6 +36,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
                 .OrderBy(r => r.Round)
                 .FirstOrDefault(r => r.DriverResults == null);
+
             return View(nextrace);
         }
 
