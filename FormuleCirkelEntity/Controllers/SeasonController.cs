@@ -53,8 +53,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .Include(s => s.Teams)
-                    .ThenInclude(t => t.SeasonEngine)
-                        .ThenInclude(se => se.Engine)
+                    .ThenInclude(t => t.Engine)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (season == null)
@@ -99,57 +98,6 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(AddTracks), new { id });
         }
 
-        //Methods for adding engines to season
-        public IActionResult AddEngines()
-        {
-            var engines = _context.Engines.ToList();
-            //Known problem: new season means that it will still remove past seasonengines from view
-            var seasonengines = _context.SeasonEngines.ToList();
-            var unusedengines = _context.Engines.ToList();
-
-            ViewBag.season = _context.SeasonEngines.Count();
-
-            foreach (var engine in engines)
-            {
-                foreach (var item in seasonengines)
-                {
-                    if (engine.EngineId == item.EngineId)
-                    {
-                        unusedengines.Remove(engine);
-                    }
-                }
-            }
-            return View(unusedengines);
-        }
-
-        public IActionResult EngineToSeason(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.id = id;
-
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> EngineToSeason(SeasonEngine seasonEngine)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.SeasonEngines.Add(seasonEngine);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(AddEngines));
-            }
-            else
-            {
-                TempData["msg"] = "<script>alert('Motor toevoegen mislukt!');</script>";
-                return RedirectToAction(nameof(AddEngines));
-            }
-        }
-
         [Route("[Controller]/{id}/Teams/Add")]
         public async Task<IActionResult> AddTeams(int? id)
         {
@@ -172,16 +120,14 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddTeam(int? id, int? globalTeamId)
         {
             var season = await _context.Seasons
-                .Include(s => s.Engines)
-                    .ThenInclude(t => t.Engine)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.TeamId == globalTeamId);
 
             if (season == null || globalTeam == null)
                 return NotFound();
 
-            var engines = season.Engines.Select(e => new { e.SeasonEngineId, e.Engine.Name });
-            ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+            var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
+            ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
 
             var seasonTeam = new SeasonTeam();
             seasonTeam.Team = globalTeam;
@@ -194,8 +140,6 @@ namespace FormuleCirkelEntity.Controllers
         {
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
-                .Include(s => s.Engines)
-                    .ThenInclude(e => e.Engine)
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -220,8 +164,8 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var engines = season.Engines.Select(e => new { e.SeasonEngineId, e.Engine.Name });
-                ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+                var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
+                ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
                 return View("AddOrUpdateTeam", seasonTeam);
             }
         }
@@ -231,8 +175,6 @@ namespace FormuleCirkelEntity.Controllers
         {
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
-                .Include(s => s.Engines)
-                    .ThenInclude(e => e.Engine)
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -241,8 +183,8 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null || team == null)
                 return NotFound();
 
-            var engines = season.Engines.Select(t => new { t.SeasonEngineId, t.Engine.Name });
-            ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+            var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
+            ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
             return View("AddOrUpdateTeam", team);
         }
 
@@ -251,8 +193,6 @@ namespace FormuleCirkelEntity.Controllers
         {
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
-                .Include(s => s.Engines)
-                    .ThenInclude(e => e.Engine)
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -265,15 +205,15 @@ namespace FormuleCirkelEntity.Controllers
             {
                 team.Chassis = updatedTeam.Chassis;
                 team.Reliability = updatedTeam.Reliability;
-                team.SeasonEngineId = updatedTeam.SeasonEngineId;
+                team.EngineId = updatedTeam.EngineId;
                 _context.Update(team);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
             }
             else
             {
-                var engines = season.Engines.Select(t => new { t.SeasonEngineId, t.Engine.Name });
-                ViewBag.engines = new SelectList(engines, "SeasonEngineId", "Name");
+                var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
+                ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
                 return View("AddOrUpdateDriver", team);
             }
         }

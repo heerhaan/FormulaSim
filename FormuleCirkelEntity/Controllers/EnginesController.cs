@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Models;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -18,75 +16,59 @@ namespace FormuleCirkelEntity.Controllers
         {
             _context = context;
         }
-        
+
         public async Task<IActionResult> Index()
         {
             return View(await _context.Engines.ToListAsync());
         }
-        
+
         public IActionResult Create()
         {
-            return View();
+            var engine = new Engine();
+            engine.Power = 0;
+            engine.Available = true;
+            return View("Modify", engine);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EngineId,Name")] Engine engine)
+        public async Task<IActionResult> Create([Bind] Engine engine)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(engine);
+                await _context.AddAsync(engine);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(engine);
+            return View("Modify", engine);
         }
-        
+
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var engine = await _context.Engines.FindAsync(id);
             if (engine == null)
-            {
                 return NotFound();
-            }
-            return View(engine);
+            return View("Modify", engine);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EngineId,Name")] Engine engine)
+        public async Task<IActionResult> Edit(int id, [Bind] Engine updatedEngine)
         {
-            if (id != engine.EngineId)
-            {
+            var engine = await _context.Engines.FindAsync(id);
+            if (engine == null)
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(engine);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EngineExists(engine.EngineId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                engine.Available = updatedEngine.Available;
+                engine.Power = updatedEngine.Power;
+                engine.Name = updatedEngine.Name;
+                _context.Update(engine);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(engine);
+            return View("Modify", updatedEngine);
         }
 
         // GET: Engines/Delete/5
@@ -99,6 +81,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var engine = await _context.Engines
                 .FirstOrDefaultAsync(m => m.EngineId == id);
+
             if (engine == null)
             {
                 return NotFound();
@@ -116,11 +99,6 @@ namespace FormuleCirkelEntity.Controllers
             _context.Engines.Remove(engine);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool EngineExists(int id)
-        {
-            return _context.Engines.Any(e => e.EngineId == id);
         }
     }
 }
