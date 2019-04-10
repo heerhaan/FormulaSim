@@ -1,0 +1,24 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Team>
+@{ViewData["Title"] = "Teams toevoegen";}
+<section>
+    <header>
+        <h3>Seizoen @ViewBag.seasonId - Teams toevoegen</h3>
+    </header>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td><a asp-action="AddTeam" asp-route-id="@ViewBag.seasonId" asp-route-globalTeamId="@item.TeamId" class="btn btn-outline-primary btn-sm">Toevoegen</a></td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</section>

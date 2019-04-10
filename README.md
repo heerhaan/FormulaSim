@@ -1,9 +1,34 @@
 # FormulaSim
 Project to practice C# skill, purpose is to have a nice formula 1 simulator.
 
-# Note
+# Current progress
 
-The ReadMe in the development branch is relevant to the current progress of the simulator. The master branch also currently contains just the base setup of the application, which is probably outdated now too since the database has been modified over development.
+Currently at the "Race" part of the simulator. The idea is that you see one table when opening the Race view which is sorted according to
+the qualifying that is connected with that race. There are supposed to be buttons to progress the race. It goes from
+View with startgrid order -> stint 1, table gets updated according to the calls that have been made -> pitstops, the current progress
+is caught and pitstops are added and the result is shown again in the table -> stint 2, also gets the current progress and then does
+the same as stint 1 -> Finish race, returns to the RaceWeekend overview and then shows all the current results from that weekend, so
+the qualifying results and race results -> Finish RaceWeekend, raceresults will be saved to the standings and such.
+
+# Ideas
+
+- Colours for teams, which has a main colour and an accent colour. Main is basically the background of the cell, accent the colour of the text. Those colours apply in every table the team name is in.
+- In the standings for the whole season the cells will get a different colour based on the corresponding race result, a DNF colours the cell red, outside the points no added colour and in the points will make the cell green.
+- In qualifying it also should be shown which drivers have reached the next Qualififying round through colouring the cell. Perhaps make the people who didnt went through red.
+- Stats for each driver should be saved in the list where you can also add them. Click on the "stats" button next to their name and there it shows how many WDCs they won, which teams they have driven for, endresult for each season they have driven, how many poles, how many wins and maybe even more.
+- The current way where the races will be setup is just the base of how it used to work in Excel, since it is now an application changes could be made to make it work a bit more "logically", like chassis and driver skill have an impact each stint instead of only once.
+- Also very neat would be that graphs about the season can be shown, say how drivers progress over the season according to their points, maybe also the ability to filter it to an inputted amount of drivers.
+- More?
+
+# Finished parts
+
+- Lists with Drivers, Teams, Tracks and Engines in the current F1 database. New items can be added there.
+- Creating a season, here you can add everything that is going to be part of the season. Which tracks are going to be driven on, which
+drivers are going to participate for which teams who use which engines. And so on.
+- Qualifying functionality works now, going from Q1 to Q3 works as it should and the results of that are for now saved in a table without
+relations; Qualificatioms.
+
+PS: Those parts can still be expanded and upgraded. For now it means that the functionality is there. Master contains solely the base, for progress see Development branch.
 
 # User stories (in Dutch)
 Als gebruiker wil ik coureurs, teams, motoren en circuits kunnen toevoegen zodat ze gebruikt kunnen worden voor een raceseizoen.

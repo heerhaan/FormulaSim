@@ -1,0 +1,50 @@
+﻿@model FormuleCirkelEntity.Models.Track
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Circuit</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Naam</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label">Locatie</label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>DNF</label>
+                @Html.DropDownListFor(model => model.DNFodds, new SelectList(Enum.GetValues(typeof(DNFodds))), new { @class = "form-control"})
+            </div>
+            <div class="form-group">
+                <label>RNG</label>
+                @Html.DropDownListFor(model => model.RNGodds, new SelectList(Enum.GetValues(typeof(RNGodds))), new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Specificatie</label>
+                @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Terug naar lijst</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

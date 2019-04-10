@@ -1,0 +1,40 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Track>
+
+@{
+    ViewData["Title"] = "Races toevoegen";
+}
+<section>
+    <header>
+        <h3>Seizoen @ViewBag.seasonId - Races toevoegen</h3>
+    </header>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Locatie</th>
+                <th>DNF</th>
+                <th>RNG</th>
+                <th>Specificatie</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Location)</td>
+                    <td>@Html.DisplayFor(modelItem => item.DNFodds)</td>
+                    <td>@Html.DisplayFor(modelItem => item.RNGodds)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Specification)</td>
+                    <td>
+                        <form action="@ViewBag.seasonId" method="POST">
+                            <input type="hidden" name="trackId" value="@item.TrackId" />
+                            <input type="submit" class="btn btn-outline-primary btn-sm" value="Toevoegen" />
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+

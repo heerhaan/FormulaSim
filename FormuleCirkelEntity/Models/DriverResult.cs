@@ -12,6 +12,7 @@ namespace FormuleCirkelEntity.Models
         [Key]
         public int DriverResultId { get; set; }
         public int Position { get; set; }
+        public int Grid { get; set; }
         [EnumDataType(typeof(Status))]
         public Status Status { get; set; }
 
@@ -19,7 +20,5 @@ namespace FormuleCirkelEntity.Models
         public SeasonDriver SeasonDriver { get; set; }
         public int RaceId { get; set; }
         public Race Race { get; set; }
-
-        public virtual Qualification Qualification { get; set; }
     }
 }

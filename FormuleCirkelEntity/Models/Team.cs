@@ -11,6 +11,7 @@ namespace FormuleCirkelEntity.Models
         [Key]
         public int TeamId { get; set; }
         public string Name { get; set; }
+        public string Abbreviation { get; set; }
 
         public virtual ICollection<SeasonTeam> SeasonTeams { get; set; }
     }

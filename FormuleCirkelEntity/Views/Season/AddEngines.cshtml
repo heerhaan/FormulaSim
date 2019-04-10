@@ -1,0 +1,32 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Engine>
+
+@{
+    ViewData["Title"] = "AddEngines";
+    int aantal = ViewBag.season;
+}
+
+<h1>Motoren inschrijven</h1>
+<h4>Ingeschreven motoren: @aantal</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Naam
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a asp-action="EngineToSeason" asp-route-id="@item.EngineId">Toevoegen</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,73 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonTeam>
+
+@{
+    ViewData["Title"] = "Stand";
+    var rounds = ViewBag.rounds;
+    var drivers = ViewBag.drivers;
+    int position = 1;
+    var track = "";
+}
+
+<h1>Kampioenschap teams</h1>
+
+
+<table class="table table-striped table-dark table-sm">
+    <thead>
+        <tr>
+            <th>
+                Pos.
+            </th>
+            <th>
+                Team
+            </th>
+            @foreach (var round in rounds)
+            {
+                <th>@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
+            }
+            <th>
+                Punten
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @position
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Team.Name)
+            </td>
+            @foreach (var round in rounds)
+            {
+                <td>
+                    @foreach (var driver in item.SeasonDrivers)
+                    {
+                        DriverResult result = driver.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
+                        if (result == null || result.Position == 0)
+                        {
+                            <p>?</p>
+                        }
+                        else
+                        {
+                            if (result.Status == Status.DNF)
+                            {
+                                <td class="table table-danger">DNF</td>
+                            }
+                            else
+                            {
+                                <td>@result.Position</td>
+                            }
+                        }
+                    }
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.Points)
+            </td>
+        </tr>
+            position++;
+        }
+    </tbody>
+</table>

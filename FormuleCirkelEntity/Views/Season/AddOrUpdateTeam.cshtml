@@ -1,0 +1,36 @@
+﻿@model FormuleCirkelEntity.Models.SeasonTeam
+
+@{ViewData["Title"] = "Team aanpassen";}
+
+<section>
+    <header>
+        <h1 class="row">Seizoen @Model.Season.SeasonId - Team aanpassen</h1>
+        <h4 class="row">Team: @Model.Team.Name</h4>
+    </header>
+    <section class="row">
+        <form method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Chassis" class="control-label"></label>
+                <input asp-for="Chassis" class="form-control" />
+                <span asp-validation-for="Chassis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Reliability" class="control-label"></label>
+                <input asp-for="Reliability" class="form-control" />
+                <span asp-validation-for="Reliability" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Specificatie</label>
+                @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label asp-for="SeasonEngineId" value="Motor" class="control-label"></label>
+                <select asp-for="SeasonEngineId" class="form-control" asp-items="@ViewBag.engines"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Team toevoegen" class="btn btn-primary" />
+            </div>
+        </form>
+    </section>
+</section>

@@ -1,0 +1,36 @@
+﻿@model FormuleCirkelEntity.Models.SeasonDriver
+@{ViewData["Title"] = "Coureur aanpassen";}
+
+<section>
+    <header >
+        <h1 class="row">Seizoen @Model.Season.SeasonId - Coureur aanpassen</h1>
+        <h4 class="row">Coureur: @Model.Driver.DriverNumber - @Model.Driver.Name</h4>
+    </header>
+    <section class="row">
+        <form method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <section class="form-group">
+                <label asp-for="Skill" class="control-label">Vaardigheid</label>
+                <input asp-for="Skill" class="form-control" />
+                <span asp-validation-for="Skill" class="text-danger"></span>
+            </section>
+            <section class="form-group">
+                <label asp-for="Style" class="control-label">Stijl</label>
+                @Html.DropDownListFor(model => model.Style, new SelectList(Enum.GetValues(typeof(Style))), new { @class = "form-control" })
+                <span asp-validation-for="Style" class="text-danger"></span>
+            </section>
+            <section class="form-group">
+                <label asp-for="Tires" class="control-label">Bandenvoorkeur</label>
+                @Html.DropDownListFor(model => model.Tires, new SelectList(Enum.GetValues(typeof(Tires))), new { @class = "form-control" })
+                <span asp-validation-for="Tires" class="text-danger"></span>
+            </section>
+            <section class="form-group">
+                <label asp-for="SeasonTeamId" class="control-label">Team</label>
+                <select asp-for="SeasonTeamId" class="form-control" asp-items="ViewBag.teams"></select>
+            </section>
+            <section class="form-group">
+                <input type="submit" value="Aanpassingen opslaan" class="btn btn-primary" />
+            </section>
+        </form>
+    </section>
+</section>

@@ -1,0 +1,35 @@
+﻿@model FormuleCirkelEntity.Models.Driver
+
+@{
+    ViewData["Title"] = "Stats";
+}
+
+<h1>Stats</h1>
+
+<div>
+    <h4>Driver</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DriverNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DriverNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Abbreviation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Abbreviation)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Terug naar lijst</a>
+</div>

@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public enum DNFodds { Increased, Neutral, Decreased }
-    public enum RNGodds { Increased, Neutral, Decreased }
-    public enum Specification { Topspeed, Acceleration, Stability, Handling }
+    public enum DNFodds { Verhoogd, Neutraal, Verlaagd }
+    public enum RNGodds { Verhoogd, Neutraal, Verlaagd }
+    public enum Specification { Topsnelheid, Optrekking, Stabiliteit, Handeling }
     public class Track
     {
         [Key]
         public int TrackId { get; set; }
+        public string Name { get; set; }
+        public string Location { get; set; }
         [EnumDataType(typeof(DNFodds))]
         public DNFodds DNFodds { get; set; }
         [EnumDataType(typeof(RNGodds))]

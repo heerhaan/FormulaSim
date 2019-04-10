@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,9 +10,11 @@ namespace FormuleCirkelEntity.Models
     {
         [Key]
         public int QualyId { get; set; }
-        public int Position { get; set; }
-
-        public int DriverRef { get; set; }
-        public virtual DriverResult DriverResult { get; set; }
+        public int RaceId { get; set; }
+        public int DriverId { get; set; }
+        public string TeamName { get; set; }
+        public string DriverName { get; set; }
+        public int? Score { get; set; }
+        public int? Position { get; set; }
     }
 }

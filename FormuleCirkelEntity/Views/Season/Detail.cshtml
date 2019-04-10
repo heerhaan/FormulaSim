@@ -1,0 +1,118 @@
+﻿@model FormuleCirkelEntity.Models.Season
+
+@{
+    ViewData["Title"] = "Seizoen " + Model.SeasonId;
+}
+<section class="row my-1">
+    <header>
+        <h1>Seizoen: @Model.SeasonId</h1>
+    </header>
+</section>
+
+<section class="row btn-group my-1">
+    @if (Model.State == SeasonState.Draft)
+    {
+        <a asp-action="Start" asp-route-id="@Model.SeasonId" class="btn btn-info">Start seizoen!</a>
+    }
+    <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-primary">Races toevoegen</a>
+    <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-primary">Coureurs toevoegen</a>
+    <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-primary">Teams toevoegen</a>
+    <a asp-action="AddEngines" asp-route-id="@Model.SeasonId" class="btn btn-primary">Motoren toevoegen</a>
+</section>
+
+<section class="row my-1">
+    <header>
+        <h3>Coureurs</h3>
+    </header>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Positie</th>
+                <th>Punten</th>
+                <th>Coureur</th>
+                <th>Vaardigheid</th>
+                <th>Stijl</th>
+                <th>Banden</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var orderedDrivers = Model.Drivers.OrderBy(d => d.Points).ToList();
+                for (int pos = 0; pos < orderedDrivers.Count; pos++)
+                {
+                    SeasonDriver @driver = orderedDrivers[pos];
+                    <tr>
+                        <td>@((pos + 1).ToString())</td>
+                        <td>@driver.Points</td>
+                        <td><span class="badge">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
+                        <td>@driver.Skill</td>
+                        <td>@driver.Style</td>
+                        <td>@driver.Tires</td>
+                        <td><a asp-action="UpdateDriver" asp-route-id="@Model.SeasonId" asp-route-driverId="@driver.SeasonDriverId">Bewerken</a></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>
+
+<section class="row my-1">
+    <header>
+        <h3>Races</h3>
+    </header>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Ronde</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var race in Model.Races)
+            {
+                <tr>
+                    <td>@race.Name</td>
+                    <td>@race.Round</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<section class="row my-1">
+    <header>
+        <h3>Teams</h3>
+    </header>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Positie</th>
+                <th>Punten</th>
+                <th>Team</th>
+                <th>Chassis</th>
+                <th>Betrouwbaarheid</th>
+                <th>Motor</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var orderedTeams = Model.Teams.OrderBy(t => t.Points).ToList();
+                for (int pos = 0; pos < orderedTeams.Count; pos++)
+                {
+                    SeasonTeam team = orderedTeams[pos];
+                    <tr>
+                        <td>@((pos + 1).ToString())</td>
+                        <td>@team.Points</td>
+                        <td>@team.Team.Name</td>
+                        <td>@team.Chassis</td>
+                        <td>@team.Reliability</td>
+                        <td>@team.SeasonEngine.Engine.Name</td>
+                        <td><a asp-action="UpdateTeam" asp-route-id="@Model.SeasonId" asp-route-teamId="@team.SeasonTeamId">Bewerken</a></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>

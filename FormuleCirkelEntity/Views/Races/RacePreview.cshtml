@@ -1,0 +1,58 @@
+﻿@model FormuleCirkelEntity.Models.Race
+
+@{
+    ViewData["Title"] = "Voorbeschouwing";
+}
+
+<h1>Voorbeschouwing</h1>
+
+<div>
+    <h4>Rees</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Ronde
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Round)
+        </dd>
+        <dt class="col-sm-2">
+            Race naam
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Circuit
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Track.Name) in @(Model.Track.Location)
+        </dd>
+        <dt class="col-sm-2">
+            Specificatie
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Track.Specification)
+        </dd>
+        <dt class="col-sm-2">
+            DNF kans
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Track.DNFodds)
+        </dd>
+        <dt class="col-sm-2">
+            RNG
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Track.RNGodds)
+        </dd>
+    </dl>
+</div>
+
+<form asp-action="RacePreview">
+    <div class="form-group">
+        <input asp-route-id="@(Model.RaceId)" type="submit" value="Raceweekend" class="btn btn-primary" />
+    </div>
+</form>
+
+@Html.Raw(TempData["msg"])
