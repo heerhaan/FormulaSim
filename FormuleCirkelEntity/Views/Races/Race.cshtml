@@ -41,5 +41,19 @@
         $("#pitstops").hide();
         $("#stint2").hide();
         $("finish").hide();
+        $('#generateq1').click(function () {
+            $.ajax({
+                url: "",
+                type: "GET",
+                succes: function (drivers) {
+                    $.each(drivers, function (index, driver) {
+                        var row = "<tr><td>" + "</td></tr>";
+                        $("#race").append(row);
+                    });
+                    $("#stint1").hide();
+                    $("#finish").show();
+                }
+            })
+        });
     });
 </script>

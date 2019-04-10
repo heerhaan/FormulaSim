@@ -35,7 +35,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(r => r.Track)
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
                 .OrderBy(r => r.Round)
-                .FirstOrDefault(r => r.DriverResults == null);
+                .FirstOrDefault(r => r.DriverResults != null);
 
             return View(nextrace);
         }
@@ -170,9 +170,10 @@ namespace FormuleCirkelEntity.Controllers
 
         int GetQualifyingDriverLimit(string qualifyingStage)
         {
-            const int Q1_LIMIT = 4;
-            const int Q2_LIMIT = 3;
-            const int Q3_LIMIT = 2;
+            //Limits should be flexible in accordance to entered drivers.
+            const int Q1_LIMIT = 10;
+            const int Q2_LIMIT = 6;
+            const int Q3_LIMIT = 4;
 
             if (qualifyingStage == "Q2")
                 return Q2_LIMIT;
@@ -190,9 +191,10 @@ namespace FormuleCirkelEntity.Controllers
             return result;
         }
 
+        [HttpPost]
         public IActionResult Return()
         {
-            //Also should save the result of Qualification to the Grid value of DriverResults
+            //Also should save the result of Qualification to the Grid value of DriverResults (after penalties are applied?)
             return RedirectToAction("RaceWeekend", new { id = 1 });
         }
         
