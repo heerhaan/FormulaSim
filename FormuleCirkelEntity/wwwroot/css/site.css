@@ -9,6 +9,11 @@
     padding-right: 5px;
 }
 
+.navbar-nav > li > .navbar-item >.dropdown-menu{
+    background-color: #292b2c;
+    color: #f7f7f7;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
