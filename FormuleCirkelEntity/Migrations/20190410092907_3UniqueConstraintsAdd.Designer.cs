@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190410092907_3UniqueConstraintsAdd")]
+    partial class _3UniqueConstraintsAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,11 +73,7 @@ namespace FormuleCirkelEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("Available");
-
                     b.Property<string>("Name");
-
-                    b.Property<int>("Power");
 
                     b.HasKey("EngineId");
 
@@ -178,6 +176,27 @@ namespace FormuleCirkelEntity.Migrations
                     b.ToTable("SeasonDrivers");
                 });
 
+            modelBuilder.Entity("FormuleCirkelEntity.Models.SeasonEngine", b =>
+                {
+                    b.Property<int>("SeasonEngineId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("EngineId");
+
+                    b.Property<int>("Power");
+
+                    b.Property<int?>("SeasonId");
+
+                    b.HasKey("SeasonEngineId");
+
+                    b.HasIndex("EngineId");
+
+                    b.HasIndex("SeasonId");
+
+                    b.ToTable("SeasonEngines");
+                });
+
             modelBuilder.Entity("FormuleCirkelEntity.Models.SeasonTeam", b =>
                 {
                     b.Property<int>("SeasonTeamId")
@@ -186,11 +205,11 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("Chassis");
 
-                    b.Property<int>("EngineId");
-
                     b.Property<int>("Points");
 
                     b.Property<int>("Reliability");
+
+                    b.Property<int>("SeasonEngineId");
 
                     b.Property<int>("SeasonId");
 
@@ -200,7 +219,7 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.HasKey("SeasonTeamId");
 
-                    b.HasIndex("EngineId");
+                    b.HasIndex("SeasonEngineId");
 
                     b.HasIndex("SeasonId");
 
@@ -314,11 +333,24 @@ namespace FormuleCirkelEntity.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("FormuleCirkelEntity.Models.SeasonTeam", b =>
+            modelBuilder.Entity("FormuleCirkelEntity.Models.SeasonEngine", b =>
                 {
                     b.HasOne("FormuleCirkelEntity.Models.Engine", "Engine")
-                        .WithMany()
+                        .WithMany("SeasonEngines")
                         .HasForeignKey("EngineId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FormuleCirkelEntity.Models.Season")
+                        .WithMany("Engines")
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("FormuleCirkelEntity.Models.SeasonTeam", b =>
+                {
+                    b.HasOne("FormuleCirkelEntity.Models.SeasonEngine", "SeasonEngine")
+                        .WithMany("SeasonTeams")
+                        .HasForeignKey("SeasonEngineId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FormuleCirkelEntity.Models.Season", "Season")

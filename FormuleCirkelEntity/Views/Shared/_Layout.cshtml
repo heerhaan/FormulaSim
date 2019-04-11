@@ -24,7 +24,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container">
                 <a href="@Url.Action("Index", "Home")" class="navbar-brand">
                     <img src="~/images/FormuleCirkeltrekLogo.png" title="Logo" alt="Formula Logo" width="165" height="67"/>
@@ -36,8 +36,8 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li>
-                            <div class="dropdown">
-                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Lijsten
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -49,8 +49,8 @@
                             </div>
                         </li>
                         <li>
-                            <div class="dropdown">
-                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Stand
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -60,7 +60,10 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-secondary" asp-area="" asp-controller="Season" asp-action="Index">Seizoen</a>
+                            <a class="nav-link" asp-area="" asp-controller="Season" asp-action="Index">Seizoen</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Races" asp-action="RacePreview">Race</a>
                         </li>
                     </ul>
                 </div>
