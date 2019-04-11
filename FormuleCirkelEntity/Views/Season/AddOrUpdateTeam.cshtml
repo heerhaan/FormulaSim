@@ -25,8 +25,8 @@
                 @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
             </div>
             <div class="form-group">
-                <label asp-for="SeasonEngineId" value="Motor" class="control-label"></label>
-                <select asp-for="SeasonEngineId" class="form-control" asp-items="@ViewBag.engines"></select>
+                <label asp-for="EngineId" value="Motor" class="control-label"></label>
+                <select asp-for="EngineId" class="form-control" asp-items="@ViewBag.engines"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Team toevoegen" class="btn btn-primary" />

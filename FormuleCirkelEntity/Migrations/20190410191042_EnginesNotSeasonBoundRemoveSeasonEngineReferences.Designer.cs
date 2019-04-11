@@ -4,18 +4,20 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190410191042_EnginesNotSeasonBoundRemoveSeasonEngineReferences")]
+    partial class EnginesNotSeasonBoundRemoveSeasonEngineReferences
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -32,10 +34,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<string>("Name");
 
                     b.HasKey("DriverId");
-
-                    b.HasIndex("Abbreviation")
-                        .IsUnique()
-                        .HasFilter("[Abbreviation] IS NOT NULL");
 
                     b.ToTable("Drivers");
                 });
@@ -78,10 +76,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("Power");
 
                     b.HasKey("EngineId");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Engines");
                 });
@@ -220,10 +214,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<string>("Name");
 
                     b.HasKey("TeamId");
-
-                    b.HasIndex("Abbreviation")
-                        .IsUnique()
-                        .HasFilter("[Abbreviation] IS NOT NULL");
 
                     b.ToTable("Teams");
                 });

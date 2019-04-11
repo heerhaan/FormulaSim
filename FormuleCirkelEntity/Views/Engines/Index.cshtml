@@ -4,31 +4,37 @@
     ViewData["Title"] = "Motoren";
 }
 
-<h1>Motoren</h1>
-
-<p>
-    <a asp-action="Create">Voeg motor toe</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Naam
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EngineId">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.EngineId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<section>
+    <header class="row">
+        <h1>Motoren</h1>
+    </header>
+    <section class="row btn-group">
+        <a asp-action="Create" class="btn btn-primary">Toevoegen</a>
+    </section>
+    <section>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Kracht</th>
+                    <th>Beschikbaar</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Power)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Available)</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.EngineId">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.EngineId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+</section>
