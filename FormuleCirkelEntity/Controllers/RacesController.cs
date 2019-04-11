@@ -50,19 +50,26 @@ namespace FormuleCirkelEntity.Controllers
             var drivers = _context.SeasonDrivers;
             var driverresults = new List<DriverResult>();
 
-            foreach (var driver in drivers)
+            if (_context.DriverResults.Any(d => d.RaceId != id))
             {
-                var result = new DriverResult();
-                try
+                foreach (var driver in drivers)
                 {
-                    result.RaceId = id.GetValueOrDefault();
-                    result.SeasonDriverId = driver.SeasonDriverId;
-                } catch(Exception e)
-                {
-                    TempData["msg"] = "<script>alert('Race toevoegen mislukt!');</script>";
-                    return RedirectToAction(nameof(RacePreview));
+                    var result = new DriverResult();
+                    try
+                    {
+                        result.RaceId = id.GetValueOrDefault();
+                        result.SeasonDriverId = driver.SeasonDriverId;
+                    }
+                    catch (Exception e)
+                    {
+                        TempData["msg"] = "<script>alert('Race toevoegen mislukt!');</script>";
+                        return RedirectToAction(nameof(RacePreview));
+                    }
+                    driverresults.Add(result);
                 }
-                driverresults.Add(result);
+            } else
+            {
+                return RedirectToAction("RaceWeekend", new { id });
             }
 
             _context.DriverResults.AddRange(driverresults);
@@ -81,14 +88,15 @@ namespace FormuleCirkelEntity.Controllers
             var race = _context.Races.FirstOrDefault(r => r.RaceId == id);
             ViewBag.track = race.Track;
             ViewBag.race = race;
-            ViewBag.id = id;
 
             return View(_context.SeasonDrivers.Include(s => s.Driver).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
                 .ToList());
         }
 
-        public IActionResult Qualifying()
+        public IActionResult Qualifying(int? id)
         {
+            var race = _context.Races.FirstOrDefault(r => r.RaceId == id);
+            ViewBag.race = race;
             return View();
         }
 
@@ -192,10 +200,10 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Return()
+        public IActionResult Return(int? id)
         {
             //Also should save the result of Qualification to the Grid value of DriverResults (after penalties are applied?)
-            return RedirectToAction("RaceWeekend", new { id = 1 });
+            return RedirectToAction("RaceWeekend", new { id });
         }
         
         public IActionResult Race()

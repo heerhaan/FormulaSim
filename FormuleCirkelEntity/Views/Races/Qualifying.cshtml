@@ -2,9 +2,10 @@
 
 @{
     ViewData["Title"] = "Qualification";
+    var race = ViewBag.race;
 }
 
-<h1>Kwalificatie in </h1>
+<h1>Kwalificatie in @(race.Name)</h1>
 
 <hr />
 <nav>
@@ -84,7 +85,7 @@
 <button id="generateq1">Start Q1!</button>
 <button id="generateq2">Start Q2!</button>
 <button id="generateq3">Start Q3!</button>
-<button asp-action="return" id="return">Finish!</button>
+<button asp-route-id="@(race.RaceId)" asp-action="return" id="return">Finish!</button>
 
 <script>
     $(document).ready(function () {
