@@ -89,8 +89,19 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.track = race.Track;
             ViewBag.race = race;
 
-            return View(_context.SeasonDrivers.Include(s => s.Driver).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
-                .ToList());
+            var result = _context.DriverResults.FirstOrDefault(r => r.RaceId == id);
+            if(result.Grid == 0)
+            {
+                ViewBag.check = true;
+            } else
+            {
+                ViewBag.check = false;
+            }
+
+            //SeasonDrivers should be ordered based on DriverResults Gridposition
+            var drivers = _context.SeasonDrivers.Include(s => s.Driver).Include(t => t.SeasonTeam).ThenInclude(t => t.Team).ToList();
+
+            return View(drivers);
         }
 
         public IActionResult Qualifying(int? id)
@@ -202,7 +213,23 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public IActionResult Return(int? id)
         {
-            //Also should save the result of Qualification to the Grid value of DriverResults (after penalties are applied?)
+            if(id == null) { return BadRequest(); }
+
+            var qualyresult = _context.Qualification.Where(q => q.RaceId == id);
+            var driverResults = _context.DriverResults;
+
+            //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)
+            foreach(var result in qualyresult)
+            {
+                var driver = driverResults.First(d => d.RaceId == result.RaceId && d.SeasonDriverId == result.DriverId);
+
+                if(driver == null) { return StatusCode(500); }
+
+                driver.Grid = result.Position.Value;
+            }
+            _context.UpdateRange(driverResults);
+            _context.SaveChanges();
+
             return RedirectToAction("RaceWeekend", new { id });
         }
         

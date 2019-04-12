@@ -6,31 +6,42 @@
 }
 
 <h1>@(race.Name)</h1>
-<br />
-<div>
-    <h5>Kwalificatie | Deelnemers</h5>
-    <ol>
-        @foreach(var driver in Model)
+
+<section class="row my-1">
+    <div>
+        <h5>Kwalificatie | Deelnemers</h5>
+        <ol>
+            @foreach (var driver in Model)
+            {
+                <li class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;display:list-item;">
+                    @driver.Driver.Name | @driver.SeasonTeam.Team.Name
+                </li>
+            }
+        </ol>
+        @if (ViewBag.check == true)
         {
-            <li>@driver.Driver.Name | @driver.SeasonTeam.Team.Name</li>
+            <a asp-action="Qualifying" asp-route-id="@(race.RaceId)" class="btn btn-secondary">Kwalificatie</a>
         }
-    </ol>
-    <a asp-action="Qualifying" asp-route-id="@(race.RaceId)" class="btn btn-secondary">Kwalificatie</a>
-</div>
+    </div>
+</section>
 
-<div>
-    <h5>Circuit informatie</h5>
-    <dl>
-        <dt>Lengte</dt>
-        <dd>3 KM</dd>
-        <dt>Weer</dt>
-        <dd>Droog</dd>
-        <dt>Vorige winnaar</dt>
-        <dd>Karel Trommel</dd>
-    </dl>
-</div>
+<section class="row my-1">
+    <div>
+        <h5>Circuit informatie</h5>
+        <dl>
+            <dt>Lengte</dt>
+            <dd>3 KM</dd>
+            <dt>Weer</dt>
+            <dd>Droog</dd>
+            <dt>Vorige winnaar</dt>
+            <dd>Karel Trommel</dd>
+        </dl>
+    </div>
+</section>
 
-<div>
-    <h5>Race</h5>
-    <a asp-action="Race" class="btn btn-secondary">Race</a>
-</div>
+<section class="row my-1">
+    <div>
+        <h5>Race</h5>
+        <a asp-action="Race" class="btn btn-secondary">Race</a>
+    </div>
+</section>
