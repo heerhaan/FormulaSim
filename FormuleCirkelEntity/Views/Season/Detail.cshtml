@@ -97,7 +97,7 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody">
             @{
                 var orderedTeams = Model.Teams.OrderBy(t => t.Points).ToList();
                 for (int pos = 0; pos < orderedTeams.Count; pos++)
@@ -106,7 +106,9 @@
                     <tr>
                         <td>@((pos + 1).ToString())</td>
                         <td>@team.Points</td>
-                        <td>@team.Team.Name</td>
+                        <td class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;display:table-cell;">
+                        @team.Team.Name
+                        </td>
                         <td>@team.Chassis</td>
                         <td>@team.Reliability</td>
                         <td>@team.Engine.Name</td>
