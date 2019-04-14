@@ -20,9 +20,43 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // GET: Drivers
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string searchString, string sortOrder)
         {
-            return View(await _context.Drivers.ToListAsync());
+            //Adds search functionality to index list
+            ViewData["SearchString"] = searchString;
+            //Adds sorting functionality to index list
+            ViewData["SortName"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["SortNumber"] = String.IsNullOrEmpty(sortOrder) ? "number_asc" : "";
+
+            IQueryable<Driver> drivers = from d in _context.Drivers select d;
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    drivers = drivers.OrderBy(d => d.Name);
+                    break;
+                case "number_asc":
+                    drivers = drivers.OrderBy(d => d.DriverNumber);
+                    break;
+                default:
+                    drivers = drivers.OrderBy(d => d.Name);
+                    break;
+            }
+
+            return View(drivers.ToList());
+        }
+
+        [HttpPost]
+        public ActionResult Index(string searchString)
+        {
+            //Search functionality for driver index
+            ViewData["SearchString"] = searchString;
+            IQueryable<Driver> drivers = from d in _context.Drivers select d;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                drivers = drivers.Where(d => d.Name.Contains(searchString));
+            }
+            return View(drivers.ToList());
         }
 
         public async Task<IActionResult> Stats(int? id)

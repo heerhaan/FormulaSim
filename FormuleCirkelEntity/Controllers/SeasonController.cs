@@ -93,6 +93,7 @@ namespace FormuleCirkelEntity.Controllers
             var race = new Race();
             race.Track = track;
             race.Name = track.Name;
+            race.Round = (_context.Races.Where(r => r.SeasonId == id).Count()+1);
             season.Races.Add(race);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(AddTracks), new { id });

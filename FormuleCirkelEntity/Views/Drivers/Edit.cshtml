@@ -4,9 +4,9 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Aanpassen</h1>
 
-<h4>Driver</h4>
+<h4>Coureur</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,22 +14,22 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DriverId" />
             <div class="form-group">
-                <label asp-for="DriverNumber" class="control-label"></label>
+                <label asp-for="DriverNumber" class="control-label">Nummer</label>
                 <input asp-for="DriverNumber" class="form-control" />
                 <span asp-validation-for="DriverNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Naam</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Abbreviation" class="control-label"></label>
+                <label asp-for="Abbreviation" class="control-label">Afkorting</label>
                 <input asp-for="Abbreviation" class="form-control" />
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Opslaan" class="btn btn-primary" />
             </div>
         </form>
     </div>
