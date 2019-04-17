@@ -14,9 +14,9 @@
     {
         <a asp-action="Start" asp-route-id="@Model.SeasonId" class="btn btn-dark btn-info">Start seizoen!</a>
     }
-    <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-primary">Races toevoegen</a>
-    <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-primary">Coureurs toevoegen</a>
-    <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-primary">Teams toevoegen</a>
+    <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-dark">Races toevoegen</a>
+    <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-dark">Coureurs toevoegen</a>
+    <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-dark">Teams toevoegen</a>
 </section>
 
 <section class="row my-1">
@@ -54,6 +54,7 @@
             }
         </tbody>
     </table>
+    <a asp-action="DriverDev" class="btn btn-dark">Ontwikkeling coureurs</a>
 </section>
 
 <section class="row my-1">
@@ -97,7 +98,7 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody">
+        <tbody>
             @{
                 var orderedTeams = Model.Teams.OrderBy(t => t.Points).ToList();
                 for (int pos = 0; pos < orderedTeams.Count; pos++)
@@ -107,7 +108,7 @@
                         <td>@((pos + 1).ToString())</td>
                         <td>@team.Points</td>
                         <td class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;display:table-cell;">
-                        @team.Team.Name
+                            @team.Team.Name
                         </td>
                         <td>@team.Chassis</td>
                         <td>@team.Reliability</td>
@@ -118,4 +119,8 @@
             }
         </tbody>
     </table>
+    <div class="row btn-group my-1">
+        <a asp-action="??" class="btn btn-dark">Ontwikkeling teams</a>
+        <a asp-action="??" class="btn btn-dark">Ontwikkeling motoren</a>
+    </div>
 </section>

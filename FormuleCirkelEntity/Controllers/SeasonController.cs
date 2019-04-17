@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace FormuleCirkelEntity.Controllers
     public class SeasonController : Controller
     {
         private readonly FormulaContext _context;
+        private static readonly Random rng = new Random();
 
         public SeasonController(FormulaContext context)
         {
@@ -347,5 +349,78 @@ namespace FormuleCirkelEntity.Controllers
                 return View("AddOrUpdateDriver", driver);
             }
         }
+
+        public IActionResult DriverDev()
+        {
+            var drivers = _context.SeasonDrivers
+                .Include(t => t.SeasonTeam)
+                    .ThenInclude(t => t.Team)
+                .Include(d => d.Driver)
+                .OrderBy(s => s.SeasonTeam.Team.Name).ToList();
+            return View(drivers);
+        }
+
+        public IActionResult TeamDev()
+        {
+            return View();
+        }
+
+        public IActionResult EngineDev()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Development(int? min, int? max, string source)
+        {
+            if(min == null || max == null || source == null)
+                return BadRequest();
+
+            try
+            {
+                var devlist = new List<DevelopmentHelper>();
+                var drivers = _context.SeasonDrivers
+                    .Include(t => t.SeasonTeam)
+                        .ThenInclude(t => t.Team)
+                    .Include(d => d.Driver)
+                    .OrderBy(s => s.SeasonTeam.Team.Name).ToList();
+
+                //Adds each driver in Season to list and adds development
+                foreach(var driver in drivers)
+                {
+                    int dev = rng.Next(min.Value, max.Value);
+
+                    devlist.Add(new DevelopmentHelper {
+                        Id = driver.DriverId,
+                        Name = driver.Driver.Name,
+                        Number = driver.Driver.DriverNumber,
+                        Abbreviation = driver.SeasonTeam.Team.Abbreviation,
+                        Colour = driver.SeasonTeam.Team.Colour,
+                        Accent = driver.SeasonTeam.Team.Accent,
+                        Old = driver.Skill,
+                        Dev = dev,
+                        New = driver.Skill+dev
+                    });
+                }
+                return new JsonResult(devlist);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+    }
+
+    public class DevelopmentHelper
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Number { get; set; }
+        public string Abbreviation { get; set; }
+        public string Colour { get; set; }
+        public string Accent { get; set; }
+        public int Old { get; set; }       
+        public int Dev { get; set; }
+        public int New { get; set; }
     }
 }
