@@ -20,10 +20,11 @@ namespace FormuleCirkelEntity.Controllers
         }
         
         [Route("Season/{id}/[Controller]/{raceId}")]
-        public async Task<IActionResult> Index(int id, int raceId)
+        public async Task<IActionResult> Race(int id, int raceId)
         {
             var race = await _context.Races
                 .Include(r => r.Season)
+                .Include(r => r.Track)
                 .Include(r => r.DriverResults)
                     .ThenInclude(res => res.SeasonDriver.Driver)
                 .Include(r => r.DriverResults)
@@ -33,6 +34,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(race);
         }
 
+        [Route("Season/{id}/[Controller]/{raceId}/Qualifying")]
         public IActionResult Qualifying()
         {
             return View();

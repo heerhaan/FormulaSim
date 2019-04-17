@@ -3,15 +3,38 @@
     ViewData["Title"] = "Race";
 }
 
-<section class="row">
+<section class="row my-1">
+    <header>
+        <h1>Race: @Model.Track.Name</h1>
+    </header>
+</section>
+
+<section class="row btn-group my-1">
+    <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-primary">Kwalificatie</a>
+</section>
+
+<section class="row my-1">
     <table class="table table-striped">
         <thead>
             <tr>
-                @foreach(var stint in Model.Stints)
+                <th>Nummer</th>
+                <th>Naam</th>
+                <th>Team</th>
+                @foreach (var stint in Model.Stints)
                 {
                     <th>@stint.Key</th>
                 }
             </tr>
         </thead>
+        <tbody>
+            @foreach (var driverResult in Model.DriverResults)
+            {
+                <tr>
+                    <td>@driverResult.SeasonDriver.Driver.DriverNumber</td>
+                    <td>@driverResult.SeasonDriver.Driver.Name</td>
+                    <td>@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
+                </tr>
+            }
+        </tbody>
     </table>
 </section>
