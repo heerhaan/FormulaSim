@@ -13,10 +13,14 @@ namespace FormuleCirkelEntity.Models
         public int Round { get; set; }
         public string Name { get; set; }
 
+        public int StintProgress { get; set; }
+
         public int TrackId { get; set; }
         public Track Track { get; set; }
         public int SeasonId { get; set; }
         public Season Season { get; set; }
+
+        public IDictionary<int, Stint> Stints { get; set; }
 
         public virtual ICollection<DriverResult> DriverResults { get; set; }
         public virtual ICollection<TeamResult> TeamResults { get; set; }

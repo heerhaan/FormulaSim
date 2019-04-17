@@ -1,5 +1,7 @@
 ﻿using FormuleCirkelEntity.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +43,11 @@ namespace FormuleCirkelEntity.DAL
             builder.Entity<Engine>()
                 .HasIndex(e => e.Name)
                 .IsUnique();
+            builder.Entity<Race>()
+                .Property(r => r.Stints)
+                .HasConversion(
+                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
+                    json => JsonConvert.DeserializeObject<Dictionary<int, Stint>>(json));
         }
     }
 }
