@@ -11,6 +11,7 @@
 
 <section class="row btn-group my-1">
     <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-primary">Kwalificatie</a>
+    <a class="btn btn-primary" onclick="advanceStint()">Kwalificatie</a>
 </section>
 
 <section class="row my-1">
@@ -33,8 +34,22 @@
                     <td>@driverResult.SeasonDriver.Driver.DriverNumber</td>
                     <td>@driverResult.SeasonDriver.Driver.Name</td>
                     <td>@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
+
+                    @foreach (var stintResult in driverResult.StintResults)
+                    {
+                        <td>@stintResult.Value</td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 </section>
+
+<script>
+    function advanceStint() {
+        $.ajax({
+            url: "/Season/@Model.SeasonId/Races/@Model.RaceId/Advance",
+            type: "POST"
+        });
+    }
+</script>

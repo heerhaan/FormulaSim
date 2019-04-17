@@ -34,6 +34,32 @@ namespace FormuleCirkelEntity.Controllers
             return View(race);
         }
 
+        [HttpPost("Season/{id}/[Controller]/{raceId}/Advance")]
+        public async Task<IActionResult> AdvanceStint(int id, int raceId)
+        {
+            var race = await _context.Races
+                .Include(r => r.Season)
+                .Include(r => r.Track)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.SeasonDriver.Driver)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.SeasonDriver.SeasonTeam.Team)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
+            if (race.StintProgress == race.Stints.Count())
+                return BadRequest();
+
+            race.StintProgress++;
+            foreach (var result in race.DriverResults)
+            {
+                result.StintResults.Add(race.StintProgress, rng.Next(1, 100));
+                _context.Update(result);
+            }
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying")]
         public IActionResult Qualifying()
         {

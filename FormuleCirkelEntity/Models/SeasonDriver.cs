@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public enum Style { Agressief, Neutraal, Defensief}
-    public enum Tires { Hard, Zacht}
+    public enum Style
+    {
+        Agressief = 0,
+        Neutraal = 1,
+        Defensief = 2
+    }
+
+    public enum Tires { Hard, Zacht }
+
     public class SeasonDriver
     {
         [Key]

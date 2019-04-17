@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
+    public enum RaceState
+    {
+        Concept = 0,
+        Qualifying = 1,
+        Race = 2,
+        Finished = 3
+    }
+
     public class Race
     {
         [Key]
