@@ -1,7 +1,63 @@
-﻿
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Engine>
+
 @{
-    ViewData["Title"] = "EngineDev";
+    ViewData["Title"] = "Engine development";
 }
 
-<h1>EngineDev</h1>
+<h1>Motor ontwikkeling</h1>
 
+<section>
+
+    <input id="min" type="number" placeholder="Min. RNG" />
+    <input id="max" type="number" placeholder="Max. RNG" />
+    <button id="develop" class="btn btn-dark">Ontwikkel</button>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Oud</th>
+                <th>Verschil</th>
+                <th>Nieuw</th>
+            </tr>
+        </thead>
+        <tbody id="devtable">
+            @{
+                foreach (var engine in Model)
+                {
+                    <tr>
+                        <td>@engine.Name</td>
+                        <td>@engine.Power</td>
+                        <td>?</td>
+                        <td>?</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-dark">Opslaan</button>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $('#develop').click(function () {
+            $.ajax({
+                url: "/Season/Development",
+                type: "GET",
+                data: {
+                    min: document.getElementById("min").value,
+                    max: document.getElementById("max").value,
+                    source: "engine"
+                },
+                success: function (engines) {
+                    $("#devtable").empty();
+                    $.each(engines, function (index, engine) {
+                        var row = "<tr><td>" + engine.name + "</td><td>" + engine.old + "</td><td>" + engine.dev +
+                            "</td><td id='new'>" + engine.new + "</td><td id='id' style='display:none;'>" + engine.id + "</td></tr>";
+                        $("#devtable").append(row);
+                    });
+                }
+            });
+        });
+    });
+</script>

@@ -362,12 +362,16 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult TeamDev()
         {
-            return View();
+            var teams = _context.SeasonTeams
+                .Include(t => t.Team)
+                .OrderBy(t => t.Team.Name).ToList();
+            return View(teams);
         }
 
         public IActionResult EngineDev()
         {
-            return View();
+            var engines = _context.Engines.ToList();
+            return View(engines);
         }
 
         [HttpGet]
@@ -378,29 +382,18 @@ namespace FormuleCirkelEntity.Controllers
 
             try
             {
-                var devlist = new List<DevelopmentHelper>();
-                var drivers = _context.SeasonDrivers
-                    .Include(t => t.SeasonTeam)
-                        .ThenInclude(t => t.Team)
-                    .Include(d => d.Driver)
-                    .OrderBy(s => s.SeasonTeam.Team.Name).ToList();
-
-                //Adds each driver in Season to list and adds development
-                foreach(var driver in drivers)
+                List<DevelopmentHelper> devlist = new List<DevelopmentHelper>();
+                switch (source)
                 {
-                    int dev = rng.Next(min.Value, max.Value);
-
-                    devlist.Add(new DevelopmentHelper {
-                        Id = driver.DriverId,
-                        Name = driver.Driver.Name,
-                        Number = driver.Driver.DriverNumber,
-                        Abbreviation = driver.SeasonTeam.Team.Abbreviation,
-                        Colour = driver.SeasonTeam.Team.Colour,
-                        Accent = driver.SeasonTeam.Team.Accent,
-                        Old = driver.Skill,
-                        Dev = dev,
-                        New = driver.Skill+dev
-                    });
+                    case "driver":
+                        devlist = DriverDevList(min, max);
+                        break;
+                    case "engine":
+                        devlist = EngineDevList(min, max);
+                        break;
+                    case "team":
+                        devlist = TeamDevList(min, max);
+                        break;
                 }
                 return new JsonResult(devlist);
             }
@@ -408,6 +401,86 @@ namespace FormuleCirkelEntity.Controllers
             {
                 return StatusCode(500);
             }
+        }
+
+        public List<DevelopmentHelper> DriverDevList(int? min, int? max)
+        {
+            var devlist = new List<DevelopmentHelper>();
+            var drivers = _context.SeasonDrivers
+                .Include(t => t.SeasonTeam)
+                    .ThenInclude(t => t.Team)
+                .Include(d => d.Driver)
+                .OrderBy(s => s.SeasonTeam.Team.Name).ToList();
+
+            //Adds each driver in Season to list and adds development
+            foreach (var driver in drivers)
+            {
+                int dev = rng.Next(min.Value, max.Value);
+
+                devlist.Add(new DevelopmentHelper
+                {
+                    Id = driver.DriverId,
+                    Name = driver.Driver.Name,
+                    Number = driver.Driver.DriverNumber,
+                    Abbreviation = driver.SeasonTeam.Team.Abbreviation,
+                    Colour = driver.SeasonTeam.Team.Colour,
+                    Accent = driver.SeasonTeam.Team.Accent,
+                    Old = driver.Skill,
+                    Dev = dev,
+                    New = driver.Skill + dev
+                });
+            }
+            return devlist;
+        }
+
+        public List<DevelopmentHelper> EngineDevList(int? min, int? max)
+        {
+            var devlist = new List<DevelopmentHelper>();
+            var engines = _context.Engines.ToList();
+
+            //Adds each driver in Season to list and adds development
+            foreach (var engine in engines)
+            {
+                int dev = rng.Next(min.Value, max.Value);
+
+                devlist.Add(new DevelopmentHelper
+                {
+                    Id = engine.EngineId,
+                    Name = engine.Name,
+                    Old = engine.Power,
+                    Dev = dev,
+                    New = engine.Power + dev
+                });
+            }
+            return devlist;
+        }
+
+        public List<DevelopmentHelper> TeamDevList(int? min, int? max)
+        {
+            var devlist = new List<DevelopmentHelper>();
+
+            var teams = _context.SeasonTeams
+                .Include(t => t.Team)
+                .OrderBy(t => t.Team.Name).ToList();
+
+            //Adds each driver in Season to list and adds development
+            foreach (var team in teams)
+            {
+                int dev = rng.Next(min.Value, max.Value);
+
+                devlist.Add(new DevelopmentHelper
+                {
+                    Id = team.TeamId,
+                    Name = team.Team.Name,
+                    Abbreviation = team.Team.Abbreviation,
+                    Colour = team.Team.Colour,
+                    Accent = team.Team.Accent,
+                    Old = team.Chassis,
+                    Dev = dev,
+                    New = team.Chassis + dev
+                });
+            }
+            return devlist;
         }
     }
 
