@@ -1,7 +1,30 @@
-﻿
+﻿@model Race;
 @{
     ViewData["Title"] = "Race";
 }
 
-<h1>Volgende race</h1>
-
+<section class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nummer</th>
+                <th>Naam</th>
+                <th>Team</th>
+                @foreach (var stint in Model.Stints)
+                {
+                    <th>@stint.Key</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var driverResult in Model.DriverResults)
+            {
+                <tr>
+                    <td>@driverResult.SeasonDriver.Driver.DriverNumber</td>
+                    <td>@driverResult.SeasonDriver.Driver.Name</td>
+                    <td>@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

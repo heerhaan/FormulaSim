@@ -47,7 +47,10 @@ namespace FormuleCirkelEntity.DAL
                 .Property(r => r.Stints)
                 .HasConversion(
                     dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
-                    json => JsonConvert.DeserializeObject<Dictionary<int, Stint>>(json));
+                    json => Do(json));
         }
+
+        Dictionary<int, Stint> Do(string json)
+            => JsonConvert.DeserializeObject<Dictionary<int, Stint>>(json) ?? new Dictionary<int, Stint>();
     }
 }
