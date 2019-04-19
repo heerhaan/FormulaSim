@@ -463,7 +463,7 @@ namespace FormuleCirkelEntity.Controllers
             //Adds each driver in Season to list and adds development
             foreach (var driver in drivers)
             {
-                int dev = rng.Next(min.Value, max.Value);
+                int dev = rng.Next(min.Value, max.Value+1);
 
                 devlist.Add(new DevelopmentHelper
                 {
@@ -489,7 +489,7 @@ namespace FormuleCirkelEntity.Controllers
             //Adds each driver in Season to list and adds development
             foreach (var engine in engines)
             {
-                int dev = rng.Next(min.Value, max.Value);
+                int dev = rng.Next(min.Value, max.Value+1);
 
                 devlist.Add(new DevelopmentHelper
                 {
@@ -514,7 +514,7 @@ namespace FormuleCirkelEntity.Controllers
             //Adds each driver in Season to list and adds development
             foreach (var team in teams)
             {
-                int dev = rng.Next(min.Value, max.Value);
+                int dev = rng.Next(min.Value, max.Value+1);
 
                 devlist.Add(new DevelopmentHelper
                 {
