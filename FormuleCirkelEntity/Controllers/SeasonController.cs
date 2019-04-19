@@ -359,6 +359,22 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderBy(s => s.SeasonTeam.Team.Name).ToList();
             return View(drivers);
         }
+        
+        //Receives development values and saves them in the DB
+        [HttpPost]
+        public IActionResult SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
+        {
+            var drivers = _context.SeasonDrivers;
+            foreach(var driverdev in dev)
+            {
+                var driver = drivers.First(d => d.SeasonDriverId == driverdev.Id);
+                driver.Skill = driverdev.Newdev;
+            }
+            _context.UpdateRange(drivers);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(DriverDev));
+        }
 
         public IActionResult TeamDev()
         {
@@ -368,10 +384,42 @@ namespace FormuleCirkelEntity.Controllers
             return View(teams);
         }
 
+        //Receives development values and saves them in the DB
+        [HttpPost]
+        public IActionResult SaveTeamDev([FromBody]IEnumerable<GetDev> dev)
+        {
+            var teams = _context.SeasonTeams;
+            foreach (var teamdev in dev)
+            {
+                var team = teams.First(t => t.SeasonTeamId == teamdev.Id);
+                team.Chassis = teamdev.Newdev;
+            }
+            _context.UpdateRange(teams);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(TeamDev));
+        }
+
         public IActionResult EngineDev()
         {
             var engines = _context.Engines.ToList();
             return View(engines);
+        }
+
+        //Receives development values and saves them in the DB
+        [HttpPost]
+        public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
+        {
+            var engines = _context.Engines;
+            foreach (var enginedev in dev)
+            {
+                var engine = engines.First(e => e.EngineId == enginedev.Id);
+                engine.Power = enginedev.Newdev;
+            }
+            _context.UpdateRange(engines);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(EngineDev));
         }
 
         [HttpGet]
@@ -419,7 +467,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 devlist.Add(new DevelopmentHelper
                 {
-                    Id = driver.DriverId,
+                    Id = driver.SeasonDriverId,
                     Name = driver.Driver.Name,
                     Number = driver.Driver.DriverNumber,
                     Abbreviation = driver.SeasonTeam.Team.Abbreviation,
@@ -495,5 +543,11 @@ namespace FormuleCirkelEntity.Controllers
         public int Old { get; set; }       
         public int Dev { get; set; }
         public int New { get; set; }
+    }
+
+    public class GetDev
+    {
+        public int Id { get; set; }
+        public int Newdev { get; set; }
     }
 }

@@ -40,11 +40,12 @@
             }
         </tbody>
     </table>
-    <button class="btn btn-dark">Opslaan</button>
+    <button id="save" class="btn btn-dark">Opslaan</button>
 </section>
 
 <script>
     $(document).ready(function () {
+        $("#save").hide();
         $('#develop').click(function () {
             $.ajax({
                 url: "/Season/Development",
@@ -61,7 +62,34 @@
                             + team.accent + ";font-size:1rem;display:table-cell;'>" + team.abbreviation + "</td><td>" + team.old + "</td><td>"
                             + team.dev + "</td><td id='new'>" + team.new + "</td><td id='id' style='display:none;'>" + team.id + "</td></tr>";
                         $("#devtable").append(row);
+                        $("#save").show();
                     });
+                }
+            });
+        });
+        $("#save").click(function () {
+            var teams = new Array();
+            $("#devtable TR").each(function () {
+                var row = $(this);
+                var team = {};
+                team.id = row.find("TD").eq(5).html();
+                team.newdev = row.find("TD").eq(4).html();
+                teams.push(team);
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Season/SaveTeamDev",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(teams),
+                dataType: "json",
+                complete: function (result) {
+                    if (result.responseText) {
+                        $('body').html(result.responseText);
+                    }
                 }
             });
         });
