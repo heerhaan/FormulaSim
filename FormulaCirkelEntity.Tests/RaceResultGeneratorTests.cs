@@ -14,7 +14,7 @@ namespace FormulaCirkelEntity.Tests
         public void DriverLevelBonus_StyleAddition_Correct(Style style, int expected)
         {
             // Arrange
-            RaceResultGenerator generator = new RaceResultGenerator();
+            RaceResultGenerator generator = new RaceResultGenerator(new Random(1));
             SeasonDriver driver = new SeasonDriver()
             {
                 Skill = 20,
@@ -38,13 +38,66 @@ namespace FormulaCirkelEntity.Tests
         public void DriverQualifyingBonus_Calculation_Correct(int qualifyingPosition, int expected)
         {
             // Arrange
-            RaceResultGenerator generator = new RaceResultGenerator();
+            RaceResultGenerator generator = new RaceResultGenerator(new Random(1));
 
             // Act
             var qualifyingBonus = generator.GetQualifyingBonus(qualifyingPosition, 26);
 
             // Assert
             Assert.Equal(expected, qualifyingBonus);
+        }
+
+        // The Driver Reliability Result uses a combination of Team Reliability and Driver Style to get the Driver Reliability Score.
+        // It is compared against a random value to determine whether the random Value is greater, equal or less than the result.
+        // Aggressive subtracts 1 off the team reliability, defensive adds 1, and neutral stays equal.
+        // Thus, use a static random value of 1 and a Team Reliability of 1 to test the Reliability Score generation.
+        [Theory]
+        [InlineData(Style.Agressief, -1)]
+        [InlineData(Style.Neutraal, 0)]
+        [InlineData(Style.Defensief, 1)]
+        public void DriverReliability_Style_Correct(Style style, int expected)
+        {
+            // Arrange
+            RaceResultGenerator generator = new RaceResultGenerator(new StaticRandom(1));
+            SeasonDriver driver = new SeasonDriver()
+            {
+                Style = style,
+                SeasonTeam = new SeasonTeam()
+                {
+                    Reliability = 1
+                }
+            };
+
+            // Act
+            int driverLevelBonus = generator.GetDriverReliabilityResult(driver);
+
+            // Assert
+            Assert.Equal(expected, driverLevelBonus);
+        }
+
+        class StaticRandom : Random
+        {
+            readonly int _staticValue;
+
+            public StaticRandom(int staticValue)
+            {
+                _staticValue = staticValue;
+            }
+
+            public override int Next()
+            {
+                return _staticValue;
+            }
+
+            public override int Next(int maxValue)
+            {
+                return Next();
+            }
+
+            public override int Next(int minValue, int maxValue)
+            {
+                return Next();
+            }
         }
     }
 }
