@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.ResultGenerators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -40,6 +41,8 @@ namespace FormuleCirkelEntity
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
+            services.AddSingleton(new Random());
+            services.AddTransient<RaceResultGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

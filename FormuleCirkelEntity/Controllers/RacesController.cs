@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.ResultGenerators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +13,12 @@ namespace FormuleCirkelEntity.Controllers
     public class RacesController : Controller
     {
         private readonly FormulaContext _context;
-        private static readonly Random rng = new Random();
+        private RaceResultGenerator _resultGenerator;
 
-        public RacesController(FormulaContext context)
+        public RacesController(FormulaContext context, RaceResultGenerator resultGenerator)
         {
             _context = context;
+            _resultGenerator = resultGenerator;
         }
         
         [Route("Season/{id}/[Controller]/{raceId}")]
@@ -44,15 +46,19 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(res => res.SeasonDriver.Driver)
                 .Include(r => r.DriverResults)
                     .ThenInclude(res => res.SeasonDriver.SeasonTeam.Team)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.SeasonDriver.SeasonTeam.Engine)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             if (race.StintProgress == race.Stints.Count())
                 return BadRequest();
-
+            
             race.StintProgress++;
+            var stint = race.Stints[race.StintProgress];
             foreach (var result in race.DriverResults)
             {
-                result.StintResults.Add(race.StintProgress, rng.Next(1, 100));
+                var stintResult = _resultGenerator.GetStintResult(result, stint);
+                result.StintResults.Add(race.StintProgress, stintResult);
                 _context.Update(result);
             }
 
@@ -102,7 +108,7 @@ namespace FormuleCirkelEntity.Controllers
                 foreach (var qualificationResult in qualificationResultsToUpdate)
                 {
                     var qualifyingDriver = drivers.Single(d => d.SeasonDriverId == qualificationResult.DriverId);
-                    qualificationResult.Score = GenerateDriverScore(qualifyingDriver);  
+                    qualificationResult.Score = _resultGenerator.GetQualifyingResult(qualifyingDriver);
                 }
 
                 var qualificationResults = qualificationResultsToUpdate.OrderByDescending(q => q.Score).ToList();
@@ -154,15 +160,6 @@ namespace FormuleCirkelEntity.Controllers
             if (qualifyingStage == "Q3")
                 return Q3_LIMIT;
             return Q1_LIMIT;
-        }
-
-        int GenerateDriverScore(SeasonDriver driver)
-        {
-            var result = 0;
-            result += driver.Skill;
-            result += driver.SeasonTeam.Chassis;
-            result += rng.Next(0, 60);
-            return result;
         }
 
         [HttpPost]
