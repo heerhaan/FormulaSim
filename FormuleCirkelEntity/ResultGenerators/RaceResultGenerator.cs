@@ -49,6 +49,13 @@ namespace FormuleCirkelEntity.ResultGenerators
                     result += -15;
             }
 
+            if (stint.ApplyChassisLevel)
+            {
+                var specificationPositive = driverResult.SeasonDriver.SeasonTeam.Specification == driverResult.Race.Track.Specification;
+                var multiplier = specificationPositive ? 1.1 : 0.9;
+                result = (int)Math.Round(result * multiplier);
+            }
+
             return result;
         }
 
@@ -61,6 +68,9 @@ namespace FormuleCirkelEntity.ResultGenerators
         {
             return (totalDriverCount * 2) - (qualifyingPosition * 2);
         }
+
+        public bool TrackSpecificationPositive(DriverResult driverResult)
+            => driverResult.SeasonDriver.SeasonTeam.Specification == driverResult.Race.Track.Specification;
 
         /// <summary>
         /// Performs a <see cref="SeasonDriver"/> reliability check.
