@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,7 +38,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(unusedTracks);
         }
 
-        [HttpPost("Season/{id}/[Controller]/Add/{raceId}")]
+        [HttpPost("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] Track track)
         {
             track = await _context.Tracks.SingleOrDefaultAsync(m => m.TrackId == track.TrackId);
