@@ -55,10 +55,17 @@ namespace FormuleCirkelEntity.Controllers
             
             race.StintProgress++;
             var stint = race.Stints[race.StintProgress];
-            foreach (var result in race.DriverResults)
+
+            // Calculate results for all drivers who have not been DSQ'd or DNF'd.
+            foreach (var result in race.DriverResults.Where(d => d.Status == Status.Finished))
             {
                 var stintResult = _resultGenerator.GetStintResult(result, stint);
                 result.StintResults.Add(race.StintProgress, stintResult);
+
+                // A MinValue result indicates a DNF result.
+                if (stintResult == int.MinValue)
+                    result.Status = Status.DNF;
+
                 _context.Update(result);
             }
 
