@@ -20,6 +20,43 @@ namespace FormuleCirkelEntity.Controllers
             _context = context;
             _resultGenerator = resultGenerator;
         }
+
+        [Route("Season/{id}/[Controller]/Add/")]
+        public async Task<IActionResult> AddTracks(int? id)
+        {
+            var season = await _context.Seasons
+                   .Include(s => s.Races)
+                   .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (season == null)
+                return NotFound();
+
+            var existingTrackIds = season.Races.Select(r => r.TrackId);
+            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId)).ToList();
+
+            ViewBag.seasonId = id;
+            return View(unusedTracks);
+        }
+
+        [HttpPost("Season/{id}/[Controller]/Add/{raceId}")]
+        public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] Track track)
+        {
+            track = await _context.Tracks.SingleOrDefaultAsync(m => m.TrackId == track.TrackId);
+
+            var season = await _context.Seasons
+                .Include(s => s.Races)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (track == null || season == null)
+                return NotFound();
+
+            var race = new Race();
+            race.Track = track;
+            race.Name = track.Name;
+            season.Races.Add(race);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(AddTracks), new { id });
+        }
         
         [Route("Season/{id}/[Controller]/{raceId}")]
         public async Task<IActionResult> Race(int id, int raceId)
@@ -52,7 +89,7 @@ namespace FormuleCirkelEntity.Controllers
 
             if (race.StintProgress == race.Stints.Count())
                 return BadRequest();
-            
+
             race.StintProgress++;
             var stint = race.Stints[race.StintProgress];
 
