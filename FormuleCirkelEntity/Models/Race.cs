@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,12 @@ namespace FormuleCirkelEntity.Models
 
     public class Race
     {
+        public Race()
+        {
+            Stints = new Dictionary<int, Stint>();
+            DriverResults = new List<DriverResult>();
+        }
+
         [Key]
         public int RaceId { get; set; }
         public int Round { get; set; }
@@ -30,7 +37,7 @@ namespace FormuleCirkelEntity.Models
 
         public IDictionary<int, Stint> Stints { get; set; }
 
-        public virtual ICollection<DriverResult> DriverResults { get; set; }
-        public virtual ICollection<TeamResult> TeamResults { get; set; }
+        public virtual IList<DriverResult> DriverResults { get; set; }
+        public virtual IList<TeamResult> TeamResults { get; set; }
     }
 }

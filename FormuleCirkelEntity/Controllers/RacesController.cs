@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FormuleCirkelEntity.Builders;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
@@ -12,13 +13,15 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class RacesController : Controller
     {
-        private readonly FormulaContext _context;
-        private RaceResultGenerator _resultGenerator;
+        readonly FormulaContext _context;
+        readonly RaceResultGenerator _resultGenerator;
+        readonly RaceBuilder _raceBuilder;
 
-        public RacesController(FormulaContext context, RaceResultGenerator resultGenerator)
+        public RacesController(FormulaContext context, RaceResultGenerator resultGenerator, RaceBuilder raceBuilder)
         {
             _context = context;
             _resultGenerator = resultGenerator;
+            _raceBuilder = raceBuilder;
         }
 
         [Route("Season/{id}/[Controller]/Add/")]
@@ -45,14 +48,17 @@ namespace FormuleCirkelEntity.Controllers
 
             var season = await _context.Seasons
                 .Include(s => s.Races)
+                .Include(s => s.Drivers)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (track == null || season == null)
                 return NotFound();
 
-            var race = new Race();
-            race.Track = track;
-            race.Name = track.Name;
+            var race = _raceBuilder
+                .InitializeRace(track, season)
+                .AddDefaultStints()
+                .AddAllDrivers()
+                .GetResultAndRefresh();
             season.Races.Add(race);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(AddTracks), new { id });
