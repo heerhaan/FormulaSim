@@ -30,16 +30,23 @@
         <tbody>
             @foreach (var driverResult in Model.DriverResults)
             {
-                <tr>
-                    <td>@driverResult.SeasonDriver.Driver.DriverNumber</td>
-                    <td>@driverResult.SeasonDriver.Driver.Name</td>
-                    <td>@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
+            <tr>
+                <td>@driverResult.SeasonDriver.Driver.DriverNumber</td>
+                <td>@driverResult.SeasonDriver.Driver.Name</td>
+                <td>@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
 
-                    @foreach (var stintResult in driverResult.StintResults)
+                @foreach (var stintResult in driverResult.StintResults)
+                {
+                    if (stintResult.Value == int.MinValue)
+                    {
+                        <td>-</td>
+                    }
+                    else
                     {
                         <td>@stintResult.Value</td>
                     }
-                </tr>
+                }
+            </tr>
             }
         </tbody>
     </table>
