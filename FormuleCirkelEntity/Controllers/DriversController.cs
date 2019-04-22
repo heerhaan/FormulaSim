@@ -20,20 +20,49 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // GET: Drivers
-        public IActionResult Index(string searchString, string sortOrder)
+        public IActionResult Index(string sortOrder)
         {
-            //Adds search functionality to index list
-            ViewData["SearchString"] = searchString;
             //Adds sorting functionality to index list
             ViewData["SortName"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["SortNumber"] = String.IsNullOrEmpty(sortOrder) ? "number_asc" : "";
 
+            var drivers = SortDrivers(sortOrder);
+
+            return View(drivers.ToList());
+        }
+
+        [HttpPost]
+        public ActionResult Index(string searchString, string sortOrder)
+        {
+            //Search functionality for driver index
+            ViewData["SearchString"] = searchString;
+            IQueryable<Driver> drivers;
+
+            if (!String.IsNullOrEmpty(sortOrder))
+            {
+                drivers = SortDrivers(sortOrder);
+            } else
+            {
+                drivers = from d in _context.Drivers select d;
+            }
+            
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                drivers = drivers.Where(d => d.Name.Contains(searchString));
+            }
+
+            return View(drivers.ToList());
+        }
+
+        //Sorts drivers based on given value
+        public IQueryable<Driver> SortDrivers(string sortOrder)
+        {
             IQueryable<Driver> drivers = from d in _context.Drivers select d;
 
             switch (sortOrder)
             {
                 case "name_desc":
-                    drivers = drivers.OrderBy(d => d.Name);
+                    drivers = drivers.OrderByDescending(d => d.Name);
                     break;
                 case "number_asc":
                     drivers = drivers.OrderBy(d => d.DriverNumber);
@@ -43,20 +72,7 @@ namespace FormuleCirkelEntity.Controllers
                     break;
             }
 
-            return View(drivers.ToList());
-        }
-
-        [HttpPost]
-        public ActionResult Index(string searchString)
-        {
-            //Search functionality for driver index
-            ViewData["SearchString"] = searchString;
-            IQueryable<Driver> drivers = from d in _context.Drivers select d;
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                drivers = drivers.Where(d => d.Name.Contains(searchString));
-            }
-            return View(drivers.ToList());
+            return drivers;
         }
 
         public async Task<IActionResult> Stats(int? id)

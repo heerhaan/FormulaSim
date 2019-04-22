@@ -216,12 +216,12 @@ namespace FormuleCirkelEntity.Controllers
             if(id == null) { return BadRequest(); }
 
             var qualyresult = _context.Qualification.Where(q => q.RaceId == id);
-            var driverResults = _context.DriverResults;
+            var driverResults = _context.DriverResults.Where(d => d.RaceId == id).ToList();
 
             //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)
             foreach(var result in qualyresult)
             {
-                var driver = driverResults.First(d => d.RaceId == result.RaceId && d.SeasonDriverId == result.DriverId);
+                var driver = driverResults.Single(d => d.RaceId == result.RaceId && d.SeasonDriverId == result.DriverId);
 
                 if(driver == null) { return StatusCode(500); }
 

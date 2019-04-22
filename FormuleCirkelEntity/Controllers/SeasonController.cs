@@ -352,12 +352,11 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult DriverDev()
         {
-            var drivers = _context.SeasonDrivers
+            return View(_context.SeasonDrivers
                 .Include(t => t.SeasonTeam)
                     .ThenInclude(t => t.Team)
                 .Include(d => d.Driver)
-                .OrderBy(s => s.SeasonTeam.Team.Name).ToList();
-            return View(drivers);
+                .OrderBy(s => s.SeasonTeam.Team.Name).ToList());
         }
         
         //Receives development values and saves them in the DB
@@ -378,10 +377,9 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult TeamDev()
         {
-            var teams = _context.SeasonTeams
+            return View(_context.SeasonTeams
                 .Include(t => t.Team)
-                .OrderBy(t => t.Team.Name).ToList();
-            return View(teams);
+                .OrderBy(t => t.Team.Name).ToList());
         }
 
         //Receives development values and saves them in the DB
@@ -402,15 +400,14 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult EngineDev()
         {
-            var engines = _context.Engines.ToList();
-            return View(engines);
+            return View(_context.Engines.Where(e => e.Available == true).ToList());
         }
 
         //Receives development values and saves them in the DB
         [HttpPost]
         public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var engines = _context.Engines;
+            var engines = _context.Engines.Where(e => e.Available == true);
             foreach (var enginedev in dev)
             {
                 var engine = engines.First(e => e.EngineId == enginedev.Id);
@@ -423,14 +420,14 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpGet]
-        public IActionResult Development(int? min, int? max, string source)
+        public IActionResult Development(int min, int max, string source)
         {
-            if(min == null || max == null || source == null)
+            if(source == null)
                 return BadRequest();
 
             try
             {
-                List<DevelopmentHelper> devlist = new List<DevelopmentHelper>();
+                List<DevelopingValues> devlist = new List<DevelopingValues>();
                 switch (source)
                 {
                     case "driver":
@@ -451,9 +448,9 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        public List<DevelopmentHelper> DriverDevList(int? min, int? max)
+        public List<DevelopingValues> DriverDevList(int min, int max)
         {
-            var devlist = new List<DevelopmentHelper>();
+            var devlist = new List<DevelopingValues>();
             var drivers = _context.SeasonDrivers
                 .Include(t => t.SeasonTeam)
                     .ThenInclude(t => t.Team)
@@ -463,9 +460,9 @@ namespace FormuleCirkelEntity.Controllers
             //Adds each driver in Season to list and adds development
             foreach (var driver in drivers)
             {
-                int dev = rng.Next(min.Value, max.Value+1);
+                int dev = rng.Next(min, max+1);
 
-                devlist.Add(new DevelopmentHelper
+                devlist.Add(new DevelopingValues
                 {
                     Id = driver.SeasonDriverId,
                     Name = driver.Driver.Name,
@@ -481,17 +478,17 @@ namespace FormuleCirkelEntity.Controllers
             return devlist;
         }
 
-        public List<DevelopmentHelper> EngineDevList(int? min, int? max)
+        public List<DevelopingValues> EngineDevList(int min, int max)
         {
-            var devlist = new List<DevelopmentHelper>();
-            var engines = _context.Engines.ToList();
+            var devlist = new List<DevelopingValues>();
+            var engines = _context.Engines.Where(e => e.Available == true).ToList();
 
             //Adds each driver in Season to list and adds development
             foreach (var engine in engines)
             {
-                int dev = rng.Next(min.Value, max.Value+1);
+                int dev = rng.Next(min, max+1);
 
-                devlist.Add(new DevelopmentHelper
+                devlist.Add(new DevelopingValues
                 {
                     Id = engine.EngineId,
                     Name = engine.Name,
@@ -503,9 +500,9 @@ namespace FormuleCirkelEntity.Controllers
             return devlist;
         }
 
-        public List<DevelopmentHelper> TeamDevList(int? min, int? max)
+        public List<DevelopingValues> TeamDevList(int min, int max)
         {
-            var devlist = new List<DevelopmentHelper>();
+            var devlist = new List<DevelopingValues>();
 
             var teams = _context.SeasonTeams
                 .Include(t => t.Team)
@@ -514,9 +511,9 @@ namespace FormuleCirkelEntity.Controllers
             //Adds each driver in Season to list and adds development
             foreach (var team in teams)
             {
-                int dev = rng.Next(min.Value, max.Value+1);
+                int dev = rng.Next(min, max+1);
 
-                devlist.Add(new DevelopmentHelper
+                devlist.Add(new DevelopingValues
                 {
                     Id = team.TeamId,
                     Name = team.Team.Name,
@@ -532,7 +529,7 @@ namespace FormuleCirkelEntity.Controllers
         }
     }
 
-    public class DevelopmentHelper
+    public class DevelopingValues
     {
         public int Id { get; set; }
         public string Name { get; set; }
