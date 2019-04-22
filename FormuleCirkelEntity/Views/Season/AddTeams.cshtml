@@ -14,11 +14,12 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td><a asp-action="AddTeam" asp-route-id="@ViewBag.seasonId" asp-route-globalTeamId="@item.TeamId" class="btn btn-outline-primary btn-sm">Toevoegen</a></td>
-            </tr>
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td><a asp-action="AddTeam" asp-route-id="@ViewBag.seasonId" asp-route-globalTeamId="@item.TeamId" class="btn btn-outline-primary btn-sm">Toevoegen</a></td>
+                </tr>
             }
         </tbody>
     </table>
+    <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">Terug naar seizoen</a>
 </section>

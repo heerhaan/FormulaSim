@@ -37,7 +37,7 @@
         </thead>
         <tbody>
             @{
-                var orderedDrivers = Model.Drivers.OrderBy(d => d.Points).ToList();
+                var orderedDrivers = Model.Drivers.OrderByDescending(d => d.Points).ToList();
                 for (int pos = 0; pos < orderedDrivers.Count; pos++)
                 {
                     SeasonDriver @driver = orderedDrivers[pos];
@@ -100,7 +100,7 @@
         </thead>
         <tbody>
             @{
-                var orderedTeams = Model.Teams.OrderBy(t => t.Points).ToList();
+                var orderedTeams = Model.Teams.OrderByDescending(t => t.Points).ToList();
                 for (int pos = 0; pos < orderedTeams.Count; pos++)
                 {
                     SeasonTeam team = orderedTeams[pos];
