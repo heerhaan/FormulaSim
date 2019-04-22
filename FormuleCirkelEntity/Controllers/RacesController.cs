@@ -62,7 +62,7 @@ namespace FormuleCirkelEntity.Controllers
                     }
                     catch (Exception e)
                     {
-                        TempData["msg"] = "<script>alert('Race toevoegen mislukt!');</script>";
+                        TempData["msg"] = "<script>alert('Race preview mislukt!');</script>";
                         return RedirectToAction(nameof(RacePreview));
                     }
                     driverresults.Add(result);
@@ -85,11 +85,15 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
             }
 
-            var race = _context.Races.FirstOrDefault(r => r.RaceId == id);
+            var race = _context.Races
+                .Where(s => s.SeasonId == id)
+                .FirstOrDefault(r => r.RaceId == id);
+
             ViewBag.track = race.Track;
             ViewBag.race = race;
 
             var result = _context.DriverResults.FirstOrDefault(r => r.RaceId == id);
+
             if(result.Grid == 0)
             {
                 ViewBag.check = true;
@@ -99,7 +103,12 @@ namespace FormuleCirkelEntity.Controllers
             }
 
             //SeasonDrivers should be ordered based on DriverResults Gridposition
-            var drivers = _context.SeasonDrivers.Include(s => s.Driver).Include(t => t.SeasonTeam).ThenInclude(t => t.Team).ToList();
+            var drivers = _context.SeasonDrivers
+                .Where(s => s.Season.SeasonId == id)
+                .Include(s => s.Driver)
+                .Include(t => t.SeasonTeam)
+                    .ThenInclude(t => t.Team)
+                .ToList();
 
             return View(drivers);
         }
