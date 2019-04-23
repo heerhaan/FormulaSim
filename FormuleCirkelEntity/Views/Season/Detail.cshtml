@@ -65,6 +65,7 @@
             <tr>
                 <th>Naam</th>
                 <th>Ronde</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -73,6 +74,7 @@
                 <tr>
                     <td>@race.Name</td>
                     <td>@race.Round</td>
+                    <td><a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.SeasonId" asp-route-raceId="@race.RaceId">Preview</a></td>
                 </tr>
             }
         </tbody>

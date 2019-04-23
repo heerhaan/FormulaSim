@@ -57,7 +57,6 @@ namespace FormuleCirkelEntity.Controllers
             var race = _raceBuilder
                 .InitializeRace(track, season)
                 .AddDefaultStints()
-                .AddAllDrivers()
                 .GetResultAndRefresh();
             season.Races.Add(race);
             await _context.SaveChangesAsync();
@@ -78,62 +77,45 @@ namespace FormuleCirkelEntity.Controllers
 
             return View(race);
         }
-
-        public IActionResult RacePreview()
+        
+        [Route("Season/{id}/[Controller]/{raceId}/Preview")]
+        public async Task<IActionResult> RacePreview(int id, int raceId)
         {
-            var currentSeason = _context.Seasons
-                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
-                .OrderBy(s => s.SeasonStart)
-                .FirstOrDefault();
-
-            var nextrace = _context.Races
+            var race = await _context.Races
+                .Include(r => r.Season)
                 .Include(r => r.Track)
-                .Where(r => r.SeasonId == currentSeason.SeasonId)
-                .OrderBy(r => r.Round)
-                .FirstOrDefault(r => r.DriverResults != null);
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
-            return View(nextrace);
+            return View(race);
         }
-
-        [HttpPost]
-        public IActionResult RacePreview(int? id)
+        
+        [HttpPost("Season/{id}/[Controller]/{raceId}/Start")]
+        public async Task<IActionResult> RaceStart(int id, int raceId)
         {
-            if(id == null)
-            {
-                return NotFound();
-            }
-            var drivers = _context.SeasonDrivers;
-            var driverresults = new List<DriverResult>();
+            var race = await _context.Races
+                .Include(r => r.Season.Drivers)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
-            foreach (var driver in drivers)
-            {
-                var result = new DriverResult();
-                try
-                {
-                    result.RaceId = id.GetValueOrDefault();
-                    result.SeasonDriverId = driver.SeasonDriverId;
-                } catch(Exception e)
-                {
-                    TempData["msg"] = "<script>alert('Race toevoegen mislukt!');</script>";
-                    return RedirectToAction(nameof(RacePreview));
-                }
-                driverresults.Add(result);
-            }
+            race = _raceBuilder
+                .Use(race)
+                .AddAllDrivers()
+                .GetResult();
 
-            _context.DriverResults.AddRange(driverresults);
+            _context.DriverResults.AddRange(race.DriverResults);
             _context.SaveChanges();
             
-            return RedirectToAction("RaceWeekend", new { id });
+            return RedirectToAction("RaceWeekend", new { id, raceId });
         }
 
-        public IActionResult RaceWeekend(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
 
-            var race = _context.Races.FirstOrDefault(r => r.RaceId == id);
+        [Route("Season/{id}/[Controller]/{raceId}/Weekend")]
+        public async Task<IActionResult> RaceWeekend(int id, int raceId)
+        {
+            var race = await _context.Races
+                .Include(r => r.Season.Drivers)
+                .Include(r => r.Track)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
             ViewBag.track = race.Track;
             ViewBag.race = race;
             ViewBag.id = id;
