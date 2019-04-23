@@ -94,15 +94,20 @@ namespace FormuleCirkelEntity.Controllers
         {
             var race = await _context.Races
                 .Include(r => r.Season.Drivers)
+                .Include(r => r.DriverResults)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
-            race = _raceBuilder
-                .Use(race)
-                .AddAllDrivers()
-                .GetResult();
+            if (!race.DriverResults.Any())
+            {
+                race = _raceBuilder
+                    .Use(race)
+                    .AddAllDrivers()
+                    .GetResult();
 
-            _context.DriverResults.AddRange(race.DriverResults);
-            _context.SaveChanges();
+                _context.DriverResults.AddRange(race.DriverResults);
+                _context.SaveChanges();
+            }
+
             
             return RedirectToAction("RaceWeekend", new { id, raceId });
         }
