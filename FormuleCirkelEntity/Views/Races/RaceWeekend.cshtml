@@ -1,22 +1,20 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+﻿@model FormuleCirkelEntity.Models.Race
 
 @{
     ViewData["Title"] = "RaceWeekend";
-    string racename = ViewBag.race.Name;
-
 }
 
-<h1>@racename</h1>
+<h1>@Model.Name</h1>
 <br />
 <div>
     <h5>Kwalificatie | Deelnemers</h5>
     <ol>
-        @foreach(var driver in Model)
+        @foreach(var driver in Model.DriverResults.Select(d => d.SeasonDriver))
         {
             <li>@driver.Driver.Name | @driver.SeasonTeam.Team.Name</li>
         }
     </ol>
-    <a asp-action="Qualifying" class="btn btn-secondary">Kwalificatie</a>
+    <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Kwalificatie</a>
 </div>
 
 <div>
@@ -33,5 +31,5 @@
 
 <div>
     <h5>Race</h5>
-    <a asp-action="Race" class="btn btn-secondary">Race</a>
+    <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Race</a>
 </div>

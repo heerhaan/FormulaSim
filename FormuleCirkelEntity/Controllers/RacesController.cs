@@ -117,16 +117,14 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RaceWeekend(int id, int raceId)
         {
             var race = await _context.Races
-                .Include(r => r.Season.Drivers)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(dr => dr.SeasonDriver)
+                        .ThenInclude(sd => sd.Driver)
+                .Include(r => r.Season.Teams)
+                    .ThenInclude(d => d.Team)
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
-
-            ViewBag.track = race.Track;
-            ViewBag.race = race;
-            ViewBag.id = id;
-
-            return View(_context.SeasonDrivers.Include(s => s.Driver).Include(t => t.SeasonTeam).ThenInclude(t => t.Team)
-                .ToList());
+            return View(race);
         }
 
         [HttpPost("Season/{id}/[Controller]/{raceId}/Advance")]
