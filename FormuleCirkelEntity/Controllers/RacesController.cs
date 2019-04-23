@@ -266,10 +266,5 @@ namespace FormuleCirkelEntity.Controllers
             //Also should save the result of Qualification to the Grid value of DriverResults (after penalties are applied?)
             return RedirectToAction("RaceWeekend", new { id = 1 });
         }
-        
-        public IActionResult Race()
-        {
-            return View();
-        }
     }
 }
