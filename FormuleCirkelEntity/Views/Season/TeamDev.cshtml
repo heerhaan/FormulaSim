@@ -88,6 +88,7 @@
                 dataType: "json",
                 complete: function (result) {
                     if (result.responseText) {
+                        $('head').html(result.responseJSON);    
                         $('body').html(result.responseText);
                     }
                 }
