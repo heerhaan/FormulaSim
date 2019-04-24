@@ -100,7 +100,6 @@ namespace FormuleCirkelEntity.Controllers
 
         // POST: Drivers/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
         {
             if (ModelState.IsValid)
