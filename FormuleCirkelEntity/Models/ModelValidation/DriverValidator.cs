@@ -17,6 +17,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
             _context = context;
 
             RuleFor(d => d.DriverNumber).NotEmpty().WithMessage("Coureurnummer mag niet leeg zijn!");
+            RuleFor(d => d.Name).NotEmpty().WithMessage("Naam coureur is verplicht!");
             RuleFor(d => d.Abbreviation).NotEmpty().WithMessage("Afkorting is verplicht!")
                 .Must(UniqueAbbreviation).WithMessage("Afkorting is al bezet!");
         }
