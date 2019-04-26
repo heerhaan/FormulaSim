@@ -46,7 +46,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Driver.DriverNumber)
             </td>
-            <td>
+            <td class="badge" style="background-color:@(item.SeasonTeam.Team.Colour);color:@(item.SeasonTeam.Team.Accent);font-size:1rem;">
                 @Html.DisplayFor(modelItem => item.SeasonTeam.Team.Name)
             </td>
             @foreach (var round in rounds)
