@@ -106,7 +106,7 @@
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td id='teamcell' class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;display:table-cell;' >"
+                            "</td><td id='teamcell' class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
                             + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q1table").append(row);
                     });
@@ -125,7 +125,7 @@
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;display:table-cell;' >"
+                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
                             + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q2table").append(row);
                     });
@@ -144,7 +144,7 @@
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;display:table-cell;' >"
+                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
                             + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q3table").append(row);
                     });
