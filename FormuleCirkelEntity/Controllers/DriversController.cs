@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Models;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class DriversController : Controller
+    public class DriversController : Controller 
     {
         private readonly FormulaContext _context;
 

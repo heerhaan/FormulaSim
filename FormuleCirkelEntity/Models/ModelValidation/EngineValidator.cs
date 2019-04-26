@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using FormuleCirkelEntity.DAL;
+using System.Linq;
 
 namespace FormuleCirkelEntity.Models.ModelValidation
 {
@@ -18,6 +15,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
 
             RuleFor(e => e.Name).NotEmpty().WithMessage("Naam is verplicht!")
                 .Must(UniqueName).WithMessage("Naam is al bezet!");
+            RuleFor(e => e.Power).NotEmpty().WithMessage("Motor kracht is verplicht!");
         }
 
         private bool UniqueName(Engine engine, string name)

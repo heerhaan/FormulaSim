@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentValidation;
+﻿using FluentValidation;
 using FormuleCirkelEntity.DAL;
+using System.Linq;
 
 namespace FormuleCirkelEntity.Models.ModelValidation
 {

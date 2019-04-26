@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentValidation;
-using FormuleCirkelEntity.DAL;
+﻿using FluentValidation;
 
 namespace FormuleCirkelEntity.Models.ModelValidation
 {
@@ -11,7 +6,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
     {
         public TrackValidator()
         {
-            RuleFor(t => t.Name).NotEmpty().WithMessage("Naam circuit is verplicht!");
+            RuleFor(t => t.Name).NotEmpty().WithMessage("Naam van circuit is verplicht!");
             RuleFor(t => t.Location).NotEmpty().WithMessage("Locatie voor circuit is verplicht!");
         }
     }
