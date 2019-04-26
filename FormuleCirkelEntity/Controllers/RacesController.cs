@@ -115,7 +115,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult Qualifying(int? id)
         {
-            var race = _context.Races.FirstOrDefault(r => r.RaceId == id);
+            var race = _context.Races.Single(r => r.RaceId == id);
             ViewBag.race = race;
             return View();
         }
@@ -132,7 +132,7 @@ namespace FormuleCirkelEntity.Controllers
                 var drivers = _context.SeasonDrivers
                 .Include(s => s.Driver)
                 .Include(t => t.SeasonTeam)
-                .ThenInclude(t => t.Team)
+                    .ThenInclude(t => t.Team)
                 .ToList();
 
                 // Get the existing qualification results of the current race.
@@ -184,11 +184,14 @@ namespace FormuleCirkelEntity.Controllers
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
             {
+                //TODO: dynamically add the next Race
                 result.Add(new Qualification()
                 {
                     DriverId = driver.SeasonDriverId,
                     RaceId = 1,
                     TeamName = driver.SeasonTeam.Team.Name,
+                    Colour = driver.SeasonTeam.Team.Colour,
+                    Accent = driver.SeasonTeam.Team.Accent,
                     DriverName = driver.Driver.Name,
                     Score = 0
                 });
