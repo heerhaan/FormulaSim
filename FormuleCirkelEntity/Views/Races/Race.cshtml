@@ -48,15 +48,15 @@
     </table>
 </section>
 
-<script>
+<script>    
+    const intMin = -2147483648;
 
-    var intMin = -2147483648;
     function processStintResponse(res) {
-        var tableBody = $("#results").children("tbody");
-        $.each(res.DriverResults, function (resultIndex, driverResult) {
-            var row = tableBody.children("tr[data-obj-id=" + driverResult.SeasonDriverId + "]");
-            $.each(driverResult.StintResults, function (stintKey, stintResult) {
-                var result = stintResult == -2147483648 ? "-" : stintResult;
+        let tableBody = $("#results").children("tbody");
+        $.each(res.DriverResults, (resultIndex, driverResult) => {
+            let row = tableBody.children("tr[data-obj-id=" + driverResult.SeasonDriverId + "]");
+            $.each(driverResult.StintResults, (stintKey, stintResult) => {
+                let result = stintResult == -2147483648 ? "-" : stintResult;
                 row.children("td[data-field=stintResult-" + stintKey + "]").html(result);
             });
         });
