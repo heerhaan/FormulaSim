@@ -50,14 +50,16 @@
 
 <script>    
     const intMin = -2147483648;
+    function resultOrMissing(result) {
+        return (result == intMin ? "-" : result);
+    }
 
     function processStintResponse(res) {
         let tableBody = $("#results").children("tbody");
         $.each(res.DriverResults, (resultIndex, driverResult) => {
             let row = tableBody.children("tr[data-obj-id=" + driverResult.SeasonDriverId + "]");
             $.each(driverResult.StintResults, (stintKey, stintResult) => {
-                let result = stintResult == -2147483648 ? "-" : stintResult;
-                row.children("td[data-field=stintResult-" + stintKey + "]").html(result);
+                row.children("td[data-field=stintResult-" + stintKey + "]").html(resultOrMissing(stintResult);
             });
         });
     }
