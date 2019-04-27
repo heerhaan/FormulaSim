@@ -8,6 +8,7 @@ using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -161,7 +162,17 @@ namespace FormuleCirkelEntity.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return NoContent();
+
+            // Clean up unneeded large reference properties to prevent them from being serialized and sent over HTTP.
+            race.Season = null;
+            race.Track = null;
+            race.Stints = null;
+            foreach(var dr in race.DriverResults)
+            {
+                dr.SeasonDriver = null;
+                dr.Race = null;
+            }
+            return new JsonResult(race, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying")]
