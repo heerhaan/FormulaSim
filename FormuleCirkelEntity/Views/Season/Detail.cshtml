@@ -14,9 +14,9 @@
     {
         <a asp-action="Start" asp-route-id="@Model.SeasonId" class="btn btn-dark btn-info">Start seizoen!</a>
     }
-    <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-primary">Races toevoegen</a>
-    <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-primary">Coureurs toevoegen</a>
-    <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-primary">Teams toevoegen</a>
+    <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-dark">Races toevoegen</a>
+    <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-dark">Coureurs toevoegen</a>
+    <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-dark">Teams toevoegen</a>
 </section>
 
 <section class="row my-1">
@@ -37,7 +37,7 @@
         </thead>
         <tbody>
             @{
-                var orderedDrivers = Model.Drivers.OrderBy(d => d.Points).ToList();
+                var orderedDrivers = Model.Drivers.OrderByDescending(d => d.Points).ToList();
                 for (int pos = 0; pos < orderedDrivers.Count; pos++)
                 {
                     SeasonDriver @driver = orderedDrivers[pos];
@@ -54,6 +54,7 @@
             }
         </tbody>
     </table>
+    <a asp-action="DriverDev" class="btn btn-dark">Ontwikkeling coureurs</a>
 </section>
 
 <section class="row my-1">
@@ -65,6 +66,7 @@
             <tr>
                 <th>Naam</th>
                 <th>Ronde</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -73,6 +75,7 @@
                 <tr>
                     <td>@race.Name</td>
                     <td>@race.Round</td>
+                    <td>@if (race.Round == 1) {<a asp-controller="Races" asp-action="RacePreview">Race</a> }</td>
                 </tr>
             }
         </tbody>
@@ -97,14 +100,16 @@
         </thead>
         <tbody>
             @{
-                var orderedTeams = Model.Teams.OrderBy(t => t.Points).ToList();
+                var orderedTeams = Model.Teams.OrderByDescending(t => t.Points).ToList();
                 for (int pos = 0; pos < orderedTeams.Count; pos++)
                 {
                     SeasonTeam team = orderedTeams[pos];
                     <tr>
                         <td>@((pos + 1).ToString())</td>
                         <td>@team.Points</td>
-                        <td>@team.Team.Name</td>
+                        <td class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;display:table-cell;">
+                            @team.Team.Name
+                        </td>
                         <td>@team.Chassis</td>
                         <td>@team.Reliability</td>
                         <td>@team.Engine.Name</td>
@@ -114,4 +119,8 @@
             }
         </tbody>
     </table>
+    <div class="row btn-group my-1">
+        <a asp-action="TeamDev" class="btn btn-dark">Ontwikkeling teams</a>
+        <a asp-action="EngineDev" class="btn btn-dark">Ontwikkeling motoren</a>
+    </div>
 </section>

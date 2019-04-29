@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Models;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -20,9 +18,62 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // GET: Drivers
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string sortOrder)
         {
-            return View(await _context.Drivers.ToListAsync());
+            //Adds sorting functionality to index list
+            ViewData["SortName"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["SortNumber"] = String.IsNullOrEmpty(sortOrder) ? "number_asc" : "";
+
+            var drivers = SortDrivers(sortOrder);
+
+            return View(drivers.ToList());
+        }
+
+        [HttpPost]
+        public ActionResult Index(string searchString, string sortOrder)
+        {
+            //Search functionality for driver index
+            ViewData["SearchString"] = searchString;
+            IQueryable<Driver> drivers;
+
+            if (!String.IsNullOrEmpty(sortOrder))
+            {
+                drivers = SortDrivers(sortOrder);
+            }
+            else
+            {
+                drivers = from d in _context.Drivers select d;
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                drivers = drivers.Where(d => d.Name.Contains(searchString));
+            }
+
+            return View(drivers.ToList());
+        }
+
+        //Sorts drivers based on given value
+        public IQueryable<Driver> SortDrivers(string sortOrder)
+        {
+            IQueryable<Driver> drivers = from d in _context.Drivers select d;
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    drivers = drivers.OrderByDescending(d => d.Name);
+                    break;
+
+                case "number_asc":
+                    drivers = drivers.OrderBy(d => d.DriverNumber);
+                    break;
+
+                default:
+                    drivers = drivers.OrderBy(d => d.Name);
+                    break;
+            }
+
+            return drivers;
         }
 
         public async Task<IActionResult> Stats(int? id)

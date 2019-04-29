@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using FormuleCirkelEntity.Models;
-using FormuleCirkelEntity.DAL;
-using Microsoft.EntityFrameworkCore;
 
 namespace FormuleCirkelEntity.Controllers
 {

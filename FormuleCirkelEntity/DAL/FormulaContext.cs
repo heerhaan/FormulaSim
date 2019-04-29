@@ -1,15 +1,14 @@
 ﻿using FormuleCirkelEntity.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.DAL
 {
     public class FormulaContext : DbContext
     {
-        public FormulaContext(DbContextOptions<FormulaContext> options) : base(options) { }
+        public FormulaContext(DbContextOptions<FormulaContext> options) : base(options)
+        {
+        }
 
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Engine> Engines { get; set; }

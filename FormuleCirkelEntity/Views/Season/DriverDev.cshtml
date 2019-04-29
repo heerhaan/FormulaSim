@@ -1,0 +1,99 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+
+@{
+    ViewData["Title"] = "Driver development";
+}
+
+<h1>Coureur ontwikkeling</h1>
+
+<section>
+
+    <input id="min" type="number" placeholder="Min. RNG" />
+    <input id="max" type="number" placeholder="Max. RNG" />
+    <button id="develop" class="btn btn-dark">Ontwikkel</button>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Team</th>
+                <th>Oud</th>
+                <th>Verschil</th>
+                <th>Nieuw</th>
+            </tr>
+        </thead>
+        <tbody id="devtable">
+            @{
+                foreach (var driver in Model)
+                {
+                    <tr>
+                        <td><span class="badge">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
+                        <td class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);
+                            color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;display:table-cell;">
+                            @driver.SeasonTeam.Team.Abbreviation
+                        </td>
+                        <td>@driver.Skill</td>
+                        <td>?</td>
+                        <td>?</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button id="save" class="btn btn-dark">Opslaan</button>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $("#save").hide();
+        $('#develop').click(function () {
+            $.ajax({
+                url: "/Season/Development",
+                type: "GET",
+                data: {
+                    min: document.getElementById("min").value,
+                    max: document.getElementById("max").value,
+                    source: "driver"
+                },
+                success: function (drivers) {
+                    $("#devtable").empty();
+                    $.each(drivers, function (index, driver) {
+                        var row = "<tr><td><span class='badge'>" + driver.number + "</span>" + driver.name +
+                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent +
+                            ";font-size:1rem;display:table-cell;'>" + driver.abbreviation + "</td><td>" + driver.old + "</td><td>"
+                            + driver.dev + "</td><td>" + driver.new + "</td><td style='display:none;'>" + driver.id + "</td></tr>";
+                        $("#devtable").append(row);
+                        $("#save").show();
+                    });
+                }
+            });
+        });
+        $("#save").click(function () {
+            var drivers = new Array();
+            $("#devtable TR").each(function () {
+                var row = $(this);
+                var driver = {};
+                driver.id = row.find("TD").eq(5).html();
+                driver.newdev = row.find("TD").eq(4).html();
+                drivers.push(driver);
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Season/SaveDriverDev",
+                headers: {
+                    'Accept': 'application/html',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(drivers),
+                dataType: "json",
+                complete: function (result) {
+                    if (result.responseText) {
+                        $('head').html(result.responseJSON);
+                        $('body').html(result.responseText);
+                    }
+                }
+            });
+        });
+    });
+</script>

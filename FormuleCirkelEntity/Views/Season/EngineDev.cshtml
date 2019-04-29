@@ -1,0 +1,92 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Engine>
+
+@{
+    ViewData["Title"] = "Engine development";
+}
+
+<h1>Motor ontwikkeling</h1>
+
+<section>
+
+    <input id="min" type="number" placeholder="Min. RNG" />
+    <input id="max" type="number" placeholder="Max. RNG" />
+    <button id="develop" class="btn btn-dark">Ontwikkel</button>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Oud</th>
+                <th>Verschil</th>
+                <th>Nieuw</th>
+            </tr>
+        </thead>
+        <tbody id="devtable">
+            @{
+                foreach (var engine in Model)
+                {
+                    <tr>
+                        <td>@engine.Name</td>
+                        <td>@engine.Power</td>
+                        <td>?</td>
+                        <td>?</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button id="save" class="btn btn-dark">Opslaan</button>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $("#save").hide();
+        $('#develop').click(function () {
+            $.ajax({
+                url: "/Season/Development",
+                type: "GET",
+                data: {
+                    min: document.getElementById("min").value,
+                    max: document.getElementById("max").value,
+                    source: "engine"
+                },
+                success: function (engines) {
+                    $("#devtable").empty();
+                    $.each(engines, function (index, engine) {
+                        var row = "<tr><td>" + engine.name + "</td><td>" + engine.old + "</td><td>" + engine.dev +
+                            "</td><td>" + engine.new + "</td><td style='display:none;'>" + engine.id + "</td></tr>";
+                        $("#devtable").append(row);
+                        $("#save").show();
+                    });
+                }
+            });
+        });
+        $("#save").click(function () {
+            var engines = new Array();
+            $("#devtable TR").each(function () {
+                var row = $(this);
+                var engine = {};
+                engine.id = row.find("TD").eq(4).html();
+                engine.newdev = row.find("TD").eq(3).html();
+                engines.push(engine);
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Season/SaveEngineDev",
+                headers: {
+                    'Accept': 'application/html',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(engines),
+                dataType: "json",
+                complete: function (result) {
+                    if (result.responseText) {
+                        $('head').html(result.responseJSON);
+                        $('body').html(result.responseText);
+                    }
+                }
+            });
+        });
+    });
+</script>

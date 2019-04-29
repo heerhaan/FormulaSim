@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
@@ -11,6 +7,7 @@ namespace FormuleCirkelEntity.Models
     {
         [Key]
         public int DriverId { get; set; }
+
         public int DriverNumber { get; set; }
         public string Name { get; set; }
         public string Abbreviation { get; set; }
