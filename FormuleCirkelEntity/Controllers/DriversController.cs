@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class DriversController : Controller 
+    public class DriversController : Controller
     {
         private readonly FormulaContext _context;
 
