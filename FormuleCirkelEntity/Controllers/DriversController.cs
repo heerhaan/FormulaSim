@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class DriversController : Controller
+    public class DriversController : Controller 
     {
         private readonly FormulaContext _context;
 
@@ -101,7 +101,6 @@ namespace FormuleCirkelEntity.Controllers
 
         // POST: Drivers/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
         {
             if (ModelState.IsValid)

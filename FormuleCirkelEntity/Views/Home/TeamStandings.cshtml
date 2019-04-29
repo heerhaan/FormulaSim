@@ -35,7 +35,7 @@
             <td>
                 @position
             </td>
-            <td>
+            <td class="badge" style="background-color:@(item.Team.Colour);color:@(item.Team.Accent);font-size:1rem;">
                 @Html.DisplayFor(modelItem => item.Team.Name)
             </td>
             @foreach (var round in rounds)
@@ -52,11 +52,11 @@
                         {
                             if (result.Status == Status.DNF)
                             {
-                                <td class="table table-danger">DNF</td>
+                                <p class="bg-danger">DNF</p>
                             }
                             else
                             {
-                                <td>@result.Position</td>
+                                <p>@result.Position</p>
                             }
                         }
                     }

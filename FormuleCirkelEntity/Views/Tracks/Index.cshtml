@@ -7,9 +7,9 @@
 <h1>Circuits</h1>
 
 <p>
-    <a asp-action="Create">Voeg circuit toe</a>
+    <a asp-action="Create">Toevoegen</a>
 </p>
-<table class="table">
+<table class="table table-striped table-dark">
     <thead>
         <tr>
             <th>
@@ -49,7 +49,7 @@
                 @Html.DisplayFor(modelItem => item.Specification)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.TrackId">Aanpassen</a>
+                <a asp-action="Edit" asp-route-id="@item.TrackId">Aanpassen</a> |
                 <a asp-action="Delete" asp-route-id="@item.TrackId">Verwijderen</a>
             </td>
         </tr>
