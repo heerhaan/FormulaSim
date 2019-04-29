@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FormuleCirkelEntity.Models
 {
-    public enum Status { Finished, DNF, DSQ}
+    public enum Status { Finished, DNF, DSQ }
+
     public class DriverResult
     {
         [Key]
         public int DriverResultId { get; set; }
+
         public int Position { get; set; }
         public int Grid { get; set; }
+
         [EnumDataType(typeof(Status))]
         public Status Status { get; set; }
 

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Models;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -41,11 +39,12 @@ namespace FormuleCirkelEntity.Controllers
             if (!String.IsNullOrEmpty(sortOrder))
             {
                 drivers = SortDrivers(sortOrder);
-            } else
+            }
+            else
             {
                 drivers = from d in _context.Drivers select d;
             }
-            
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 drivers = drivers.Where(d => d.Name.Contains(searchString));
@@ -64,9 +63,11 @@ namespace FormuleCirkelEntity.Controllers
                 case "name_desc":
                     drivers = drivers.OrderByDescending(d => d.Name);
                     break;
+
                 case "number_asc":
                     drivers = drivers.OrderBy(d => d.DriverNumber);
                     break;
+
                 default:
                     drivers = drivers.OrderBy(d => d.Name);
                     break;

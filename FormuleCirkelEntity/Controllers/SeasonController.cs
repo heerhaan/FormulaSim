@@ -95,7 +95,7 @@ namespace FormuleCirkelEntity.Controllers
             var race = new Race();
             race.Track = track;
             race.Name = track.Name;
-            race.Round = (_context.Races.Where(r => r.SeasonId == id).Count()+1);
+            race.Round = (_context.Races.Where(r => r.SeasonId == id).Count() + 1);
             season.Races.Add(race);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(AddTracks), new { id });
@@ -358,13 +358,13 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(d => d.Driver)
                 .OrderBy(s => s.SeasonTeam.Team.Name).ToList());
         }
-        
+
         //Receives development values and saves them in the DB
         [HttpPost]
         public IActionResult SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
         {
             var drivers = _context.SeasonDrivers;
-            foreach(var driverdev in dev)
+            foreach (var driverdev in dev)
             {
                 var driver = drivers.First(d => d.SeasonDriverId == driverdev.Id);
                 driver.Skill = driverdev.Newdev;
@@ -422,7 +422,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpGet]
         public IActionResult Development(int min, int max, string source)
         {
-            if(source == null)
+            if (source == null)
                 return BadRequest();
 
             try
@@ -433,9 +433,11 @@ namespace FormuleCirkelEntity.Controllers
                     case "driver":
                         devlist = DriverDevList(min, max);
                         break;
+
                     case "engine":
                         devlist = EngineDevList(min, max);
                         break;
+
                     case "team":
                         devlist = TeamDevList(min, max);
                         break;
@@ -460,7 +462,7 @@ namespace FormuleCirkelEntity.Controllers
             //Adds each driver in Season to list and adds development
             foreach (var driver in drivers)
             {
-                int dev = rng.Next(min, max+1);
+                int dev = rng.Next(min, max + 1);
 
                 devlist.Add(new DevelopingValues
                 {
@@ -486,7 +488,7 @@ namespace FormuleCirkelEntity.Controllers
             //Adds each driver in Season to list and adds development
             foreach (var engine in engines)
             {
-                int dev = rng.Next(min, max+1);
+                int dev = rng.Next(min, max + 1);
 
                 devlist.Add(new DevelopingValues
                 {
@@ -511,7 +513,7 @@ namespace FormuleCirkelEntity.Controllers
             //Adds each driver in Season to list and adds development
             foreach (var team in teams)
             {
-                int dev = rng.Next(min, max+1);
+                int dev = rng.Next(min, max + 1);
 
                 devlist.Add(new DevelopingValues
                 {
@@ -537,7 +539,7 @@ namespace FormuleCirkelEntity.Controllers
         public string Abbreviation { get; set; }
         public string Colour { get; set; }
         public string Accent { get; set; }
-        public int Old { get; set; }       
+        public int Old { get; set; }
         public int Dev { get; set; }
         public int New { get; set; }
     }

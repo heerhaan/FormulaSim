@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FormuleCirkelEntity.DAL;
+﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -43,7 +43,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public IActionResult RacePreview(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -67,20 +67,21 @@ namespace FormuleCirkelEntity.Controllers
                     }
                     driverresults.Add(result);
                 }
-            } else
+            }
+            else
             {
                 return RedirectToAction("RaceWeekend", new { id });
             }
 
             _context.DriverResults.AddRange(driverresults);
             _context.SaveChanges();
-            
+
             return RedirectToAction("RaceWeekend", new { id });
         }
 
         public IActionResult RaceWeekend(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -94,10 +95,11 @@ namespace FormuleCirkelEntity.Controllers
 
             var result = _context.DriverResults.FirstOrDefault(r => r.RaceId == id);
 
-            if(result.Grid == 0)
+            if (result.Grid == 0)
             {
                 ViewBag.check = true;
-            } else
+            }
+            else
             {
                 ViewBag.check = false;
             }
@@ -146,7 +148,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 var driverLimit = GetQualifyingDriverLimit(source);
 
-                // Take the current result, then order descending to place highest score first, lowest score last. 
+                // Take the current result, then order descending to place highest score first, lowest score last.
                 // From the resulting ordered list, take the amount of drivers allowed to continue to the next qualifying round.
                 var qualificationResultsToUpdate = currentQualifyingResult
                     .OrderBy(q => q.Position)
@@ -156,7 +158,7 @@ namespace FormuleCirkelEntity.Controllers
                 foreach (var qualificationResult in qualificationResultsToUpdate)
                 {
                     var qualifyingDriver = drivers.Single(d => d.SeasonDriverId == qualificationResult.DriverId);
-                    qualificationResult.Score = GenerateDriverScore(qualifyingDriver);  
+                    qualificationResult.Score = GenerateDriverScore(qualifyingDriver);
                 }
 
                 var qualificationResults = qualificationResultsToUpdate.OrderByDescending(q => q.Score).ToList();
@@ -179,7 +181,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers)
+        private IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers)
         {
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
@@ -196,7 +198,7 @@ namespace FormuleCirkelEntity.Controllers
             return result;
         }
 
-        int GetQualifyingDriverLimit(string qualifyingStage)
+        private int GetQualifyingDriverLimit(string qualifyingStage)
         {
             //Limits should be flexible in accordance to entered drivers.
             const int Q1_LIMIT = 10;
@@ -210,7 +212,7 @@ namespace FormuleCirkelEntity.Controllers
             return Q1_LIMIT;
         }
 
-        int GenerateDriverScore(SeasonDriver driver)
+        private int GenerateDriverScore(SeasonDriver driver)
         {
             var result = 0;
             result += driver.Skill;
@@ -222,17 +224,17 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public IActionResult Return(int? id)
         {
-            if(id == null) { return BadRequest(); }
+            if (id == null) { return BadRequest(); }
 
             var qualyresult = _context.Qualification.Where(q => q.RaceId == id);
             var driverResults = _context.DriverResults.Where(d => d.RaceId == id).ToList();
 
             //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)
-            foreach(var result in qualyresult)
+            foreach (var result in qualyresult)
             {
                 var driver = driverResults.Single(d => d.RaceId == result.RaceId && d.SeasonDriverId == result.DriverId);
 
-                if(driver == null) { return StatusCode(500); }
+                if (driver == null) { return StatusCode(500); }
 
                 driver.Grid = result.Position.Value;
             }
@@ -241,7 +243,7 @@ namespace FormuleCirkelEntity.Controllers
 
             return RedirectToAction("RaceWeekend", new { id });
         }
-        
+
         public IActionResult Race()
         {
             return View();
