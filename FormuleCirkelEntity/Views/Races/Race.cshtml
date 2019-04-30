@@ -59,7 +59,7 @@
         $.each(res.DriverResults, (resultIndex, driverResult) => {
             let row = tableBody.children("tr[data-obj-id=" + driverResult.SeasonDriverId + "]");
             $.each(driverResult.StintResults, (stintKey, stintResult) => {
-                row.children("td[data-field=stintResult-" + stintKey + "]").html(resultOrMissing(stintResult);
+                row.children("td[data-field=stintResult-" + stintKey + "]").html(resultOrMissing(stintResult));
             });
         });
     }
