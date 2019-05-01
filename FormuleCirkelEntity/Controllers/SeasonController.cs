@@ -22,7 +22,13 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult Index()
         {
-            return View(_context.Seasons.ToList());
+            var seasons = _context.Seasons
+                .Include(s => s.Drivers)
+                    .ThenInclude(dr => dr.Driver)
+                .Include(s => s.Teams)
+                    .ThenInclude(t => t.Team)
+                .ToList();
+            return View(seasons);
         }
 
         public async Task<IActionResult> Create()
@@ -62,6 +68,32 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             return View(nameof(Detail), season);
+        }
+
+        // Page that displays certain statistics related to the selected season
+        public async Task<IActionResult> SeasonStats(int? id)
+        {
+            var season = await _context.Seasons
+                   .Include(s => s.Races)
+                   .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (season == null)
+                return NotFound();
+
+            return View();
+        }
+
+        // View to set up certain settings for the season in relation to races.
+        public async Task<IActionResult> SeasonSettings(int? id)
+        {
+            var season = await _context.Seasons
+                   .Include(s => s.Races)
+                   .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (season == null)
+                return NotFound();
+
+            return View();
         }
 
         public async Task<IActionResult> AddTracks(int? id)

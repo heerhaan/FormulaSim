@@ -7,14 +7,16 @@
 <h1>Coureurs</h1>
 
 <p>
-    <a asp-action="Create">Toevoegen</a>
+    <a asp-action="Create">
+        <img src="~/images/icon-add.png" width="30" height="30" title="Add"/>
+    </a>
 </p>
 <form method="post">
     <div class="form-actions no-color">
         <p>
             Zoek op naam:
             <input type="text" name="SearchString" value="@ViewData["SearchString"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
+            <input type="submit" value="Zoek" class="btn btn-dark" />
             <a asp-page="/Drivers/Index">Terug naar volledige lijst</a>
         </p>
     </div>
@@ -32,6 +34,8 @@
                 Afkorting
             </th>
             <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -47,9 +51,19 @@
                 @Html.DisplayFor(modelItem => item.Abbreviation)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.DriverId">Aanpassen</a> |
-                <a asp-action="Stats" asp-route-id="@item.DriverId">Stats</a> |
-                <a asp-action="Delete" asp-route-id="@item.DriverId">Verwijderen</a>
+                <a asp-action="Edit" asp-route-id="@item.DriverId">
+                    <img src="~/images/icon-edit.png" width="30" height="30" title="Edit"/>
+                </a>
+            </td>
+            <td>
+                <a asp-action="Stats" asp-route-id="@item.DriverId">
+                    <img src="~/images/icon-stats.png" width="30" height="30" title="Stats"/>
+                </a>
+            </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.DriverId">
+                    <img src="~/images/icon-trash.png" width="30" height="30" title="Delete"/>
+                </a>
             </td>
         </tr>
 }

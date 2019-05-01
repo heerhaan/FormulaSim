@@ -7,7 +7,9 @@
 <h1>Teams</h1>
 
 <p>
-    <a asp-action="Create">Voeg team toe</a>
+    <a asp-action="Create">
+        <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
+    </a>
 </p>
 <table class="table table-striped  ">
     <thead>
@@ -18,6 +20,8 @@
             <th>
                 Afkorting
             </th>
+            <th></th>
+            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -32,9 +36,19 @@
                     @Html.DisplayFor(modelItem => item.Abbreviation)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.TeamId">Aanpassen</a> |
-                    <a asp-action="Stats" asp-route-id="@item.TeamId">Stats</a> |
-                    <a asp-action="Delete" asp-route-id="@item.TeamId">Verwijderen</a>
+                    <a asp-action="Edit" asp-route-id="@item.TeamId">
+                        <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Stats" asp-route-id="@item.TeamId">
+                        <img src="~/images/icon-stats.png" width="30" height="30" title="Stats" />
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.TeamId">
+                        <img src="~/images/icon-trash.png" width="30" height="30" title="Delete" />
+                    </a>
                 </td>
             </tr>
         }
