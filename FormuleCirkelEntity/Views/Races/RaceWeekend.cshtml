@@ -5,31 +5,40 @@
 }
 
 <h1>@Model.Name</h1>
-<br />
-<div>
-    <h5>Kwalificatie | Deelnemers</h5>
-    <ol>
-        @foreach(var driver in Model.DriverResults.Select(d => d.SeasonDriver))
-        {
-            <li>@driver.Driver.Name | @driver.SeasonTeam.Team.Name</li>
-        }
-    </ol>
-    <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Kwalificatie</a>
-</div>
 
-<div>
-    <h5>Circuit informatie</h5>
-    <dl>
-        <dt>Lengte</dt>
-        <dd>3 KM</dd>
-        <dt>Weer</dt>
-        <dd>Droog</dd>
-        <dt>Vorige winnaar</dt>
-        <dd>Karel Trommel</dd>
-    </dl>
-</div>
+<section class="row my-1">
+    <div>
+        <h5>Kwalificatie | Deelnemers</h5>
+        <ol>
+            @foreach (var driver in Model.DriverResults.Select(dr => dr.SeasonDriver))
+            {
+                <li class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;display:list-item;">
+                    @driver.Driver.Name | @driver.SeasonTeam.Team.Name
+                </li>
+            }
+        </ol>
 
-<div>
-    <h5>Race</h5>
-    <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Race</a>
-</div>
+        <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Kwalificatie</a>
+    </div>
+</section>
+
+<section class="row my-1">
+    <div>
+        <h5>Circuit informatie</h5>
+        <dl>
+            <dt>Lengte</dt>
+            <dd>3 KM</dd>
+            <dt>Weer</dt>
+            <dd>Droog</dd>
+            <dt>Vorige winnaar</dt>
+            <dd>Karel Trommel</dd>
+        </dl>
+    </div>
+</section>
+
+<section class="row my-1">
+    <div>
+        <h5>Race</h5>
+        <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Race</a>
+    </div>
+</section>

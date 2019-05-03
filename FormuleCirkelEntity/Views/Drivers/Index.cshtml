@@ -7,16 +7,26 @@
 <h1>Coureurs</h1>
 
 <p>
-    <a asp-action="Create">Voeg coureur toe</a>
+    <a asp-action="Create">Toevoegen</a>
 </p>
+<form method="post">
+    <div class="form-actions no-color">
+        <p>
+            Zoek op naam:
+            <input type="text" name="SearchString" value="@ViewData["SearchString"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-page="/Drivers/Index">Terug naar volledige lijst</a>
+        </p>
+    </div>
+</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Racenummer
+                @Html.ActionLink("Nummer", "Index", new { sortOrder = @ViewData["SortNumber"] })
             </th>
             <th>
-                Naam
+                @Html.ActionLink("Naam", "Index", new { sortOrder = @ViewData["SortName"] })
             </th>
             <th>
                 Afkorting
@@ -37,9 +47,9 @@
                 @Html.DisplayFor(modelItem => item.Abbreviation)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.DriverId">Edit</a> |
+                <a asp-action="Edit" asp-route-id="@item.DriverId">Aanpassen</a> |
                 <a asp-action="Stats" asp-route-id="@item.DriverId">Stats</a> |
-                <a asp-action="Delete" asp-route-id="@item.DriverId">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.DriverId">Verwijderen</a>
             </td>
         </tr>
 }

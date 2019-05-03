@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public enum Status { Finished, DNF, DSQ}
+    public enum Status { Finished, DNF, DSQ }
+
     public class DriverResult
     {
         public DriverResult()

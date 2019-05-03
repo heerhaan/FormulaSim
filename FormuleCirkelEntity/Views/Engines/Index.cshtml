@@ -9,10 +9,12 @@
         <h1>Motoren</h1>
     </header>
     <section class="row btn-group">
-        <a asp-action="Create" class="btn btn-primary">Toevoegen</a>
+        <p>
+            <a asp-action="Create">Toevoegen</a>
+        </p>
     </section>
     <section>
-        <table class="table">
+        <table class="table table-striped  ">
             <thead>
                 <tr>
                     <th>Naam</th>
@@ -29,7 +31,7 @@
                         <td>@Html.DisplayFor(modelItem => item.Power)</td>
                         <td>@Html.DisplayFor(modelItem => item.Available)</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.EngineId">Edit</a>
+                            <a asp-action="Edit" asp-route-id="@item.EngineId">Edit</a> |
                             <a asp-action="Delete" asp-route-id="@item.EngineId">Delete</a>
                         </td>
                     </tr>

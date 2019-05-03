@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace FormuleCirkelEntity.Controllers
     public class SeasonController : Controller
     {
         private readonly FormulaContext _context;
+        private static readonly Random rng = new Random();
 
         public SeasonController(FormulaContext context)
         {
@@ -310,5 +312,204 @@ namespace FormuleCirkelEntity.Controllers
                 return View("AddOrUpdateDriver", driver);
             }
         }
+
+        public IActionResult DriverDev()
+        {
+            return View(_context.SeasonDrivers
+                .Include(t => t.SeasonTeam)
+                    .ThenInclude(t => t.Team)
+                .Include(d => d.Driver)
+                .OrderBy(s => s.SeasonTeam.Team.Name).ToList());
+        }
+
+        //Receives development values and saves them in the DB
+        [HttpPost]
+        public IActionResult SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
+        {
+            var drivers = _context.SeasonDrivers;
+            foreach (var driverdev in dev)
+            {
+                var driver = drivers.First(d => d.SeasonDriverId == driverdev.Id);
+                driver.Skill = driverdev.Newdev;
+            }
+            _context.UpdateRange(drivers);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(DriverDev));
+        }
+
+        public IActionResult TeamDev()
+        {
+            return View(_context.SeasonTeams
+                .Include(t => t.Team)
+                .OrderBy(t => t.Team.Name).ToList());
+        }
+
+        //Receives development values and saves them in the DB
+        [HttpPost]
+        public IActionResult SaveTeamDev([FromBody]IEnumerable<GetDev> dev)
+        {
+            var teams = _context.SeasonTeams;
+            foreach (var teamdev in dev)
+            {
+                var team = teams.First(t => t.SeasonTeamId == teamdev.Id);
+                team.Chassis = teamdev.Newdev;
+            }
+            _context.UpdateRange(teams);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(TeamDev));
+        }
+
+        public IActionResult EngineDev()
+        {
+            return View(_context.Engines.Where(e => e.Available == true).ToList());
+        }
+
+        //Receives development values and saves them in the DB
+        [HttpPost]
+        public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
+        {
+            var engines = _context.Engines.Where(e => e.Available == true);
+            foreach (var enginedev in dev)
+            {
+                var engine = engines.First(e => e.EngineId == enginedev.Id);
+                engine.Power = enginedev.Newdev;
+            }
+            _context.UpdateRange(engines);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(EngineDev));
+        }
+
+        [HttpGet]
+        public IActionResult Development(int min, int max, string source)
+        {
+            if (source == null)
+                return BadRequest();
+
+            try
+            {
+                List<DevelopingValues> devlist = new List<DevelopingValues>();
+                switch (source)
+                {
+                    case "driver":
+                        devlist = DriverDevList(min, max);
+                        break;
+
+                    case "engine":
+                        devlist = EngineDevList(min, max);
+                        break;
+
+                    case "team":
+                        devlist = TeamDevList(min, max);
+                        break;
+                }
+                return new JsonResult(devlist);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        public List<DevelopingValues> DriverDevList(int min, int max)
+        {
+            var devlist = new List<DevelopingValues>();
+            var drivers = _context.SeasonDrivers
+                .Include(t => t.SeasonTeam)
+                    .ThenInclude(t => t.Team)
+                .Include(d => d.Driver)
+                .OrderBy(s => s.SeasonTeam.Team.Name).ToList();
+
+            //Adds each driver in Season to list and adds development
+            foreach (var driver in drivers)
+            {
+                int dev = rng.Next(min, max + 1);
+
+                devlist.Add(new DevelopingValues
+                {
+                    Id = driver.SeasonDriverId,
+                    Name = driver.Driver.Name,
+                    Number = driver.Driver.DriverNumber,
+                    Abbreviation = driver.SeasonTeam.Team.Abbreviation,
+                    Colour = driver.SeasonTeam.Team.Colour,
+                    Accent = driver.SeasonTeam.Team.Accent,
+                    Old = driver.Skill,
+                    Dev = dev,
+                    New = driver.Skill + dev
+                });
+            }
+            return devlist;
+        }
+
+        public List<DevelopingValues> EngineDevList(int min, int max)
+        {
+            var devlist = new List<DevelopingValues>();
+            var engines = _context.Engines.Where(e => e.Available == true).ToList();
+
+            //Adds each driver in Season to list and adds development
+            foreach (var engine in engines)
+            {
+                int dev = rng.Next(min, max + 1);
+
+                devlist.Add(new DevelopingValues
+                {
+                    Id = engine.EngineId,
+                    Name = engine.Name,
+                    Old = engine.Power,
+                    Dev = dev,
+                    New = engine.Power + dev
+                });
+            }
+            return devlist;
+        }
+
+        public List<DevelopingValues> TeamDevList(int min, int max)
+        {
+            var devlist = new List<DevelopingValues>();
+
+            var teams = _context.SeasonTeams
+                .Include(t => t.Team)
+                .OrderBy(t => t.Team.Name).ToList();
+
+            //Adds each driver in Season to list and adds development
+            foreach (var team in teams)
+            {
+                int dev = rng.Next(min, max + 1);
+
+                devlist.Add(new DevelopingValues
+                {
+                    Id = team.TeamId,
+                    Name = team.Team.Name,
+                    Abbreviation = team.Team.Abbreviation,
+                    Colour = team.Team.Colour,
+                    Accent = team.Team.Accent,
+                    Old = team.Chassis,
+                    Dev = dev,
+                    New = team.Chassis + dev
+                });
+            }
+            return devlist;
+        }
+    }
+
+    public class DevelopingValues
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int Number { get; set; }
+        public string Abbreviation { get; set; }
+        public string Colour { get; set; }
+        public string Accent { get; set; }
+        public int Old { get; set; }
+        public int Dev { get; set; }
+        public int New { get; set; }
+    }
+
+    public class GetDev
+    {
+        public int Id { get; set; }
+        public int Newdev { get; set; }
     }
 }

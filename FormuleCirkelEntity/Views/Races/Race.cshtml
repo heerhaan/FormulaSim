@@ -21,11 +21,11 @@
                 <th>Nummer</th>
                 <th>Naam</th>
                 <th>Team</th>
-                <th data-field="pointsTotal">Puntentotaal</th>
                 @foreach (var stint in Model.Stints)
                 {
                     <th data-field="stintResultHeader-@stint.Key">@stint.Key</th>
                 }
+                <th data-field="pointsTotal">Puntentotaal</th>
             </tr>
         </thead>
         <tbody>
@@ -36,7 +36,6 @@
                 <td data-field="driverNumber">@driverResult.SeasonDriver.Driver.DriverNumber</td>
                 <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
                 <td data-field="teamName">@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
-                <td data-field="pointsTotal">@driverResult.Points</td>
                 @foreach (var stint in Model.Stints)
                 {
                     var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
@@ -46,6 +45,7 @@
                     }
                     <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
                 }
+                <td data-field="pointsTotal">@driverResult.Points</td>
             </tr>
             }
         </tbody>

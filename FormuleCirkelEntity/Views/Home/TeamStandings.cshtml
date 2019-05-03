@@ -32,41 +32,41 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @position
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Team.Name)
-            </td>
-            @foreach (var round in rounds)
-            {
+            <tr>
                 <td>
-                    @foreach (var driver in item.SeasonDrivers)
-                    {
-                        DriverResult result = driver.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
-                        if (result == null || result.Position == 0)
+                    @position
+                </td>
+                <td class="badge" style="background-color:@(item.Team.Colour);color:@(item.Team.Accent);font-size:1rem;display:block;">
+                    @Html.DisplayFor(modelItem => item.Team.Name)
+                </td>
+                @foreach (var round in rounds)
+                {
+                    <td>
+                        @foreach (var driver in item.SeasonDrivers)
                         {
-                            <p>?</p>
-                        }
-                        else
-                        {
-                            if (result.Status == Status.DNF)
+                            DriverResult result = driver.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
+                            if (result == null || result.Position == 0)
                             {
-                                <td class="table table-danger">DNF</td>
+                                <p>?</p>
                             }
                             else
                             {
-                                <td>@result.Position</td>
+                                if (result.Status == Status.DNF)
+                                {
+                                    <p class="bg-danger">DNF</p>
+                                }
+                                else
+                                {
+                                    <p>@result.Position</p>
+                                }
                             }
                         }
-                    }
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.Points)
                 </td>
-            }
-            <td>
-                @Html.DisplayFor(modelItem => item.Points)
-            </td>
-        </tr>
+            </tr>
             position++;
         }
     </tbody>

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Aanpassen</h1>
 
 <h4>Team</h4>
 <hr />
@@ -24,6 +24,14 @@
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Colour" class="control-label"></label>
+                <input asp-for="Colour" type="color" value="@(Model.Colour)" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Accent" class="control-label"></label>
+                <input asp-for="Accent" type="color" value="@(Model.Accent)" class="form-control" />
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -31,7 +39,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar lijst</a>
 </div>
 
 @section Scripts {

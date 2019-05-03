@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Models;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -51,7 +48,7 @@ namespace FormuleCirkelEntity.Controllers
         // POST: Teams/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TeamId,Name,Abbreviation")] Team team)
+        public async Task<IActionResult> Create([Bind("TeamId,Name,Abbreviation,Colour,Accent")] Team team)
         {
             if (ModelState.IsValid)
             {
@@ -81,7 +78,7 @@ namespace FormuleCirkelEntity.Controllers
         // POST: Teams/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TeamId,Name,Abbreviation")] Team team)
+        public async Task<IActionResult> Edit(int id, [Bind("TeamId,Name,Abbreviation,Colour,Accent")] Team team)
         {
             if (id != team.TeamId)
             {

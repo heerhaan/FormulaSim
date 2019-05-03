@@ -179,8 +179,10 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying")]
-        public IActionResult Qualifying()
+        public IActionResult Qualifying(int id, int raceId)
         {
+            var race = _context.Races.Single(r => r.RaceId == raceId);
+            ViewBag.race = race;
             return View();
         }
 
@@ -248,14 +250,17 @@ namespace FormuleCirkelEntity.Controllers
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
             {
+                //TODO: dynamically add the next Race
                 result.Add(new Qualification()
-                {
-                    DriverId = driver.SeasonDriverId,
-                    RaceId = 1,
-                    TeamName = driver.SeasonTeam.Team.Name,
-                    DriverName = driver.Driver.Name,
-                    Score = 0
-                });
+                    {
+                        DriverId = driver.SeasonDriverId,
+                        RaceId = 1,
+                        TeamName = driver.SeasonTeam.Team.Name,
+                        Colour = driver.SeasonTeam.Team.Colour,
+                        Accent = driver.SeasonTeam.Team.Accent,
+                        DriverName = driver.Driver.Name,
+                        Score = 0
+                    });
             }
             return result;
         }
@@ -275,10 +280,33 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Return()
+        public IActionResult Return(int? id, int? raceId)
         {
-            //Also should save the result of Qualification to the Grid value of DriverResults (after penalties are applied?)
-            return RedirectToAction("RaceWeekend", new { id = 1 });
+            if(id == null || raceId == null)
+            {
+                return BadRequest();
+            }
+
+            IQueryable<Qualification> qualyresult = _context.Qualification.Where(q => q.RaceId == raceId);
+            List<DriverResult> driverResults = _context.DriverResults.Where(d => d.RaceId == raceId).ToList();
+
+            //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)
+            foreach(Qualification result in qualyresult)
+            {
+                DriverResult driver = driverResults.Single(d => d.RaceId == result.RaceId &&
+                    d.SeasonDriverId == result.DriverId);
+
+                if(driver == null)
+                {
+                    return StatusCode(500);
+                }
+
+                driver.Grid = result.Position.Value;
+            }
+            _context.UpdateRange(driverResults);
+            _context.SaveChanges();
+
+            return RedirectToAction("RaceWeekend", new { id, raceId });
         }
     }
 }

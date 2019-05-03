@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Guard.Net" Version="1.2.0" />
+    <PackageReference Include="FluentValidation" Version="8.2.3" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
@@ -21,6 +23,11 @@
 
   <ItemGroup>
     <None Include="wwwroot\images\FormuleCirkeltrekLogo.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>

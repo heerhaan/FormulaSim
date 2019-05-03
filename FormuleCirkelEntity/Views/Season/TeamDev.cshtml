@@ -1,0 +1,98 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonTeam>
+
+@{
+    ViewData["Title"] = "Team development";
+}
+
+<h1>Team ontwikkeling</h1>
+
+<section>
+
+    <input id="min" type="number" placeholder="Min. RNG" />
+    <input id="max" type="number" placeholder="Max. RNG" />
+    <button id="develop" class="btn btn-dark">Ontwikkel</button>
+
+    <table class="table table-striped  ">
+        <thead>
+            <tr>
+                <th>Team</th>
+                <th>Afkorting</th>
+                <th>Oud</th>
+                <th>Verschil</th>
+                <th>Nieuw</th>
+            </tr>
+        </thead>
+        <tbody id="devtable">
+            @{
+                foreach (var team in Model)
+                {
+                    <tr>
+                        <td>@team.Team.Name</td>
+                        <td class="badge" style="background-color:@(team.Team.Colour);
+                            color:@(team.Team.Accent);font-size:1rem;display:block;">
+                            @team.Team.Abbreviation
+                        </td>
+                        <td>@team.Chassis</td>
+                        <td>?</td>
+                        <td>?</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button id="save" class="btn btn-dark">Opslaan</button>
+</section>
+
+<script>
+    $(document).ready(function () {
+        $("#save").hide();
+        $('#develop').click(function () {
+            $.ajax({
+                url: "/Season/Development",
+                type: "GET",
+                data: {
+                    min: document.getElementById("min").value,
+                    max: document.getElementById("max").value,
+                    source: "team"
+                },
+                success: function (teams) {
+                    $("#devtable").empty();
+                    $.each(teams, function (index, team) {
+                        var row = "<tr><td>" + team.name + "</td><td class='badge' style='background-color:" + team.colour + ";color:"
+                            + team.accent + ";font-size:1rem;display:table-cell;'>" + team.abbreviation + "</td><td>" + team.old + "</td><td>"
+                            + team.dev + "</td><td id='new'>" + team.new + "</td><td id='id' style='display:none;'>" + team.id + "</td></tr>";
+                        $("#devtable").append(row);
+                        $("#save").show();
+                    });
+                }
+            });
+        });
+        $("#save").click(function () {
+            var teams = new Array();
+            $("#devtable TR").each(function () {
+                var row = $(this);
+                var team = {};
+                team.id = row.find("TD").eq(5).html();
+                team.newdev = row.find("TD").eq(4).html();
+                teams.push(team);
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Season/SaveTeamDev",
+                headers: {
+                    'Accept': 'application/html',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(teams),
+                dataType: "json",
+                complete: function (result) {
+                    if (result.responseText) {
+                        $('head').html(result.responseJSON);
+                        $('body').html(result.responseText);
+                    }
+                }
+            });
+        });
+    });
+</script>
