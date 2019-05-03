@@ -53,41 +53,41 @@
 <script>
     const intMin = -2147483648;
     const table = document.querySelector('#results');
+    const tableBody = table.querySelector("tbody");
 
     function resultOrMissing(result) {
         return (result == intMin ? "-" : result);
     }
 
     function processStintResponse(res) {
-        let tableBody = $("#results").children("tbody");
-        $.each(res.DriverResults, (resultIndex, driverResult) => {
-            let row = tableBody.children("tr[data-obj-id=" + driverResult.SeasonDriverId + "]");
-            row.children("td[data-field=pointsTotal]").html(driverResult.Points);
-            $.each(driverResult.StintResults, (stintKey, stintResult) => {
-                row.children("td[data-field=stintResult-" + stintKey + "]").html(resultOrMissing(stintResult));
+        res.DriverResults.forEach((driverResult, idx) => {
+            let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
+            row.querySelector("td[data-field='pointsTotal']").innerText = driverResult.Points;
+
+            Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
+                let stintResult = driverResult.StintResults[stintKey];
+                row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);
             });
         });
 
-        let th = table.querySelector("th[data-field=pointsTotal]")
-        var tableRows = table.querySelector("tbody").querySelectorAll("tr:nth-child(n+1)")
+        let th = table.querySelector("th[data-field='pointsTotal']")
+        let tableRows = tableBody.querySelectorAll("tr:nth-child(n+1)")
         Array.from(tableRows)
             .sort(comparer(Array.from(th.parentNode.children).indexOf(th), false))
             .forEach(tr => table.querySelector("tbody").appendChild(tr));
     }
 
     function advanceStint() {
-        $.ajax({
-            url: "/Season/@Model.SeasonId/Races/@Model.RaceId/Advance",
-            type: "POST",
-            success: processStintResponse
-        });
+        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/Advance", { method: "POST" })
+            .then(response => response.json())
+            .then(result => processStintResponse(result));
     }
 
     function comparer(index, isAscending) {
         let getCellValue = (row, idx) => row.children[idx].innerText || row.children[idx].textContent;
         let isNumber = (val) => val !== '' && !isNaN(val);
         return function (a, b) {
-            var valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
+            let valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
             return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
         }
     }
