@@ -17,6 +17,7 @@
     <table id="results" class="table table-striped">
         <thead>
             <tr>
+                <th>Positie</th>
                 <th>Nummer</th>
                 <th>Naam</th>
                 <th>Team</th>
@@ -31,6 +32,7 @@
             @foreach (var driverResult in Model.DriverResults.OrderByDescending(d => d.Points))
             {
             <tr data-obj-id="@driverResult.SeasonDriverId">
+                <td data-field="position">@driverResult.Position</td>
                 <td data-field="driverNumber">@driverResult.SeasonDriver.Driver.DriverNumber</td>
                 <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
                 <td data-field="teamName">@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
@@ -63,7 +65,7 @@
         res.DriverResults.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
             row.querySelector("td[data-field='pointsTotal']").innerText = driverResult.Points;
-
+            row.querySelector("td[data-field='position']").innerText = driverResult.Position;
             Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
                 let stintResult = driverResult.StintResults[stintKey];
                 row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);

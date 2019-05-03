@@ -158,10 +158,13 @@ namespace FormuleCirkelEntity.Controllers
                 // A MinValue result indicates a DNF result.
                 if (stintResult == int.MinValue)
                     result.Status = Status.DNF;
-
-                _context.Update(result);
             }
 
+            var orderedResults = race.DriverResults.OrderByDescending(d => d.Points).ToList();
+            foreach (var result in orderedResults)
+                result.Position = orderedResults.IndexOf(result) + 1;
+
+            _context.UpdateRange(race.DriverResults);
             await _context.SaveChangesAsync();
 
             // Clean up unneeded large reference properties to prevent them from being serialized and sent over HTTP.
