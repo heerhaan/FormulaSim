@@ -33,5 +33,7 @@
             </section>
         </form>
     </section>
-    <a asp-action="Detail" asp-route-id="@Model.Season.SeasonId">Terug naar seizoen</a>
+    <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+        <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+    </a>
 </section>

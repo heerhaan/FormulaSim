@@ -14,10 +14,11 @@
 <form method="post">
     <div class="form-actions no-color">
         <p>
-            Zoek op naam:
-            <input type="text" name="SearchString" value="@ViewData["SearchString"]" />
+            <input type="text" placeholder="Naam" name="SearchString" value="@ViewData["SearchString"]" />
             <input type="submit" value="Zoek" class="btn btn-dark" />
-            <a asp-page="/Drivers/Index">Terug naar volledige lijst</a>
+            <a asp-page="/Drivers/Index">
+                <img src="~/images/icon-revert.png" width="30" height="30" title="Revert"/>
+            </a>
         </p>
     </div>
 </form>
@@ -25,10 +26,10 @@
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Nummer", "Index", new { sortOrder = @ViewData["SortNumber"] })
+                Nummer
             </th>
             <th>
-                @Html.ActionLink("Naam", "Index", new { sortOrder = @ViewData["SortName"] })
+                Naam
             </th>
             <th>
                 Afkorting

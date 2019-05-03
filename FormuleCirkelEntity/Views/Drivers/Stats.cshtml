@@ -1,4 +1,4 @@
-﻿@model FormuleCirkelEntity.Models.Driver
+﻿@model FormuleCirkelEntity.ViewModels.DriverStatsModel
 
 @{
     ViewData["Title"] = "Stats";
@@ -7,29 +7,46 @@
 <h1>Stats</h1>
 
 <div>
-    <h4>Coureur</h4>
+    <h4>@Model.Driver.Name</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            Nummer
+        <dt class="col-sm-2">
+            Aantal starts:
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DriverNumber)
+        <dd class="col-sm-10">
+            @Model.DriverResults.Count()
         </dd>
-        <dt class = "col-sm-2">
-            Naam
+        <dt class="col-sm-2">
+            Aantal poles:
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+        <dd class="col-sm-10">
+            @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
         </dd>
-        <dt class = "col-sm-2">
-            Afkorting
+        <dt class="col-sm-2">
+            Aantal winsten:
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Abbreviation)
+        <dd class="col-sm-10">
+            @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
         </dd>
+        <dt class="col-sm-2">
+            Aantal DNFs:
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
+        </dd>
+        <dt class="col-sm-2">
+            Teams:
+        </dt>
+        @foreach (var team in Model.Driver.SeasonDrivers)
+        {
+            <dd class="col-sm-10">
+                @(team.SeasonTeam.Team.Name)
+            </dd>
+        }
     </dl>
 </div>
 <div>
-    <a asp-action="Index">Terug naar lijst</a>
+    <a asp-action="Index">
+        <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+    </a>
 </div>

@@ -77,6 +77,8 @@ namespace FormuleCirkelEntity.Controllers
                    .Include(s => s.Races)
                    .SingleOrDefaultAsync(s => s.SeasonId == id);
 
+            ViewBag.seasonId = id;
+
             if (season == null)
                 return NotFound();
 
@@ -89,6 +91,8 @@ namespace FormuleCirkelEntity.Controllers
             var season = await _context.Seasons
                    .Include(s => s.Races)
                    .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            ViewBag.seasonId = id;
 
             if (season == null)
                 return NotFound();
@@ -382,7 +386,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        public IActionResult DriverDev()
+        public IActionResult DriverDev(int id)
         {
             return View(_context.SeasonDrivers
                 .Include(t => t.SeasonTeam)
@@ -407,7 +411,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(DriverDev));
         }
 
-        public IActionResult TeamDev()
+        public IActionResult TeamDev(int id)
         {
             return View(_context.SeasonTeams
                 .Include(t => t.Team)
@@ -430,7 +434,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(TeamDev));
         }
 
-        public IActionResult EngineDev()
+        public IActionResult EngineDev(int id)
         {
             return View(_context.Engines.Where(e => e.Available == true).ToList());
         }
