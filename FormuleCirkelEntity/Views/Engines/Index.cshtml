@@ -5,12 +5,12 @@
 }
 
 <section>
-    <header class="row">
-        <h1>Motoren</h1>
-    </header>
-    <section class="row btn-group">
+    <h1>Motoren</h1>
+    <section>
         <p>
-            <a asp-action="Create">Toevoegen</a>
+            <a asp-action="Create">
+                <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
+            </a>
         </p>
     </section>
     <section>
@@ -20,6 +20,7 @@
                     <th>Naam</th>
                     <th>Kracht</th>
                     <th>Beschikbaar</th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
@@ -31,8 +32,14 @@
                         <td>@Html.DisplayFor(modelItem => item.Power)</td>
                         <td>@Html.DisplayFor(modelItem => item.Available)</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.EngineId">Edit</a> |
-                            <a asp-action="Delete" asp-route-id="@item.EngineId">Delete</a>
+                            <a asp-action="Edit" asp-route-id="@item.EngineId">
+                                <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.EngineId">
+                                <img src="~/images/icon-trash.png" width="30" height="30" title="Delete" />
+                            </a>
                         </td>
                     </tr>
                 }

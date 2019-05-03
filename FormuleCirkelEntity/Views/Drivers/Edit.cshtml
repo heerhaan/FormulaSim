@@ -6,7 +6,6 @@
 
 <h1>Aanpassen</h1>
 
-<h4>Coureur</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -29,14 +28,16 @@
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Opslaan" class="btn btn-primary" />
+                <input type="submit" value="Opslaan" class="btn btn-dark" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Terug naar lijst</a>
+    <a asp-action="Index">
+        <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+    </a>
 </div>
 
 @section Scripts {

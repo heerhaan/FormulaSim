@@ -43,7 +43,7 @@ namespace FormuleCirkelEntity
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
-            services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
+            services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]).EnableSensitiveDataLogging());
             services.AddSingleton(new Random());
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();

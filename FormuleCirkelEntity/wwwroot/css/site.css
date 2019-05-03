@@ -19,15 +19,35 @@ body.dark {
     body.dark table tbody > tr:nth-child(odd) > th {
         background: #282c34
     }
+
     body.dark table thead th {
         border-bottom-color: #bd2130
     }
+
     body.dark table th {
         border-top-color: #bd2130
     }
+
     body.dark table td {
         border-top-color: #bd2130
     }
+
+.hero-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/DavidBeckmannCorner.jpg');
+    height: 550px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    vertical-align: auto;
+}
+
+.hero-text {
+    text-align: center;
+    position: center;
+    color: white;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+}
 
 /* Sticky footer styles
 -------------------------------------------------- */
@@ -42,11 +62,11 @@ html {
 }
 
 .border-top {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #bd2130 !important;
 }
 
 .border-bottom {
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #bd2130 !important;
 }
 
 .box-shadow {

@@ -7,7 +7,7 @@
 </section>
 
 <section class="row btn-group my-1">
-    <a class="btn btn-primary" asp-action="Create">Nieuw seizoen</a>
+    <a class="btn btn-dark" asp-action="Create">Nieuw seizoen</a>
 </section>
 
 <section class="row my-1">
@@ -18,16 +18,41 @@
                 <th>Coureurleider</th>
                 <th>Teamleider</th>
                 <th></th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
+                var topDriver = item.Drivers.OrderByDescending(d => d.Points).First();
+                var topTeam = item.Teams.OrderByDescending(t => t.Points).First();
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.SeasonId)</td>
-                    <td>TBD</td>
-                    <td>TBD</td>
-                    <td><a asp-action="Detail" asp-route-id="@item.SeasonId">Details</a></td>
+                    @if(topDriver == null || topTeam == null)
+                    {
+                        <td>X</td>
+                        <td>X</td>
+                    } else
+                    {
+                        <td>@topDriver.Driver.Name</td>
+                        <td>@topTeam.Team.Name</td>
+                    }
+                    <td>
+                        <a asp-action="Detail" asp-route-id="@item.SeasonId">
+                            <img src="~/images/icon-inspect.png" width="30" height="30" title="Detail" />
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="SeasonStats" asp-route-id="@item.SeasonId">
+                            <img src="~/images/icon-stats.png" width="30" height="30" title="Stats" />
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="SeasonSettings" asp-route-id="@item.SeasonId">
+                            <img src="~/images/icon-cog.png" width="30" height="30" title="Settings" />
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>

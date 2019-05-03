@@ -25,9 +25,4 @@
     <None Include="wwwroot\images\FormuleCirkeltrekLogo.png" />
   </ItemGroup>
 
-
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
 </Project>

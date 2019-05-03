@@ -7,7 +7,9 @@
 <h1>Circuits</h1>
 
 <p>
-    <a asp-action="Create">Toevoegen</a>
+    <a asp-action="Create">
+        <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
+    </a>
 </p>
 <table class="table table-striped">
     <thead>
@@ -27,6 +29,7 @@
             <th>
                 Specificatie
             </th>
+            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -50,8 +53,14 @@
                     @Html.DisplayFor(modelItem => item.Specification)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.TrackId">Aanpassen</a> |
-                    <a asp-action="Delete" asp-route-id="@item.TrackId">Verwijderen</a>
+                    <a asp-action="Edit" asp-route-id="@item.TrackId">
+                        <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.TrackId">
+                        <img src="~/images/icon-trash.png" width="30" height="30" title="Delete" />
+                    </a>
                 </td>
             </tr>
         }
