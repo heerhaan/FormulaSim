@@ -19,7 +19,7 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResult">The partial <see cref="DriverResult"/> from which to derive certain modifiers.</param>
         /// <param name="stint">The <see cref="Stint"/> supplying the modifiers to use.</param>
         /// <returns>A <see cref="int"/> points value, or <see cref="int.MinValue"/> if a DNF result occured.</returns>
-        public int GetStintResult(DriverResult driverResult, Stint stint)
+        public int? GetStintResult(DriverResult driverResult, Stint stint)
         {
             // Add one because Random.Next() has an exclusive upper bound.
             var result = _rng.Next(stint.RNGMinimum, stint.RNGMaximum + 1);
@@ -44,7 +44,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             {
                 var reliablityResult = GetDriverReliabilityResult(driverResult.SeasonDriver);
                 if (reliablityResult == -1)
-                    return int.MinValue;
+                    return null;
                 else if (reliablityResult == 0)
                     result += -15;
             }

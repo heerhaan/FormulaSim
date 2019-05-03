@@ -108,7 +108,6 @@ namespace FormuleCirkelEntity.Controllers
                 _context.DriverResults.AddRange(race.DriverResults);
                 _context.SaveChanges();
             }
-
             
             return RedirectToAction("RaceWeekend", new { id, raceId });
         }
@@ -153,10 +152,10 @@ namespace FormuleCirkelEntity.Controllers
             {
                 var stintResult = _resultGenerator.GetStintResult(result, stint);
                 result.StintResults.Add(race.StintProgress, stintResult);
-                result.Points = result.StintResults.Sum(sr => sr.Value);
+                result.Points = result.StintResults.Sum(sr => sr.Value ?? -999);
 
-                // A MinValue result indicates a DNF result.
-                if (stintResult == int.MinValue)
+                // A null result indicates a DNF result.
+                if (stintResult == null)
                     result.Status = Status.DNF;
             }
 

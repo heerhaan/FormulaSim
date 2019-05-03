@@ -40,11 +40,11 @@
                 @foreach (var stint in Model.Stints)
                 {
                     var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
-                    if (stintResult.Equals(default(KeyValuePair<int, int>)))
+                    if (stintResult.Equals(default(KeyValuePair<int, int?>)))
                     {
-                        stintResult = new KeyValuePair<int, int>(stint.Key, int.MinValue);
+                        stintResult = new KeyValuePair<int, int?>(stint.Key, null);
                     }
-                    <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == int.MinValue ? "-" : stintResult.Value.ToString())</td>
+                    <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
                 }
             </tr>
             }

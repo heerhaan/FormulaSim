@@ -11,7 +11,7 @@ namespace FormuleCirkelEntity.Models
     {
         public DriverResult()
         {
-            StintResults = new Dictionary<int, int>();
+            StintResults = new Dictionary<int, int?>();
         }
 
         [Key]
@@ -23,7 +23,7 @@ namespace FormuleCirkelEntity.Models
         [EnumDataType(typeof(Status))]
         public Status Status { get; set; }
 
-        public IDictionary<int, int> StintResults { get; set; }
+        public IDictionary<int, int?> StintResults { get; set; }
 
         public int SeasonDriverId { get; set; }
         public SeasonDriver SeasonDriver { get; set; }
