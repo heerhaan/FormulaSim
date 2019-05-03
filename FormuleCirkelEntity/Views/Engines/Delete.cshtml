@@ -11,10 +11,10 @@
     <h4>Engine</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
     </dl>
@@ -25,3 +25,6 @@
         <a asp-action="Index">Terug naar lijst</a>
     </form>
 </div>
+<a asp-action="Index">
+    <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+</a>

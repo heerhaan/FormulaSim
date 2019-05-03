@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,32 +19,17 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // GET: Drivers
-        public IActionResult Index(string sortOrder)
+        public IActionResult Index()
         {
-            //Adds sorting functionality to index list
-            ViewData["SortName"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["SortNumber"] = String.IsNullOrEmpty(sortOrder) ? "number_asc" : "";
-
-            var drivers = SortDrivers(sortOrder);
-
-            return View(drivers.ToList());
+            return View(_context.Drivers.ToList());
         }
 
         [HttpPost]
-        public ActionResult Index(string searchString, string sortOrder)
+        public ActionResult Index(string searchString)
         {
             //Search functionality for driver index
             ViewData["SearchString"] = searchString;
-            IQueryable<Driver> drivers;
-
-            if (!String.IsNullOrEmpty(sortOrder))
-            {
-                drivers = SortDrivers(sortOrder);
-            }
-            else
-            {
-                drivers = from d in _context.Drivers select d;
-            }
+            IQueryable<Driver> drivers = from d in _context.Drivers select d;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -53,44 +39,49 @@ namespace FormuleCirkelEntity.Controllers
             return View(drivers.ToList());
         }
 
-        //Sorts drivers based on given value
-        public IQueryable<Driver> SortDrivers(string sortOrder)
-        {
-            IQueryable<Driver> drivers = from d in _context.Drivers select d;
-
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    drivers = drivers.OrderByDescending(d => d.Name);
-                    break;
-
-                case "number_asc":
-                    drivers = drivers.OrderBy(d => d.DriverNumber);
-                    break;
-
-                default:
-                    drivers = drivers.OrderBy(d => d.Name);
-                    break;
-            }
-
-            return drivers;
-        }
-
         public async Task<IActionResult> Stats(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
+            // Prepares table items for ViewModel
             var driver = await _context.Drivers
                 .FirstOrDefaultAsync(m => m.DriverId == id);
-            if (driver == null)
+            var seasondriver = _context.SeasonDrivers
+                .Where(s => s.Driver.DriverId == id)
+                .Include(s => s.SeasonTeam)
+                    .ThenInclude(t => t.Team);
+            var driverresult = _context.DriverResults
+                .Where(dr => dr.SeasonDriver.DriverId == id);
+
+            // Calculates the amount of WDCs a driver might have.
+            int championships = 0;
+            foreach(var season in _context.Seasons)
             {
-                return NotFound();
+                var winner = _context.SeasonDrivers
+                    .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
+                    .OrderByDescending(dr => dr.Points)
+                    .FirstOrDefault();
+
+                if(winner != null)
+                {
+                    if (winner.DriverId == id)
+                    {
+                        championships++;
+                    }
+                }
             }
 
-            return View(driver);
+            ViewBag.championships = championships;
+
+            var stats = new DriverStatsModel()
+            {
+                Driver = driver,
+                SeasonDriver = seasondriver,
+                DriverResults = driverresult
+            };
+
+            return View(stats);
         }
 
         // GET: Drivers/Create
@@ -142,7 +133,8 @@ namespace FormuleCirkelEntity.Controllers
             {
                 try
                 {
-                    _context.Update(driver);
+                    var edit = _context.Drivers.First(d => d.DriverId == driver.DriverId);
+                    _context.Entry(edit).CurrentValues.SetValues(driver);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

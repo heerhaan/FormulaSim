@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label>DNF</label>
-                @Html.DropDownListFor(model => model.DNFodds, new SelectList(Enum.GetValues(typeof(DNFodds))), new { @class = "form-control"})
+                @Html.DropDownListFor(model => model.DNFodds, new SelectList(Enum.GetValues(typeof(DNFodds))), new { @class = "form-control" })
             </div>
             <div class="form-group">
                 <label>RNG</label>
@@ -42,7 +42,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Terug naar lijst</a>
+    <a asp-action="Index">
+        <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+    </a>
 </div>
 
 @section Scripts {

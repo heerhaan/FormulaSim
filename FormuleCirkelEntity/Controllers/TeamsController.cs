@@ -89,7 +89,8 @@ namespace FormuleCirkelEntity.Controllers
             {
                 try
                 {
-                    _context.Update(team);
+                    var edit = _context.Teams.First(t => t.TeamId == team.TeamId);
+                    _context.Entry(edit).CurrentValues.SetValues(team);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

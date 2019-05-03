@@ -48,7 +48,11 @@
                         <td>@driver.Skill</td>
                         <td>@driver.Style</td>
                         <td>@driver.Tires</td>
-                        <td><a asp-action="UpdateDriver" asp-route-id="@Model.SeasonId" asp-route-driverId="@driver.SeasonDriverId">Bewerken</a></td>
+                        <td>
+                            <a asp-action="UpdateDriver" asp-route-id="@Model.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
+                                <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                            </a>
+                        </td>
                     </tr>
                 }
             }
@@ -75,10 +79,12 @@
                 <tr>
                     <td>@race.Name</td>
                     <td>@race.Round</td>
-                    <td>@if (race.Round == 1)
-                    {<a asp-controller="Races" asp-action="RacePreview">Race</a>}</td>
-                </tr>
-            }
+                    <td>
+                        @if (race.Round == 1)
+                        {<a asp-controller="Races" asp-action="RacePreview"><img src="~/images/icon-raceflag.png" width="30" height="30" title="Race" /></a>}
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </section>
@@ -114,7 +120,11 @@
                         <td>@team.Chassis</td>
                         <td>@team.Reliability</td>
                         <td>@team.Engine.Name</td>
-                        <td><a asp-action="UpdateTeam" asp-route-id="@Model.SeasonId" asp-route-teamId="@team.SeasonTeamId">Bewerken</a></td>
+                        <td>
+                            <a asp-action="UpdateTeam" asp-route-id="@Model.SeasonId" asp-route-teamId="@team.SeasonTeamId">
+                                <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                            </a>
+                        </td>
                     </tr>
                 }
             }

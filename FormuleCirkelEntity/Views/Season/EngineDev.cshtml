@@ -38,6 +38,10 @@
     <button id="save" class="btn btn-dark">Opslaan</button>
 </section>
 
+<a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+    <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+</a>
+
 <script>
     $(document).ready(function () {
         $("#save").hide();

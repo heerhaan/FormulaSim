@@ -29,17 +29,6 @@ namespace FormuleCirkelEntity.DAL
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
-
-            //Makes table property unique
-            builder.Entity<Driver>()
-                .HasIndex(d => d.Abbreviation)
-                .IsUnique();
-            builder.Entity<Team>()
-                .HasIndex(t => t.Abbreviation)
-                .IsUnique();
-            builder.Entity<Engine>()
-                .HasIndex(e => e.Name)
-                .IsUnique();
         }
     }
 }

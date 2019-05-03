@@ -24,19 +24,16 @@
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DNFodds" class="control-label">DNF kans</label>
-                <select asp-for="DNFodds" class="form-control"></select>
-                <span asp-validation-for="DNFodds" class="text-danger"></span>
+                <label>DNF</label>
+                @Html.DropDownListFor(model => model.DNFodds, new SelectList(Enum.GetValues(typeof(DNFodds))), new { @class = "form-control" })
             </div>
             <div class="form-group">
-                <label asp-for="RNGodds" class="control-label">RNG breedte</label>
-                <select asp-for="RNGodds" class="form-control"></select>
-                <span asp-validation-for="RNGodds" class="text-danger"></span>
+                <label>RNG</label>
+                @Html.DropDownListFor(model => model.RNGodds, new SelectList(Enum.GetValues(typeof(RNGodds))), new { @class = "form-control" })
             </div>
             <div class="form-group">
-                <label asp-for="Specification" class="control-label">Specificatie</label>
-                <select asp-for="Specification" class="form-control"></select>
-                <span asp-validation-for="Specification" class="text-danger"></span>
+                <label>Specificatie</label>
+                @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
             </div>
             <div class="form-group">
                 <input type="submit" value="Opslaan" class="btn btn-primary" />
@@ -46,7 +43,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Terug naar lijst</a>
+    <a asp-action="Index">
+        <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+    </a>
 </div>
 
 @section Scripts {
