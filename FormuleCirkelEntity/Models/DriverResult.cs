@@ -16,6 +16,7 @@ namespace FormuleCirkelEntity.Models
 
         [Key]
         public int DriverResultId { get; set; }
+        public int Points { get; set; }
         public int Position { get; set; }
         public int Grid { get; set; }
 

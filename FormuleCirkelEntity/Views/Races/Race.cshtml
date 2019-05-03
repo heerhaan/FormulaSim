@@ -20,36 +20,40 @@
                 <th>Nummer</th>
                 <th>Naam</th>
                 <th>Team</th>
+                <th data-field="pointsTotal">Puntentotaal</th>
                 @foreach (var stint in Model.Stints)
                 {
-                    <th>@stint.Key</th>
+                    <th data-field="stintResultHeader-@stint.Key">@stint.Key</th>
                 }
             </tr>
         </thead>
         <tbody>
-            @foreach (var driverResult in Model.DriverResults)
+            @foreach (var driverResult in Model.DriverResults.OrderByDescending(d => d.Points))
             {
-                <tr data-obj-id="@driverResult.SeasonDriverId">
-                    <td data-field="driverNumber">@driverResult.SeasonDriver.Driver.DriverNumber</td>
-                    <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
-                    <td data-field="teamName">@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
-                    @foreach (var stint in Model.Stints)
+            <tr data-obj-id="@driverResult.SeasonDriverId">
+                <td data-field="driverNumber">@driverResult.SeasonDriver.Driver.DriverNumber</td>
+                <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
+                <td data-field="teamName">@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
+                <td data-field="pointsTotal">@driverResult.Points</td>
+                @foreach (var stint in Model.Stints)
+                {
+                    var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
+                    if (stintResult.Equals(default(KeyValuePair<int, int>)))
                     {
-                        var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
-                        if (stintResult.Equals(default(KeyValuePair<int, int>)))
-                        {
-                            stintResult = new KeyValuePair<int, int>(stint.Key, int.MinValue);
-                        }
-                        <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == int.MinValue ? "-" : stintResult.Value.ToString())</td>
+                        stintResult = new KeyValuePair<int, int>(stint.Key, int.MinValue);
                     }
-                </tr>
+                    <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == int.MinValue ? "-" : stintResult.Value.ToString())</td>
+                }
+            </tr>
             }
         </tbody>
     </table>
 </section>
 
-<script>    
+<script>
     const intMin = -2147483648;
+    const table = document.querySelector('#results');
+
     function resultOrMissing(result) {
         return (result == intMin ? "-" : result);
     }
@@ -58,10 +62,17 @@
         let tableBody = $("#results").children("tbody");
         $.each(res.DriverResults, (resultIndex, driverResult) => {
             let row = tableBody.children("tr[data-obj-id=" + driverResult.SeasonDriverId + "]");
+            row.children("td[data-field=pointsTotal]").html(driverResult.Points);
             $.each(driverResult.StintResults, (stintKey, stintResult) => {
-                row.children("td[data-field=stintResult-" + stintKey + "]").html(resultOrMissing(stintResult);
+                row.children("td[data-field=stintResult-" + stintKey + "]").html(resultOrMissing(stintResult));
             });
         });
+
+        let th = table.querySelector("th[data-field=pointsTotal]")
+        var tableRows = table.querySelector("tbody").querySelectorAll("tr:nth-child(n+1)")
+        Array.from(tableRows)
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), false))
+            .forEach(tr => table.querySelector("tbody").appendChild(tr));
     }
 
     function advanceStint() {
@@ -70,5 +81,14 @@
             type: "POST",
             success: processStintResponse
         });
+    }
+
+    function comparer(index, isAscending) {
+        let getCellValue = (row, idx) => row.children[idx].innerText || row.children[idx].textContent;
+        let isNumber = (val) => val !== '' && !isNaN(val);
+        return function (a, b) {
+            var valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
+            return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
+        }
     }
 </script>

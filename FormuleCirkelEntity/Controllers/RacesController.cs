@@ -153,6 +153,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 var stintResult = _resultGenerator.GetStintResult(result, stint);
                 result.StintResults.Add(race.StintProgress, stintResult);
+                result.Points = result.StintResults.Sum(sr => sr.Value);
 
                 // A MinValue result indicates a DNF result.
                 if (stintResult == int.MinValue)
