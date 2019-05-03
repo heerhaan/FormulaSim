@@ -53,12 +53,11 @@
 </section>
 
 <script>
-    const intMin = -2147483648;
     const table = document.querySelector('#results');
     const tableBody = table.querySelector("tbody");
 
     function resultOrMissing(result) {
-        return (result == intMin ? "-" : result);
+        return (result == null ? "-" : result);
     }
 
     function processStintResponse(res) {
