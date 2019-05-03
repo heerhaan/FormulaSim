@@ -54,6 +54,26 @@ namespace FormuleCirkelEntity.Controllers
             var driverresult = _context.DriverResults
                 .Where(dr => dr.SeasonDriver.DriverId == id);
 
+            // Calculates the amount of WDCs a driver might have.
+            int championships = 0;
+            foreach(var season in _context.Seasons)
+            {
+                var winner = _context.SeasonDrivers
+                    .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
+                    .OrderByDescending(dr => dr.Points)
+                    .FirstOrDefault();
+
+                if(winner != null)
+                {
+                    if (winner.DriverId == id)
+                    {
+                        championships++;
+                    }
+                }
+            }
+
+            ViewBag.championships = championships;
+
             var stats = new DriverStatsModel()
             {
                 Driver = driver,
@@ -108,7 +128,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 return NotFound();
             }
-            
+
             if (ModelState.IsValid)
             {
                 try

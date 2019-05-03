@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FormuleCirkelEntity.DAL;
-using System.Linq;
 
 namespace FormuleCirkelEntity.Models.ModelValidation
 {

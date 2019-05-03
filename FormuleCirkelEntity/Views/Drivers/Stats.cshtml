@@ -23,10 +23,22 @@
             @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
         </dd>
         <dt class="col-sm-2">
+            Aantal podia:
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.DriverResults.Where(dr => dr.Position <= 3).Count())
+        </dd>
+        <dt class="col-sm-2">
             Aantal winsten:
         </dt>
         <dd class="col-sm-10">
             @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
+        </dd>
+        <dt class="col-sm-2">
+            Aantal WDCs:
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.championships
         </dd>
         <dt class="col-sm-2">
             Aantal DNFs:
@@ -35,14 +47,14 @@
             @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
         </dd>
         <dt class="col-sm-2">
-            Teams:
+            Gereden voor:
         </dt>
-        @foreach (var team in Model.Driver.SeasonDrivers)
-        {
-            <dd class="col-sm-10">
-                @(team.SeasonTeam.Team.Name)
-            </dd>
-        }
+        <dd class="col-sm-10">
+            @foreach (var team in Model.SeasonDriver.Select(select => select.SeasonTeam.Team).Distinct())
+            {
+                <div class='badge' style='background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;'>@(team.Abbreviation)</div>
+            }
+        </dd>
     </dl>
 </div>
 <div>

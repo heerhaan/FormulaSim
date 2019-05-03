@@ -19,12 +19,15 @@ body.dark {
     body.dark table tbody > tr:nth-child(odd) > th {
         background: #282c34
     }
+
     body.dark table thead th {
         border-bottom-color: #bd2130
     }
+
     body.dark table th {
         border-top-color: #bd2130
     }
+
     body.dark table td {
         border-top-color: #bd2130
     }
@@ -46,9 +49,9 @@ body.dark {
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
-    /* Sticky footer styles
+/* Sticky footer styles
 -------------------------------------------------- */
-    html {
+html {
     font-size: 14px;
 }
 

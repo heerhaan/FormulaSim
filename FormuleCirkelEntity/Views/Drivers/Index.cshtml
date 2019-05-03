@@ -8,7 +8,7 @@
 
 <p>
     <a asp-action="Create">
-        <img src="~/images/icon-add.png" width="30" height="30" title="Add"/>
+        <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
     </a>
 </p>
 <form method="post">
@@ -17,7 +17,7 @@
             <input type="text" placeholder="Naam" name="SearchString" value="@ViewData["SearchString"]" />
             <input type="submit" value="Zoek" class="btn btn-dark" />
             <a asp-page="/Drivers/Index">
-                <img src="~/images/icon-revert.png" width="30" height="30" title="Revert"/>
+                <img src="~/images/icon-revert.png" width="30" height="30" title="Revert" />
             </a>
         </p>
     </div>
@@ -40,33 +40,34 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DriverNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Abbreviation)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.DriverId">
-                    <img src="~/images/icon-edit.png" width="30" height="30" title="Edit"/>
-                </a>
-            </td>
-            <td>
-                <a asp-action="Stats" asp-route-id="@item.DriverId">
-                    <img src="~/images/icon-stats.png" width="30" height="30" title="Stats"/>
-                </a>
-            </td>
-            <td>
-                <a asp-action="Delete" asp-route-id="@item.DriverId">
-                    <img src="~/images/icon-trash.png" width="30" height="30" title="Delete"/>
-                </a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DriverNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Abbreviation)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.DriverId">
+                        <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Stats" asp-route-id="@item.DriverId">
+                        <img src="~/images/icon-stats.png" width="30" height="30" title="Stats" />
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.DriverId">
+                        <img src="~/images/icon-trash.png" width="30" height="30" title="Delete" />
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
