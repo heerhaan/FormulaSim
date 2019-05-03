@@ -1,58 +1,95 @@
-﻿@{
+﻿@model Race
+@{
     ViewData["Title"] = "Race";
 }
 
-<h1>Race</h1>
+<section class="row my-1">
+    <header>
+        <h1>Race: @Model.Track.Name</h1>
+    </header>
+</section>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                Pos.
-            </th>
-            <th>
-                Team
-            </th>
-            <th>
-                Coureur
-            </th>
-            <th>
-                Grid
-            </th>
-            <th>
-                Status
-            </th>
-            <th>
-                Score
-            </th>
-        </tr>
-    </thead>
-    <tbody id="race"></tbody>
-</table>
+<section class="row btn-group my-1">
+    <a class="btn btn-primary" onclick="advanceStint()">Volgende stint</a>
+</section>
 
-<button id="stint1">Stint</button>
-<button id="pitstops">Pitstops</button>
-<button id="stint2">Stint</button>
-<button id="finish">Finish</button>
+<section class="row my-1">
+    <table id="results" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Positie</th>
+                <th>Nummer</th>
+                <th>Naam</th>
+                <th>Team</th>
+                @foreach (var stint in Model.Stints)
+                {
+                    <th data-field="stintResultHeader-@stint.Key">@stint.Key</th>
+                }
+                <th data-field="pointsTotal">Puntentotaal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var driverResult in Model.DriverResults.OrderByDescending(d => d.Points))
+            {
+            <tr data-obj-id="@driverResult.SeasonDriverId">
+                <td data-field="position">@driverResult.Position</td>
+                <td data-field="driverNumber">@driverResult.SeasonDriver.Driver.DriverNumber</td>
+                <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
+                <td data-field="teamName">@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
+                @foreach (var stint in Model.Stints)
+                {
+                    var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
+                    if (stintResult.Equals(default(KeyValuePair<int, int?>)))
+                    {
+                        stintResult = new KeyValuePair<int, int?>(stint.Key, null);
+                    }
+                    <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
+                }
+                <td data-field="pointsTotal">@driverResult.Points</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</section>
 
 <script>
-    $(document).ready(function () {
-        $("#pitstops").hide();
-        $("#stint2").hide();
-        $("finish").hide();
-        $('#generateq1').click(function () {
-            $.ajax({
-                url: "",
-                type: "GET",
-                succes: function (drivers) {
-                    $.each(drivers, function (index, driver) {
-                        var row = "<tr><td>" + "</td></tr>";
-                        $("#race").append(row);
-                    });
-                    $("#stint1").hide();
-                    $("#finish").show();
-                }
-            })
+    const table = document.querySelector('#results');
+    const tableBody = table.querySelector("tbody");
+
+    function resultOrMissing(result) {
+        return (result == null ? "-" : result);
+    }
+
+    function processStintResponse(res) {
+        res.DriverResults.forEach((driverResult, idx) => {
+            let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
+            row.querySelector("td[data-field='pointsTotal']").innerText = driverResult.Points;
+            row.querySelector("td[data-field='position']").innerText = driverResult.Position;
+            Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
+                let stintResult = driverResult.StintResults[stintKey];
+                row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);
+            });
         });
-    });
+
+        let th = table.querySelector("th[data-field='pointsTotal']")
+        let tableRows = tableBody.querySelectorAll("tr:nth-child(n+1)")
+        Array.from(tableRows)
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), false))
+            .forEach(tr => table.querySelector("tbody").appendChild(tr));
+    }
+
+    function advanceStint() {
+        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/Advance", { method: "POST" })
+            .then(response => response.json())
+            .then(result => processStintResponse(result));
+    }
+
+    function comparer(index, isAscending) {
+        let getCellValue = (row, idx) => row.children[idx].innerText || row.children[idx].textContent;
+        let isNumber = (val) => val !== '' && !isNaN(val);
+        return function (a, b) {
+            let valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
+            return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
+        }
+    }
 </script>

@@ -21,7 +21,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             return View(await _context.Tracks.ToListAsync());
         }
-
+        
         // GET: Tracks/Create
         public IActionResult Create()
         {

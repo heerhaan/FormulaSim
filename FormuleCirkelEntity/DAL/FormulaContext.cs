@@ -1,14 +1,17 @@
 ﻿using FormuleCirkelEntity.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.DAL
 {
     public class FormulaContext : DbContext
     {
-        public FormulaContext(DbContextOptions<FormulaContext> options) : base(options)
-        {
-        }
+        public FormulaContext(DbContextOptions<FormulaContext> options) : base(options) { }
 
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Engine> Engines { get; set; }
@@ -29,6 +32,27 @@ namespace FormuleCirkelEntity.DAL
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
+
+            //Makes table property unique
+            builder.Entity<Driver>()
+                .HasIndex(d => d.Abbreviation)
+                .IsUnique();
+            builder.Entity<Team>()
+                .HasIndex(t => t.Abbreviation)
+                .IsUnique();
+            builder.Entity<Engine>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
+            builder.Entity<Race>()
+                .Property(r => r.Stints)
+                .HasConversion(
+                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
+                    json => JsonConvert.DeserializeObject<Dictionary<int, Stint>>(json) ?? new Dictionary<int, Stint>());
+            builder.Entity<DriverResult>()
+                .Property(r => r.StintResults)
+                .HasConversion(
+                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
+                    json => JsonConvert.DeserializeObject<Dictionary<int, int?>>(json) ?? new Dictionary<int, int?>());
         }
     }
 }

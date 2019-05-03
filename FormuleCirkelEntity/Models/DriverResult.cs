@@ -1,4 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
@@ -6,14 +10,21 @@ namespace FormuleCirkelEntity.Models
 
     public class DriverResult
     {
+        public DriverResult()
+        {
+            StintResults = new Dictionary<int, int?>();
+        }
+
         [Key]
         public int DriverResultId { get; set; }
-
+        public int Points { get; set; }
         public int Position { get; set; }
         public int Grid { get; set; }
 
         [EnumDataType(typeof(Status))]
         public Status Status { get; set; }
+
+        public IDictionary<int, int?> StintResults { get; set; }
 
         public int SeasonDriverId { get; set; }
         public SeasonDriver SeasonDriver { get; set; }

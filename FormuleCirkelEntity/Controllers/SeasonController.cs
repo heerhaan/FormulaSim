@@ -99,44 +99,7 @@ namespace FormuleCirkelEntity.Controllers
 
             return View();
         }
-
-        public async Task<IActionResult> AddTracks(int? id)
-        {
-            var season = await _context.Seasons
-                   .Include(s => s.Races)
-                   .SingleOrDefaultAsync(s => s.SeasonId == id);
-
-            if (season == null)
-                return NotFound();
-
-            var existingTrackIds = season.Races.Select(r => r.TrackId);
-            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId)).ToList();
-
-            ViewBag.seasonId = id;
-            return View(unusedTracks);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] Track track)
-        {
-            track = await _context.Tracks.SingleOrDefaultAsync(m => m.TrackId == track.TrackId);
-
-            var season = await _context.Seasons
-                .Include(s => s.Races)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
-
-            if (track == null || season == null)
-                return NotFound();
-
-            var race = new Race();
-            race.Track = track;
-            race.Name = track.Name;
-            race.Round = (_context.Races.Where(r => r.SeasonId == id).Count() + 1);
-            season.Races.Add(race);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(AddTracks), new { id });
-        }
-
+        
         [Route("[Controller]/{id}/Teams/Add")]
         public async Task<IActionResult> AddTeams(int? id)
         {

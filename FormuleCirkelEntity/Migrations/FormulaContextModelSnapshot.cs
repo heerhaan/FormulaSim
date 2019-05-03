@@ -15,7 +15,7 @@ namespace FormuleCirkelEntity.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -48,6 +48,8 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("Grid");
 
+                    b.Property<int>("Points");
+
                     b.Property<int>("Position");
 
                     b.Property<int>("RaceId");
@@ -55,6 +57,8 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("SeasonDriverId");
 
                     b.Property<int>("Status");
+
+                    b.Property<string>("StintResults");
 
                     b.HasKey("DriverResultId");
 
@@ -126,6 +130,10 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("Round");
 
                     b.Property<int>("SeasonId");
+
+                    b.Property<int>("StintProgress");
+
+                    b.Property<string>("Stints");
 
                     b.Property<int>("TrackId");
 

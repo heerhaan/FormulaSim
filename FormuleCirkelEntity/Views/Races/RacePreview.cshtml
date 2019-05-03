@@ -51,7 +51,7 @@
 
 <form asp-action="RacePreview">
     <div class="form-group">
-        <input asp-route-id="@(Model.RaceId)" type="submit" value="Raceweekend" class="btn btn-primary" />
+        <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn btn-primary" />
     </div>
 </form>
 

@@ -1,123 +1,187 @@
-﻿using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FormuleCirkelEntity.Builders;
+using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.ResultGenerators;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace FormuleCirkelEntity.Controllers
 {
     public class RacesController : Controller
     {
-        private readonly FormulaContext _context;
-        private static readonly Random rng = new Random();
+        readonly FormulaContext _context;
+        readonly RaceResultGenerator _resultGenerator;
+        readonly RaceBuilder _raceBuilder;
 
-        public RacesController(FormulaContext context)
+        public RacesController(FormulaContext context, RaceResultGenerator resultGenerator, RaceBuilder raceBuilder)
         {
             _context = context;
+            _resultGenerator = resultGenerator;
+            _raceBuilder = raceBuilder;
         }
 
-        public IActionResult Index()
+        [Route("Season/{id}/[Controller]/Add/")]
+        public async Task<IActionResult> AddTracks(int? id)
         {
-            return View();
+            var season = await _context.Seasons
+                   .Include(s => s.Races)
+                   .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (season == null)
+                return NotFound();
+
+            var existingTrackIds = season.Races.Select(r => r.TrackId);
+            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId)).ToList();
+
+            ViewBag.seasonId = id;
+            return View(unusedTracks);
         }
 
-        public IActionResult RacePreview()
+        [HttpPost("Season/{id}/[Controller]/Add/")]
+        public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] Track track)
         {
-            var currentSeason = _context.Seasons
-                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
-                .OrderBy(s => s.SeasonStart)
-                .FirstOrDefault();
+            track = await _context.Tracks.SingleOrDefaultAsync(m => m.TrackId == track.TrackId);
 
-            var nextrace = _context.Races
+            var season = await _context.Seasons
+                .Include(s => s.Races)
+                .Include(s => s.Drivers)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (track == null || season == null)
+                return NotFound();
+
+            var race = _raceBuilder
+                .InitializeRace(track, season)
+                .AddDefaultStints()
+                .GetResultAndRefresh();
+            season.Races.Add(race);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(AddTracks), new { id });
+        }
+
+        [Route("Season/{id}/[Controller]/{raceId}")]
+        public async Task<IActionResult> Race(int id, int raceId)
+        {
+            var race = await _context.Races
+                .Include(r => r.Season)
                 .Include(r => r.Track)
-                .Where(r => r.SeasonId == currentSeason.SeasonId)
-                .OrderBy(r => r.Round)
-                .FirstOrDefault(r => r.DriverResults != null);
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.SeasonDriver.Driver)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.SeasonDriver.SeasonTeam.Team)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
-            return View(nextrace);
+            return View(race);
+        }
+        
+        [Route("Season/{id}/[Controller]/{raceId}/Preview")]
+        public async Task<IActionResult> RacePreview(int id, int raceId)
+        {
+            var race = await _context.Races
+                .Include(r => r.Season)
+                .Include(r => r.Track)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
+            return View(race);
+        }
+        
+        [HttpPost("Season/{id}/[Controller]/{raceId}/Start")]
+        public async Task<IActionResult> RaceStart(int id, int raceId)
+        {
+            var race = await _context.Races
+                .Include(r => r.Season.Drivers)
+                .Include(r => r.DriverResults)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
+            if (!race.DriverResults.Any())
+            {
+                race = _raceBuilder
+                    .Use(race)
+                    .AddAllDrivers()
+                    .GetResult();
+
+                _context.DriverResults.AddRange(race.DriverResults);
+                _context.SaveChanges();
+            }
+            
+            return RedirectToAction("RaceWeekend", new { id, raceId });
         }
 
-        [HttpPost]
-        public IActionResult RacePreview(int? id)
+
+        [Route("Season/{id}/[Controller]/{raceId}/Weekend")]
+        public async Task<IActionResult> RaceWeekend(int id, int raceId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var drivers = _context.SeasonDrivers;
-            var driverresults = new List<DriverResult>();
-
-            if (_context.DriverResults.Any(d => d.RaceId != id))
-            {
-                foreach (var driver in drivers)
-                {
-                    var result = new DriverResult();
-                    try
-                    {
-                        result.RaceId = id.GetValueOrDefault();
-                        result.SeasonDriverId = driver.SeasonDriverId;
-                    }
-                    catch (Exception e)
-                    {
-                        TempData["msg"] = "<script>alert('Race preview mislukt!');</script>";
-                        return RedirectToAction(nameof(RacePreview));
-                    }
-                    driverresults.Add(result);
-                }
-            }
-            else
-            {
-                return RedirectToAction("RaceWeekend", new { id });
-            }
-
-            _context.DriverResults.AddRange(driverresults);
-            _context.SaveChanges();
-
-            return RedirectToAction("RaceWeekend", new { id });
+            var race = await _context.Races
+                .Include(r => r.DriverResults)
+                    .ThenInclude(dr => dr.SeasonDriver)
+                        .ThenInclude(sd => sd.Driver)
+                .Include(r => r.Season.Teams)
+                    .ThenInclude(d => d.Team)
+                .Include(r => r.Track)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
+            return View(race);
         }
 
-        public IActionResult RaceWeekend(int? id)
+        [HttpPost("Season/{id}/[Controller]/{raceId}/Advance")]
+        public async Task<IActionResult> AdvanceStint(int id, int raceId)
         {
-            if (id == null)
+            var race = await _context.Races
+                .Include(r => r.Season)
+                .Include(r => r.Track)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.SeasonDriver.Driver)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.SeasonDriver.SeasonTeam.Team)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.SeasonDriver.SeasonTeam.Engine)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
+            if (race.StintProgress == race.Stints.Count())
+                return BadRequest();
+
+            race.StintProgress++;
+            var stint = race.Stints[race.StintProgress];
+
+            // Calculate results for all drivers who have not been DSQ'd or DNF'd.
+            foreach (var result in race.DriverResults.Where(d => d.Status == Status.Finished))
             {
-                return NotFound();
+                var stintResult = _resultGenerator.GetStintResult(result, stint);
+                result.StintResults.Add(race.StintProgress, stintResult);
+                result.Points = result.StintResults.Sum(sr => sr.Value ?? -999);
+
+                // A null result indicates a DNF result.
+                if (stintResult == null)
+                    result.Status = Status.DNF;
             }
 
-            var race = _context.Races
-                .Where(s => s.SeasonId == id)
-                .FirstOrDefault(r => r.RaceId == id);
+            var orderedResults = race.DriverResults.OrderByDescending(d => d.Points).ToList();
+            foreach (var result in orderedResults)
+                result.Position = orderedResults.IndexOf(result) + 1;
 
-            ViewBag.track = race.Track;
-            ViewBag.race = race;
+            _context.UpdateRange(race.DriverResults);
+            await _context.SaveChangesAsync();
 
-            var result = _context.DriverResults.FirstOrDefault(r => r.RaceId == id);
-
-            if (result.Grid == 0)
+            // Clean up unneeded large reference properties to prevent them from being serialized and sent over HTTP.
+            race.Season = null;
+            race.Track = null;
+            race.Stints = null;
+            foreach(var dr in race.DriverResults)
             {
-                ViewBag.check = true;
+                dr.SeasonDriver = null;
+                dr.Race = null;
             }
-            else
-            {
-                ViewBag.check = false;
-            }
-
-            //SeasonDrivers should be ordered based on DriverResults Gridposition
-            var drivers = _context.SeasonDrivers
-                .Where(s => s.Season.SeasonId == id)
-                .Include(s => s.Driver)
-                .Include(t => t.SeasonTeam)
-                    .ThenInclude(t => t.Team)
-                .ToList();
-
-            return View(drivers);
+            return new JsonResult(race, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
-        public IActionResult Qualifying(int? id)
+        [Route("Season/{id}/[Controller]/{raceId}/Qualifying")]
+        public IActionResult Qualifying(int id, int raceId)
         {
-            var race = _context.Races.Single(r => r.RaceId == id);
+            var race = _context.Races.Single(r => r.RaceId == raceId);
             ViewBag.race = race;
             return View();
         }
@@ -134,7 +198,7 @@ namespace FormuleCirkelEntity.Controllers
                 var drivers = _context.SeasonDrivers
                 .Include(s => s.Driver)
                 .Include(t => t.SeasonTeam)
-                    .ThenInclude(t => t.Team)
+                .ThenInclude(t => t.Team)
                 .ToList();
 
                 // Get the existing qualification results of the current race.
@@ -148,7 +212,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 var driverLimit = GetQualifyingDriverLimit(source);
 
-                // Take the current result, then order descending to place highest score first, lowest score last.
+                // Take the current result, then order descending to place highest score first, lowest score last. 
                 // From the resulting ordered list, take the amount of drivers allowed to continue to the next qualifying round.
                 var qualificationResultsToUpdate = currentQualifyingResult
                     .OrderBy(q => q.Position)
@@ -158,7 +222,7 @@ namespace FormuleCirkelEntity.Controllers
                 foreach (var qualificationResult in qualificationResultsToUpdate)
                 {
                     var qualifyingDriver = drivers.Single(d => d.SeasonDriverId == qualificationResult.DriverId);
-                    qualificationResult.Score = GenerateDriverScore(qualifyingDriver);
+                    qualificationResult.Score = _resultGenerator.GetQualifyingResult(qualifyingDriver);
                 }
 
                 var qualificationResults = qualificationResultsToUpdate.OrderByDescending(q => q.Score).ToList();
@@ -181,27 +245,27 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        private IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers)
+        IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers)
         {
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
             {
                 //TODO: dynamically add the next Race
                 result.Add(new Qualification()
-                {
-                    DriverId = driver.SeasonDriverId,
-                    RaceId = 1,
-                    TeamName = driver.SeasonTeam.Team.Name,
-                    Colour = driver.SeasonTeam.Team.Colour,
-                    Accent = driver.SeasonTeam.Team.Accent,
-                    DriverName = driver.Driver.Name,
-                    Score = 0
-                });
+                    {
+                        DriverId = driver.SeasonDriverId,
+                        RaceId = 1,
+                        TeamName = driver.SeasonTeam.Team.Name,
+                        Colour = driver.SeasonTeam.Team.Colour,
+                        Accent = driver.SeasonTeam.Team.Accent,
+                        DriverName = driver.Driver.Name,
+                        Score = 0
+                    });
             }
             return result;
         }
 
-        private int GetQualifyingDriverLimit(string qualifyingStage)
+        int GetQualifyingDriverLimit(string qualifyingStage)
         {
             //Limits should be flexible in accordance to entered drivers.
             const int Q1_LIMIT = 10;
@@ -215,41 +279,34 @@ namespace FormuleCirkelEntity.Controllers
             return Q1_LIMIT;
         }
 
-        private int GenerateDriverScore(SeasonDriver driver)
-        {
-            var result = 0;
-            result += driver.Skill;
-            result += driver.SeasonTeam.Chassis;
-            result += rng.Next(0, 60);
-            return result;
-        }
-
         [HttpPost]
-        public IActionResult Return(int? id)
+        public IActionResult Return(int? id, int? raceId)
         {
-            if (id == null) { return BadRequest(); }
+            if(id == null || raceId == null)
+            {
+                return BadRequest();
+            }
 
-            var qualyresult = _context.Qualification.Where(q => q.RaceId == id);
-            var driverResults = _context.DriverResults.Where(d => d.RaceId == id).ToList();
+            IQueryable<Qualification> qualyresult = _context.Qualification.Where(q => q.RaceId == raceId);
+            List<DriverResult> driverResults = _context.DriverResults.Where(d => d.RaceId == raceId).ToList();
 
             //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)
-            foreach (var result in qualyresult)
+            foreach(Qualification result in qualyresult)
             {
-                var driver = driverResults.Single(d => d.RaceId == result.RaceId && d.SeasonDriverId == result.DriverId);
+                DriverResult driver = driverResults.Single(d => d.RaceId == result.RaceId &&
+                    d.SeasonDriverId == result.DriverId);
 
-                if (driver == null) { return StatusCode(500); }
+                if(driver == null)
+                {
+                    return StatusCode(500);
+                }
 
                 driver.Grid = result.Position.Value;
             }
             _context.UpdateRange(driverResults);
             _context.SaveChanges();
 
-            return RedirectToAction("RaceWeekend", new { id });
-        }
-
-        public IActionResult Race()
-        {
-            return View();
+            return RedirectToAction("RaceWeekend", new { id, raceId });
         }
     }
 }

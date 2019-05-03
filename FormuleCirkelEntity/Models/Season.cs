@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace FormuleCirkelEntity.Models
 {
@@ -15,7 +16,6 @@ namespace FormuleCirkelEntity.Models
     {
         [Key]
         public int SeasonId { get; set; }
-
         public DateTime? SeasonStart { get; set; }
 
         [EnumDataType(typeof(SeasonState))]

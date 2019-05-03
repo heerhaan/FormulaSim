@@ -14,16 +14,16 @@
     {
         <a asp-action="Start" asp-route-id="@Model.SeasonId" class="btn btn-dark btn-info">Start seizoen!</a>
     }
-    <a asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-dark">Races toevoegen</a>
-    <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-dark">Coureurs toevoegen</a>
-    <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-dark">Teams toevoegen</a>
+    <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-primary">Races toevoegen</a>
+    <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-primary">Coureurs toevoegen</a>
+    <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-primary">Teams toevoegen</a>
 </section>
 
 <section class="row my-1">
     <header>
         <h3>Coureurs</h3>
     </header>
-    <table class="table table-striped  ">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Positie</th>
@@ -65,7 +65,7 @@
     <header>
         <h3>Races</h3>
     </header>
-    <table class="table table-striped  ">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Naam</th>
@@ -79,12 +79,9 @@
                 <tr>
                     <td>@race.Name</td>
                     <td>@race.Round</td>
-                    <td>
-                        @if (race.Round == 1)
-                        {<a asp-controller="Races" asp-action="RacePreview"><img src="~/images/icon-raceflag.png" width="30" height="30" title="Race" /></a>}
-                </td>
-            </tr>
-        }
+                    <td><a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.SeasonId" asp-route-raceId="@race.RaceId">Preview</a></td>
+                </tr>
+            }
         </tbody>
     </table>
 </section>
@@ -93,7 +90,7 @@
     <header>
         <h3>Teams</h3>
     </header>
-    <table class="table table-striped  ">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Positie</th>

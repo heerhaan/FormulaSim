@@ -1,3 +1,5 @@
+using System;
+
 namespace FormuleCirkelEntity.Models
 {
     public class ErrorViewModel

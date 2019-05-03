@@ -1,27 +1,24 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+﻿@model FormuleCirkelEntity.Models.Race
 
 @{
     ViewData["Title"] = "RaceWeekend";
-    var race = ViewBag.race;
 }
 
-<h1>@(race.Name)</h1>
+<h1>@Model.Name</h1>
 
 <section class="row my-1">
     <div>
         <h5>Kwalificatie | Deelnemers</h5>
         <ol>
-            @foreach (var driver in Model)
+            @foreach (var driver in Model.DriverResults.Select(dr => dr.SeasonDriver))
             {
                 <li class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;display:list-item;">
                     @driver.Driver.Name | @driver.SeasonTeam.Team.Name
                 </li>
             }
         </ol>
-        @if (ViewBag.check == true)
-        {
-            <a asp-action="Qualifying" asp-route-id="@(race.RaceId)" class="btn btn-secondary">Kwalificatie</a>
-        }
+
+        <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Kwalificatie</a>
     </div>
 </section>
 
@@ -42,6 +39,6 @@
 <section class="row my-1">
     <div>
         <h5>Race</h5>
-        <a asp-action="Race" class="btn btn-secondary">Race</a>
+        <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Race</a>
     </div>
 </section>

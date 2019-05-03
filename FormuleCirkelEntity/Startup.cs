@@ -1,5 +1,11 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FormuleCirkelEntity.Builders;
 ﻿using FluentValidation.AspNetCore;
 using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.ResultGenerators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -38,6 +44,12 @@ namespace FormuleCirkelEntity
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]).EnableSensitiveDataLogging());
+            services.AddSingleton(new Random());
+            services.AddTransient<RaceResultGenerator>();
+            services.AddTransient<RaceBuilder>();
+
+            //List of validator classes
+            //services.AddTransient<IValidator<Driver>, DriverValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +65,7 @@ namespace FormuleCirkelEntity
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
