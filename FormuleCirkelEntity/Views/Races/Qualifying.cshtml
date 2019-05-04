@@ -81,9 +81,9 @@
 </div>
 
 
-<button id="generateq1">Start Q1!</button>
-<button id="generateq2">Start Q2!</button>
-<button id="generateq3">Start Q3!</button>
+<button id="generateq1" class="btn btn-dark">Start Q1!</button>
+<button id="generateq2" class="btn btn-dark">Start Q2!</button>
+<button id="generateq3" class="btn btn-dark">Start Q3!</button>
 <form asp-action="Return" asp-route-id="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
     <div class="form-group">
         <input type="submit" value="Finish!" class="btn btn-dark" />
@@ -104,8 +104,9 @@
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
-                        var row = "<tr><td>" + driver.position + "</td><td>" + driver.teamName + "</td><td>"
-                            + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                        var row = "<tr><td>" + driver.position +
+                            "</td><td id='teamcell' class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
+                            + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q1table").append(row);
                     });
                     $("#generateq1").hide();
@@ -122,8 +123,9 @@
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
-                        var row = "<tr><td>" + driver.position + "</td><td>" + driver.teamName + "</td><td>"
-                            + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                        var row = "<tr><td>" + driver.position +
+                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
+                            + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q2table").append(row);
                     });
                     $("#generateq2").hide();
@@ -140,8 +142,9 @@
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
-                        var row = "<tr><td>" + driver.position + "</td><td>" + driver.teamName + "</td><td>"
-                            + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                        var row = "<tr><td>" + driver.position +
+                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
+                            + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q3table").append(row);
                     });
                     $("#generateq3").hide();

@@ -255,7 +255,7 @@ namespace FormuleCirkelEntity.Controllers
                     {
                         DriverId = driver.SeasonDriverId,
                         RaceId = 1,
-                        TeamName = driver.SeasonTeam.Team.Name,
+                        TeamName = driver.SeasonTeam.Team.Abbreviation,
                         Colour = driver.SeasonTeam.Team.Colour,
                         Accent = driver.SeasonTeam.Team.Accent,
                         DriverName = driver.Driver.Name,
