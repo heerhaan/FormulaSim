@@ -1,32 +1,75 @@
-﻿@model FormuleCirkelEntity.Models.Team
+﻿@model FormuleCirkelEntity.ViewModels.TeamStatsModel
 
 @{
-    ViewData["Title"] = "Stats";
+    ViewData["Title"] = "Team bio";
 }
 
-<h1>Stats</h1>
+<h1>Biography</h1>
 
-<div>
-    <h4>Team</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Abbreviation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Abbreviation)
-        </dd>
-    </dl>
-</div>
+<section>
+    <div>
+        <h4 class='badge' style='background-color:@(Model.Team.Colour);color:@(Model.Team.Accent);font-size:1.5rem;' >@Model.Team.Name</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                Aantal starts:
+            </dt>
+            <dd class="col-sm-10">
+                @Model.TeamResults.Count()
+            </dd>
+            <dt class="col-sm-2">
+                Aantal poles:
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
+            </dd>
+            <dt class="col-sm-2">
+                Aantal podia:
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.DriverResults.Where(dr => dr.Position <= 3).Count())
+            </dd>
+            <dt class="col-sm-2">
+                Aantal winsten:
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
+            </dd>
+            <dt class="col-sm-2">
+                Aantal WDCs:
+            </dt>
+            <dd class="col-sm-10">
+                @ViewBag.driverchampionships
+            </dd>
+            <dt class="col-sm-2">
+                Aantal WCCs:
+            </dt>
+            <dd class="col-sm-10">
+                @ViewBag.teamchampionships
+            </dd>
+            <dt class="col-sm-2">
+                Aantal DNFs:
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
+            </dd>
+            <dt class="col-sm-2">
+                Historie coureurs:
+            </dt>
+            <dd class="col-sm-10">
+                @foreach (var driver in Model.SeasonDriver.Distinct())
+                {
+                    <div class="badge badge-danger">@(driver.Driver.Name)</div>
+                }
+            </dd>
+        </dl>
+    </div>
+</section>
 
-<div>
-    <a asp-action="Index">
-        <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
-    </a>
-</div>
+<section>
+    <div>
+        <a asp-action="Index">
+            <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+        </a>
+    </div>
+</section>

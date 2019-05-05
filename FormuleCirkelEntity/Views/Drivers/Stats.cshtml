@@ -1,10 +1,10 @@
 ﻿@model FormuleCirkelEntity.ViewModels.DriverStatsModel
 
 @{
-    ViewData["Title"] = "Stats";
+    ViewData["Title"] = "Driver bio";
 }
 
-<h1>Stats</h1>
+<h1>Biography</h1>
 
 <div>
     <h4>@Model.Driver.Name</h4>
@@ -57,6 +57,7 @@
         </dd>
     </dl>
 </div>
+
 <div>
     <a asp-action="Index">
         <img src="~/images/icon-back.png" width="30" height="30" title="Back" />

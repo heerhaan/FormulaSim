@@ -63,7 +63,7 @@
                     $("#devtable").empty();
                     $.each(teams, function (index, team) {
                         var row = "<tr><td>" + team.name + "</td><td class='badge' style='background-color:" + team.colour + ";color:"
-                            + team.accent + ";font-size:1rem;display:table-cell;'>" + team.abbreviation + "</td><td>" + team.old + "</td><td>"
+                            + team.accent + ";font-size:1rem;display:block;'>" + team.abbreviation + "</td><td>" + team.old + "</td><td>"
                             + team.dev + "</td><td id='new'>" + team.new + "</td><td id='id' style='display:none;'>" + team.id + "</td></tr>";
                         $("#devtable").append(row);
                         $("#save").show();
