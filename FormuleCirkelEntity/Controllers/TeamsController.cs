@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -25,18 +26,62 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Stats(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var team = await _context.Teams
                 .FirstOrDefaultAsync(m => m.TeamId == id);
-            if (team == null)
+            var seasondrivers = _context.SeasonDrivers
+                .Where(sd => sd.SeasonTeam.TeamId == id)
+                .Include(sd => sd.Driver);
+            var driverresults = _context.DriverResults
+                .Where(dr => dr.SeasonDriver.SeasonTeam.TeamId == id);
+            var teamresults = _context.TeamResults
+                .Where(tr => tr.SeasonTeam.TeamId == id);
+
+            // Calculates the amount of championships a team has won.
+            int driverchamps = 0;
+            int teamchamps = 0;
+            foreach (var season in _context.Seasons)
             {
-                return NotFound();
+                var driverwinner = _context.SeasonDrivers
+                    .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
+                    .OrderByDescending(dr => dr.Points)
+                    .FirstOrDefault();
+
+                var teamwinner = _context.SeasonTeams
+                    .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
+                    .OrderByDescending(dr => dr.Points)
+                    .FirstOrDefault();
+
+                if (driverwinner != null)
+                {
+                    if (driverwinner.DriverId == id)
+                    {
+                        driverchamps++;
+                    }
+                }
+
+                if (teamwinner != null)
+                {
+                    if (teamwinner.TeamId == id)
+                    {
+                        teamchamps++;
+                    }
+                }
             }
 
-            return View(team);
+            ViewBag.driverchampionships = driverchamps;
+            ViewBag.teamchampionships = teamchamps;
+
+            var stats = new TeamStatsModel()
+            {
+                Team = team,
+                SeasonDriver = seasondrivers,
+                DriverResults = driverresults,
+                TeamResults = teamresults
+            };
+
+            return View(stats);
         }
 
         // GET: Teams/Create

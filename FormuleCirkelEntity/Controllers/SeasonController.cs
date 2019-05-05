@@ -351,6 +351,8 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult DriverDev(int id)
         {
+            ViewBag.seasonId = id;
+
             return View(_context.SeasonDrivers
                 .Include(t => t.SeasonTeam)
                     .ThenInclude(t => t.Team)
@@ -371,11 +373,15 @@ namespace FormuleCirkelEntity.Controllers
             _context.UpdateRange(drivers);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(DriverDev));
+            var seasonId = drivers.Select(s => s.Season.SeasonId).FirstOrDefault();
+
+            return RedirectToAction("DriverDev", new { id = seasonId });
         }
 
         public IActionResult TeamDev(int id)
         {
+            ViewBag.seasonId = id;
+
             return View(_context.SeasonTeams
                 .Include(t => t.Team)
                 .OrderBy(t => t.Team.Name).ToList());
@@ -385,7 +391,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public IActionResult SaveTeamDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var teams = _context.SeasonTeams;
+            var teams = _context.SeasonTeams.OrderBy(t => t.Team.Name);
             foreach (var teamdev in dev)
             {
                 var team = teams.First(t => t.SeasonTeamId == teamdev.Id);
@@ -394,11 +400,15 @@ namespace FormuleCirkelEntity.Controllers
             _context.UpdateRange(teams);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(TeamDev));
+            var seasonId = teams.Select(s => s.Season.SeasonId).FirstOrDefault();
+
+            return RedirectToAction("TeamDev", new { id = seasonId });
         }
 
         public IActionResult EngineDev(int id)
         {
+            ViewBag.seasonId = id;
+
             return View(_context.Engines.Where(e => e.Available == true).ToList());
         }
 
@@ -415,7 +425,11 @@ namespace FormuleCirkelEntity.Controllers
             _context.UpdateRange(engines);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(EngineDev));
+            var seasonId = _context.Seasons
+                .Where(s => s.State == SeasonState.Progress)
+                .FirstOrDefault();
+
+            return RedirectToAction("EngineDev", new { id = seasonId.SeasonId });
         }
 
         [HttpGet]
@@ -516,7 +530,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 devlist.Add(new DevelopingValues
                 {
-                    Id = team.TeamId,
+                    Id = team.SeasonTeamId,
                     Name = team.Team.Name,
                     Abbreviation = team.Team.Abbreviation,
                     Colour = team.Team.Colour,
