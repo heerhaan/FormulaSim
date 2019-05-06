@@ -26,8 +26,6 @@ drivers are going to participate for which teams who use which engines. And so o
 relations; Qualifications.
 - A whole lot more! Inquire for the me if you want to have an insight in our Trello board!
 
-PS: Those parts can still be expanded and upgraded. For now it means that the functionality is there. Master contains solely the base, for progress see Development branch.
-
 # User stories (in Dutch)
 Als gebruiker wil ik coureurs, teams, motoren en circuits kunnen toevoegen zodat ze gebruikt kunnen worden voor een raceseizoen.
 - Coureur bezit naam, nummer en of hij actief is.
