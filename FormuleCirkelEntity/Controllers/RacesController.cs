@@ -187,7 +187,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRacingDrivers(string source)
+        public async Task<IActionResult> GetRacingDrivers(string source, int raceId)
         {
             if (string.IsNullOrWhiteSpace(source))
                 return BadRequest();
@@ -202,12 +202,12 @@ namespace FormuleCirkelEntity.Controllers
                 .ToList();
 
                 // Get the existing qualification results of the current race.
-                var currentQualifyingResult = _context.Qualification.Where(q => q.RaceId == 1).ToList();
+                var currentQualifyingResult = _context.Qualification.Where(q => q.RaceId == raceId).ToList();
 
                 // If there are no qualifying results yet, initialize them.
                 if (!currentQualifyingResult.Any())
                 {
-                    currentQualifyingResult.AddRange(GetQualificationsFromDrivers(drivers));
+                    currentQualifyingResult.AddRange(GetQualificationsFromDrivers(drivers, raceId));
                 }
 
                 var driverLimit = GetQualifyingDriverLimit(source);
@@ -245,7 +245,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers)
+        IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers, int raceId)
         {
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
@@ -254,7 +254,7 @@ namespace FormuleCirkelEntity.Controllers
                 result.Add(new Qualification()
                     {
                         DriverId = driver.SeasonDriverId,
-                        RaceId = 1,
+                        RaceId = raceId,
                         TeamName = driver.SeasonTeam.Team.Abbreviation,
                         Colour = driver.SeasonTeam.Team.Colour,
                         Accent = driver.SeasonTeam.Team.Accent,

@@ -8,17 +8,32 @@
 
 <section class="row my-1">
     <div>
-        <h5>Kwalificatie | Deelnemers</h5>
-        <ol>
-            @foreach (var driver in Model.DriverResults.Select(dr => dr.SeasonDriver))
-            {
-                <li class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;display:list-item;">
-                    @driver.Driver.Name | @driver.SeasonTeam.Team.Name
-                </li>
-            }
-        </ol>
+        @if (Model.DriverResults.Select(dr => dr.Grid).FirstOrDefault() == 0)
+        {
+            <h5>Deelnemers</h5>
+            <ol>
+                @foreach (var driver in Model.DriverResults.Select(dr => dr.SeasonDriver))
+                {
+                    <li>
+                        <div class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.Driver.Name | @driver.SeasonTeam.Team.Name</div>
+                    </li>
+                }
+            </ol>
 
-        <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Kwalificatie</a>
+            <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Kwalificatie</a>
+        }
+        else
+        {
+            <h5>Kwalificatie</h5>
+            <ol>
+                @foreach (var driver in Model.DriverResults.OrderBy(dr => dr.Grid).Select(dr => dr.SeasonDriver))
+                {
+                    <li>
+                        <div class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.Driver.Name | @driver.SeasonTeam.Team.Name</div>
+                    </li>
+                }
+            </ol>
+        }
     </div>
 </section>
 
@@ -39,6 +54,6 @@
 <section class="row my-1">
     <div>
         <h5>Race</h5>
-        <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-secondary">Race</a>
+        <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Start!</a>
     </div>
 </section>

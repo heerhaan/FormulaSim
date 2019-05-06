@@ -10,7 +10,7 @@
 </section>
 
 <section class="row btn-group my-1">
-    <a class="btn btn-primary" onclick="advanceStint()">Volgende stint</a>
+    <a class="btn btn-dark" onclick="advanceStint()">Volgende stint</a>
 </section>
 
 <section class="row my-1">
@@ -35,7 +35,7 @@
                 <td data-field="position">@driverResult.Position</td>
                 <td data-field="driverNumber">@driverResult.SeasonDriver.Driver.DriverNumber</td>
                 <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
-                <td data-field="teamName">@driverResult.SeasonDriver.SeasonTeam.Team.Name</td>
+                <td data-field="teamName"><div class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</div></td>
                 @foreach (var stint in Model.Stints)
                 {
                     var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);

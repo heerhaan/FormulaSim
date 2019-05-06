@@ -100,13 +100,14 @@
                 url: "/Races/GetRacingDrivers",
                 type: "GET",
                 data: {
-                    source: "Q1"
+                    source: "Q1",
+                    raceId: @(race.RaceId)
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td id='teamcell' class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
-                            + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            "</td><td><p class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                            + driver.teamName + "</p></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q1table").append(row);
                     });
                     $("#generateq1").hide();
@@ -119,13 +120,14 @@
                 url: "/Races/GetRacingDrivers",
                 type: "GET",
                 data: {
-                    source: "Q2"
+                    source: "Q2",
+                    raceId: @(race.RaceId)
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
-                            + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            "</td><td><p class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                            + driver.teamName + "</p></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q2table").append(row);
                     });
                     $("#generateq2").hide();
@@ -138,13 +140,14 @@
                 url: "/Races/GetRacingDrivers",
                 type: "GET",
                 data: {
-                    source: "Q3"
+                    source: "Q3",
+                    raceId: @(race.RaceId)
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;' >"
-                            + driver.teamName + "</td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            "</td><td><p class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                            + driver.teamName + "</p></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q3table").append(row);
                     });
                     $("#generateq3").hide();

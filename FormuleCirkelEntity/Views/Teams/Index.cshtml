@@ -32,8 +32,8 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td class="badge" style="background-color:@(item.Colour);color:@(item.Accent);font-size:1rem;display:block;">
-                    @Html.DisplayFor(modelItem => item.Abbreviation)
+                <td>
+                    <div class="badge" style="background-color:@(item.Colour);color:@(item.Accent);font-size:1rem;">@item.Abbreviation</div>
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.TeamId">

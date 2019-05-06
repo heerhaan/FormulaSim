@@ -36,7 +36,7 @@
                     } else
                     {
                         <td>@topDriver.Driver.Name</td>
-                        <td>@topTeam.Team.Name</td>
+                        <td><div class="badge" style="background-color:@(topTeam.Team.Colour);color:@(topTeam.Team.Accent);font-size:1rem;">@topTeam.Team.Name</div></td>
                     }
                     <td>
                         <a asp-action="Detail" asp-route-id="@item.SeasonId">
