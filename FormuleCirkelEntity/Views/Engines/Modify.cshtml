@@ -8,11 +8,11 @@
     <header class="row">
         <h1>Motor aanpassen</h1>
     </header>
-    <section class="row">
+    <div class="row">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <section class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Naam</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </section>
@@ -27,16 +27,14 @@
                 <span asp-validation-for="Available" class="text-danger"></span>
             </section>
             <section class="form-group">
-                <input type="submit" value="Opslaan" class="btn btn-primary" />
+                <input type="submit" value="Opslaan" class="btn btn-dark" />
             </section>
         </form>
-    </section>
+    </div>
 
-    <section class="col-md-4">
-        <a asp-action="Index">
-            <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
-        </a>
-    </section>
+    <a asp-action="Index">
+        <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
+    </a>
 </section>
 
 @section Scripts {

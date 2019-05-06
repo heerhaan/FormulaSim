@@ -36,8 +36,8 @@
                 <td>
                     @position
                 </td>
-                <td class="badge" style="background-color:@(item.Team.Colour);color:@(item.Team.Accent);font-size:1rem;display:block;">
-                    @Html.DisplayFor(modelItem => item.Team.Name)
+                <td>
+                    <div class="badge" style="background-color:@(item.Team.Colour);color:@(item.Team.Accent);font-size:1rem;">@item.Team.Name</div>
                 </td>
                 @foreach (var round in rounds)
                 {
@@ -47,17 +47,29 @@
                             DriverResult result = driver.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
                             if (result == null || result.Position == 0)
                             {
-                                <p>?</p>
+                                <div class="badge badge-light">?</div>
                             }
                             else
                             {
                                 if (result.Status == Status.DNF)
                                 {
-                                    <p class="bg-danger">DNF</p>
+                                    <div class="badge badge-danger">DNF</div>
+                                } else if(result.Position == 1)
+                                {
+                                    <div class="badge badge-first">@result.Position</div>
+                                } else if(result.Position == 2)
+                                {
+                                    <div class="badge badge-second">@result.Position</div>
+                                } else if(result.Position == 3)
+                                {
+                                    <div class="badge badge-third">@result.Position</div>
+                                } else if(result.Position < 6)
+                                {
+                                    <div class="badge badge-success">@result.Position</div>
                                 }
                                 else
                                 {
-                                    <p>@result.Position</p>
+                                    <div class="badge badge-primary">@result.Position</div>
                                 }
                             }
                         }
@@ -71,3 +83,9 @@
         }
     </tbody>
 </table>
+
+<style>
+    .badge {
+        font-size: 0.85rem;
+    }
+</style>

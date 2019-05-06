@@ -100,6 +100,18 @@ dl.inline-flex {
     width: 26%;
 }
 
+.badge-first {
+    background-color: #DAA520;
+}
+
+.badge-second {
+    background-color: #C0C0C0;
+}
+
+.badge-third {
+    background-color: #CD7F32;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

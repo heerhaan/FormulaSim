@@ -113,8 +113,8 @@
                     <tr>
                         <td>@((pos + 1).ToString())</td>
                         <td>@team.Points</td>
-                        <td class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;display:block;">
-                            @team.Team.Name
+                        <td>
+                            <div class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;">@team.Team.Name</div>
                         </td>
                         <td>@team.Chassis</td>
                         <td>@team.Reliability</td>
