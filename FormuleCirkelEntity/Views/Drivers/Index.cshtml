@@ -6,22 +6,24 @@
 
 <h1>Coureurs</h1>
 
-<p>
-    <a asp-action="Create">
-        <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
-    </a>
-</p>
-<form method="post">
-    <div class="form-actions no-color">
-        <p>
-            <input type="text" placeholder="Naam" name="SearchString" value="@ViewData["SearchString"]" />
-            <input type="submit" value="Zoek" class="btn btn-dark" />
-            <a asp-page="/Drivers/Index">
-                <img src="~/images/icon-revert.png" width="30" height="30" title="Revert" />
-            </a>
-        </p>
-    </div>
-</form>
+<div class="table-header-container">
+    <p class="table-header-1">
+        <a asp-action="Create">
+            <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
+        </a>
+    </p>
+    <form class="table-header-1" method="post">
+        <div class="form-actions no-color">
+            <p>
+                <input type="text" placeholder="Naam" name="SearchString" value="@ViewData["SearchString"]" />
+                <input type="submit" value="Zoek" class="btn btn-dark" />
+                <a asp-page="/Drivers/Index">
+                    <img src="~/images/icon-revert.png" width="30" height="30" title="Revert" />
+                </a>
+            </p>
+        </div>
+    </form>
+</div>
 <table class="table">
     <thead>
         <tr>

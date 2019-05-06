@@ -49,6 +49,57 @@ body.dark {
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
+/* Fixes the placing of items in the Biography view by using flexboxes */
+
+.biocontainer {
+    display: flex;
+}
+
+.fixed {
+    width: 50%;
+}
+
+.flex-item {
+    flex-grow: 1;
+    height: auto;
+    width: 50%;
+}
+
+dl.inline-flex {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+
+    dl.inline-flex dt {
+        flex: 0 0 50%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    dl.inline-flex dd {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        flex: 0 0 50%
+    }
+
+/* Used to place Add-button and Search bar in Driver Index on the same row */
+
+.table-header-container {
+    width: auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.table-header-1 {
+    width: 26%;
+}
+
+.table-header-2 {
+    width: 26%;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
