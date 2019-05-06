@@ -12,10 +12,7 @@ the qualifying results and race results -> Finish RaceWeekend, raceresults will 
 
 # Ideas
 
-- Colours for teams, which has a main colour and an accent colour. Main is basically the background of the cell, accent the colour of the text. Those colours apply in every table the team name is in.
-- In the standings for the whole season the cells will get a different colour based on the corresponding race result, a DNF colours the cell red, outside the points no added colour and in the points will make the cell green.
 - In qualifying it also should be shown which drivers have reached the next Qualififying round through colouring the cell. Perhaps make the people who didnt went through red.
-- Stats for each driver should be saved in the list where you can also add them. Click on the "stats" button next to their name and there it shows how many WDCs they won, which teams they have driven for, endresult for each season they have driven, how many poles, how many wins and maybe even more.
 - The current way where the races will be setup is just the base of how it used to work in Excel, since it is now an application changes could be made to make it work a bit more "logically", like chassis and driver skill have an impact each stint instead of only once.
 - Also very neat would be that graphs about the season can be shown, say how drivers progress over the season according to their points, maybe also the ability to filter it to an inputted amount of drivers.
 - More?
@@ -26,7 +23,8 @@ the qualifying results and race results -> Finish RaceWeekend, raceresults will 
 - Creating a season, here you can add everything that is going to be part of the season. Which tracks are going to be driven on, which
 drivers are going to participate for which teams who use which engines. And so on.
 - Qualifying functionality works now, going from Q1 to Q3 works as it should and the results of that are for now saved in a table without
-relations; Qualificatioms.
+relations; Qualifications.
+- A whole lot more! Inquire for the me if you want to have an insight in our Trello board!
 
 PS: Those parts can still be expanded and upgraded. For now it means that the functionality is there. Master contains solely the base, for progress see Development branch.
 
