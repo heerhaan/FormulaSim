@@ -6,6 +6,7 @@ using FormuleCirkelEntity.Builders;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
+using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -370,6 +371,47 @@ namespace FormuleCirkelEntity.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("RaceWeekend", new { id, raceId });
+        }
+
+        [HttpPost("Season/{id}/[Controller]/{raceId}/round")]
+        public async Task<IActionResult> MoveRound(int id, int raceId, [FromQuery] int direction)
+        {
+            if (direction != -1 && direction != 1)
+                return BadRequest("Direction may only be 1 or -1.");
+
+            var race = await _context.Races
+                .Include(r => r.Season)
+                    .ThenInclude(s => s.Races)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id);
+
+            if (race == null)
+                return NotFound();
+
+            if (race.Season.State >= SeasonState.Progress)
+                return BadRequest(new ErrorResult("SeasonInProgress", "Cannot move rounds while a season is in progress."));
+
+            // Get the race to switch with by getting the race with the position above or below it, matching with the Direction parameter.
+            var raceToSwitch = race.Season.Races.SingleOrDefault(r => r.Round == race.Round + direction);
+
+            if (raceToSwitch == null)
+                return BadRequest(new ErrorResult("InvalidRoundMove", $"Cannot move the {(direction == -1 ? "first" : "last")} round further than its current position."));
+
+            (race.Round, raceToSwitch.Round) = (raceToSwitch.Round, race.Round);
+            _context.UpdateRange(race, raceToSwitch);
+            await _context.SaveChangesAsync();
+
+            // Prepare race object for serialization
+            race.DriverResults = null;
+            race.Season = null;
+            race.TeamResults = null;
+            race.Track = null;
+            race.Stints = null;
+            raceToSwitch.DriverResults = null;
+            raceToSwitch.Season = null;
+            raceToSwitch.TeamResults = null;
+            raceToSwitch.Track = null;
+            raceToSwitch.Stints = null;
+            return new JsonResult(new[] { race, raceToSwitch });
         }
     }
 }
