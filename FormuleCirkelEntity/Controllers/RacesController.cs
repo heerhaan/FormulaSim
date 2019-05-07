@@ -178,6 +178,69 @@ namespace FormuleCirkelEntity.Controllers
             return new JsonResult(race, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
+        [HttpPost]
+        public IActionResult FinishRace (int seasonId, int raceId)
+        {
+            // Finishes the race, gives out points and returns to the Detail screen
+            var raceresults = _context.DriverResults.Where(r => r.RaceId == raceId);
+            var drivers = _context.SeasonDrivers.Where(s => s.SeasonId == seasonId).ToList();
+
+            foreach(var item in raceresults)
+            {
+                if(item.Status == Status.Finished)
+                {
+                    int points = PointsEarned(item.Position);
+                    drivers.SingleOrDefault(d => d.SeasonDriverId == item.SeasonDriverId).Points += points;
+                }
+            }
+
+            _context.UpdateRange(drivers);
+            _context.SaveChanges();
+
+            return RedirectToAction("Detail", "Season", seasonId);
+        }
+
+        int PointsEarned(int pos)
+        {
+            int points = 0;
+
+            switch (pos)
+            {
+                case 1:
+                    points = 25;
+                    break;
+                case 2:
+                    points = 18;
+                    break;
+                case 3:
+                    points = 15;
+                    break;
+                case 4:
+                    points = 12;
+                    break;
+                case 5:
+                    points = 10;
+                    break;
+                case 6:
+                    points = 8;
+                    break;
+                case 7:
+                    points = 6;
+                    break;
+                case 8:
+                    points = 4;
+                    break;
+                case 9:
+                    points = 2;
+                    break;
+                case 10:
+                    points = 1;
+                    break;
+            }
+
+            return points;
+        }
+
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying")]
         public IActionResult Qualifying(int id, int raceId)
         {
