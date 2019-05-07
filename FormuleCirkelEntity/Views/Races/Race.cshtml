@@ -88,7 +88,7 @@
 
     function advanceStint() {
         fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/Advance", { method: "POST" })
-            .then(response => response.status, response.json())
+            .then(response => response.json())
             .then(result => processStintResponse(result));
     }
 </script>
