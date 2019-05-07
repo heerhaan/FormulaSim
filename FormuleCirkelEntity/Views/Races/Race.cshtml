@@ -33,7 +33,7 @@
             {
             <tr data-obj-id="@driverResult.SeasonDriverId">
                 <td data-field="position">@driverResult.Position</td>
-                <td data-field="driverNumber">@driverResult.SeasonDriver.Driver.DriverNumber</td>
+                <td data-field="driverNumber"><div class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</div></td>
                 <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
                 <td data-field="teamName"><div class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</div></td>
                 @foreach (var stint in Model.Stints)

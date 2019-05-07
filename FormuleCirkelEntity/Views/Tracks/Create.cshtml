@@ -1,7 +1,7 @@
 ﻿@model FormuleCirkelEntity.Models.Track
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Circuit toevoegen";
 }
 
 <h1>Toevoegen</h1>
@@ -35,7 +35,7 @@
                 @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Toevoegen" class="btn btn-dark" />
             </div>
         </form>
     </div>

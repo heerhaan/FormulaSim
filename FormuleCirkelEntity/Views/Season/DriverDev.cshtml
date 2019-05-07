@@ -28,10 +28,10 @@
                 {
                     <tr>
                         <td><span class="badge">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
-                        <td class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);
+                        <td><div class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);
                             color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;display:table-cell;">
                             @driver.SeasonTeam.Team.Abbreviation
-                        </td>
+                        </div></td>
                         <td>@driver.Skill</td>
                         <td>?</td>
                         <td>?</td>
@@ -63,8 +63,8 @@
                     $("#devtable").empty();
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td><span class='badge'>" + driver.number + "</span>" + driver.name +
-                            "</td><td class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent +
-                            ";font-size:1rem;display:table-cell;'>" + driver.abbreviation + "</td><td>" + driver.old + "</td><td>"
+                            "</td><td><div class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent +
+                            ";font-size:1rem;'>" + driver.abbreviation + "</div></td><td>" + driver.old + "</td><td>"
                             + driver.dev + "</td><td>" + driver.new + "</td><td style='display:none;'>" + driver.id + "</td></tr>";
                         $("#devtable").append(row);
                         $("#save").show();

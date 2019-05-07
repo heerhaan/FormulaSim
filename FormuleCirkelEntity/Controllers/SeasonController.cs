@@ -130,6 +130,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
             ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
+            ViewBag.seasonId = id;
 
             var seasonTeam = new SeasonTeam();
             seasonTeam.Team = globalTeam;
@@ -187,6 +188,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
             ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
+            ViewBag.seasonId = id;
             return View("AddOrUpdateTeam", team);
         }
 
@@ -252,6 +254,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Team.Name });
             ViewBag.teams = new SelectList(teams, "SeasonTeamId", "Name");
+            ViewBag.seasonId = id;
 
             var seasonDriver = new SeasonDriver();
             seasonDriver.Driver = globalDriver;
@@ -313,6 +316,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Team.Name });
             ViewBag.teams = new SelectList(teams, "SeasonTeamId", "Name");
+            ViewBag.seasonId = id;
             return View("AddOrUpdateDriver", driver);
         }
 

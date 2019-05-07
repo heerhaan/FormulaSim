@@ -5,15 +5,13 @@
 }
 
 <h1>Coureur toevoegen</h1>
-
-<h4>Driver</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="DriverNumber" class="control-label">Racenummer</label>
+                <label asp-for="DriverNumber" class="control-label">Nummer</label>
                 <input asp-for="DriverNumber" class="form-control" />
                 <span asp-validation-for="DriverNumber" class="text-danger"></span>
             </div>
@@ -28,7 +26,7 @@
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-dark" />
+                <input type="submit" value="Toevoegen" class="btn btn-dark" />
             </div>
         </form>
     </div>
