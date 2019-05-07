@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Driver development";
+    int seasonId = ViewBag.seasonId;
 }
 
 <h1>Coureur ontwikkeling</h1>
@@ -43,7 +44,7 @@
     <button id="save" class="btn btn-dark">Opslaan</button>
 </section>
 
-<a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+<a asp-action="Detail" asp-route-id="@seasonId">
     <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
 </a>
 
@@ -57,6 +58,7 @@
                 data: {
                     min: document.getElementById("min").value,
                     max: document.getElementById("max").value,
+                    seasonId: @(seasonId),
                     source: "driver"
                 },
                 success: function (drivers) {

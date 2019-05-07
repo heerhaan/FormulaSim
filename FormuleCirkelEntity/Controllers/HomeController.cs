@@ -23,8 +23,6 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult DriverStandings()
         {
-            ViewBag.rounds = _context.Races.Include(r => r.Track).ToList();
-
             var currentSeason = _context.Seasons
                 .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
                 .OrderBy(s => s.SeasonStart)
@@ -37,14 +35,14 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == currentSeason.SeasonId)
                 .OrderByDescending(s => s.Points)
                 .ToList();
+
+            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+
             return View(standings);
         }
 
         public IActionResult TeamStandings()
         {
-            ViewBag.rounds = _context.Races.Include(r => r.Track).ToList();
-            ViewBag.drivers = _context.SeasonDrivers;
-
             var currentSeason = _context.Seasons
                 .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
                 .OrderBy(s => s.SeasonStart)
@@ -57,6 +55,9 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == currentSeason.SeasonId)
                 .OrderByDescending(t => t.Points)
                 .ToList();
+
+            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+            ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
 
             return View(standings);
         }
