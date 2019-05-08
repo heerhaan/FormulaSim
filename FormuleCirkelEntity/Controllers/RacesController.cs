@@ -335,7 +335,7 @@ namespace FormuleCirkelEntity.Controllers
         int GetQualifyingDriverLimit(string qualifyingStage)
         {
             //Limits should be flexible in accordance to entered drivers.
-            const int Q1_LIMIT = 20;
+            const int Q1_LIMIT = 22;
             const int Q2_LIMIT = 16;
             const int Q3_LIMIT = 10;
 

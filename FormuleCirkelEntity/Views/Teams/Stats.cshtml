@@ -57,9 +57,9 @@
                 Historie coureurs:
             </dt>
             <dd>
-                @foreach (var driver in Model.SeasonDriver.Distinct())
+                @foreach (var driver in Model.SeasonDriver.Select(s => s.Driver).Distinct())
                 {
-                    <span class="badge badge-danger">@(driver.Driver.Name)</span>
+                    <span class="badge badge-danger">@(driver.Name)</span>
                 }
             </dd>
         </dl>

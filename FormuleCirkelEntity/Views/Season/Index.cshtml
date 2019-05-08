@@ -25,8 +25,8 @@
         <tbody>
             @foreach (var item in Model)
             {
-                var topDriver = item.Drivers.OrderByDescending(d => d.Points).First();
-                var topTeam = item.Teams.OrderByDescending(t => t.Points).First();
+                var topDriver = item.Drivers.OrderByDescending(d => d.Points).FirstOrDefault();
+                var topTeam = item.Teams.OrderByDescending(t => t.Points).FirstOrDefault();
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.SeasonId)</td>
                     @if(topDriver == null || topTeam == null)

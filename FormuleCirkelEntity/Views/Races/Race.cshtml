@@ -21,6 +21,7 @@
                 <th>Nummer</th>
                 <th>Naam</th>
                 <th>Team</th>
+                <th>Grid</th>
                 @foreach (var stint in Model.Stints)
                 {
                     <th data-field="stintResultHeader-@stint.Key">@stint.Key</th>
@@ -33,9 +34,10 @@
             {
             <tr data-obj-id="@driverResult.SeasonDriverId">
                 <td data-field="position">@driverResult.Position</td>
-                <td data-field="driverNumber"><div class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</div></td>
+                <td data-field="driverNumber"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
                 <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
-                <td data-field="teamName"><div class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</div></td>
+                <td data-field="teamName"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
+                <td data-field="startGrid">@driverResult.Grid</td>
                 @foreach (var stint in Model.Stints)
                 {
                     var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
@@ -73,6 +75,7 @@
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
             row.querySelector("td[data-field='pointsTotal']").innerText = driverResult.Points;
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
+            row.querySelector("td[data-field='startGrid']").innerText = driverResult.Grid;
             Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
                 let stintResult = driverResult.StintResults[stintKey];
                 row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);
