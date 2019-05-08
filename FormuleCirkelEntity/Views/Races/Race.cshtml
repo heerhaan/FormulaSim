@@ -82,7 +82,7 @@
         let th = table.querySelector("th[data-field='pointsTotal']")
         let tableRows = tableBody.querySelectorAll("tr:nth-child(n+1)")
         Array.from(tableRows)
-            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), false))
+            .sort(tableComparer(Array.from(th.parentNode.children).indexOf(th), false))
             .forEach(tr => table.querySelector("tbody").appendChild(tr));
     }
 
@@ -90,14 +90,5 @@
         fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/Advance", { method: "POST" })
             .then(response => response.json())
             .then(result => processStintResponse(result));
-    }
-
-    function comparer(index, isAscending) {
-        let getCellValue = (row, idx) => row.children[idx].innerText || row.children[idx].textContent;
-        let isNumber = (val) => val !== '' && !isNaN(val);
-        return function (a, b) {
-            let valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
-            return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
-        }
     }
 </script>

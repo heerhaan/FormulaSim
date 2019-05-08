@@ -65,23 +65,30 @@
     <header>
         <h3>Races</h3>
     </header>
-    <table class="table table-striped">
+    <table id="races" class="table table-striped">
         <thead>
             <tr>
-                <th>Naam</th>
-                <th>Ronde</th>
+                <th data-field="name">Naam</th>
+                <th data-field="round">Ronde</th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var race in Model.Races)
+            @foreach (var race in Model.Races.OrderBy(r => r.Round))
             {
-                <tr>
-                    <td>@race.Name</td>
-                    <td>@race.Round</td>
-                    <td><a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.SeasonId" asp-route-raceId="@race.RaceId">
-                        <img src="~/images/icon-raceflag.png" width="30" height="30" title="Race" />
-                    </a></td>
+                <tr data-obj-id="@race.RaceId">
+                    <td data-field="name">@race.Name</td>
+                    <td data-field="round">@race.Round</td>
+                    <td>
+                        <a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.SeasonId" asp-route-raceId="@race.RaceId">
+                            <img src="~/images/icon-raceflag.png" width="30" height="30" title="Race" />
+                        </a>
+                    </td>
+                    <td>
+                        <a class="badge badge-secondary cursor-pointer" onclick="moveRound(@Model.SeasonId, @race.RaceId, -1)">Omhoog</a>
+                        <a class="badge badge-secondary cursor-pointer" onclick="moveRound(@Model.SeasonId, @race.RaceId, 1)">Omlaag</a>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -134,3 +141,33 @@
         <a asp-action="EngineDev" asp-route-id="@Model.SeasonId" class="btn btn-dark">Ontwikkeling motoren</a>
     </div>
 </section>
+
+<script>
+    function updateRaces(races) {
+        const table = document.querySelector('#races');
+        const tableBody = table.querySelector("tbody");
+
+        races.forEach((race) => {
+            let row = tableBody.querySelector(`tr[data-obj-id='${race.raceId}']`);
+            row.querySelector("td[data-field='round']").innerHTML = race.round;
+        });
+
+        let th = table.querySelector("th[data-field='round']")
+        let tableRows = tableBody.querySelectorAll("tr:nth-child(n+1)")
+        Array.from(tableRows)
+            .sort(tableComparer(Array.from(th.parentNode.children).indexOf(th), true))
+            .forEach(tr => table.querySelector("tbody").appendChild(tr));
+    }
+
+    function handleError(errorData) {
+        alert(errorData.message);
+    }
+
+    function moveRound(season, race, direction) {
+        fetch(`/Season/${season}/Races/${race}/round?direction=${direction}`, { method: "POST" })
+            .then(response => response.status == 200 ? Promise.resolve(response) : Promise.reject(response))
+            .then(response => response.json())
+            .then(data => updateRaces(data))
+            .catch(err => err.json().then(err => handleError(err)));
+    }
+</script>
