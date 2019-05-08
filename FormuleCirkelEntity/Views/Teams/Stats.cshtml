@@ -59,7 +59,7 @@
             <dd>
                 @foreach (var driver in Model.SeasonDriver.Select(s => s.Driver).Distinct())
                 {
-                    <span class="badge badge-danger">@(driver.Name)</span>
+                    <span class="badge badge-light">@(driver.Name)</span>
                 }
             </dd>
         </dl>

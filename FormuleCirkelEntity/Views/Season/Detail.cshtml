@@ -14,6 +14,10 @@
     {
         <a asp-action="Start" asp-route-id="@Model.SeasonId" class="btn btn-dark btn-info">Start seizoen!</a>
     }
+    @if (Model.State == SeasonState.Progress)
+    {
+        <a asp-action="Finish" asp-route-id="@Model.SeasonId" class="btn btn-dark btn-info">Eindig seizoen!</a>
+    }
     <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.SeasonId" class="btn btn-dark">Races toevoegen</a>
     <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-dark">Coureurs toevoegen</a>
     <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-dark">Teams toevoegen</a>

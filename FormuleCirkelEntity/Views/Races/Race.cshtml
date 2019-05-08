@@ -14,11 +14,11 @@
 </section>
 
 <section class="row my-1">
-    <table id="results" class="table table-striped table-sm">
+    <table id="results" class="table table-sm">
         <thead>
             <tr>
-                <th>Positie</th>
-                <th>Nummer</th>
+                <th>Pos.</th>
+                <th>Nr.</th>
                 <th>Naam</th>
                 <th>Team</th>
                 <th>Grid</th>
@@ -62,6 +62,10 @@
     </form>
 </section>
 
+<button class="btn badge-dark" onclick="takeScreenshot()">To Image</button>
+
+<div id="screenshot"></div>
+
 <script>
     const table = document.querySelector('#results');
     const tableBody = table.querySelector("tbody");
@@ -102,5 +106,12 @@
             let valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
             return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
         }
+    }
+
+    function takeScreenshot() {
+        html2canvas(document.querySelector('#results')).then(function (canvas) {
+            $('#screenshot').empty();
+            document.querySelector('#screenshot').appendChild(canvas);
+        });
     }
 </script>

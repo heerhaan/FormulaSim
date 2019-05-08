@@ -12,7 +12,7 @@
     <input id="max" type="number" placeholder="Max. RNG" />
     <button id="develop" class="btn btn-dark">Ontwikkel</button>
 
-    <table class="table">
+    <table id="graphic" class="table">
         <thead>
             <tr>
                 <th>Team</th>
@@ -46,6 +46,10 @@
 <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
     <img src="~/images/icon-back.png" width="30" height="30" title="Back" />
 </a>
+
+<button class="btn badge-dark" onclick="takeScreenshot()">To Image</button>
+
+<div id="screenshot"></div>
 
 <script>
     $(document).ready(function () {
@@ -100,4 +104,11 @@
             });
         });
     });
+
+    function takeScreenshot() {
+        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
+            $('#screenshot').empty();
+            document.querySelector('#screenshot').appendChild(canvas);
+        });
+    }
 </script>

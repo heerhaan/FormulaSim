@@ -11,7 +11,7 @@
 <h1>Kampioenschap teams</h1>
 
 
-<table class="table table-sm">
+<table id="graphic" class="table table-sm">
     <thead>
         <tr>
             <th>
@@ -25,7 +25,7 @@
                 <th>@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
             }
             <th>
-                Punten
+                Pnt.
             </th>
         </tr>
     </thead>
@@ -47,13 +47,13 @@
                             DriverResult result = driver.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
                             if (result == null || result.Position == 0)
                             {
-                                <span>x</span>
+                                <span>-</span>
                             }
                             else
                             {
                                 if (result.Status == Status.DNF)
                                 {
-                                    <span class="badge badge-danger">X</span>
+                                    <span class="badge badge-danger">DNF</span>
                                 } else if(result.Position == 1)
                                 {
                                     <span class="badge badge-first">@result.Position</span>
@@ -76,7 +76,7 @@
                     </td>
                 }
                 <td>
-                    @Html.DisplayFor(modelItem => item.Points)
+                    <span class="badge">@Html.DisplayFor(modelItem => item.Points)</span>
                 </td>
             </tr>
             position++;
@@ -84,8 +84,21 @@
     </tbody>
 </table>
 
+<button class="btn badge-dark" onclick="takeScreenshot()">To Image</button>
+
+<div id="screenshot"></div>
+
 <style>
     .badge {
         font-size: 0.85rem;
     }
 </style>
+
+<script>
+    function takeScreenshot() {
+        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
+            $('#screenshot').empty();
+            document.querySelector('#screenshot').appendChild(canvas);
+        });
+    }
+</script>
