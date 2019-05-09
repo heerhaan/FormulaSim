@@ -23,8 +23,6 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult DriverStandings()
         {
-            ViewBag.rounds = _context.Races.Include(r => r.Track).ToList();
-
             var currentSeason = _context.Seasons
                 .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
                 .OrderBy(s => s.SeasonStart)
@@ -37,14 +35,34 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == currentSeason.SeasonId)
                 .OrderByDescending(s => s.Points)
                 .ToList();
+
+            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+
             return View(standings);
+        }
+
+        [ActionName("PastDriverStandings")]
+        public IActionResult DriverStandings(int seasonId)
+        {
+            var currentSeason = _context.Seasons
+                .Where(s => s.SeasonId == seasonId)
+                .FirstOrDefault();
+
+            var standings = _context.SeasonDrivers
+                .Include(s => s.DriverResults)
+                .Include(s => s.Driver)
+                .Include(s => s.SeasonTeam.Team)
+                .Where(s => s.SeasonId == currentSeason.SeasonId)
+                .OrderByDescending(s => s.Points)
+                .ToList();
+
+            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+
+            return View("DriverStandings", standings);
         }
 
         public IActionResult TeamStandings()
         {
-            ViewBag.rounds = _context.Races.Include(r => r.Track).ToList();
-            ViewBag.drivers = _context.SeasonDrivers;
-
             var currentSeason = _context.Seasons
                 .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
                 .OrderBy(s => s.SeasonStart)
@@ -58,7 +76,31 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(t => t.Points)
                 .ToList();
 
+            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+            ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
+
             return View(standings);
+        }
+
+        [ActionName("PastTeamStandings")]
+        public IActionResult TeamStandings(int seasonId)
+        {
+            var currentSeason = _context.Seasons
+                .Where(s => s.SeasonId == seasonId)
+                .FirstOrDefault();
+
+            var standings = _context.SeasonTeams
+                .Include(t => t.Team)
+                .Include(t => t.SeasonDrivers)
+                    .ThenInclude(s => s.DriverResults)
+                .Where(s => s.SeasonId == currentSeason.SeasonId)
+                .OrderByDescending(t => t.Points)
+                .ToList();
+
+            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+            ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
+
+            return View("TeamStandings", standings);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

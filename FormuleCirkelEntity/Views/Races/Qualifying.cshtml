@@ -16,11 +16,11 @@
 </nav>
 <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane fade show active" id="nav-q1" role="tabpanel" aria-labelledby="nav-q1-tab">
-        <table class="table table-striped table-dark">
+        <table id="graphic1" class="table table-sm">
             <thead>
                 <tr>
                     <th>
-                        Pos.
+                        #
                     </th>
                     <th>
                         Team
@@ -35,13 +35,14 @@
             </thead>
             <tbody id="q1table"></tbody>
         </table>
+        <button class="btn badge-dark float-right" onclick="takeScreenshot('#graphic1')">To Image</button>
     </div>
-    <div class="tab-pane fade" id="nav-q2" role="tabpanel" aria-labelledby="nav-q2-tab">
-        <table class="table table-striped table-dark">
+    <div class="tab-pane fade table-sm" id="nav-q2" role="tabpanel" aria-labelledby="nav-q2-tab">
+        <table id="graphic2" class="table table-sm">
             <thead>
                 <tr>
                     <th>
-                        Pos.
+                        #
                     </th>
                     <th>
                         Team
@@ -56,13 +57,14 @@
             </thead>
             <tbody id="q2table"></tbody>
         </table>
+        <button class="btn badge-dark float-right" onclick="takeScreenshot('#graphic2')">To Image</button>
     </div>
     <div class="tab-pane fade" id="nav-q3" role="tabpanel" aria-labelledby="nav-q3-tab">
-        <table class="table table-striped table-dark">
+        <table id="graphic3" class="table table-sm">
             <thead>
                 <tr>
                     <th>
-                        Pos.
+                        #
                     </th>
                     <th>
                         Team
@@ -77,6 +79,7 @@
             </thead>
             <tbody id="q3table"></tbody>
         </table>
+        <button class="btn badge-dark float-right" onclick="takeScreenshot('#graphic3')">To Image</button>
     </div>
 </div>
 
@@ -84,11 +87,14 @@
 <button id="generateq1" class="btn btn-dark">Start Q1!</button>
 <button id="generateq2" class="btn btn-dark">Start Q2!</button>
 <button id="generateq3" class="btn btn-dark">Start Q3!</button>
+
 <form asp-action="Return" asp-route-id="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
     <div class="form-group">
         <input type="submit" value="Finish!" class="btn btn-dark" />
     </div>
 </form>
+
+<div id="screenshot"></div>
 
 <script>
     $(document).ready(function () {
@@ -106,8 +112,8 @@
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td><p class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
-                            + driver.teamName + "</p></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            "</td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                            + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q1table").append(row);
                     });
                     $("#generateq1").hide();
@@ -126,8 +132,8 @@
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td><p class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
-                            + driver.teamName + "</p></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            "</td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                            + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q2table").append(row);
                     });
                     $("#generateq2").hide();
@@ -146,8 +152,8 @@
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
-                            "</td><td><p class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
-                            + driver.teamName + "</p></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            "</td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                            + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
                         $("#q3table").append(row);
                     });
                     $("#generateq3").hide();
@@ -156,4 +162,11 @@
             });
         });
     });
+
+    function takeScreenshot(graphicid) {
+        html2canvas(document.querySelector(graphicid)).then(function (canvas) {
+            $('#screenshot').empty();
+            document.querySelector('#screenshot').appendChild(canvas);
+        });
+    }
 </script>

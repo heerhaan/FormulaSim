@@ -185,20 +185,23 @@ namespace FormuleCirkelEntity.Controllers
             // Finishes the race, gives out points and returns to the Detail screen
             var raceresults = _context.DriverResults.Where(r => r.RaceId == raceId);
             var drivers = _context.SeasonDrivers.Where(s => s.SeasonId == seasonId).ToList();
+            var teams = _context.SeasonTeams.Where(s => s.SeasonId == seasonId).ToList();
 
-            foreach(var item in raceresults)
+            foreach (var item in raceresults)
             {
                 if(item.Status == Status.Finished)
                 {
                     int points = PointsEarned(item.Position);
                     drivers.SingleOrDefault(d => d.SeasonDriverId == item.SeasonDriverId).Points += points;
+                    teams.SingleOrDefault(t => t.SeasonDrivers.Contains(item.SeasonDriver)).Points += points;
                 }
             }
 
             _context.UpdateRange(drivers);
+            _context.UpdateRange(teams);
             _context.SaveChanges();
 
-            return RedirectToAction("Detail", "Season", seasonId);
+            return RedirectToAction("Index", "Home");
         }
 
         int PointsEarned(int pos)
@@ -260,6 +263,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 // Get all drivers of the season.
                 var drivers = _context.SeasonDrivers
+                .Where(s => s.Season.State == SeasonState.Progress)
                 .Include(s => s.Driver)
                 .Include(t => t.SeasonTeam)
                 .ThenInclude(t => t.Team)
@@ -274,7 +278,7 @@ namespace FormuleCirkelEntity.Controllers
                     currentQualifyingResult.AddRange(GetQualificationsFromDrivers(drivers, raceId));
                 }
 
-                var driverLimit = GetQualifyingDriverLimit(source);
+                var driverLimit = GetQualifyingDriverLimit(source, drivers.Count);
 
                 // Take the current result, then order descending to place highest score first, lowest score last. 
                 // From the resulting ordered list, take the amount of drivers allowed to continue to the next qualifying round.
@@ -329,12 +333,12 @@ namespace FormuleCirkelEntity.Controllers
             return result;
         }
 
-        int GetQualifyingDriverLimit(string qualifyingStage)
+        int GetQualifyingDriverLimit(string qualifyingStage, int driverCount)
         {
             //Limits should be flexible in accordance to entered drivers.
-            const int Q1_LIMIT = 10;
-            const int Q2_LIMIT = 6;
-            const int Q3_LIMIT = 4;
+            int Q1_LIMIT = driverCount;
+            const int Q2_LIMIT = 16;
+            const int Q3_LIMIT = 10;
 
             if (qualifyingStage == "Q2")
                 return Q2_LIMIT;

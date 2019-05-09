@@ -13,6 +13,10 @@ body.dark {
     background-color: rgb(30,34,39);
     color: #fff;
 }
+    body.dark table {
+        background-color: rgb(30,34,39);
+        color: #fff;
+    }    
 
     body.dark code[class*=language-],
     body.dark table tbody > tr:nth-child(odd) > td,
@@ -98,6 +102,19 @@ dl.inline-flex {
 
 .table-header-2 {
     width: 26%;
+}
+
+.table {
+    vertical-align: middle;
+    text-align: center;
+}
+
+td .badge {
+    width: 100%;
+}
+
+.nofullwidth {
+    width: auto !important;
 }
 
 .badge-first {

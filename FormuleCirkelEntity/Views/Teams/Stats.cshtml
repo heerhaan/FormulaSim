@@ -15,7 +15,7 @@
                 Aantal starts:
             </dt>
             <dd>
-                @Model.TeamResults.Count()
+                @(Model.DriverResults.Count()/2)
             </dd>
             <dt>
                 Aantal poles:
@@ -57,9 +57,9 @@
                 Historie coureurs:
             </dt>
             <dd>
-                @foreach (var driver in Model.SeasonDriver.Distinct())
+                @foreach (var driver in Model.SeasonDriver.Select(s => s.Driver).Distinct())
                 {
-                    <div class="badge badge-danger">@(driver.Driver.Name)</div>
+                    <span class="badge badge-light">@(driver.Name)</span>
                 }
             </dd>
         </dl>
