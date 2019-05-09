@@ -8,32 +8,35 @@
 
 <section class="row my-1">
     <div>
-        @if (Model.DriverResults.Select(dr => dr.Grid).FirstOrDefault() == 0)
-        {
-            <h5>Deelnemers</h5>
-            <ol>
-                @foreach (var driver in Model.DriverResults.Select(dr => dr.SeasonDriver))
-                {
-                    <li>
-                        <span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.Driver.Name | @driver.SeasonTeam.Team.Name</span>
-                    </li>
-                }
-            </ol>
-
-            <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Kwalificatie</a>
-        }
-        else
-        {
-            <h5>Kwalificatie</h5>
-            <ol>
+        <h5>Deelnemers</h5>
+        <table id="graphic" class="table table-sm">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>Driver</td>
+                    <td>Nr.</td>
+                    <td>Team</td>
+                </tr>
+            </thead>
+            <tbody>
                 @foreach (var driver in Model.DriverResults.OrderBy(dr => dr.Grid).Select(dr => dr.SeasonDriver))
                 {
-                    <li>
-                        <span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.Driver.Name | @driver.SeasonTeam.Team.Name</span>
-                    </li>
+                    <tr>
+                        <td>@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</td>
+                        <td>@driver.Driver.Name</td>
+                        <td><span class="badge">@driver.Driver.DriverNumber</span></td>
+                        <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
+                    </tr>
                 }
-            </ol>
+            </tbody>
+        </table>
+
+        @if (Model.DriverResults.Select(dr => dr.Grid).FirstOrDefault() == 0)
+        {
+            <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Kwalificatie</a>
         }
+
+        <button class="btn badge-dark float-right" onclick="takeScreenshot()">To Image</button>
     </div>
 </section>
 
@@ -53,7 +56,22 @@
 
 <section class="row my-1">
     <div>
-        <h5>Race</h5>
-        <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Start!</a>
+        <h5>Race!</h5>
+        @if (Model.DriverResults.Select(dr => dr.Grid).FirstOrDefault() != 0)
+        {
+            <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Start!</a>
+        }
     </div>
 </section>
+
+<hr />
+<div id="screenshot" class="row my-1"></div>
+
+<script>
+    function takeScreenshot() {
+        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
+            $('#screenshot').empty();
+            document.querySelector('#screenshot').appendChild(canvas);
+        });
+    }
+</script>
