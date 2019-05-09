@@ -36,6 +36,12 @@ body.dark {
         border-top-color: #bd2130
     }
 
+i.fas,
+i.fab {
+    color: white;
+    font-size: 30px;
+}
+
 .hero-image {
     background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/DavidBeckmannCorner.jpg');
     height: 550px;

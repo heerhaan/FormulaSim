@@ -71,7 +71,7 @@
                         } else if(result.Position == 3)
                         {
                             <td><span class="badge badge-third">@result.Position</span></td>
-                        } else if(result.Position < 11)
+                        } else if(result.Position <= 12)
                         {
                             <td><span class="badge badge-success">@result.Position</span></td>
                         }
@@ -90,7 +90,7 @@
     </tbody>
 </table>
 
-<button class="btn badge-dark" onclick="takeScreenshot()">To Image</button>
+<button class="btn badge-dark" onclick="takeScreenshot()"><i class="fas fa-image"></i></button>
 
 <div id="screenshot"></div>
 

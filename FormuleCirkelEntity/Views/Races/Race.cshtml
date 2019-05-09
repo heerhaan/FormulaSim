@@ -9,9 +9,13 @@
     </header>
 </section>
 
-<section class="row btn-group my-1">
+<div class="table-header-container">
     <a class="btn btn-dark" onclick="advanceStint()">Volgende stint</a>
-</section>
+
+    <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish">
+        <input type="submit" value="Finish!" class="btn btn-dark" />
+    </form>
+</div>
 
 <section class="row my-1">
     <table id="results" class="table table-sm">
@@ -54,15 +58,7 @@
     </table>
 </section>
 
-<section>
-    <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish">
-        <div class="form-group">
-            <input type="submit" value="Finish!" class="btn btn-dark" />
-        </div>
-    </form>
-</section>
-
-<button class="btn badge-dark float-right" onclick="takeScreenshot()">To Image</button>
+<button class="btn badge-dark" onclick="takeScreenshot()"><i class="fas fa-image"></i></button>
 
 <div id="screenshot"></div>
 

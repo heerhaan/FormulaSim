@@ -232,12 +232,18 @@ namespace FormuleCirkelEntity.Controllers
                     points = 6;
                     break;
                 case 8:
-                    points = 4;
+                    points = 5;
                     break;
                 case 9:
-                    points = 2;
+                    points = 4;
                     break;
                 case 10:
+                    points = 3;
+                    break;
+                case 11:
+                    points = 2;
+                    break;
+                case 12:
                     points = 1;
                     break;
             }
@@ -318,7 +324,6 @@ namespace FormuleCirkelEntity.Controllers
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
             {
-                //TODO: dynamically add the next Race
                 result.Add(new Qualification()
                     {
                         DriverId = driver.SeasonDriverId,

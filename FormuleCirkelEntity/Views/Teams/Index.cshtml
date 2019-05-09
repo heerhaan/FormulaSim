@@ -8,7 +8,7 @@
 
 <p>
     <a asp-action="Create">
-        <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
+        <i class="fas fa-plus-square"></i>
     </a>
 </p>
 <table class="table">
@@ -37,17 +37,17 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.TeamId">
-                        <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                        <i class="fas fa-tools"></i>
                     </a>
                 </td>
                 <td>
                     <a asp-action="Stats" asp-route-id="@item.TeamId">
-                        <img src="~/images/icon-stats.png" width="30" height="30" title="Stats" />
+                        <i class="fas fa-signal"></i>
                     </a>
                 </td>
                 <td>
                     <a asp-action="Delete" asp-route-id="@item.TeamId">
-                        <img src="~/images/icon-trash.png" width="30" height="30" title="Delete" />
+                        <i class="fas fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>

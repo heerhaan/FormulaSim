@@ -9,7 +9,7 @@
 <div class="table-header-container">
     <p class="table-header-1">
         <a asp-action="Create">
-            <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
+            <i class="fas fa-plus-square"></i>
         </a>
     </p>
     <form class="table-header-1" method="post">
@@ -18,7 +18,7 @@
                 <input type="text" placeholder="Naam" name="SearchString" value="@ViewData["SearchString"]" />
                 <input type="submit" value="Zoek" class="btn btn-dark" />
                 <a asp-page="/Drivers/Index">
-                    <img src="~/images/icon-revert.png" width="30" height="30" title="Revert" />
+                    <i class="fas fa-undo"></i>
                 </a>
             </p>
         </div>
@@ -56,17 +56,17 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.DriverId">
-                        <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                        <i class="fas fa-edit"></i>
                     </a>
                 </td>
                 <td>
                     <a asp-action="Stats" asp-route-id="@item.DriverId">
-                        <img src="~/images/icon-stats.png" width="30" height="30" title="Stats" />
+                        <i class="fas fa-id-card"></i>
                     </a>
                 </td>
                 <td>
                     <a asp-action="Delete" asp-route-id="@item.DriverId">
-                        <img src="~/images/icon-trash.png" width="30" height="30" title="Delete" />
+                        <i class="fas fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>

@@ -36,7 +36,17 @@
             <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Kwalificatie</a>
         }
 
-        <button class="btn badge-dark float-right" onclick="takeScreenshot()">To Image</button>
+        <button class="btn badge-dark float-right" onclick="takeScreenshot()"><i class="fas fa-image"></i></button>
+    </div>
+</section>
+
+<section class="row my-1">
+    <div>
+        <h5>Race!</h5>
+        @if (Model.DriverResults.Select(dr => dr.Grid).FirstOrDefault() != 0)
+        {
+            <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Start!</a>
+        }
     </div>
 </section>
 
@@ -54,18 +64,10 @@
     </div>
 </section>
 
-<section class="row my-1">
-    <div>
-        <h5>Race!</h5>
-        @if (Model.DriverResults.Select(dr => dr.Grid).FirstOrDefault() != 0)
-        {
-            <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Start!</a>
-        }
-    </div>
-</section>
-
 <hr />
-<div id="screenshot" class="row my-1"></div>
+<section class="row my-1">
+    <div id="screenshot"></div>
+</section>
 
 <script>
     function takeScreenshot() {

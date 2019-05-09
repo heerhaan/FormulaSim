@@ -8,10 +8,10 @@
 
 <p>
     <a asp-action="Create">
-        <img src="~/images/icon-add.png" width="30" height="30" title="Add" />
+        <i class="fas fa-plus-square"></i>
     </a>
 </p>
-<table class="table table-striped">
+<table class="table">
     <thead>
         <tr>
             <th>
@@ -54,12 +54,12 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.TrackId">
-                        <img src="~/images/icon-edit.png" width="30" height="30" title="Edit" />
+                        <i class="fas fa-edit"></i>
                     </a>
                 </td>
                 <td>
                     <a asp-action="Delete" asp-route-id="@item.TrackId">
-                        <img src="~/images/icon-trash.png" width="30" height="30" title="Delete" />
+                        <i class="fas fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>
