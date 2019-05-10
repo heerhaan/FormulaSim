@@ -12,7 +12,6 @@ the qualifying results and race results -> Finish RaceWeekend, raceresults will 
 
 # Ideas
 
-- In qualifying it also should be shown which drivers have reached the next Qualififying round through colouring the cell. Perhaps make the people who didnt went through red.
 - The current way where the races will be setup is just the base of how it used to work in Excel, since it is now an application changes could be made to make it work a bit more "logically", like chassis and driver skill have an impact each stint instead of only once.
 - Also very neat would be that graphs about the season can be shown, say how drivers progress over the season according to their points, maybe also the ability to filter it to an inputted amount of drivers.
 - More?
