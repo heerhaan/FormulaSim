@@ -111,10 +111,17 @@
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
-                        var row = "<tr><td>" + driver.position +
-                            "</td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
-                            + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
-                        $("#q1table").append(row);
+                        if (driver.position > 16) {
+                            var row = "<tr><td><span class='badge badge-danger' style='font-size:1rem;'>" + driver.position +
+                                "</span></td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                                + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            $("#q1table").append(row);
+                        } else {
+                            var row = "<tr><td>" + driver.position +
+                                "</td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                                + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            $("#q1table").append(row);
+                        }
                     });
                     $('#screenshot').empty();
                     $("#generateq1").hide();
@@ -132,10 +139,17 @@
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
-                        var row = "<tr><td>" + driver.position +
-                            "</td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
-                            + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
-                        $("#q2table").append(row);
+                        if (driver.position > 10) {
+                            var row = "<tr><td><span class='badge badge-danger' style='font-size:1rem;'>" + driver.position +
+                                "</span></td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                                + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            $("#q2table").append(row);
+                        } else {
+                            var row = "<tr><td>" + driver.position +
+                                "</td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
+                                + driver.teamName + "</span></td><td>" + driver.driverName + "</td><td>" + driver.score + "</td></tr>";
+                            $("#q2table").append(row);
+                        }
                     });
                     $('#screenshot').empty();
                     $("#generateq2").hide();

@@ -12,5 +12,6 @@ namespace FormuleCirkelEntity.Models
         public string Name { get; set; }
         public int Power { get; set; }
         public bool Available { get; set; }
+        public bool Archived { get; set; }
     }
 }

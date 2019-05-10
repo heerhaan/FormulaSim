@@ -21,6 +21,7 @@ namespace FormuleCirkelEntity.Models
         public RNGodds RNGodds { get; set; }
         [EnumDataType(typeof(Specification))]
         public Specification Specification { get; set; }
+        public bool Archived { get; set; }
 
         public virtual ICollection<Race> Races { get; set; }
     }

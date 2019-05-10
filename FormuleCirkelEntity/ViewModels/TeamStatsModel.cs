@@ -11,6 +11,5 @@ namespace FormuleCirkelEntity.ViewModels
         public Team Team { get; set; }
         public IEnumerable<SeasonDriver> SeasonDriver { get; set; }
         public IEnumerable<DriverResult> DriverResults { get; set; }
-        public IEnumerable<TeamResult> TeamResults { get; set; }
     }
 }

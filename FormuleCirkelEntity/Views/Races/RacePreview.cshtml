@@ -34,6 +34,15 @@
             @Html.DisplayFor(model => model.Track.Specification)
         </dd>
         <dt class="col-sm-2">
+            Teams with spec:
+        </dt>
+        <dd class="col-sm-10">
+            @foreach(var team in ViewBag.teamSpecs)
+            {
+                <span class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;">@(team.Team.Abbreviation)</span>
+            }
+        </dd>
+        <dt class="col-sm-2">
             DNF kans
         </dt>
         <dd class="col-sm-10">

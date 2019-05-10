@@ -37,7 +37,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var existingTrackIds = season.Races.Select(r => r.TrackId);
-            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId)).ToList();
+            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId) && t.Archived == false).ToList();
 
             ViewBag.seasonId = id;
             return View(unusedTracks);
@@ -87,6 +87,15 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(r => r.Season)
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
+            var teamSpecs = _context.SeasonTeams
+                .Where(ts => ts.Season.SeasonId == id)
+                .Where(ts => ts.Specification == race.Track.Specification)
+                .Include(t => t.Team)
+                .Distinct()
+                .ToList();
+
+            ViewBag.teamSpecs = teamSpecs;
 
             return View(race);
         }
@@ -201,7 +210,7 @@ namespace FormuleCirkelEntity.Controllers
             _context.UpdateRange(teams);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("DriverStandings", "Home");
         }
 
         int PointsEarned(int pos)
@@ -412,12 +421,10 @@ namespace FormuleCirkelEntity.Controllers
             // Prepare race object for serialization
             race.DriverResults = null;
             race.Season = null;
-            race.TeamResults = null;
             race.Track = null;
             race.Stints = null;
             raceToSwitch.DriverResults = null;
             raceToSwitch.Season = null;
-            raceToSwitch.TeamResults = null;
             raceToSwitch.Track = null;
             raceToSwitch.Stints = null;
             return new JsonResult(new[] { race, raceToSwitch });

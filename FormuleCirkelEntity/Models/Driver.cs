@@ -14,6 +14,8 @@ namespace FormuleCirkelEntity.Models
         public int DriverNumber { get; set; }
         public string Name { get; set; }
         public string Abbreviation { get; set; }
+        public string Biography { get; set; }
+        public bool Archived { get; set; }
 
         public virtual ICollection<SeasonDriver> SeasonDrivers { get; set; }
     }

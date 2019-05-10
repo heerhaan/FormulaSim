@@ -19,6 +19,8 @@ namespace FormuleCirkelEntity.Models
 
         [StringLength(7)]
         public string Accent { get; set; }
+        public string Biography { get; set; }
+        public bool Archived { get; set; }
 
         public virtual ICollection<SeasonTeam> SeasonTeams { get; set; }
     }

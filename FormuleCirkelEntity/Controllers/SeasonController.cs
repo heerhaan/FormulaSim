@@ -94,7 +94,17 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return NotFound();
 
-            return View();
+            var seasondrivers = _context.SeasonDrivers
+                .Where(sd => sd.SeasonId == id)
+                .Include(sd => sd.Driver)
+                .Include(sd => sd.SeasonTeam)
+                    .ThenInclude(st => st.Team)
+                .Include(sd => sd.SeasonTeam)
+                    .ThenInclude(st => st.Engine)
+                .OrderByDescending(sd => sd.SeasonTeam.Chassis)
+                .ToList();
+
+            return View(seasondrivers);
         }
 
         // View to set up certain settings for the season in relation to races.
@@ -104,10 +114,10 @@ namespace FormuleCirkelEntity.Controllers
                    .Include(s => s.Races)
                    .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            ViewBag.seasonId = id;
-
             if (season == null)
                 return NotFound();
+
+            ViewBag.seasonId = id;
 
             return View();
         }
@@ -124,6 +134,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var existingTeamIds = season.Teams.Select(t => t.TeamId);
             var unregisteredTeams = _context.Teams
+                .Where(t => t.Archived == false)
                 .Where(t => !existingTeamIds.Contains(t.TeamId)).ToList();
 
             ViewBag.seasonId = id;
@@ -261,6 +272,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var existingTrackIds = season.Drivers.Select(d => d.DriverId);
             var unregisteredDrivers = _context.Drivers
+                .Where(d => d.Archived == false)
                 .Where(d => !existingTrackIds.Contains(d.DriverId)).ToList();
 
             ViewBag.seasonId = id;

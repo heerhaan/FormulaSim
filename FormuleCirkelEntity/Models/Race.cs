@@ -38,6 +38,5 @@ namespace FormuleCirkelEntity.Models
         public IDictionary<int, Stint> Stints { get; set; }
 
         public IList<DriverResult> DriverResults { get; set; }
-        public IList<TeamResult> TeamResults { get; set; }
     }
 }

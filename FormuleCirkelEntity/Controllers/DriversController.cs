@@ -21,7 +21,8 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Drivers
         public IActionResult Index()
         {
-            return View(_context.Drivers.ToList());
+            var drivers = _context.Drivers.Where(d => d.Archived == false).ToList();
+            return View(drivers);
         }
 
         [HttpPost]
@@ -29,7 +30,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             //Search functionality for driver index
             ViewData["SearchString"] = searchString;
-            IQueryable<Driver> drivers = from d in _context.Drivers select d;
+            IQueryable<Driver> drivers = from d in _context.Drivers where d.Archived == false select d;
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -177,7 +178,8 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var driver = await _context.Drivers.FindAsync(id);
-            _context.Drivers.Remove(driver);
+            driver.Archived = true;
+            _context.Drivers.Update(driver);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
