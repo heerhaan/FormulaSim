@@ -58,11 +58,10 @@
             </dd>
         </dl>
     </div>
-    <div class="flex-item" contenteditable="true">
-        <p>
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-        </p>
+    <div id="biography" class="flex-item" contenteditable="true">
+        @Html.TextAreaFor(model => model.Driver.Biography)
     </div>
+    <button id="save"></button>
 </div>
 
 <div>
@@ -70,3 +69,26 @@
         <i class="fas fa-arrow-alt-circle-left"></i>
     </a>
 </div>
+
+<script>
+    $("#save").click(function () {
+        var biography = $("#biography").text;
+
+        $.ajax({
+            type: "POST",
+            url: "/Teams/SaveBio",
+            headers: {
+                'Accept': 'application/html',
+                'Content-Type': 'application/html'
+            },
+            data: biography,
+            dataType: "html",
+            complete: function (result) {
+                if (result.responseText) {
+                    $('head').html(result.responseJSON);
+                    $('body').html(result.responseText);
+                }
+            }
+        });
+    });
+</script>
