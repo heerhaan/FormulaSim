@@ -62,7 +62,10 @@
             }
         </tbody>
     </table>
-    <a asp-action="DriverDev" asp-route-id="@Model.SeasonId" class="btn btn-dark">Ontwikkeling coureurs</a>
+    @if (Model.State == SeasonState.Progress)
+    {
+        <a asp-action="DriverDev" asp-route-id="@Model.SeasonId" class="btn btn-dark">Ontwikkeling coureurs</a>
+    }
 </section>
 
 <section class="row my-1">
@@ -150,10 +153,13 @@
             }
         </tbody>
     </table>
-    <div class="row btn-group my-1">
-        <a asp-action="TeamDev" asp-route-id="@Model.SeasonId" class="btn btn-dark">Ontwikkeling teams</a>
-        <a asp-action="EngineDev" asp-route-id="@Model.SeasonId" class="btn btn-dark">Ontwikkeling motoren</a>
-    </div>
+    @if (Model.State == SeasonState.Progress)
+    {
+        <div class="row btn-group my-1">
+            <a asp-action="TeamDev" asp-route-id="@Model.SeasonId" class="btn btn-dark">Ontwikkeling teams</a>
+            <a asp-action="EngineDev" asp-route-id="@Model.SeasonId" class="btn btn-dark">Ontwikkeling motoren</a>
+        </div>
+    }
 </section>
 
 <script>

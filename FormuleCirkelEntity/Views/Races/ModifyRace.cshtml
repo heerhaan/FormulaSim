@@ -1,0 +1,129 @@
+﻿@model FormuleCirkelEntity.ViewModels.ModifyRaceModel
+
+@{
+    ViewData["Title"] = "Modify Race";
+}
+
+<h1>Modify race</h1>
+<br />
+<div class="container">
+    <div class="col-md-6 col-md-offset-3">
+        <form asp-action="ModifyRace">
+            <input type="hidden" asp-for="SeasonId" value="@Model.SeasonId"/>
+            <input type="hidden" asp-for="TrackId" value="@Model.TrackId"/>
+            <table class="table" id="racestints">
+                <thead>
+                    <tr>
+                        <th>Driver skill</th>
+                        <th>Chassis</th>
+                        <th>Engine</th>
+                        <th>Tire bonus</th>
+                        <th>Tire wear</th>
+                        <th>Qualifying bonus</th>
+                        <th>Reliability</th>
+                        <th>@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMinimum)</th>
+                        <th>@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMaximum)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.RaceStints.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input type="hidden" name="RaceStints.Index" value="@i">
+                                <input asp-for="RaceStints[i].ApplyDriverLevel" class="form-check-input" />
+                            </td>
+                            <td>
+                                <input asp-for="RaceStints[i].ApplyChassisLevel" class="form-check-input" />
+                            </td>
+                            <td>
+                                <input asp-for="RaceStints[i].ApplyEngineLevel" class="form-check-input" />
+                            </td>
+                            <td>
+                                <input asp-for="RaceStints[i].ApplyTireLevel" class="form-check-input" />
+                            </td>
+                            <td>
+                                <input asp-for="RaceStints[i].ApplyTireWear" class="form-check-input" />
+                            </td>
+                            <td>
+                                <input asp-for="RaceStints[i].ApplyQualifyingBonus" class="form-check-input" />
+                            </td>
+                            <td>
+                                <input asp-for="RaceStints[i].ApplyReliability" class="form-check-input" />
+                            </td>
+                            <td>
+                                <input asp-for="RaceStints[i].RNGMinimum" class="form-control" />
+                            </td>
+                            <td>
+                                <input asp-for="RaceStints[i].RNGMaximum" class="form-control" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn delete">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button type="button" id="add" class="btn">Add Stint</button>
+            <div>
+                <button type="submit" class="btn btn-success submit">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<table id="newrow" style="display:none;">
+    <tr>
+        <td>
+            <input type="hidden" name="RaceStints.Index" value="%">
+            <input class="form-control" name="RaceStints[#].ApplyDriverLevel" type="checkbox" checked>
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].ApplyChassisLevel" type="checkbox" checked>
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].ApplyEngineLevel" type="checkbox" checked>
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].ApplyTireLevel" type="checkbox">
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].ApplyTireWear" type="checkbox">
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].ApplyQualifyingBonus" type="checkbox">
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].ApplyReliability" type="checkbox" checked>
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].RNGMinimum" type="text" value="0">
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].RNGMaximum" type="text" value="25">
+        </td>
+        <td>
+            <button type="button" class="btn delete">Delete</button>
+        </td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    var form = $('form');
+    var table = $('#racestints tbody');
+    var newrow = $('#newrow');
+
+    $('#add').click(function () {
+        var index = (new Date()).getTime();
+        var clone = newrow.find('tr').clone();
+        clone.html($(clone).html().replace(/\[#\]/g, '[' + index + ']'));
+        clone.html($(clone).html().replace(/"%"/g, '"' + index + '"'));
+        table.append(clone);
+    });
+    $('#racestints').on('click', '.delete', function () {
+        $(this).closest('tr').remove();
+    });
+
+</script>

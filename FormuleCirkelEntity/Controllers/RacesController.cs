@@ -60,9 +60,46 @@ namespace FormuleCirkelEntity.Controllers
                 .InitializeRace(track, season)
                 .AddDefaultStints()
                 .GetResultAndRefresh();
+
             season.Races.Add(race);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(AddTracks), new { id });
+        }
+
+        public IActionResult ModifyRace(int id, int trackId)
+        {
+            var track = _context.Tracks.SingleOrDefault(m => m.TrackId == trackId);
+            var model = new ModifyRaceModel
+            {
+                SeasonId = id,
+                TrackId = trackId
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModifyRace(ModifyRaceModel raceModel)
+        {
+            if (raceModel == null)
+                return NotFound();
+
+            var track = _context.Tracks.SingleOrDefault(m => m.TrackId == raceModel.TrackId);
+
+            var season = await _context.Seasons
+                .Include(s => s.Races)
+                .Include(s => s.Drivers)
+                .SingleOrDefaultAsync(s => s.SeasonId == raceModel.SeasonId);
+
+            IList<Stint> stints = raceModel.RaceStints;
+
+            var race = _raceBuilder
+                .InitializeRace(track, season)
+                .AddModifiedStints(stints)
+                .GetResultAndRefresh();
+
+            season.Races.Add(race);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("AddTracks", new { id = raceModel.SeasonId });
         }
 
         [Route("Season/{id}/[Controller]/{raceId}")]

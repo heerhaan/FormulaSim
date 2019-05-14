@@ -36,7 +36,10 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(s => s.Points)
                 .ToList();
 
-            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+            ViewBag.rounds = _context.Races
+                .Where(r => r.SeasonId == currentSeason.SeasonId)
+                .Include(r => r.Track)
+                .OrderBy(r => r.Round).ToList();
 
             return View(standings);
         }
@@ -56,7 +59,10 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(s => s.Points)
                 .ToList();
 
-            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+            ViewBag.rounds = _context.Races
+                .Where(r => r.SeasonId == currentSeason.SeasonId)
+                .Include(r => r.Track)
+                .OrderBy(r => r.Round).ToList();
 
             return View("DriverStandings", standings);
         }
@@ -76,7 +82,10 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(t => t.Points)
                 .ToList();
 
-            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+            ViewBag.rounds = _context.Races
+                .Where(r => r.SeasonId == currentSeason.SeasonId)
+                .Include(r => r.Track)
+                .OrderBy(r => r.Round).ToList();
             ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
 
             return View(standings);
@@ -97,7 +106,10 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(t => t.Points)
                 .ToList();
 
-            ViewBag.rounds = _context.Races.Where(r => r.SeasonId == currentSeason.SeasonId).Include(r => r.Track).ToList();
+            ViewBag.rounds = _context.Races
+                .Where(r => r.SeasonId == currentSeason.SeasonId)
+                .Include(r => r.Track)
+                .OrderBy(r => r.Round).ToList();
             ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
 
             return View("TeamStandings", standings);

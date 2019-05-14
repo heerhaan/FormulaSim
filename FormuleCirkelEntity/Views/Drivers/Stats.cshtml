@@ -58,10 +58,10 @@
             </dd>
         </dl>
     </div>
-    <div id="biography" class="flex-item" contenteditable="true">
-        @Html.TextAreaFor(model => model.Driver.Biography)
-    </div>
-    <button id="save"></button>
+    <form action="" method="POST">
+        <p id="biography" class="flex-item biocontainer" contenteditable="true">bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst </p>
+        <button id="save" type="submit" class="btn btn-dark"></button>
+    </form>
 </div>
 
 <div>
@@ -72,7 +72,7 @@
 
 <script>
     $("#save").click(function () {
-        var biography = $("#biography").text;
+        var biography = $("#biography").value;
 
         $.ajax({
             type: "POST",

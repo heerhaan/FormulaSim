@@ -185,5 +185,15 @@ namespace FormuleCirkelEntity.Controllers
         {
             return _context.Teams.Any(e => e.TeamId == id);
         }
+
+        [HttpPost]
+        public IActionResult SaveBiography(int id, string biography)
+        {
+            var team = _context.Teams.SingleOrDefault(t => t.TeamId == id);
+            team.Biography = biography;
+            _context.Teams.Update(team);
+            _context.SaveChanges();
+            return RedirectToAction("Stats", new { id });
+        }
     }
 }

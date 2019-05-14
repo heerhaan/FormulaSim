@@ -15,7 +15,7 @@
                 Aantal starts:
             </dt>
             <dd>
-                @(Model.DriverResults.Count()/2)
+                @(Model.DriverResults.Count() / 2)
             </dd>
             <dt>
                 Aantal poles:
@@ -66,10 +66,10 @@
     </div>
     <div class="flex-item">
         <p id="biography" contenteditable="true">
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            doet het niet, ook niet mooi nog
         </p>
-        <button id="savebio" class="btn btn-dark">Save</button>
     </div>
+    <button id="savebio" class="btn btn-dark">Save</button>
 </div>
 
 <div>
@@ -80,6 +80,13 @@
 
 <script>
     $('#savebio').click(function () {
-        var biography = document.getElementById('#biography');
+        $.ajax({
+            type: "POST",
+            url: "/Teams/SaveBiography",
+            data: { id: @Model.Team.TeamId, biography: $("#biography").text },
+            dataType: "html",
+            success: function () { alert("Biografie opgeslagen!"); },
+            error: function () { alert("Opslaan mislukt!"); }
+        });
     });
 </script>

@@ -15,6 +15,7 @@
                 <th>DNF</th>
                 <th>RNG</th>
                 <th>Specificatie</th>
+                <th>Aanpassen</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +32,11 @@
                             <input type="hidden" name="trackId" value="@item.TrackId" />
                             <input type="submit" class="btn btn-outline-primary btn-sm" value="Toevoegen" />
                         </form>
+                    </td>
+                    <td>
+                        <a asp-controller="Races" asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.TrackId">
+                            <i class="fas fa-cog"></i>
+                        </a>
                     </td>
                 </tr>
             }
