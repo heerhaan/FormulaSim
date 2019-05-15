@@ -147,7 +147,6 @@ namespace FormuleCirkelEntity.Controllers
             var season = await _context.Seasons
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.TeamId == globalTeamId);
-            var lastSeason = _context.Seasons.Where(s => s.State == SeasonState.Finished).LastOrDefault();
 
             if (season == null || globalTeam == null)
                 return NotFound();
@@ -159,18 +158,15 @@ namespace FormuleCirkelEntity.Controllers
             var seasonTeam = new SeasonTeam();
             seasonTeam.Team = globalTeam;
             seasonTeam.Season = season;
-
-            if (lastSeason != null)
+            
+            // Adds last previous used values from team as default
+            var lastTeam = _context.SeasonTeams.Where(s => s.Team.TeamId == globalTeamId).LastOrDefault();
+            if(lastTeam != null)
             {
-                var lastTeam = _context.SeasonTeams.Where(s => s.SeasonId == lastSeason.SeasonId).Where(s => s.Team.TeamId == globalTeamId).SingleOrDefault();
-
-                if(lastTeam != null)
-                {
-                    seasonTeam.Chassis = lastTeam.Chassis;
-                    seasonTeam.Reliability = lastTeam.Reliability;
-                    seasonTeam.EngineId = lastTeam.EngineId;
-                    seasonTeam.Specification = lastTeam.Specification;
-                }
+                seasonTeam.Chassis = lastTeam.Chassis;
+                seasonTeam.Reliability = lastTeam.Reliability;
+                seasonTeam.EngineId = lastTeam.EngineId;
+                seasonTeam.Specification = lastTeam.Specification;
             }
             
             return View("AddOrUpdateTeam", seasonTeam);
@@ -287,32 +283,28 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.DriverId == globalDriverId);
-            var lastSeason = _context.Seasons.Where(s => s.State == SeasonState.Finished).LastOrDefault();
 
             if (season == null || globalDriver == null)
                 return NotFound();
             
-            var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Team.Name });
-            ViewBag.teams = new SelectList(teams, "SeasonTeamId", "Name");
+            var teams = season.Teams
+                .Select(t => new { t.SeasonTeamId, t.Team.Name });
+            ViewBag.teams = new SelectList(teams, nameof(SeasonTeam.SeasonTeamId), nameof(SeasonTeam.Team.Name));
             ViewBag.seasonId = id;
 
             var seasonDriver = new SeasonDriver();
             seasonDriver.Driver = globalDriver;
             seasonDriver.Season = season;
 
-            if (lastSeason != null)
+            // Adds last previous used values from driver as default
+            var lastDriver = _context.SeasonDrivers
+                .Where(s => s.Driver.DriverId == globalDriverId)
+                .LastOrDefault();
+            if(lastDriver != null)
             {
-                var lastDriver = _context.SeasonDrivers
-                    .Where(s => s.SeasonId == lastSeason.SeasonId)
-                    .Where(s => s.Driver.DriverId == globalDriverId)
-                    .SingleOrDefault();
-
-                if(lastDriver != null)
-                {
-                    seasonDriver.Skill = lastDriver.Skill;
-                    seasonDriver.Style = lastDriver.Style;
-                    seasonDriver.Tires = lastDriver.Tires;
-                }
+                seasonDriver.Skill = lastDriver.Skill;
+                seasonDriver.Style = lastDriver.Style;
+                seasonDriver.Tires = lastDriver.Tires;
             }
 
             return View("AddOrUpdateDriver", seasonDriver);

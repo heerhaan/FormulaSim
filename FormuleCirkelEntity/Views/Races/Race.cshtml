@@ -51,7 +51,14 @@
                     }
                     <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
                 }
-                <td data-field="pointsTotal">@driverResult.Points</td>
+                @if (driverResult.Points < -50)
+                {
+                    <td data-field="pointsTotal"><span class="badge badge-danger nofullwidth">DNF</span></td>
+                }
+                else
+                {
+                    <td data-field="pointsTotal">@driverResult.Points</td>
+                }
             </tr>
             }
         </tbody>
@@ -87,6 +94,7 @@
         Array.from(tableRows)
             .sort(tableComparer(Array.from(th.parentNode.children).indexOf(th), false))
             .forEach(tr => table.querySelector("tbody").appendChild(tr));
+        
     }
 
     function advanceStint() {

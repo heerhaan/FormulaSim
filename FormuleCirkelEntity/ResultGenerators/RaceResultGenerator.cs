@@ -81,7 +81,7 @@ namespace FormuleCirkelEntity.ResultGenerators
         {
             var driverStyleModifier = ((int)driver.Style - 1);
             var reliabilityScore = driver.SeasonTeam.Reliability + driverStyleModifier;
-            var reliabilityCheckValue = _rng.Next(1, 12);
+            var reliabilityCheckValue = _rng.Next(1, 15);
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
 

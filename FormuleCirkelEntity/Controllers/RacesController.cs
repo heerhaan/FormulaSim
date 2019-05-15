@@ -68,12 +68,27 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult ModifyRace(int id, int trackId)
         {
-            var track = _context.Tracks.SingleOrDefault(m => m.TrackId == trackId);
             var model = new ModifyRaceModel
             {
                 SeasonId = id,
                 TrackId = trackId
             };
+
+            // Finds the last time track was used and uses same stintsetup as then
+            var lastracemodel = _context.Races
+                .LastOrDefault(lr => lr.Track.TrackId == trackId);
+            if (lastracemodel != null)
+            {
+                var stintlist = lastracemodel.Stints.Values.ToList();
+                foreach(var item in lastracemodel.Stints.Values.ToList())
+                {
+                    if(item.RNGMaximum == -1)
+                    {
+                        stintlist.Remove(item);
+                    }
+                }
+                model.RaceStints = stintlist;
+            }
             return View(model);
         }
 
