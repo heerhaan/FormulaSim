@@ -160,9 +160,10 @@ namespace FormuleCirkelEntity.Controllers
                     result.Status = Status.DNF;
             }
 
-            var orderedResults = race.DriverResults.OrderByDescending(d => d.Points).ToList();
-            foreach (var result in orderedResults)
-                result.Position = orderedResults.IndexOf(result) + 1;
+            var positionsList = _resultGenerator.GetPositionsBasedOnRelativePoints(race.DriverResults);
+
+            foreach (var result in race.DriverResults)
+                result.Position = positionsList[result.DriverResultId];
 
             _context.UpdateRange(race.DriverResults);
             await _context.SaveChangesAsync();
@@ -180,7 +181,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public IActionResult FinishRace (int seasonId, int raceId)
+        public IActionResult FinishRace(int seasonId, int raceId)
         {
             // Finishes the race, gives out points and returns to the Detail screen
             var raceresults = _context.DriverResults.Where(r => r.RaceId == raceId);
@@ -375,6 +376,7 @@ namespace FormuleCirkelEntity.Controllers
                 }
 
                 driver.Grid = result.Position.Value;
+                driver.Position = result.Position.Value;
             }
             _context.UpdateRange(driverResults);
             _context.SaveChanges();

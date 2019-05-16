@@ -21,7 +21,7 @@
     <table id="results" class="table table-sm">
         <thead>
             <tr>
-                <th>Pos.</th>
+                <th data-field="position">Pos.</th>
                 <th>Nr.</th>
                 <th>Naam</th>
                 <th>Team</th>
@@ -34,7 +34,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var driverResult in Model.DriverResults.OrderByDescending(d => d.Points))
+            @foreach (var driverResult in Model.DriverResults.OrderBy(d => d.Position))
             {
             <tr data-obj-id="@driverResult.SeasonDriverId">
                 <td data-field="position">@driverResult.Position</td>
@@ -82,10 +82,10 @@
             });
         });
 
-        let th = table.querySelector("th[data-field='pointsTotal']")
+        let th = table.querySelector("th[data-field='position']")
         let tableRows = tableBody.querySelectorAll("tr:nth-child(n+1)")
         Array.from(tableRows)
-            .sort(tableComparer(Array.from(th.parentNode.children).indexOf(th), false))
+            .sort(tableComparer(Array.from(th.parentNode.children).indexOf(th), true))
             .forEach(tr => table.querySelector("tbody").appendChild(tr));
     }
 
