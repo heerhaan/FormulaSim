@@ -58,10 +58,19 @@
             </dd>
         </dl>
     </div>
-    <form action="" method="POST">
-        <p id="biography" class="flex-item biocontainer" contenteditable="true">bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst bodem tekst </p>
-        <button id="save" type="submit" class="btn btn-dark"></button>
-    </form>
+    <div class="flex-item">
+        <p id="biography" contenteditable="true">
+            @if (Model.Driver.Biography == null)
+            {
+                <i>This driver has no bio yet!</i>
+            }
+            else
+            {
+                @Model.Driver.Biography
+            }
+        </p>
+        <button id="savebio" class="btn btn-dark">Save</button>
+    </div>
 </div>
 
 <div>
@@ -71,24 +80,14 @@
 </div>
 
 <script>
-    $("#save").click(function () {
-        var biography = $("#biography").value;
-
+    $('#savebio').click(function () {
         $.ajax({
             type: "POST",
-            url: "/Teams/SaveBio",
-            headers: {
-                'Accept': 'application/html',
-                'Content-Type': 'application/html'
-            },
-            data: biography,
+            url: "/Drivers/SaveBiography",
+            data: { id: @Model.Driver.DriverId, biography: $("#biography").text() },
             dataType: "html",
-            complete: function (result) {
-                if (result.responseText) {
-                    $('head').html(result.responseJSON);
-                    $('body').html(result.responseText);
-                }
-            }
+            success: function () { alert("Biografie opgeslagen!"); },
+            error: function () { alert("Opslaan mislukt!"); }
         });
     });
 </script>

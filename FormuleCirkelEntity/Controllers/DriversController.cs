@@ -188,5 +188,15 @@ namespace FormuleCirkelEntity.Controllers
         {
             return _context.Drivers.Any(e => e.DriverId == id);
         }
+
+        [HttpPost]
+        public IActionResult SaveBiography(int id, string biography)
+        {
+            var driver = _context.Drivers.SingleOrDefault(d => d.DriverId == id);
+            driver.Biography = biography;
+            _context.Drivers.Update(driver);
+            _context.SaveChanges();
+            return RedirectToAction("Stats", new { id });
+        }
     }
 }

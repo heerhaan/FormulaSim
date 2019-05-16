@@ -66,10 +66,16 @@
     </div>
     <div class="flex-item">
         <p id="biography" contenteditable="true">
-            doet het niet, ook niet mooi nog
+            @if(Model.Team.Biography == null)
+            {
+                <i>This team has no bio yet!</i>
+            } else
+            {
+                @Model.Team.Biography
+            }
         </p>
+        <button id="savebio" class="btn btn-dark">Save</button>
     </div>
-    <button id="savebio" class="btn btn-dark">Save</button>
 </div>
 
 <div>
@@ -83,7 +89,7 @@
         $.ajax({
             type: "POST",
             url: "/Teams/SaveBiography",
-            data: { id: @Model.Team.TeamId, biography: $("#biography").text },
+            data: { id: @Model.Team.TeamId, biography: $("#biography").text() },
             dataType: "html",
             success: function () { alert("Biografie opgeslagen!"); },
             error: function () { alert("Opslaan mislukt!"); }
