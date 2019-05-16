@@ -32,7 +32,7 @@ namespace FormuleCirkelEntity.Controllers
             ViewData["SearchString"] = searchString;
             IQueryable<Driver> drivers = from d in _context.Drivers where d.Archived == false select d;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 drivers = drivers.Where(d => d.Name.Contains(searchString));
             }

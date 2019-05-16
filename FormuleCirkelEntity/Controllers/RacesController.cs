@@ -247,6 +247,7 @@ namespace FormuleCirkelEntity.Controllers
             var raceresults = _context.DriverResults.Where(r => r.RaceId == raceId);
             var drivers = _context.SeasonDrivers.Where(s => s.SeasonId == seasonId).ToList();
             var teams = _context.SeasonTeams.Where(s => s.SeasonId == seasonId).ToList();
+            var season = _context.Seasons.Include(s => s.Races).SingleOrDefault(s => s.SeasonId == seasonId);
 
             foreach (var item in raceresults)
             {
@@ -262,7 +263,15 @@ namespace FormuleCirkelEntity.Controllers
             _context.UpdateRange(teams);
             _context.SaveChanges();
 
-            return RedirectToAction("DriverStandings", "Home");
+            // Finishes season up if it is the last race of the season.
+            if(season.Races.FirstOrDefault(s => s.StintProgress == 0) == null)
+            {
+                return RedirectToAction("Finish", "Season", new { id = seasonId });
+            }
+            else
+            {
+                return RedirectToAction("DriverStandings", "Home");
+            }
         }
 
         int PointsEarned(int pos)

@@ -117,9 +117,7 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return NotFound();
 
-            ViewBag.seasonId = id;
-
-            return View();
+            return View(season);
         }
         
         [Route("[Controller]/{id}/Teams/Add")]

@@ -1,11 +1,22 @@
-﻿@{
+﻿@model FormuleCirkelEntity.Models.Season
+
+@{
     ViewData["Title"] = "SeasonSettings";
 }
 
-<h1>Settings for season @ViewBag.seasonId</h1>
+<h1>Settings for season @Model.SeasonId</h1>
 
 <h2>This feature hasn't been implemented yet, apologies!</h2>
 
 <a asp-action="Index">
     <i class="fas fa-arrow-alt-circle-left"></i>
 </a>
+
+@if (Model.State == SeasonState.Progress)
+{
+    <hr />
+    <div class="float-sm-right">
+        <h6>Done with the season before the end? Click this button!</h6>
+        <a asp-action="Finish" asp-route-id="@Model.SeasonId" class="btn btn-dark btn-sm">End season early</a>
+    </div>
+}
