@@ -49,8 +49,8 @@ namespace FormulaCirkelEntity.Tests
 
         // The Driver Reliability Result uses a combination of Team Reliability and Driver Style to get the Driver Reliability Score.
         // It is compared against a random value to determine whether the random Value is greater, equal or less than the result.
-        // Aggressive subtracts 1 off the team reliability, defensive adds 1, and neutral stays equal.
-        // Thus, use a static random value of 1 and a Team Reliability of 1 to test the Reliability Score generation.
+        // Aggressive subtracts 2 off the team reliability, defensive adds 2, and neutral stays equal.
+        // Thus, use a static random value of 1 and a Team Reliability of 2 to test the Reliability Score generation.
         [Theory]
         [InlineData(Style.Agressief, -1)]
         [InlineData(Style.Neutraal, 0)]
@@ -64,7 +64,7 @@ namespace FormulaCirkelEntity.Tests
                 Style = style,
                 SeasonTeam = new SeasonTeam()
                 {
-                    Reliability = 1
+                    Reliability = 2
                 }
             };
 
