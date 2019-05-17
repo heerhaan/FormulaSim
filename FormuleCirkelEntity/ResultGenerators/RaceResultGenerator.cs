@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FormuleCirkelEntity.ResultGenerators
@@ -92,6 +93,22 @@ namespace FormuleCirkelEntity.ResultGenerators
             result += driver.SeasonTeam.Chassis;
             result += _rng.Next(0, 60);
             return result;
+        }
+
+        /// <summary>
+        /// Get a dictionary of the results' position values based on their points total relative to each other.
+        /// </summary>
+        /// <param name="driverResults">The <see cref="DriverResult"/>s to determine the relative positions of.</param>
+        /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of the driverResult ID's and the corresponding positions.</returns>
+        /// <remarks>When two driver points totals are equal, their position is determined based on their original grid position.</remarks>
+        public IDictionary<int, int> GetPositionsBasedOnRelativePoints(IEnumerable<DriverResult> driverResults)
+        {
+            var orderedResults = driverResults
+                .OrderByDescending(d => d.Points)
+                .ThenBy(d => d.Grid)
+                .ToList();
+
+            return orderedResults.ToDictionary((res => res.DriverResultId), (res => orderedResults.IndexOf(res) + 1));
         }
     }
 }
