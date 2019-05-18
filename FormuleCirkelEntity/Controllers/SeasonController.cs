@@ -97,19 +97,17 @@ namespace FormuleCirkelEntity.Controllers
             return View();
         }
 
-        // View to set up certain settings for the season in relation to races.
-        public async Task<IActionResult> SeasonSettings(int? id)
+
+        [Route("[Controller]/{id}/Settings")]
+        public async Task<IActionResult> Settings(int id)
         {
             var season = await _context.Seasons
-                   .Include(s => s.Races)
-                   .SingleOrDefaultAsync(s => s.SeasonId == id);
-
-            ViewBag.seasonId = id;
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (season == null)
                 return NotFound();
 
-            return View();
+            return View(season);
         }
         
         [Route("[Controller]/{id}/Teams/Add")]

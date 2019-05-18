@@ -49,9 +49,12 @@
                         </a>
                     </td>
                     <td>
-                        <a asp-action="SeasonSettings" asp-route-id="@item.SeasonId">
-                            <i class="fas fa-cog fa-lg"></i>
-                        </a>
+                        @if (item.State == SeasonState.Draft)
+                        {
+                            <a asp-action="Settings" asp-route-id="@item.SeasonId">
+                                <i class="fas fa-cog fa-lg"></i>
+                            </a>
+                        }
                     </td>
                 </tr>
             }
