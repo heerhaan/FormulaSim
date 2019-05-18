@@ -97,6 +97,7 @@ namespace FormuleCirkelEntity.Controllers
             var race = await _context.Races
                 .Include(r => r.Season.Drivers)
                 .Include(r => r.DriverResults)
+                .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             if (!race.DriverResults.Any())
