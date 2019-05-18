@@ -21,6 +21,9 @@ namespace FormuleCirkelEntity.Models
         [EnumDataType(typeof(SeasonState))]
         public SeasonState State { get; set; }
 
+        public int QualificationRemainingDriversQ2 { get; set; }
+        public int QualificationRemainingDriversQ3 { get; set; }
+
         public virtual IList<Race> Races { get; set; }
         public virtual IList<SeasonDriver> Drivers { get; set; }
         public virtual IList<SeasonTeam> Teams { get; set; }
