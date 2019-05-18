@@ -19,18 +19,10 @@
         <table id="graphic1" class="table table-sm">
             <thead>
                 <tr>
-                    <th>
-                        #
-                    </th>
-                    <th>
-                        Team
-                    </th>
-                    <th>
-                        Coureur
-                    </th>
-                    <th>
-                        Q1
-                    </th>
+                    <th>#</th>
+                    <th>Team</th>
+                    <th>Coureur</th>
+                    <th>Q1</th>
                 </tr>
             </thead>
             <tbody id="q1table"></tbody>
@@ -41,18 +33,10 @@
         <table id="graphic2" class="table table-sm">
             <thead>
                 <tr>
-                    <th>
-                        #
-                    </th>
-                    <th>
-                        Team
-                    </th>
-                    <th>
-                        Coureur
-                    </th>
-                    <th>
-                        Q2
-                    </th>
+                    <th>#</th>
+                    <th>Team</th>
+                    <th>Coureur</th>
+                    <th>Q2</th>
                 </tr>
             </thead>
             <tbody id="q2table"></tbody>
@@ -63,18 +47,10 @@
         <table id="graphic3" class="table table-sm">
             <thead>
                 <tr>
-                    <th>
-                        #
-                    </th>
-                    <th>
-                        Team
-                    </th>
-                    <th>
-                        Coureur
-                    </th>
-                    <th>
-                        Q3
-                    </th>
+                    <th>#</th>
+                    <th>Team</th>
+                    <th>Coureur</th>
+                    <th>Q3</th>
                 </tr>
             </thead>
             <tbody id="q3table"></tbody>
@@ -82,7 +58,6 @@
         <button class="btn badge-dark float-right" onclick="takeScreenshot('#graphic3')"><i class="fas fa-image fa-lg"></i></button>
     </div>
 </div>
-
 
 <button id="generateq1" class="btn btn-dark">Start Q1!</button>
 <button id="generateq2" class="btn btn-dark">Start Q2!</button>
@@ -103,11 +78,10 @@
         $("#return").hide();
         $('#generateq1').click(function () {
             $.ajax({
-                url: "/Races/GetRacingDrivers",
+                url: "Qualifying/Update",
                 type: "GET",
                 data: {
                     source: "Q1",
-                    raceId: @(race.RaceId)
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
@@ -124,11 +98,10 @@
         });
         $('#generateq2').click(function () {
             $.ajax({
-                url: "/Races/GetRacingDrivers",
+                url: "Qualifying/Update",
                 type: "GET",
                 data: {
-                    source: "Q2",
-                    raceId: @(race.RaceId)
+                    source: "Q2"
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {
@@ -145,11 +118,10 @@
         });
         $('#generateq3').click(function () {
             $.ajax({
-                url: "/Races/GetRacingDrivers",
+                url: "Qualifying/Update",
                 type: "GET",
                 data: {
-                    source: "Q3",
-                    raceId: @(race.RaceId)
+                    source: "Q3"
                 },
                 success: function (drivers) {
                     $.each(drivers, function (index, driver) {

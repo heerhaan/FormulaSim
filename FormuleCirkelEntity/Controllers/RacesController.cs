@@ -260,21 +260,27 @@ namespace FormuleCirkelEntity.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetRacingDrivers(string source, int raceId)
+        [Route("Season/{id}/[Controller]/{raceId}/Qualifying/Update")]
+        public async Task<IActionResult> UpdateQualifying(int id, int raceId, string source)
         {
             if (string.IsNullOrWhiteSpace(source))
                 return BadRequest();
 
             try
             {
-                // Get all drivers of the season.
-                var drivers = _context.SeasonDrivers
-                .Where(s => s.Season.State == SeasonState.Progress)
-                .Include(s => s.Driver)
-                .Include(t => t.SeasonTeam)
-                .ThenInclude(t => t.Team)
-                .ToList();
+                var race = await _context.Races
+                    .Include(r => r.Season)
+                    .Include(r => r.DriverResults)
+                        .ThenInclude(dr => dr.SeasonDriver)
+                            .ThenInclude(sd => sd.SeasonTeam)
+                                .ThenInclude(st => st.Team)
+                    .Include(r => r.DriverResults)
+                        .ThenInclude(dr => dr.SeasonDriver)
+                            .ThenInclude(sd => sd.Driver)
+                    .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id);
+                var drivers = race.DriverResults
+                    .Select(dr => dr.SeasonDriver)
+                    .ToList();
 
                 // Get the existing qualification results of the current race.
                 var currentQualifyingResult = _context.Qualification.Where(q => q.RaceId == raceId).ToList();
@@ -285,7 +291,7 @@ namespace FormuleCirkelEntity.Controllers
                     currentQualifyingResult.AddRange(GetQualificationsFromDrivers(drivers, raceId));
                 }
 
-                var driverLimit = GetQualifyingDriverLimit(source, drivers.Count);
+                var driverLimit = GetQualifyingDriverLimit(source, race.Season);
 
                 // Take the current result, then order descending to place highest score first, lowest score last. 
                 // From the resulting ordered list, take the amount of drivers allowed to continue to the next qualifying round.
@@ -339,18 +345,13 @@ namespace FormuleCirkelEntity.Controllers
             return result;
         }
 
-        int GetQualifyingDriverLimit(string qualifyingStage, int driverCount)
+        int GetQualifyingDriverLimit(string qualifyingStage, Season season)
         {
-            //Limits should be flexible in accordance to entered drivers.
-            int Q1_LIMIT = driverCount;
-            const int Q2_LIMIT = 16;
-            const int Q3_LIMIT = 10;
-
             if (qualifyingStage == "Q2")
-                return Q2_LIMIT;
+                return season.QualificationRemainingDriversQ2;
             if (qualifyingStage == "Q3")
-                return Q3_LIMIT;
-            return Q1_LIMIT;
+                return season.QualificationRemainingDriversQ3;
+            return season.Drivers.Count;
         }
 
         [HttpPost]
