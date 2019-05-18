@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -107,7 +108,27 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return NotFound();
 
-            return View(season);
+            return View(new SeasonSettingsViewModel(season));
+        }
+
+        [HttpPost("[Controller]/{id}/Settings")]
+        public async Task<IActionResult> Settings(int id, [Bind] SeasonSettingsViewModel settingsModel)
+        {
+            var season = await _context.Seasons
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (season == null)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                season.QualificationRemainingDriversQ2 = settingsModel.QualificationRemainingDriversQ2;
+                season.QualificationRemainingDriversQ3 = settingsModel.QualificationRemainingDriversQ3;
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
+            }
+
+            return View(settingsModel);
         }
         
         [Route("[Controller]/{id}/Teams/Add")]
