@@ -15,7 +15,8 @@ namespace FormuleCirkelEntity.Models
         public int TrackId { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
-
+        public decimal LengthKM { get; set; }
+        
         [EnumDataType(typeof(DNFodds))]
         public DNFodds DNFodds { get; set; }
 
