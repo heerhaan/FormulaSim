@@ -182,25 +182,29 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public IActionResult FinishRace(int seasonId, int raceId)
+        public async Task<IActionResult> FinishRace(int seasonId, int raceId)
         {
-            // Finishes the race, gives out points and returns to the Detail screen
-            var raceresults = _context.DriverResults.Where(r => r.RaceId == raceId);
-            var drivers = _context.SeasonDrivers.Where(s => s.SeasonId == seasonId).ToList();
-            var teams = _context.SeasonTeams.Where(s => s.SeasonId == seasonId).ToList();
+            var race = await _context.Races
+                .Include( r => r.DriverResults)
+                    .ThenInclude(dr => dr.SeasonDriver)
+                        .ThenInclude(sd => sd.SeasonTeam)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(dr => dr.SeasonDriver)
+                        .ThenInclude(sd => sd.Driver)
+                .Include( r => r.Track)
+                .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == seasonId);
 
-            foreach (var item in raceresults)
+            foreach (var result in race.DriverResults.Where(res => res.Status == Status.Finished))
             {
-                if(item.Status == Status.Finished)
-                {
-                    int points = PointsEarned(item.Position);
-                    drivers.SingleOrDefault(d => d.SeasonDriverId == item.SeasonDriverId).Points += points;
-                    teams.SingleOrDefault(t => t.SeasonDrivers.Contains(item.SeasonDriver)).Points += points;
-                }
+                int points = PointsEarned(result.Position);
+                result.SeasonDriver.Points += points;
+                result.SeasonDriver.SeasonTeam.Points += points;
+                _context.UpdateRange(result.SeasonDriver, result.SeasonDriver.SeasonTeam);
             }
 
-            _context.UpdateRange(drivers);
-            _context.UpdateRange(teams);
+            var raceWinnerResult = race.DriverResults.OrderByDescending(res => res.Points).FirstOrDefault();
+            race.Track.MostRecentWinner = raceWinnerResult.SeasonDriver.Driver;
+            _context.Update(race.Track);
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Home");
