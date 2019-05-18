@@ -9,6 +9,8 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class TracksController : Controller
     {
+        const string VIEW_CREATEORUPDATE = "Modify";
+
         private readonly FormulaContext _context;
 
         public TracksController(FormulaContext context)
@@ -25,13 +27,14 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Tracks/Create
         public IActionResult Create()
         {
-            return View();
+            var track = new Track();
+            return View(VIEW_CREATEORUPDATE, track);
         }
 
         // POST: Tracks/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TrackId,DNFodds,RNGodds,Specification,Name,Location")] Track track)
+        public async Task<IActionResult> Create([Bind] Track track)
         {
             if (ModelState.IsValid)
             {
@@ -39,56 +42,42 @@ namespace FormuleCirkelEntity.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(track);
+            return View(VIEW_CREATEORUPDATE, track);
         }
 
         // GET: Tracks/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var track = await _context.Tracks.FindAsync(id);
             if (track == null)
-            {
                 return NotFound();
-            }
-            return View(track);
+
+            return View(VIEW_CREATEORUPDATE, track);
         }
 
         // POST: Tracks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TrackId,DNFodds,RNGodds,Specification,Name,Location")] Track track)
+        public async Task<IActionResult> Edit(int id, [Bind] Track modifiedTrack)
         {
-            if (id != track.TrackId)
-            {
+            var track = await _context.Tracks.FindAsync(id);
+            if (track == null)
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(track);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TrackExists(track.TrackId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                track.Name = modifiedTrack.Name;
+                track.Location = modifiedTrack.Location;
+                track.DNFodds = modifiedTrack.DNFodds;
+                track.RNGodds = modifiedTrack.RNGodds;
+                track.Specification = modifiedTrack.Specification;
+                track.LengthKM = modifiedTrack.LengthKM;
+
+                _context.Update(track);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(track);
+            return View(VIEW_CREATEORUPDATE, modifiedTrack);
         }
 
         // GET: Tracks/Delete/5
@@ -118,19 +107,6 @@ namespace FormuleCirkelEntity.Controllers
             _context.Tracks.Remove(track);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TrackExists(int id)
-        {
-            return _context.Tracks.Any(e => e.TrackId == id);
-        }
-
-        public void AddTrackToRaces(Track track)
-        {
-            //Soortgelijk aan driver aan table toevoegen.
-            //Neem een nieuwe view wanneer Voegtoe klik, neem TrackId en SeasonId mee
-            //Voeg waarden in bij Races zoals het gaat bij Create.cshtml
-            //Sla op, keer terug naar lijst met Races en laat via label of whatsoever zien hoeveel races erin zitten
         }
     }
 }

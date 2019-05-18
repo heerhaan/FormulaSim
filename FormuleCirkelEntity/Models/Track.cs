@@ -11,6 +11,12 @@ namespace FormuleCirkelEntity.Models
     public enum Specification { Topsnelheid, Optrekking, Stabiliteit, Handeling }
     public class Track
     {
+        public Track()
+        {
+            DNFodds = DNFodds.Neutraal;
+            RNGodds = RNGodds.Neutraal;
+        }
+
         [Key]
         public int TrackId { get; set; }
         public string Name { get; set; }
