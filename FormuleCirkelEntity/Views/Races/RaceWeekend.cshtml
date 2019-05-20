@@ -55,11 +55,11 @@
         <h5>Circuit informatie</h5>
         <dl>
             <dt>Lengte</dt>
-            <dd>3 KM</dd>
+            <dd>@Model.Track.LengthKM KM</dd>
             <dt>Weer</dt>
             <dd>Droog</dd>
             <dt>Vorige winnaar</dt>
-            <dd>Karel Trommel</dd>
+            <dd>@(Model.Track.MostRecentWinner?.Name ?? "-")</dd>
         </dl>
     </div>
 </section>
