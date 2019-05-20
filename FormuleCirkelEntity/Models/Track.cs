@@ -31,6 +31,7 @@ namespace FormuleCirkelEntity.Models
 
         [EnumDataType(typeof(Specification))]
         public Specification Specification { get; set; }
+        public bool Archived { get; set; }
 
         public Driver MostRecentWinner { get; set; }
 

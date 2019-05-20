@@ -21,7 +21,8 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Drivers
         public IActionResult Index()
         {
-            return View(_context.Drivers.ToList());
+            var drivers = _context.Drivers.Where(d => !d.Archived).ToList();
+            return View(drivers);
         }
 
         [HttpPost]
@@ -29,9 +30,9 @@ namespace FormuleCirkelEntity.Controllers
         {
             //Search functionality for driver index
             ViewData["SearchString"] = searchString;
-            IQueryable<Driver> drivers = from d in _context.Drivers select d;
+            IQueryable<Driver> drivers = from d in _context.Drivers where d.Archived == false select d;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 drivers = drivers.Where(d => d.Name.Contains(searchString));
             }
@@ -177,7 +178,8 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var driver = await _context.Drivers.FindAsync(id);
-            _context.Drivers.Remove(driver);
+            driver.Archived = true;
+            _context.Drivers.Update(driver);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -185,6 +187,16 @@ namespace FormuleCirkelEntity.Controllers
         private bool DriverExists(int id)
         {
             return _context.Drivers.Any(e => e.DriverId == id);
+        }
+
+        [HttpPost]
+        public IActionResult SaveBiography(int id, string biography)
+        {
+            var driver = _context.Drivers.SingleOrDefault(d => d.DriverId == id);
+            driver.Biography = biography;
+            _context.Drivers.Update(driver);
+            _context.SaveChanges();
+            return RedirectToAction("Stats", new { id });
         }
     }
 }

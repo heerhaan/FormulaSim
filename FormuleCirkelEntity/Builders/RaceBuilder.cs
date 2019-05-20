@@ -40,6 +40,28 @@ namespace FormuleCirkelEntity.Builders
                 .AddDefaultCloseStint();
         }
 
+        public RaceBuilder AddModifiedStints(IList<Stint> settings)
+        {
+            // Pitstop to add before every stint
+            Stint pitstop = new Stint()
+            {
+                RNGMinimum = -8,
+                RNGMaximum = -1
+            };
+
+            bool firstloop = true;
+            foreach (var stint in settings)
+            {
+                if(firstloop == false)
+                {
+                    _race.Stints.Add(_race.Stints.Count + 1, pitstop);
+                }
+                _race.Stints.Add(_race.Stints.Count + 1, stint);
+                firstloop = false;
+            }
+            return this;
+        }
+
         public RaceBuilder AddDefaultStartStint()
         {
             Stint stint = new Stint()

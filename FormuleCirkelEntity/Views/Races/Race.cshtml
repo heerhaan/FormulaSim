@@ -9,13 +9,19 @@
     </header>
 </section>
 
-<div class="table-header-container">
-    <a class="btn btn-dark" onclick="advanceStint()">Volgende stint</a>
+@if (Model.Season.State == SeasonState.Progress)
+{
+    <div class="table-header-container">
+        @if(Model.StintProgress != Model.Stints.Count)
+        {
+            <a class="btn btn-dark" onclick="advanceStint()">Volgende stint</a>
+        }
 
-    <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish">
-        <input type="submit" value="Finish!" class="btn btn-dark" />
-    </form>
-</div>
+        <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish">
+            <input type="submit" value="Finish!" class="btn btn-dark" />
+        </form>
+    </div>
+}
 
 <section class="row my-1">
     <table id="results" class="table table-sm">
@@ -36,23 +42,30 @@
         <tbody>
             @foreach (var driverResult in Model.DriverResults.OrderBy(d => d.Position))
             {
-            <tr data-obj-id="@driverResult.SeasonDriverId">
-                <td data-field="position">@driverResult.Position</td>
-                <td data-field="driverNumber"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
-                <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
-                <td data-field="teamName"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
-                <td data-field="startGrid">@driverResult.Grid</td>
-                @foreach (var stint in Model.Stints)
-                {
-                    var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
-                    if (stintResult.Equals(default(KeyValuePair<int, int?>)))
+                <tr data-obj-id="@driverResult.SeasonDriverId">
+                    <td data-field="position">@driverResult.Position</td>
+                    <td data-field="driverNumber"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
+                    <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
+                    <td data-field="teamName"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
+                    <td data-field="startGrid">@driverResult.Grid</td>
+                    @foreach (var stint in Model.Stints)
                     {
-                        stintResult = new KeyValuePair<int, int?>(stint.Key, null);
+                        var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
+                        if (stintResult.Equals(default(KeyValuePair<int, int?>)))
+                        {
+                            stintResult = new KeyValuePair<int, int?>(stint.Key, null);
+                        }
+                        <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
                     }
-                    <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
-                }
-                <td data-field="pointsTotal">@driverResult.Points</td>
-            </tr>
+                    @if (driverResult.Points < -50)
+                    {
+                        <td data-field="pointsTotal"><span class="badge badge-danger nofullwidth">DNF</span></td>
+                    }
+                    else
+                    {
+                        <td data-field="pointsTotal">@driverResult.Points</td>
+                    }
+                </tr>
             }
         </tbody>
     </table>
@@ -87,6 +100,7 @@
         Array.from(tableRows)
             .sort(tableComparer(Array.from(th.parentNode.children).indexOf(th), true))
             .forEach(tr => table.querySelector("tbody").appendChild(tr));
+
     }
 
     function advanceStint() {

@@ -47,7 +47,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 if (reliablityResult == -1)
                     return null;
                 else if (reliablityResult == 0)
-                    result += -15;
+                    result += -20;
             }
 
             if (stint.ApplyChassisLevel)
@@ -80,9 +80,9 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <returns>-1 if the reliability check fails, 1 if it succeeds, and 0 if it's neutral.</returns>
         public int GetDriverReliabilityResult(SeasonDriver driver)
         {
-            var driverStyleModifier = ((int)driver.Style - 1);
+            var driverStyleModifier = ((int)driver.Style - 2);
             var reliabilityScore = driver.SeasonTeam.Reliability + driverStyleModifier;
-            var reliabilityCheckValue = _rng.Next(1, 12);
+            var reliabilityCheckValue = _rng.Next(1, 26); 
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
 

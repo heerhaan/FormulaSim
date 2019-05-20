@@ -21,7 +21,8 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Tracks
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tracks.ToListAsync());
+            var tracks = await _context.Tracks.Where(t => t.Archived == false).ToListAsync();
+            return View(tracks);
         }
         
         // GET: Tracks/Create
@@ -97,14 +98,14 @@ namespace FormuleCirkelEntity.Controllers
 
             return View(track);
         }
-
-        // POST: Tracks/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var track = await _context.Tracks.FindAsync(id);
-            _context.Tracks.Remove(track);
+            track.Archived = true;
+            _context.Tracks.Update(track);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

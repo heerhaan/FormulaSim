@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190510122132_RemoveTResAddBioArchive")]
+    partial class RemoveTResAddBioArchive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,10 +160,6 @@ namespace FormuleCirkelEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("QualificationRemainingDriversQ2");
-
-                    b.Property<int>("QualificationRemainingDriversQ3");
-
                     b.Property<DateTime?>("SeasonStart");
 
                     b.Property<int>("State");
@@ -272,11 +270,7 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("DNFodds");
 
-                    b.Property<decimal>("LengthKM");
-
                     b.Property<string>("Location");
-
-                    b.Property<int?>("MostRecentWinnerDriverId");
 
                     b.Property<string>("Name");
 
@@ -285,8 +279,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("Specification");
 
                     b.HasKey("TrackId");
-
-                    b.HasIndex("MostRecentWinnerDriverId");
 
                     b.ToTable("Tracks");
                 });
@@ -350,27 +342,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasOne("FormuleCirkelEntity.Models.Team", "Team")
                         .WithMany("SeasonTeams")
                         .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("FormuleCirkelEntity.Models.TeamResult", b =>
-                {
-                    b.HasOne("FormuleCirkelEntity.Models.Race", "Race")
-                        .WithMany("TeamResults")
-                        .HasForeignKey("RaceId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("FormuleCirkelEntity.Models.SeasonTeam", "SeasonTeam")
-                        .WithMany("TeamResults")
-                        .HasForeignKey("SeasonTeamId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("FormuleCirkelEntity.Models.Track", b =>
-                {
-                    b.HasOne("FormuleCirkelEntity.Models.Driver", "MostRecentWinner")
-                        .WithMany()
-                        .HasForeignKey("MostRecentWinnerDriverId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618

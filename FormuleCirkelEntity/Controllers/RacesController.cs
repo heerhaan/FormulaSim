@@ -37,7 +37,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var existingTrackIds = season.Races.Select(r => r.TrackId);
-            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId)).ToList();
+            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId) && t.Archived == false).ToList();
 
             ViewBag.seasonId = id;
             return View(unusedTracks);
@@ -60,9 +60,61 @@ namespace FormuleCirkelEntity.Controllers
                 .InitializeRace(track, season)
                 .AddDefaultStints()
                 .GetResultAndRefresh();
+
             season.Races.Add(race);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(AddTracks), new { id });
+        }
+
+        public IActionResult ModifyRace(int id, int trackId)
+        {
+            var model = new ModifyRaceModel
+            {
+                SeasonId = id,
+                TrackId = trackId
+            };
+
+            // Finds the last time track was used and uses same stintsetup as then
+            var lastracemodel = _context.Races
+                .LastOrDefault(lr => lr.Track.TrackId == trackId);
+            if (lastracemodel != null)
+            {
+                var stintlist = lastracemodel.Stints.Values.ToList();
+                foreach(var item in lastracemodel.Stints.Values.ToList())
+                {
+                    if(item.RNGMaximum == -1)
+                    {
+                        stintlist.Remove(item);
+                    }
+                }
+                model.RaceStints = stintlist;
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModifyRace(ModifyRaceModel raceModel)
+        {
+            if (raceModel == null)
+                return NotFound();
+
+            var track = _context.Tracks.SingleOrDefault(m => m.TrackId == raceModel.TrackId);
+
+            var season = await _context.Seasons
+                .Include(s => s.Races)
+                .Include(s => s.Drivers)
+                .SingleOrDefaultAsync(s => s.SeasonId == raceModel.SeasonId);
+
+            IList<Stint> stints = raceModel.RaceStints;
+
+            var race = _raceBuilder
+                .InitializeRace(track, season)
+                .AddModifiedStints(stints)
+                .GetResultAndRefresh();
+
+            season.Races.Add(race);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("AddTracks", new { id = raceModel.SeasonId });
         }
 
         [Route("Season/{id}/[Controller]/{raceId}")]
@@ -87,6 +139,15 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(r => r.Season)
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
+            var teamSpecs = _context.SeasonTeams
+                .Where(ts => ts.Season.SeasonId == id)
+                .Where(ts => ts.Specification == race.Track.Specification)
+                .Include(t => t.Team)
+                .Distinct()
+                .ToList();
+
+            ViewBag.teamSpecs = teamSpecs;
 
             return View(race);
         }
@@ -207,7 +268,15 @@ namespace FormuleCirkelEntity.Controllers
             _context.Update(race.Track);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            // Finishes season up if it is the last race of the season.
+            if(season.Races.FirstOrDefault(s => s.StintProgress == 0) == null)
+            {
+                return RedirectToAction("Finish", "Season", new { id = seasonId });
+            }
+            else
+            {
+                return RedirectToAction("DriverStandings", "Home");
+            }
         }
 
         int PointsEarned(int pos)
@@ -420,12 +489,10 @@ namespace FormuleCirkelEntity.Controllers
             // Prepare race object for serialization
             race.DriverResults = null;
             race.Season = null;
-            race.TeamResults = null;
             race.Track = null;
             race.Stints = null;
             raceToSwitch.DriverResults = null;
             raceToSwitch.Season = null;
-            raceToSwitch.TeamResults = null;
             raceToSwitch.Track = null;
             raceToSwitch.Stints = null;
             return new JsonResult(new[] { race, raceToSwitch });

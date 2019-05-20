@@ -20,7 +20,8 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Teams
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Teams.ToListAsync());
+            var teams = await _context.Teams.Where(t => !t.Archived).ToListAsync();
+            return View(teams);
         }
 
         public async Task<IActionResult> Stats(int? id)
@@ -35,8 +36,6 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(sd => sd.Driver);
             var driverresults = _context.DriverResults
                 .Where(dr => dr.SeasonDriver.SeasonTeam.TeamId == id);
-            var teamresults = _context.TeamResults
-                .Where(tr => tr.SeasonTeam.TeamId == id);
 
             // Calculates the amount of championships a team has won.
             int driverchamps = 0;
@@ -77,8 +76,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 Team = team,
                 SeasonDriver = seasondrivers,
-                DriverResults = driverresults,
-                TeamResults = teamresults
+                DriverResults = driverresults
             };
 
             return View(stats);
@@ -171,14 +169,14 @@ namespace FormuleCirkelEntity.Controllers
 
             return View(team);
         }
-
-        // POST: Teams/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var team = await _context.Teams.FindAsync(id);
-            _context.Teams.Remove(team);
+            team.Archived = true;
+            _context.Teams.Update(team);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -186,6 +184,16 @@ namespace FormuleCirkelEntity.Controllers
         private bool TeamExists(int id)
         {
             return _context.Teams.Any(e => e.TeamId == id);
+        }
+
+        [HttpPost]
+        public IActionResult SaveBiography(int id, string biography)
+        {
+            var team = _context.Teams.SingleOrDefault(t => t.TeamId == id);
+            team.Biography = biography;
+            _context.Teams.Update(team);
+            _context.SaveChanges();
+            return RedirectToAction("Stats", new { id });
         }
     }
 }
