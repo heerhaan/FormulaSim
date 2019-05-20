@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using FormuleCirkelEntity.Validation;
 
 namespace FormuleCirkelEntity
 {
@@ -47,9 +48,7 @@ namespace FormuleCirkelEntity
             services.AddSingleton(new Random());
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();
-
-            //List of validator classes
-            //services.AddTransient<IValidator<Driver>, DriverValidator>();
+            services.AddTransient<SeasonSettingsValidator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

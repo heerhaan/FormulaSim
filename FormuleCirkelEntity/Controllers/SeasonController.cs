@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -97,19 +98,37 @@ namespace FormuleCirkelEntity.Controllers
             return View();
         }
 
-        // View to set up certain settings for the season in relation to races.
-        public async Task<IActionResult> SeasonSettings(int? id)
+
+        [Route("[Controller]/{id}/Settings")]
+        public async Task<IActionResult> Settings(int id)
         {
             var season = await _context.Seasons
-                   .Include(s => s.Races)
-                   .SingleOrDefaultAsync(s => s.SeasonId == id);
-
-            ViewBag.seasonId = id;
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (season == null)
                 return NotFound();
 
-            return View();
+            return View(new SeasonSettingsViewModel(season));
+        }
+
+        [HttpPost("[Controller]/{id}/Settings")]
+        public async Task<IActionResult> Settings(int id, [Bind] SeasonSettingsViewModel settingsModel)
+        {
+            var season = await _context.Seasons
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            if (season == null)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                season.QualificationRemainingDriversQ2 = settingsModel.QualificationRemainingDriversQ2;
+                season.QualificationRemainingDriversQ3 = settingsModel.QualificationRemainingDriversQ3;
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
+            }
+
+            return View(settingsModel);
         }
         
         [Route("[Controller]/{id}/Teams/Add")]
