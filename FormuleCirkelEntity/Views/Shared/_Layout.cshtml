@@ -15,28 +15,12 @@
               crossorigin="anonymous"
               integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" />
     </environment>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" 
-          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+          integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
           crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body class="dark">
-    <header>
-        <partial name="_MenuPartial" />
-    </header>
-    <div class="container">
-        <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer footer-dark bg-dark text-white text-muted">
-        <div class="container">
-            &copy; 2019 - Formule Cirkeltrek
-        </div>
-    </footer>
-
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
@@ -59,5 +43,21 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
+
+    <header>
+        <partial name="_MenuPartial" />
+    </header>
+    <div class="container">
+        <partial name="_CookieConsentPartial" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer footer-dark bg-dark text-white text-muted">
+        <div class="container">
+            &copy; 2019 - Formule Cirkeltrek
+        </div>
+    </footer>
 </body>
 </html>

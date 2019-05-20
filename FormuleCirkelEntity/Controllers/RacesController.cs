@@ -246,13 +246,13 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> FinishRace(int seasonId, int raceId)
         {
             var race = await _context.Races
-                .Include( r => r.DriverResults)
+                .Include(r => r.DriverResults)
                     .ThenInclude(dr => dr.SeasonDriver)
                         .ThenInclude(sd => sd.SeasonTeam)
                 .Include(r => r.DriverResults)
                     .ThenInclude(dr => dr.SeasonDriver)
                         .ThenInclude(sd => sd.Driver)
-                .Include( r => r.Track)
+                .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == seasonId);
 
             foreach (var result in race.DriverResults.Where(res => res.Status == Status.Finished))
@@ -268,15 +268,7 @@ namespace FormuleCirkelEntity.Controllers
             _context.Update(race.Track);
             _context.SaveChanges();
 
-            // Finishes season up if it is the last race of the season.
-            if(season.Races.FirstOrDefault(s => s.StintProgress == 0) == null)
-            {
-                return RedirectToAction("Finish", "Season", new { id = seasonId });
-            }
-            else
-            {
-                return RedirectToAction("DriverStandings", "Home");
-            }
+            return RedirectToAction("DriverStandings", "Home");
         }
 
         int PointsEarned(int pos)
@@ -330,7 +322,9 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult Qualifying(int id, int raceId)
         {
             var race = _context.Races.Single(r => r.RaceId == raceId);
+            var season = _context.Seasons.Single(s => s.SeasonId == id);
             ViewBag.race = race;
+            ViewBag.season = season;
             return View();
         }
 

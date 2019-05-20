@@ -9,7 +9,7 @@
 <div class="table-header-container">
     <p class="table-header-1">
         <a asp-action="Create">
-            <i class="fas fa-plus-square fa-lg fa-lg"></i>
+            <i class="fas fa-plus-square fa-2x fa-2x"></i>
         </a>
     </p>
     <form class="table-header-1" method="post">
@@ -18,7 +18,7 @@
                 <input type="text" placeholder="Naam" name="SearchString" value="@ViewData["SearchString"]" />
                 <input type="submit" value="Zoek" class="btn btn-dark" />
                 <a asp-page="/Drivers/Index">
-                    <i class="fas fa-undo fa-lg fa-lg"></i>
+                    <i class="fas fa-undo fa-2x fa-2x"></i>
                 </a>
             </p>
         </div>
@@ -56,17 +56,17 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.DriverId">
-                        <i class="fas fa-edit fa-lg"></i>
+                        <i class="fas fa-edit fa-2x"></i>
                     </a>
                 </td>
                 <td>
                     <a asp-action="Stats" asp-route-id="@item.DriverId">
-                        <i class="fas fa-id-card fa-lg"></i>
+                        <i class="fas fa-id-card fa-2x"></i>
                     </a>
                 </td>
                 <td>
                     <a asp-action="Delete" asp-route-id="@item.DriverId">
-                        <i class="fas fa-trash-alt fa-lg"></i>
+                        <i class="fas fa-trash-alt fa-2x"></i>
                     </a>
                 </td>
             </tr>
