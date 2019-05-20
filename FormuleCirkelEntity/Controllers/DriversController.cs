@@ -21,7 +21,7 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Drivers
         public IActionResult Index()
         {
-            var drivers = _context.Drivers.Where(d => d.Archived == false).ToList();
+            var drivers = _context.Drivers.Where(d => !d.Archived).ToList();
             return View(drivers);
         }
 

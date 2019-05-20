@@ -20,7 +20,7 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Teams
         public async Task<IActionResult> Index()
         {
-            var teams = await _context.Teams.Where(t => t.Archived == false).ToListAsync();
+            var teams = await _context.Teams.Where(t => !t.Archived).ToListAsync();
             return View(teams);
         }
 

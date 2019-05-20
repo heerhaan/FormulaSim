@@ -158,7 +158,7 @@ namespace FormuleCirkelEntity.Controllers
             seasonTeam.Season = season;
             
             // Adds last previous used values from team as default
-            var lastTeam = _context.SeasonTeams.Where(s => s.Team.TeamId == globalTeamId).LastOrDefault();
+            var lastTeam = _context.SeasonTeams.LastOrDefault(s => s.Team.TeamId == globalTeamId);
             if(lastTeam != null)
             {
                 seasonTeam.Chassis = lastTeam.Chassis;
@@ -296,8 +296,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Adds last previous used values from driver as default
             var lastDriver = _context.SeasonDrivers
-                .Where(s => s.Driver.DriverId == globalDriverId)
-                .LastOrDefault();
+                .LastOrDefault(s => s.Driver.DriverId == globalDriverId);
             if(lastDriver != null)
             {
                 seasonDriver.Skill = lastDriver.Skill;
