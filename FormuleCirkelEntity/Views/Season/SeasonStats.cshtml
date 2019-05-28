@@ -8,13 +8,13 @@
 <h1>Season Stats for season @ViewBag.seasonId</h1>
 
 <a asp-controller="Home" asp-action="PastDriverStandings" asp-route-seasonId="@ViewBag.seasonId">
-    <span>Driver standings</span>
+    <span class="badge badge-light" style="font-size:1rem;">Driver standings</span>
 </a>
-||
 <a asp-controller="Home" asp-action="PastTeamStandings" asp-route-seasonId="@ViewBag.seasonId">
-    <span>Team standings</span>
+    <span class="badge badge-light" style="font-size:1rem;">Team standings</span>
 </a>
 
+<hr />
 <h3>Power rankings</h3>
 <table id="graphic" class="table table-sm">
     <thead>

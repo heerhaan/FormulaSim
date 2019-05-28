@@ -3,6 +3,7 @@ using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -15,9 +16,13 @@ namespace FormuleCirkelEntity.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int? page)
         {
-            return View(await _context.Engines.ToListAsync());
+            var engines = _context.Engines;
+            var pageNumber = page ?? 1;
+            var onePageOfEngines = engines.ToPagedList(pageNumber, 10);
+            ViewBag.OnePage = onePageOfEngines;
+            return View();
         }
 
         public IActionResult Create()

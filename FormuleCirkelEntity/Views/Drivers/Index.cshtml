@@ -1,4 +1,6 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.Driver>
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<FormuleCirkelEntity.Models.Driver>
 
 @{
     ViewData["Title"] = "Coureurs";
@@ -42,17 +44,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in ViewBag.OnePage)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DriverNumber)
+                    @item.DriverNumber
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @item.Name
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Abbreviation)
+                    @item.Abbreviation
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.DriverId">
@@ -73,3 +75,9 @@
         }
     </tbody>
 </table>
+
+@Html.PagedListPager((IPagedList)ViewBag.OnePage, page => Url.Action("Index", new { page }),
+    new X.PagedList.Mvc.Common.PagedListRenderOptionsBase {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })

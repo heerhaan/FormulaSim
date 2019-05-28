@@ -36,6 +36,17 @@ body.dark {
         border-top-color: #bd2130
     }
 
+.page-link {
+    background-color: #282c34;
+    color: #bd2130;
+    border-color: #bd2130;
+}
+    .page-item.active .page-link {
+        background-color: #bd2130;
+        border-color: #bd2130;
+        color: #282c34;
+    }
+
 i.fas,
 i.fab {
     color: white;

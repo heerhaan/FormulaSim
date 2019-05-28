@@ -45,14 +45,14 @@ namespace FormuleCirkelEntity.Builders
             // Pitstop to add before every stint
             Stint pitstop = new Stint()
             {
-                RNGMinimum = -8,
-                RNGMaximum = -1
+                RNGMinimum = -7,
+                RNGMaximum = -3
             };
 
             bool firstloop = true;
             foreach (var stint in settings)
             {
-                if(firstloop == false)
+                if (firstloop == false)
                 {
                     _race.Stints.Add(_race.Stints.Count + 1, pitstop);
                 }
@@ -71,7 +71,7 @@ namespace FormuleCirkelEntity.Builders
                 ApplyEngineLevel = true,
                 ApplyQualifyingBonus = true,
                 ApplyTireLevel = true,
-                RNGMinimum = 1,
+                RNGMinimum = 0,
                 RNGMaximum = 25
             };
 
@@ -83,8 +83,8 @@ namespace FormuleCirkelEntity.Builders
         {
             Stint stint = new Stint()
             {
-                RNGMinimum = -8,
-                RNGMaximum = -1
+                RNGMinimum = -7,
+                RNGMaximum = -3
             };
 
             _race.Stints.Add(_race.Stints.Count + 1, stint);
@@ -97,7 +97,7 @@ namespace FormuleCirkelEntity.Builders
             {
                 ApplyReliability = true,
                 ApplyTireWear = true,
-                RNGMinimum = 1,
+                RNGMinimum = 0,
                 RNGMaximum = 35
             };
 

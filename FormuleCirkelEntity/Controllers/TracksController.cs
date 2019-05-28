@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -19,10 +20,13 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // GET: Tracks
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int? page)
         {
-            var tracks = await _context.Tracks.Where(t => t.Archived == false).ToListAsync();
-            return View(tracks);
+            var tracks = _context.Tracks.Where(t => t.Archived == false);
+            var pageNumber = page ?? 1;
+            var onePageOfTracks = tracks.ToPagedList(pageNumber, 10);
+            ViewBag.OnePage = onePageOfTracks;
+            return View();
         }
         
         // GET: Tracks/Create

@@ -67,7 +67,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 
         public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount)
         {
-            return (totalDriverCount * 2) - (qualifyingPosition * 2);
+            return (totalDriverCount * 3) - (qualifyingPosition * 3);
         }
 
         public bool TrackSpecificationPositive(DriverResult driverResult)

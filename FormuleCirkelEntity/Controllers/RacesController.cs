@@ -89,6 +89,10 @@ namespace FormuleCirkelEntity.Controllers
                 }
                 model.RaceStints = stintlist;
             }
+
+            var track = _context.Tracks.SingleOrDefault(m => m.TrackId == trackId);
+            ViewBag.trackname = track.Name;
+
             return View(model);
         }
 

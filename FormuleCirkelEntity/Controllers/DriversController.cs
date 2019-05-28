@@ -3,9 +3,9 @@ using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -19,10 +19,13 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // GET: Drivers
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
             var drivers = _context.Drivers.Where(d => !d.Archived).ToList();
-            return View(drivers);
+            var pageNumber = page ?? 1;
+            var onePageOfDrivers = drivers.ToPagedList(pageNumber, 10);
+            ViewBag.OnePage = onePageOfDrivers;
+            return View();
         }
 
         [HttpPost]

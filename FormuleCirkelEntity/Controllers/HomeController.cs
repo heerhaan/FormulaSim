@@ -115,6 +115,21 @@ namespace FormuleCirkelEntity.Controllers
             return View("TeamStandings", standings);
         }
 
+        public IActionResult NextRace()
+        {
+            var currentSeason = _context.Seasons
+                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
+                .Include(r => r.Races)
+                .OrderBy(s => s.SeasonStart)
+                .FirstOrDefault();
+
+            var nextrace = currentSeason.Races
+                .OrderBy(r => r.Round)
+                .FirstOrDefault(r => r.StintProgress == 0);
+
+            return RedirectToAction("RacePreview", "Races", new { id = currentSeason.SeasonId, raceId = nextrace.RaceId });
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
