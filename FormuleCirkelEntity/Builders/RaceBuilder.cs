@@ -42,22 +42,9 @@ namespace FormuleCirkelEntity.Builders
 
         public RaceBuilder AddModifiedStints(IList<Stint> settings)
         {
-            // Pitstop to add before every stint
-            Stint pitstop = new Stint()
-            {
-                RNGMinimum = -7,
-                RNGMaximum = -3
-            };
-
-            bool firstloop = true;
             foreach (var stint in settings)
             {
-                if (firstloop == false)
-                {
-                    _race.Stints.Add(_race.Stints.Count + 1, pitstop);
-                }
                 _race.Stints.Add(_race.Stints.Count + 1, stint);
-                firstloop = false;
             }
             return this;
         }

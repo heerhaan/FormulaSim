@@ -28,21 +28,6 @@ namespace FormuleCirkelEntity.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult Index(string searchString)
-        {
-            //Search functionality for driver index
-            ViewData["SearchString"] = searchString;
-            IQueryable<Driver> drivers = from d in _context.Drivers where d.Archived == false select d;
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                drivers = drivers.Where(d => d.Name.Contains(searchString));
-            }
-
-            return View(drivers.ToList());
-        }
-
         public async Task<IActionResult> Stats(int? id)
         {
             if (id == null)
