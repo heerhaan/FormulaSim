@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -18,10 +19,13 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // GET: Teams
-        public async Task<IActionResult> Index()
+        public IActionResult Index(int? page)
         {
-            var teams = await _context.Teams.Where(t => !t.Archived).ToListAsync();
-            return View(teams);
+            var teams =_context.Teams.Where(t => !t.Archived);
+            var pageNumber = page ?? 1;
+            var onePageOfTeams = teams.ToPagedList(pageNumber, 10);
+            ViewBag.OnePage = onePageOfTeams;
+            return View();
         }
 
         public async Task<IActionResult> Stats(int? id)
@@ -54,7 +58,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 if (driverwinner != null)
                 {
-                    if (driverwinner.DriverId == id)
+                    if (seasondrivers.Any(s => s.SeasonDriverId == driverwinner.SeasonDriverId))
                     {
                         driverchamps++;
                     }
@@ -179,6 +183,12 @@ namespace FormuleCirkelEntity.Controllers
             _context.Teams.Update(team);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ArchivedTeams()
+        {
+            var teams = _context.Teams.Where(t => t.Archived).ToList();
+            return View(teams);
         }
 
         private bool TeamExists(int id)

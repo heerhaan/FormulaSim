@@ -23,25 +23,33 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult DriverStandings()
         {
-            var currentSeason = _context.Seasons
+            var seasons = _context.Seasons;
+
+            if (seasons.Any(s => s.State == SeasonState.Progress))
+            {
+                var currentSeason = seasons
                 .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
                 .OrderBy(s => s.SeasonStart)
                 .FirstOrDefault();
 
-            var standings = _context.SeasonDrivers
-                .Include(s => s.DriverResults)
-                .Include(s => s.Driver)
-                .Include(s => s.SeasonTeam.Team)
-                .Where(s => s.SeasonId == currentSeason.SeasonId)
-                .OrderByDescending(s => s.Points)
-                .ToList();
+                var standings = _context.SeasonDrivers
+                    .Include(s => s.DriverResults)
+                    .Include(s => s.Driver)
+                    .Include(s => s.SeasonTeam.Team)
+                    .Where(s => s.SeasonId == currentSeason.SeasonId)
+                    .OrderByDescending(s => s.Points)
+                    .ToList();
 
-            ViewBag.rounds = _context.Races
-                .Where(r => r.SeasonId == currentSeason.SeasonId)
-                .Include(r => r.Track)
-                .OrderBy(r => r.Round).ToList();
+                ViewBag.rounds = _context.Races
+                    .Where(r => r.SeasonId == currentSeason.SeasonId)
+                    .Include(r => r.Track)
+                    .OrderBy(r => r.Round).ToList();
 
-            return View(standings);
+                return View(standings);
+            } else
+            {
+                return RedirectToAction("Index", "Season");
+            }
         }
 
         [ActionName("PastDriverStandings")]
@@ -69,26 +77,36 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult TeamStandings()
         {
-            var currentSeason = _context.Seasons
+            var seasons = _context.Seasons;
+
+            if (seasons.Any(s => s.State == SeasonState.Progress))
+            {
+                var currentSeason = seasons
                 .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
                 .OrderBy(s => s.SeasonStart)
                 .FirstOrDefault();
 
-            var standings = _context.SeasonTeams
-                .Include(t => t.Team)
-                .Include(t => t.SeasonDrivers)
-                    .ThenInclude(s => s.DriverResults)
-                .Where(s => s.SeasonId == currentSeason.SeasonId)
-                .OrderByDescending(t => t.Points)
-                .ToList();
+                var standings = _context.SeasonTeams
+                    .Include(t => t.Team)
+                    .Include(t => t.SeasonDrivers)
+                        .ThenInclude(s => s.DriverResults)
+                    .Where(s => s.SeasonId == currentSeason.SeasonId)
+                    .OrderByDescending(t => t.Points)
+                    .ToList();
 
-            ViewBag.rounds = _context.Races
-                .Where(r => r.SeasonId == currentSeason.SeasonId)
-                .Include(r => r.Track)
-                .OrderBy(r => r.Round).ToList();
-            ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
+                ViewBag.rounds = _context.Races
+                    .Where(r => r.SeasonId == currentSeason.SeasonId)
+                    .Include(r => r.Track)
+                    .OrderBy(r => r.Round).ToList();
+                ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
 
-            return View(standings);
+                return View(standings);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Season");
+            }
+            
         }
 
         [ActionName("PastTeamStandings")]
@@ -115,6 +133,30 @@ namespace FormuleCirkelEntity.Controllers
             return View("TeamStandings", standings);
         }
 
+        public IActionResult NextRace()
+        {
+            var seasons = _context.Seasons;
+
+            if(seasons.Any(s => s.State == SeasonState.Progress))
+            {
+                var currentSeason = seasons
+                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
+                .Include(r => r.Races)
+                .OrderBy(s => s.SeasonStart)
+                .FirstOrDefault();
+
+                var nextrace = currentSeason.Races
+                    .OrderBy(r => r.Round)
+                    .FirstOrDefault(r => r.StintProgress == 0);
+
+                return RedirectToAction("RacePreview", "Races", new { id = currentSeason.SeasonId, raceId = nextrace.RaceId });
+            } else
+            {
+                return RedirectToAction("Index", "Season");
+            }
+            
+        }
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

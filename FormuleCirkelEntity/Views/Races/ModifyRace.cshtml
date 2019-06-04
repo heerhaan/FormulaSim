@@ -4,7 +4,7 @@
     ViewData["Title"] = "Modify Race";
 }
 
-<h1>Modify race</h1>
+<h1>Modify @ViewBag.trackname</h1>
 <br />
 <div class="container">
     <div class="col-md-6 col-md-offset-3">
@@ -68,8 +68,9 @@
                     }
                 </tbody>
             </table>
-            <button type="button" id="add" class="btn">Add Stint</button>
-            <div>
+            <div class="row btn-group">
+                <button type="button" id="add" class="btn btn-dark">Add Stint</button>
+                <button type="button" id="addpit" class="btn btn-dark">Add Pit</button>
                 <button type="submit" class="btn btn-success submit">Save</button>
             </div>
         }
@@ -113,10 +114,47 @@
     </tr>
 </table>
 
+<table id="newpit" style="display:none;">
+    <tr>
+        <td>
+            <input type="hidden" name="RaceStints.Index" value="%">
+            <input class="form-check-input" name="RaceStints[#].ApplyDriverLevel" type="checkbox" value="true">
+        </td>
+        <td>
+            <input class="form-check-input" name="RaceStints[#].ApplyChassisLevel" type="checkbox" value="true">
+        </td>
+        <td>
+            <input class="form-check-input" name="RaceStints[#].ApplyEngineLevel" type="checkbox" value="true">
+        </td>
+        <td>
+            <input class="form-check-input" name="RaceStints[#].ApplyTireLevel" type="checkbox" value="true">
+        </td>
+        <td>
+            <input class="form-check-input" name="RaceStints[#].ApplyTireWear" type="checkbox" value="true">
+        </td>
+        <td>
+            <input class="form-check-input" name="RaceStints[#].ApplyQualifyingBonus" type="checkbox" value="true">
+        </td>
+        <td>
+            <input class="form-check-input" name="RaceStints[#].ApplyReliability" type="checkbox" value="true">
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].RNGMinimum" type="text" value="-7">
+        </td>
+        <td>
+            <input class="form-control" name="RaceStints[#].RNGMaximum" type="text" value="-3">
+        </td>
+        <td>
+            <button type="button" class="btn delete">Delete</button>
+        </td>
+    </tr>
+</table>
+
 <script type="text/javascript">
     var form = $('form');
     var table = $('#racestints tbody');
     var newrow = $('#newrow');
+    var newpit = $('#newpit');
 
     $('#add').click(function () {
         var index = (new Date()).getTime();
@@ -125,6 +163,15 @@
         clone.html($(clone).html().replace(/"%"/g, '"' + index + '"'));
         table.append(clone);
     });
+
+    $('#addpit').click(function () {
+        var index = (new Date()).getTime();
+        var clone = newpit.find('tr').clone();
+        clone.html($(clone).html().replace(/\[#\]/g, '[' + index + ']'));
+        clone.html($(clone).html().replace(/"%"/g, '"' + index + '"'));
+        table.append(clone);
+    });
+
     $('#racestints').on('click', '.delete', function () {
         $(this).closest('tr').remove();
     });

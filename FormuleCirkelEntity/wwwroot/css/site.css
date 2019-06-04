@@ -11,11 +11,11 @@
 
 body.dark {
     background-color: rgb(30,34,39);
-    color: #fff;
+    color: white;
 }
     body.dark table {
         background-color: rgb(30,34,39);
-        color: #fff;
+        color: white;
     }    
 
     body.dark code[class*=language-],
@@ -24,17 +24,32 @@ body.dark {
         background: #282c34
     }
 
-    body.dark table thead th {
-        border-bottom-color: #bd2130
-    }
+        body.dark table thead th {
+            border-bottom-color: #bd2130
+        }
 
-    body.dark table th {
-        border-top-color: #bd2130
-    }
+        body.dark table th {
+            border-top-color: #bd2130
+        }
 
-    body.dark table td {
-        border-top-color: #bd2130
-    }
+        body.dark table td {
+            border-top-color: #bd2130
+        }
+
+.page-link {
+    background-color: #282c34;
+    color: #bd2130;
+    border-color: #bd2130;
+}
+.page-item.active .page-link {
+    background-color: #bd2130;
+    border-color: #bd2130;
+    color: #282c34;
+}
+
+#graphic {
+    background-color: rgb(30,34,39);
+}
 
 i.fas,
 i.fab {
@@ -42,7 +57,7 @@ i.fab {
 }
 
 .hero-image {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/DavidBeckmannCorner.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/McLarenWest20xx.jpg');
     height: 550px;
     background-position: center;
     background-repeat: no-repeat;

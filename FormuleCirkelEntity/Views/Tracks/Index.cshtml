@@ -1,16 +1,19 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.Track>
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<FormuleCirkelEntity.Models.Track>
 
 @{
     ViewData["Title"] = "Circuits";
 }
 
 <h1>Circuits</h1>
-
-<p>
+<div>
     <a asp-action="Create">
         <i class="fas fa-plus-square fa-2x"></i>
     </a>
-</p>
+    <a class="btn btn-dark float-right" asp-action="ArchivedTracks">Archive</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -34,23 +37,23 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in ViewBag.OnePage)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @item.Name
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Location)
+                    @item.Location
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DNFodds)
+                    @item.DNFodds
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.RNGodds)
+                    @item.RNGodds
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Specification)
+                    @item.Specification
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.TrackId">
@@ -66,3 +69,9 @@
         }
     </tbody>
 </table>
+
+@Html.PagedListPager((IPagedList)ViewBag.OnePage, page => Url.Action("Index", new { page }),
+    new X.PagedList.Mvc.Common.PagedListRenderOptionsBase {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })

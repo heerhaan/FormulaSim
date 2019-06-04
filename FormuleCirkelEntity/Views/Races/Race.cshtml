@@ -3,12 +3,6 @@
     ViewData["Title"] = "Race";
 }
 
-<section class="row my-1">
-    <header>
-        <h1>Race: @Model.Track.Name</h1>
-    </header>
-</section>
-
 @if (Model.Season.State == SeasonState.Progress)
 {
     <div class="table-header-container">
@@ -23,20 +17,23 @@
     </div>
 }
 
-<section class="row my-1">
-    <table id="results" class="table table-sm">
+<section id="graphic" class="row my-1">
+    <h2>@Model.Track.Name</h2>
+    <table class="table table-sm">
         <thead>
             <tr>
                 <th data-field="position">Pos.</th>
                 <th>Nr.</th>
-                <th>Naam</th>
+                <th>Name</th>
                 <th>Team</th>
                 <th>Grid</th>
                 @foreach (var stint in Model.Stints)
                 {
-                    <th data-field="stintResultHeader-@stint.Key">@stint.Key</th>
+                <th data-field="stintResultHeader-@stint.Key">
+                    @stint.Key
+                </th>
                 }
-                <th data-field="pointsTotal">Puntentotaal</th>
+                <th data-field="pointsTotal">Score</th>
             </tr>
         </thead>
         <tbody>
@@ -119,7 +116,7 @@
     }
 
     function takeScreenshot() {
-        html2canvas(document.querySelector('#results')).then(function (canvas) {
+        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
             $('#screenshot').empty();
             document.querySelector('#screenshot').appendChild(canvas);
         });

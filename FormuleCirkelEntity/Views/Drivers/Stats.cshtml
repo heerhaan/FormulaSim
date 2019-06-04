@@ -4,80 +4,84 @@
     ViewData["Title"] = "Driver bio";
 }
 
-<h1>Biography</h1>
-<h4>@Model.Driver.Name</h4>
-<hr />
-
-<div class="biocontainer">
-    <div class="fixed">
-        <dl class="inline-flex">
-            <dt>
-                Aantal starts:
-            </dt>
-            <dd>
-                @Model.DriverResults.Count()
-            </dd>
-            <dt>
-                Aantal poles:
-            </dt>
-            <dd>
-                @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
-            </dd>
-            <dt>
-                Aantal podia:
-            </dt>
-            <dd>
-                @(Model.DriverResults.Where(dr => dr.Position <= 3).Count())
-            </dd>
-            <dt>
-                Aantal winsten:
-            </dt>
-            <dd>
-                @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
-            </dd>
-            <dt>
-                Aantal WDCs:
-            </dt>
-            <dd>
-                @ViewBag.championships
-            </dd>
-            <dt>
-                Aantal DNFs:
-            </dt>
-            <dd>
-                @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
-            </dd>
-            <dt>
-                Gereden voor:
-            </dt>
-            <dd>
-                @foreach (var team in Model.SeasonDriver.Select(select => select.SeasonTeam.Team).Distinct())
+<div id="graphic">
+    <h1>Biography</h1>
+    <h4>@Model.Driver.Name</h4>
+    <hr />
+    <div class="biocontainer">
+        <div class="fixed">
+            <dl class="inline-flex">
+                <dt>
+                    Starts:
+                </dt>
+                <dd>
+                    @Model.DriverResults.Count()
+                </dd>
+                <dt>
+                    Poles:
+                </dt>
+                <dd>
+                    @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
+                </dd>
+                <dt>
+                    Podiums:
+                </dt>
+                <dd>
+                    @(Model.DriverResults.Where(dr => dr.Position <= 3).Count())
+                </dd>
+                <dt>
+                    Wins:
+                </dt>
+                <dd>
+                    @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
+                </dd>
+                <dt>
+                    WDCs:
+                </dt>
+                <dd>
+                    @ViewBag.championships
+                </dd>
+                <dt>
+                    DNFs:
+                </dt>
+                <dd>
+                    @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
+                </dd>
+                <dt>
+                    Teams:
+                </dt>
+                <dd>
+                    @foreach (var team in Model.SeasonDriver.Select(select => select.SeasonTeam.Team).Distinct())
+                    {
+                        <span class='badge' style='background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;'>@(team.Abbreviation)</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="flex-item">
+            <p id="biography" contenteditable="true">
+                @if (Model.Driver.Biography == null)
                 {
-                    <span class='badge' style='background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;'>@(team.Abbreviation)</span>
+                    <i>This driver has no bio yet!</i>
                 }
-            </dd>
-        </dl>
-    </div>
-    <div class="flex-item">
-        <p id="biography" contenteditable="true">
-            @if (Model.Driver.Biography == null)
-            {
-                <i>This driver has no bio yet!</i>
-            }
-            else
-            {
-                @Model.Driver.Biography
-            }
-        </p>
-        <button id="savebio" class="btn btn-dark"><i class="far fa-save"></i></button>
+                else
+                {
+                    @Model.Driver.Biography
+                }
+            </p>
+            <button id="savebio" class="btn btn-dark"><i class="far fa-save"></i></button>
+        </div>
     </div>
 </div>
 
-<div>
+<div class="row btn-group">
     <a asp-action="Index">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
     </a>
+    <button class="btn badge-dark ml-auto" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
 </div>
+
+<div id="screenshot"></div>
 
 <script>
     $('#savebio').click(function () {
@@ -90,4 +94,11 @@
             error: function () { alert("Opslaan mislukt!"); }
         });
     });
+
+    function takeScreenshot() {
+        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
+            $('#screenshot').empty();
+            document.querySelector('#screenshot').appendChild(canvas);
+        });
+    }
 </script>

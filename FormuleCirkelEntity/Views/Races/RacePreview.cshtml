@@ -4,19 +4,18 @@
     ViewData["Title"] = "Voorbeschouwing";
 }
 
-<h1>Voorbeschouwing</h1>
-
-<div>
+<div id="graphic">
+    <h1>Preview of @Model.Name</h1>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            Ronde
+            Round
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Round)
         </dd>
         <dt class="col-sm-2">
-            Naam
+            Name
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
@@ -28,7 +27,7 @@
             @Html.DisplayFor(model => model.Track.Name) in @(Model.Track.Location)
         </dd>
         <dt class="col-sm-2">
-            Specificatie
+            Specification
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Track.Specification)
@@ -37,13 +36,13 @@
             Teams with spec:
         </dt>
         <dd class="col-sm-10">
-            @foreach(var team in ViewBag.teamSpecs)
+            @foreach (var team in ViewBag.teamSpecs)
             {
                 <span class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;">@(team.Team.Abbreviation)</span>
             }
         </dd>
         <dt class="col-sm-2">
-            DNF kans
+            DNF chance
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Track.DNFodds)
@@ -55,12 +54,82 @@
             @Html.DisplayFor(model => model.Track.RNGodds)
         </dd>
     </dl>
+    <hr />
+    <table class="table table-bordered table-dark">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Chassis</th>
+                <th>Engine</th>
+                <th>Driver</th>
+                <th>Qualy bonus</th>
+                <th>Tire bonus</th>
+                <th>Tire wear</th>
+                <th>Reliability</th>
+                <th>RNG min.</th>
+                <th>RNG max.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var stint in Model.Stints)
+            {
+                <tr>
+                    <td>@stint.Key</td>
+                    <td>
+                        @if (stint.Value.ApplyChassisLevel)
+                        {<span class="badge badge-success nofullwidth">✓</span>}
+                    </td>
+                    <td>
+                        @if (stint.Value.ApplyEngineLevel)
+                        {<span class="badge badge-success nofullwidth">✓</span>}
+                    </td>
+                    <td>
+                        @if (stint.Value.ApplyDriverLevel)
+                        {<span class="badge badge-success nofullwidth">✓</span>}
+                    </td>
+                    <td>
+                        @if (stint.Value.ApplyQualifyingBonus)
+                        {<span class="badge badge-success nofullwidth">✓</span>}
+                    </td>
+                    <td>
+                        @if (stint.Value.ApplyTireLevel)
+                        {<span class="badge badge-success nofullwidth">✓</span>}
+                    </td>
+                    <td>
+                        @if (stint.Value.ApplyTireWear)
+                        {<span class="badge badge-success nofullwidth">✓</span>}
+                    </td>
+                    <td>
+                        @if (stint.Value.ApplyReliability)
+                        {<span class="badge badge-success nofullwidth">✓</span>}
+                    </td>
+                    <td>@stint.Value.RNGMinimum</td>
+                    <td>@stint.Value.RNGMaximum</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
-<form asp-action="RacePreview">
-    <div class="form-group">
-        <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn btn-dark" />
-    </div>
-</form>
+<div class="row">
+    <form asp-action="RacePreview">
+        <div class="form-group">
+            <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn btn-dark" />
+        </div>
+    </form>
+    <button class="btn badge-dark ml-auto" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+</div>
+<br />
+
+<div id="screenshot"></div>
 
 @Html.Raw(TempData["msg"])
+
+<script>
+    function takeScreenshot() {
+        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
+            $('#screenshot').empty();
+            document.querySelector('#screenshot').appendChild(canvas);
+        });
+    }
+</script>

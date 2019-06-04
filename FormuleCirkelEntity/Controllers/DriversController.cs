@@ -3,9 +3,9 @@ using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
+using X.PagedList;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -19,25 +19,13 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // GET: Drivers
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
             var drivers = _context.Drivers.Where(d => !d.Archived).ToList();
-            return View(drivers);
-        }
-
-        [HttpPost]
-        public ActionResult Index(string searchString)
-        {
-            //Search functionality for driver index
-            ViewData["SearchString"] = searchString;
-            IQueryable<Driver> drivers = from d in _context.Drivers where d.Archived == false select d;
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                drivers = drivers.Where(d => d.Name.Contains(searchString));
-            }
-
-            return View(drivers.ToList());
+            var pageNumber = page ?? 1;
+            var onePageOfDrivers = drivers.ToPagedList(pageNumber, 10);
+            ViewBag.OnePage = onePageOfDrivers;
+            return View();
         }
 
         public async Task<IActionResult> Stats(int? id)
@@ -182,6 +170,12 @@ namespace FormuleCirkelEntity.Controllers
             _context.Drivers.Update(driver);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ArchivedDrivers()
+        {
+            var drivers = _context.Drivers.Where(d => d.Archived).ToList();
+            return View(drivers);
         }
 
         private bool DriverExists(int id)

@@ -1,4 +1,6 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.Engine>
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<FormuleCirkelEntity.Models.Engine>
 
 @{
     ViewData["Title"] = "Motoren";
@@ -7,11 +9,12 @@
 <section>
     <h1>Motoren</h1>
     <section>
-        <p>
+        <div>
             <a asp-action="Create">
                 <i class="fas fa-plus-square fa-2x"></i>
             </a>
-        </p>
+            <a class="btn btn-dark float-right" asp-action="ArchivedEngines">Archive</a>
+        </div>
     </section>
     <section>
         <table class="table">
@@ -25,12 +28,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in ViewBag.OnePage)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Power)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Available)</td>
+                        <td>@item.Name</td>
+                        <td>@item.Power</td>
+                        <td>@item.Available</td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.EngineId">
                                 <i class="fas fa-tools fa-2x"></i>
@@ -47,3 +50,9 @@
         </table>
     </section>
 </section>
+
+@Html.PagedListPager((IPagedList)ViewBag.OnePage, page => Url.Action("Index", new { page }),
+    new X.PagedList.Mvc.Common.PagedListRenderOptionsBase {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })

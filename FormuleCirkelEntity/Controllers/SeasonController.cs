@@ -102,7 +102,7 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(st => st.Team)
                 .Include(sd => sd.SeasonTeam)
                     .ThenInclude(st => st.Engine)
-                .OrderByDescending(sd => sd.SeasonTeam.Chassis)
+                .OrderByDescending(sd => (sd.Skill + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power))
                 .ToList();
 
             return View(seasondrivers);
@@ -174,10 +174,12 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
             ViewBag.seasonId = id;
 
-            var seasonTeam = new SeasonTeam();
-            seasonTeam.Team = globalTeam;
-            seasonTeam.Season = season;
-            
+            var seasonTeam = new SeasonTeam
+            {
+                Team = globalTeam,
+                Season = season
+            };
+
             // Adds last previous used values from team as default
             var lastTeam = _context.SeasonTeams.LastOrDefault(s => s.Team.TeamId == globalTeamId);
             if(lastTeam != null)
@@ -311,9 +313,11 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.teams = new SelectList(teams, nameof(SeasonTeam.SeasonTeamId), nameof(SeasonTeam.Team.Name));
             ViewBag.seasonId = id;
 
-            var seasonDriver = new SeasonDriver();
-            seasonDriver.Driver = globalDriver;
-            seasonDriver.Season = season;
+            var seasonDriver = new SeasonDriver
+            {
+                Driver = globalDriver,
+                Season = season
+            };
 
             // Adds last previous used values from driver as default
             var lastDriver = _context.SeasonDrivers
