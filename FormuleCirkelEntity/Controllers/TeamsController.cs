@@ -185,6 +185,12 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult ArchivedTeams()
+        {
+            var teams = _context.Teams.Where(t => t.Archived).ToList();
+            return View(teams);
+        }
+
         private bool TeamExists(int id)
         {
             return _context.Teams.Any(e => e.TeamId == id);

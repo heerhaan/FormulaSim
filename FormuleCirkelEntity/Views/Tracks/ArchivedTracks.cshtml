@@ -4,11 +4,8 @@
     ViewData["Title"] = "ArchivedTracks";
 }
 
-<h1>ArchivedTracks</h1>
+<h1>Archived Tracks</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -26,9 +23,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Specification)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Archived)
             </th>
             <th></th>
         </tr>
@@ -52,12 +46,7 @@
                 @Html.DisplayFor(modelItem => item.Specification)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Archived)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TrackId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TrackId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TrackId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.TrackId">Edit</a>
             </td>
         </tr>
 }

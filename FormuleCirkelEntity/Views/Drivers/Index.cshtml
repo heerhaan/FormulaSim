@@ -3,10 +3,10 @@
 @model IEnumerable<FormuleCirkelEntity.Models.Driver>
 
 @{
-    ViewData["Title"] = "Coureurs";
+    ViewData["Title"] = "Drivers";
 }
 
-<h1>Coureurs</h1>
+<h1>Drivers</h1>
 
 <div class="table-header-container">
     <p class="table-header-1">
@@ -14,18 +14,19 @@
             <i class="fas fa-plus-square fa-2x fa-2x"></i>
         </a>
     </p>
+    <a class="btn btn-dark mt-auto" asp-action="ArchivedDrivers">Archive</a>
 </div>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Nummer
+                Number
             </th>
             <th>
-                Naam
+                Name
             </th>
             <th>
-                Afkorting
+                Abbreviation
             </th>
             <th></th>
             <th></th>

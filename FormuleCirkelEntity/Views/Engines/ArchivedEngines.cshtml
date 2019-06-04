@@ -4,11 +4,8 @@
     ViewData["Title"] = "ArchivedEngines";
 }
 
-<h1>ArchivedEngines</h1>
+<h1>Archived Engines</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -20,9 +17,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Available)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Archived)
             </th>
             <th></th>
         </tr>
@@ -40,12 +34,7 @@
                 @Html.DisplayFor(modelItem => item.Available)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Archived)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EngineId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EngineId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EngineId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.EngineId">Edit</a>
             </td>
         </tr>
 }

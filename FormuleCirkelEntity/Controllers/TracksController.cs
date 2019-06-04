@@ -113,5 +113,11 @@ namespace FormuleCirkelEntity.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult ArchivedTracks()
+        {
+            var tracks = _context.Tracks.Where(t => t.Archived).ToList();
+            return View(tracks);
+        }
     }
 }

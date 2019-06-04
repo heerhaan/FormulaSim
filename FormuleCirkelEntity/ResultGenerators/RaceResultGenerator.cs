@@ -53,8 +53,8 @@ namespace FormuleCirkelEntity.ResultGenerators
             if (stint.ApplyChassisLevel)
             {
                 var specificationPositive = driverResult.SeasonDriver.SeasonTeam.Specification == driverResult.Race.Track.Specification;
-                var multiplier = specificationPositive ? 1.1 : 0.9;
-                result = (int)Math.Round(result * multiplier);
+                var multiplier = specificationPositive ? 1.15 : 1;
+                result += (int)Math.Round(driverResult.SeasonDriver.SeasonTeam.Chassis * multiplier);
             }
 
             return result;

@@ -56,13 +56,32 @@ namespace FormuleCirkelEntity.Controllers
             if (track == null || season == null)
                 return NotFound();
 
-            var race = _raceBuilder
+            // Finds the last time track was used and uses same stintsetup as then
+            var lastracemodel = _context.Races
+                .LastOrDefault(lr => lr.Track.TrackId == track.TrackId);
+
+            if(lastracemodel != null)
+            {
+                var stintlist = lastracemodel.Stints.Values.ToList();
+                var race = _raceBuilder
+                .InitializeRace(track, season)
+                .AddModifiedStints(stintlist)
+                .GetResultAndRefresh();
+
+                season.Races.Add(race);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                var race = _raceBuilder
                 .InitializeRace(track, season)
                 .AddDefaultStints()
                 .GetResultAndRefresh();
 
-            season.Races.Add(race);
-            await _context.SaveChangesAsync();
+                season.Races.Add(race);
+                await _context.SaveChangesAsync();
+            }
+            
             return RedirectToAction(nameof(AddTracks), new { id });
         }
 
@@ -80,13 +99,6 @@ namespace FormuleCirkelEntity.Controllers
             if (lastracemodel != null)
             {
                 var stintlist = lastracemodel.Stints.Values.ToList();
-                foreach(var item in lastracemodel.Stints.Values.ToList())
-                {
-                    if(item.RNGMaximum == -1)
-                    {
-                        stintlist.Remove(item);
-                    }
-                }
                 model.RaceStints = stintlist;
             }
 

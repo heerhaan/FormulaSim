@@ -2,6 +2,7 @@
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
 
@@ -102,6 +103,12 @@ namespace FormuleCirkelEntity.Controllers
             _context.Engines.Remove(engine);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ArchivedEngines()
+        {
+            var engines = _context.Engines.Where(e => e.Archived).ToList();
+            return View(engines);
         }
     }
 }

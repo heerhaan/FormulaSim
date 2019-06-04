@@ -172,6 +172,12 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult ArchivedDrivers()
+        {
+            var drivers = _context.Drivers.Where(d => d.Archived).ToList();
+            return View(drivers);
+        }
+
         private bool DriverExists(int id)
         {
             return _context.Drivers.Any(e => e.DriverId == id);

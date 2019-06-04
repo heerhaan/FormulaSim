@@ -3,8 +3,6 @@
     ViewData["Title"] = "Race";
 }
 
-<h2>@Model.Track.Name</h2>
-
 @if (Model.Season.State == SeasonState.Progress)
 {
     <div class="table-header-container">
@@ -19,39 +17,23 @@
     </div>
 }
 
-<section class="row my-1">
-    <table id="results" class="table table-sm">
+<section id="graphic" class="row my-1">
+    <h2>@Model.Track.Name</h2>
+    <table class="table table-sm">
         <thead>
             <tr>
                 <th data-field="position">Pos.</th>
                 <th>Nr.</th>
-                <th>Naam</th>
+                <th>Name</th>
                 <th>Team</th>
                 <th>Grid</th>
                 @foreach (var stint in Model.Stints)
                 {
                 <th data-field="stintResultHeader-@stint.Key">
-                    @*@if (stint.Value.RNGMaximum < 0)
-                    {<span>P</span> }
-                    else
-                    {
-                        if (stint.Value.ApplyChassisLevel)
-                        { <span style="font-size:x-small">(C)</span> }
-                        if (stint.Value.ApplyDriverLevel)
-                        { <span style="font-size:x-small">(D)</span> }
-                        if (stint.Value.ApplyEngineLevel)   
-                        { <span style="font-size:x-small">(E)</span> }
-                        if (stint.Value.ApplyQualifyingBonus)
-                        { <span style="font-size:x-small">(Q)</span>}
-                        if (stint.Value.ApplyTireLevel)
-                        { <span style="font-size:x-small">(TL)</span>}
-                        if (stint.Value.ApplyTireWear)
-                        { <span style="font-size:x-small">(TW)</span>}
-                    }*@
                     @stint.Key
                 </th>
                 }
-                <th data-field="pointsTotal">Puntentotaal</th>
+                <th data-field="pointsTotal">Score</th>
             </tr>
         </thead>
         <tbody>
@@ -134,7 +116,7 @@
     }
 
     function takeScreenshot() {
-        html2canvas(document.querySelector('#results')).then(function (canvas) {
+        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
             $('#screenshot').empty();
             document.querySelector('#screenshot').appendChild(canvas);
         });
