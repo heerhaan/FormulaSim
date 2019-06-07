@@ -1,21 +1,22 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Track>
 
 @{
-    ViewData["Title"] = "Races toevoegen";
+    ViewData["Title"] = "Add races";
 }
 <section>
     <header>
-        <h3>Seizoen @ViewBag.seasonId - Races toevoegen</h3>
+        <h3>Season @ViewBag.seasonId - Add races</h3>
     </header>
     <table class="table">
         <thead>
             <tr>
-                <th>Naam</th>
-                <th>Locatie</th>
+                <th>Name</th>
+                <th>Location</th>
                 <th>DNF</th>
                 <th>RNG</th>
-                <th>Specificatie</th>
-                <th>Aanpassen</th>
+                <th>Specification</th>
+                <th>Edit</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -30,7 +31,7 @@
                     <td>
                         <form method="POST">
                             <input type="hidden" name="trackId" value="@item.TrackId" />
-                            <input type="submit" class="btn btn-outline-primary btn-sm" value="Toevoegen" />
+                            <input type="submit" class="btn btn-outline-primary btn-sm" value="Add base" />
                         </form>
                     </td>
                     <td>

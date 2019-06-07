@@ -15,16 +15,16 @@
             @Html.DisplayFor(model => model.Round)
         </dd>
         <dt class="col-sm-2">
-            Name
+            Location
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @(Model.Track.Location)
         </dd>
         <dt class="col-sm-2">
-            Circuit
+            Track
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Track.Name) in @(Model.Track.Location)
+            @Html.DisplayFor(model => model.Track.Name)
         </dd>
         <dt class="col-sm-2">
             Specification

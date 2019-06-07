@@ -1,9 +1,43 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center hero-image">
-    <div class="hero-text">
-        <h1 class="display-4">Welcome to Formula Sim!</h1>
-    </div>
+<div class="text-center hero-text">
+    <h1 class="display-4">Welcome to Formula Sim!</h1>
 </div>
+
+<style>
+    body{
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        vertical-align: auto;
+    }
+</style>
+
+<script>
+    var bgs = [
+        '/../../images/backgrounds/FerrariFutureRain.jpeg',
+        '/../../images/backgrounds/FerrariFutureTrip.jpeg',
+        '/../../images/backgrounds/Formula1FutureSide.jpeg',
+        '/../../images/backgrounds/Formula1FutureTRON.jpeg',
+        '/../../images/backgrounds/Formula1FutureTRONAss.jpeg',
+        '/../../images/backgrounds/GarageMcLaren.jpeg',
+        '/../../images/backgrounds/HaasCurrentTrippy.jpg',
+        '/../../images/backgrounds/HakkinenUnderMoon.jpg',
+        '/../../images/backgrounds/McLarenFinish.jpeg',
+        '/../../images/backgrounds/McLarenFutureAss.jpg',
+        '/../../images/backgrounds/McLarenSide.jpg',
+        '/../../images/backgrounds/McLarenUpFuture.jpg',
+        '/../../images/backgrounds/McLarenWest20xx.jpg',
+        '/../../images/backgrounds/RedBullRain.jpg',
+        '/../../images/backgrounds/RothmansWiliamsFuture.jpeg',
+        '/../../images/backgrounds/ShowOffFuture.jpeg',
+        '/../../images/backgrounds/SideBySideFutureF1.jpeg',
+        '/../../images/backgrounds/SparksFutureFerrari.jpeg',
+        '/../../images/backgrounds/McLarenFranky.png'
+    ];
+
+    var n = Math.floor(Math.random() * bgs.length);
+    document.body.style.backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(' + bgs[n] + ')';
+</script>

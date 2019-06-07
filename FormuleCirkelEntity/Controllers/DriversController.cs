@@ -166,9 +166,18 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var driver = await _context.Drivers.FindAsync(id);
-            driver.Archived = true;
-            _context.Drivers.Update(driver);
-            await _context.SaveChangesAsync();
+            if (driver.Archived == false)
+            {
+                driver.Archived = true;
+                _context.Drivers.Update(driver);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                driver.Archived = false;
+                _context.Drivers.Update(driver);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 

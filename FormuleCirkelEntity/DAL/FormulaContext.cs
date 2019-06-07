@@ -33,15 +33,15 @@ namespace FormuleCirkelEntity.DAL
             }
 
             //Makes table property unique
-            builder.Entity<Driver>()
-                .HasIndex(d => d.Abbreviation)
-                .IsUnique();
             builder.Entity<Team>()
                 .HasIndex(t => t.Abbreviation)
                 .IsUnique();
             builder.Entity<Engine>()
                 .HasIndex(e => e.Name)
                 .IsUnique();
+            builder.Entity<Track>()
+                .Property(t => t.LengthKM)
+                .HasColumnType("decimal(18,2)");
             builder.Entity<Race>()
                 .Property(r => r.Stints)
                 .HasConversion(

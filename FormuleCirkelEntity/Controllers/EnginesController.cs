@@ -100,8 +100,18 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var engine = await _context.Engines.FindAsync(id);
-            _context.Engines.Remove(engine);
-            await _context.SaveChangesAsync();
+            if (engine.Archived == false)
+            {
+                engine.Archived = true;
+                _context.Engines.Update(engine);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                engine.Archived = false;
+                _context.Engines.Update(engine);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 

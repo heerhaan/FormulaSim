@@ -62,7 +62,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 
         public int GetDriverLevelBonus(SeasonDriver driver)
         {
-            return driver.Skill + (5 - (5 * (int)driver.Style));
+            return driver.Skill + (3 - (3 * (int)driver.Style));
         }
 
         public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount)
@@ -80,7 +80,7 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <returns>-1 if the reliability check fails, 1 if it succeeds, and 0 if it's neutral.</returns>
         public int GetDriverReliabilityResult(SeasonDriver driver)
         {
-            var driverStyleModifier = ((int)driver.Style - 2);
+            var driverStyleModifier = ((int)driver.Style - 1);
             var reliabilityScore = driver.SeasonTeam.Reliability + driverStyleModifier;
             var reliabilityCheckValue = _rng.Next(1, 26); 
             return reliabilityScore.CompareTo(reliabilityCheckValue);

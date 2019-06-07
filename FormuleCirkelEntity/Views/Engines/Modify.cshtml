@@ -1,29 +1,29 @@
 ﻿@model FormuleCirkelEntity.Models.Engine
 
 @{
-    ViewData["Title"] = "Motor - Aanpassen";
+    ViewData["Title"] = "Engine - edit";
 }
 
 <section>
     <header class="row">
-        <h1>Motor aanpassen</h1>
+        <h1>Edit @Model.Name</h1>
     </header>
     <div class="row">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <section class="form-group">
-                <label asp-for="Name" class="control-label">Naam</label>
+                <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </section>
             <section class="form-group">
-                <label asp-for="Power" class="control-label">Kracht</label>
+                <label asp-for="Power" class="control-label"></label>
                 <input asp-for="Power" class="form-control" />
                 <span asp-validation-for="Power" class="text-danger"></span>
             </section>
             <section class="form-group form-check">
                 <input asp-for="Available" class="form-check-input" />  
-                <label asp-for="Available" class="form-check-label">Beschikbaar</label>
+                <label asp-for="Available" class="form-check-label"></label>
                 <span asp-validation-for="Available" class="text-danger"></span>
             </section>
             <section class="form-group">

@@ -1,12 +1,14 @@
 ﻿@model FormuleCirkelEntity.Models.Engine
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Archive";
+    string archive = "archive";
+    if (Model.Archived) { archive = "unarchive"; }
 }
 
-<h1>Delete</h1>
+<h1>Archive</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to @archive the @Model.Name engine?</h3>
 <div>
     <h4>Engine</h4>
     <hr />
@@ -21,10 +23,11 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="EngineId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Terug naar lijst</a>
+        <input type="submit" value="@archive" class="btn btn-danger" />
     </form>
 </div>
+
+<br />
 <a asp-action="Index">
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
 </a>

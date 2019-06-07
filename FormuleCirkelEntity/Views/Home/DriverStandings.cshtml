@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
 
 @{
-    ViewData["Title"] = "Stand";
+    ViewData["Title"] = "Standings";
     var rounds = ViewBag.rounds;
     int position = 1;
     var track = "";
 }
 
-<h1>Kampioenschap coureurs</h1>
+<h1>Championship drivers</h1>
 
 
 <table id="graphic" class="table table-sm">
@@ -17,7 +17,7 @@
                 #
             </th>
             <th>
-                Coureur
+                Driver
             </th>
             <th>
                 Nr.
@@ -62,6 +62,9 @@
                         if (result.Status == Status.DNF)
                         {
                             <td><span class="badge badge-danger">DNF</span></td>
+                        } else if(result.Status == Status.DSQ)
+                        {
+                            <td><span class="badge badge-dsq">DSQ</span></td>
                         } else if(result.Position == 1)
                         {
                             <td><span class="badge badge-first">@result.Position</span></td>
@@ -97,6 +100,10 @@
 <style>
     .badge {
         font-size: 0.85rem;
+    }
+
+    table td{
+        height:60px;
     }
 </style>
 
