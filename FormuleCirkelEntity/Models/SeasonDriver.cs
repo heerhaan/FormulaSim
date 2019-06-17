@@ -8,12 +8,12 @@ namespace FormuleCirkelEntity.Models
 {
     public enum Style
     {
-        Agressief = 0,
-        Neutraal = 1,
-        Defensief = 2
+        Aggressive = 0,
+        Neutral = 1,
+        Defensive = 2
     }
 
-    public enum Tires { Hard, Zacht }
+    public enum Tires { Hards, Softs }
 
     public class SeasonDriver
     {

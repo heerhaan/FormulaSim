@@ -27,6 +27,7 @@
             <th>Engine</th>
             <th>Power</th>
             <th>Total</th>
+            <th>Reliability</th>
         </tr>
     </thead>
     <tbody>
@@ -41,12 +42,13 @@
                 <td>@driver.SeasonTeam.Engine.Name</td>
                 <td>@driver.SeasonTeam.Engine.Power</td>
                 <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power)</td>
+                <td>@(driver.SeasonTeam.Reliability + ((int)driver.Style - 1))</td>
             </tr>
         }
     </tbody>
 </table>
 
-<button class="btn badge-dark float-right" onclick="takeScreenshot()"><i class="fas fa-image"></i></button>
+<button class="btn float-right" onclick="takeScreenshot()"><i class="fas fa-image"></i></button>
 
 <a asp-action="Index">
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>

@@ -225,11 +225,12 @@ namespace FormuleCirkelEntity.Controllers
 
             race.StintProgress++;
             var stint = race.Stints[race.StintProgress];
+            var track = race.Track;
 
             // Calculate results for all drivers who have not been DSQ'd or DNF'd.
             foreach (var result in race.DriverResults.Where(d => d.Status == Status.Finished))
             {
-                var stintResult = _resultGenerator.GetStintResult(result, stint);
+                var stintResult = _resultGenerator.GetStintResult(result, stint, track);
                 result.StintResults.Add(race.StintProgress, stintResult);
                 result.Points = result.StintResults.Sum(sr => sr.Value ?? -999);
 
@@ -268,6 +269,17 @@ namespace FormuleCirkelEntity.Controllers
                 dr.Race = null;
             }
             return new JsonResult(race, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
+        }
+
+        [HttpPost("Season/{id}/[Controller]/{raceId}/getResults")]
+        public IActionResult GetResults(int id, int raceId)
+        {
+            var driverResults = _context.DriverResults
+                .Where(res => res.RaceId == raceId)
+                .Include(res => res.SeasonDriver.Driver)
+                .Include(res => res.SeasonDriver.SeasonTeam.Team).ToList();
+
+            return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
         [HttpPost]
@@ -469,7 +481,7 @@ namespace FormuleCirkelEntity.Controllers
             IQueryable<Qualification> qualyresult = _context.Qualification.Where(q => q.RaceId == raceId);
             List<DriverResult> driverResults = resultcontext.Where(d => d.RaceId == raceId).ToList();
             int amountDrivers = driverResults.Count();
-            var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id).ToList();
+            var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id).Include(c => c.Race).ToList();
             var race = _context.Races.Single(r => r.RaceId == raceId);
 
             //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)

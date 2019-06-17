@@ -2,13 +2,13 @@
 
 @{
     ViewData["Title"] = "Archive";
-    string archive = "archive";
-    if (Model.Archived) { archive = "unarchive"; }
+    string archive = "Archive";
+    if (Model.Archived) { archive = "Unarchive"; }
 }
 
-<h1>Archive</h1>
+<h1>@archive</h1>
 
-<h3>Are you sure you want to @archive @Model.Name?</h3>
+<h3>Are you sure you want to move @Model.Name?</h3>
 <div>
     <h4>Team</h4>
     <hr />
@@ -29,11 +29,10 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="TeamId" />
-        <input type="submit" value="@archive" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="@archive" class="btn btn-danger" />
     </form>
 </div>
-
+<br />
 <div>
     <a asp-action="Index">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>

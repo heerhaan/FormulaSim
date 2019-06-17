@@ -68,11 +68,14 @@
     </table>
 </section>
 
-<button class="btn badge-dark" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+<button class="btn" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
 
 <div id="screenshot"></div>
 
+<canvas id="raceChart"></canvas>
+
 <script>
+    //$(drawRaceChart);
     const table = document.querySelector('#results');
     const tableBody = table.querySelector("tbody");
 
@@ -121,6 +124,84 @@
         html2canvas(document.querySelector('#graphic')).then(function (canvas) {
             $('#screenshot').empty();
             document.querySelector('#screenshot').appendChild(canvas);
+        });
+    }
+
+    function drawRaceChart() {
+        var ctx = document.getElementById('raceChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7'],
+                datasets: [],
+                //labels: ['yobama', 'yobama', 'yobama', 'yobama'],
+                //datasets: [{
+                //    label: 'wew lad',
+                //    fill: false,
+                //    backgroundColor: 'rgb(255, 99, 132)',
+                //    borderColor: 'rgb(255, 99, 132)',
+                //    data: [1, 2, 2, 5]
+                //}, {
+                //        label: 'gay lad',
+                //        fill: false,
+                //        backgroundColor: 'rgb(233, 88, 111)',
+                //        borderColor: 'rgb(233, 88, 132)',
+                //        data: [4, 3, 1, 3]
+                //}]
+            },
+
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: '@Model.Track.Name'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Stints'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Position'
+                        }
+                    }]
+                }
+            }
+        });
+
+        // foreach driver, score dataset and all that.
+        var driverResults = {};
+        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/getResults", { method: "POST" })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (jsonResult) {
+                driverResults = jsonResult;
+            });
+        console.log(driverResults);
+        $(driverResults).each(function (driverKey, driverValue) {
+            var driverDataset = {
+                label: driverValue.seasonDriver.driver.name,
+                backgroundColor: driverValue.seasonDriver.seasonTeam.team.colour,
+                borderColor: driverValue.seasonDriver.seasonTeam.team.accent,
+                data: [1, 2, 3, 4, 5, 6, 7],
+                fill: false
+            };
+            chart.data.datasets.push(driverDataset);
         });
     }
 </script>

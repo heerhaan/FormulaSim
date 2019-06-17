@@ -32,9 +32,9 @@
         </div>
         @if (Model.DriverResults.Select(dr => dr.Grid).FirstOrDefault() == 0)
         {
-            <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Kwalificatie</a>
+            <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Qualifying</a>
         }
-        <button class="btn badge-dark float-right" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn float-right" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
     </div>
 </section>
 
@@ -43,20 +43,20 @@
         <h5>Race!</h5>
         @if (Model.DriverResults.Select(dr => dr.Grid).FirstOrDefault() != 0)
         {
-            <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn btn-dark">Start!</a>
+            <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Start</a>
         }
     </div>
 </section>
 
 <section class="row my-1">
     <div>
-        <h5>Circuit informatie</h5>
+        <h5>Track info</h5>
         <dl>
-            <dt>Lengte</dt>
+            <dt>Length</dt>
             <dd>@Model.Track.LengthKM KM</dd>
-            <dt>Weer</dt>
-            <dd>Droog</dd>
-            <dt>Vorige winnaar</dt>
+            <dt>Weather</dt>
+            <dd>NaN</dd>
+            <dt>Last winner</dt>
             <dd>@(Model.Track.MostRecentWinner?.Name ?? "-")</dd>
         </dl>
     </div>

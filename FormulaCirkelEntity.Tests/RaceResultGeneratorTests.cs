@@ -8,9 +8,9 @@ namespace FormulaCirkelEntity.Tests
     public class RaceResultGeneratorTests
     {
         [Theory]
-        [InlineData(Style.Agressief, 25)]
-        [InlineData(Style.Neutraal, 20)]
-        [InlineData(Style.Defensief, 15)]
+        [InlineData(Style.Aggressive, 25)]
+        [InlineData(Style.Neutral, 20)]
+        [InlineData(Style.Defensive, 15)]
         public void DriverLevelBonus_StyleAddition_Correct(Style style, int expected)
         {
             // Arrange
@@ -52,9 +52,9 @@ namespace FormulaCirkelEntity.Tests
         // Aggressive subtracts 2 off the team reliability, defensive adds 2, and neutral stays equal.
         // Thus, use a static random value of 1 and a Team Reliability of 2 to test the Reliability Score generation.
         [Theory]
-        [InlineData(Style.Agressief, -1)]
-        [InlineData(Style.Neutraal, 0)]
-        [InlineData(Style.Defensief, 1)]
+        [InlineData(Style.Aggressive, -1)]
+        [InlineData(Style.Neutral, 0)]
+        [InlineData(Style.Defensive, 1)]
         public void DriverReliability_Style_Correct(Style style, int expected)
         {
             // Arrange

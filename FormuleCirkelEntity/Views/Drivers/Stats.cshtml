@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Driver bio";
+    int dnfs = (Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count());
+    int dsqs = (Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count());
+    int finishes = (Model.DriverResults.Where(dr => dr.Status == Status.Finished).Count());
 }
 
 <div id="graphic">
@@ -45,13 +48,13 @@
                     DNFs:
                 </dt>
                 <dd>
-                    @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
+                    @dnfs
                 </dd>
                 <dt>
                     DSQ:
                 </dt>
                 <dd>
-                    @(Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count())
+                    @dsqs
                 </dd>
                 <dt>
                     Teams:
@@ -84,10 +87,15 @@
     <a asp-action="Index">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
     </a>
-    <button class="btn badge-dark ml-auto" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn ml-auto" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
 </div>
 
 <div id="screenshot"></div>
+
+<div class="row">
+    <canvas id="FinishPercentage" width="250" height="250"></canvas>
+    <canvas id="StartsPerTeam" width="250" height="250"></canvas>
+</div>
 
 <script>
     $('#savebio').click(function () {
@@ -107,4 +115,59 @@
             document.querySelector('#screenshot').appendChild(canvas);
         });
     }
+
+    $(function () {
+        var ctx1 = document.getElementById('FinishPercentage').getContext('2d');
+        var config1 = {
+            type: 'pie',
+        data: {
+            datasets: [{
+                data: [@finishes, @dnfs, @dsqs],
+                backgroundColor: ['green', 'darkred', 'black']
+            }],
+            labels: [
+                'Finish',
+                'DNF',
+                'DSQ'
+            ]
+            },
+            options: {
+                responsive: false
+            }
+        }
+        var chart1 = new Chart(ctx1, config1);
+        
+        @*var ctx2 = document.getElementById('StartsPerTeam').getContext('2d');
+        var config2 = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: [],
+                    backgroundColor: []
+                }],
+                labels: []
+            },
+            options: {
+                responsive: false
+            }
+        };
+        var chart2 = new Chart(ctx2, config2);
+
+        var teams = [];
+        var teamcolours = [];
+        var teamsdata = [];
+
+        @foreach (var team in Model.SeasonDriver.Select(select => select.SeasonTeam.Team).Distinct())
+        {
+            @:teams.push("@team.Name");
+            @:teamcolours.push("@team.Colour");
+            var amountStarts = Model.DriverResults.Where(d => d.SeasonDriver.SeasonTeam.Team == team).Count();
+            @:teamsdata.push(@amountStarts);
+        }
+        var teamdatasets = [];
+        teamdatasets.push(teamsdata);
+        teamdatasets.push(teamcolours);
+        config2.data.datasets.push(teamdatasets);
+        config2.data.labels.push(teams);*@
+    });
 </script>

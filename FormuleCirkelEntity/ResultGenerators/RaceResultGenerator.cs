@@ -20,10 +20,19 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResult">The partial <see cref="DriverResult"/> from which to derive certain modifiers.</param>
         /// <param name="stint">The <see cref="Stint"/> supplying the modifiers to use.</param>
         /// <returns>A <see cref="int"/> points value, or <see cref="int.MinValue"/> if a DNF result occured.</returns>
-        public int? GetStintResult(DriverResult driverResult, Stint stint)
+        public int? GetStintResult(DriverResult driverResult, Stint stint, Track track)
         {
+            // Applies the increased or decreased odds for the specific track.
+            int rngTrack = 0;
+            int dnfTrack = 0;
+            if (stint.RNGMaximum > 0)
+            {
+                if (track.RNGodds == RNGodds.Increased) { rngTrack += 5; } else if (track.RNGodds == RNGodds.Decreased) { rngTrack += -5; }
+            }
+            if (track.DNFodds == DNFodds.Increased) { dnfTrack += -1; } else if (track.DNFodds == DNFodds.Decreased) { dnfTrack += 1; }
+
             // Add one because Random.Next() has an exclusive upper bound.
-            var result = _rng.Next(stint.RNGMinimum, stint.RNGMaximum + 1);
+            var result = _rng.Next(stint.RNGMinimum, (stint.RNGMaximum + rngTrack) + 1);
 
             if (stint.ApplyDriverLevel)
                 result = result + GetDriverLevelBonus(driverResult.SeasonDriver);
@@ -31,19 +40,19 @@ namespace FormuleCirkelEntity.ResultGenerators
             if (stint.ApplyQualifyingBonus)
                 result += GetQualifyingBonus(driverResult.Grid, driverResult.SeasonDriver.Season.Drivers.Count);
 
-            if (stint.ApplyTireLevel && driverResult.SeasonDriver.Tires == Tires.Zacht)
+            if (stint.ApplyTireLevel && driverResult.SeasonDriver.Tires == Tires.Softs)
                 result += 10;
 
             if (stint.ApplyEngineLevel)
                 result += driverResult.SeasonDriver.SeasonTeam.Engine.Power;
 
-            if (stint.ApplyTireWear && driverResult.SeasonDriver.Tires == Tires.Zacht)
+            if (stint.ApplyTireWear && driverResult.SeasonDriver.Tires == Tires.Softs)
                 // Maximum of 1 because Random.Next() has an exclusive upper bound.
                 result += _rng.Next(-20, 1);
 
             if (stint.ApplyReliability)
             {
-                var reliablityResult = GetDriverReliabilityResult(driverResult.SeasonDriver);
+                var reliablityResult = GetDriverReliabilityResult(driverResult.SeasonDriver, dnfTrack);
                 if (reliablityResult == -1)
                     return null;
                 else if (reliablityResult == 0)
@@ -78,10 +87,10 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// </summary>
         /// <param name="driver">The <see cref="SeasonDriver"/> to perform the reliability check on.</param>
         /// <returns>-1 if the reliability check fails, 1 if it succeeds, and 0 if it's neutral.</returns>
-        public int GetDriverReliabilityResult(SeasonDriver driver)
+        public int GetDriverReliabilityResult(SeasonDriver driver, int dnfTrack)
         {
             var driverStyleModifier = ((int)driver.Style - 1);
-            var reliabilityScore = driver.SeasonTeam.Reliability + driverStyleModifier;
+            var reliabilityScore = driver.SeasonTeam.Reliability + driverStyleModifier + dnfTrack;
             var reliabilityCheckValue = _rng.Next(1, 26); 
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
