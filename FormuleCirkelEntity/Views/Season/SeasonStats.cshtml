@@ -42,7 +42,7 @@
                 <td>@driver.SeasonTeam.Engine.Name</td>
                 <td>@driver.SeasonTeam.Engine.Power</td>
                 <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power)</td>
-                <td>@(driver.SeasonTeam.Reliability + ((int)driver.Style - 1))</td>
+                <td><span class="badge">@(driver.SeasonTeam.Reliability + ((int)driver.Style - 1))</span></td>
             </tr>
         }
     </tbody>

@@ -16,8 +16,15 @@
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
-/* Fixes the placing of items in the Biography view by using flexboxes */
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
 
+h1 {
+    font-family: 'Formula1 Display';
+}
+
+/* Fixes the placing of items in the Biography view by using flexboxes */
 .biocontainer {
     display: flex;
 }
@@ -78,7 +85,6 @@ td {
 
 td .badge {
     width: 100%;
-    color: white;
 }
 
 .nofullwidth {
@@ -87,18 +93,34 @@ td .badge {
 
 .badge-first {
     background-color: #DAA520;
+    color: white !important;
 }
 
 .badge-second {
     background-color: #C0C0C0;
+    color: white !important;
 }
 
 .badge-third {
     background-color: #CD7F32;
+    color: white !important;
+}
+
+.badge-danger {
+    color: white !important;
 }
 
 .badge-dsq {
     background-color: black;
+    color: white !important;
+}
+
+.badge-success {
+    color: white !important;
+}
+
+.badge-primary {
+    color: white !important;
 }
 
 /* Sticky footer styles
