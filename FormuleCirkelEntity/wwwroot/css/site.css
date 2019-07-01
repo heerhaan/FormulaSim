@@ -87,10 +87,6 @@ td .badge {
     width: 100%;
 }
 
-.nofullwidth {
-    width: auto !important;
-}
-
 .badge-first {
     background-color: #DAA520;
     color: white !important;
@@ -178,4 +174,10 @@ body {
 
 .cursor-pointer:hover {
     cursor: pointer;
+}
+
+/* Generic classes for functionality */
+
+.nofullwidth {
+    width: auto !important;
 }

@@ -18,6 +18,9 @@
                 #
             </th>
             <th>
+                Principal
+            </th>
+            <th>
                 Team
             </th>
             @foreach (var round in rounds)
@@ -35,6 +38,9 @@
             <tr>
                 <td>
                     @position
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Principal)
                 </td>
                 <td>
                     <span class="badge" style="background-color:@(item.Team.Colour);color:@(item.Team.Accent);font-size:1rem;">@item.Team.Name</span>
@@ -66,7 +72,7 @@
                                 } else if(result.Position == 3)
                                 {
                                     <span class="badge badge-third">@result.Position</span>
-                                } else if(result.Position <= 12)
+                                } else if(result.Position <= ViewBag.lastpointpos)
                                 {
                                     <span class="badge badge-success">@result.Position</span>
                                 }

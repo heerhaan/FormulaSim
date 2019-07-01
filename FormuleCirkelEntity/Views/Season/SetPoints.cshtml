@@ -1,0 +1,71 @@
+﻿@model FormuleCirkelEntity.ViewModels.SetPointsModel
+
+@{
+    ViewData["Title"] = "Set Points";
+}
+
+<h1>Set awarded points for season @Model.SeasonId</h1>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.TextBoxFor(p => p.SeasonId, new { style = "display: none;" })
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Position</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody id="pointPositions"></tbody>
+    </table>
+    
+    <div class="btn-container">
+        <button type="button" id="add" class="btn">Add</button>
+        <button type="submit" class="btn btn-success float-right submit">Save</button>
+    </div>
+}
+
+<table id="newpoint" style="display:none;">
+    <tr>
+        <td><label>"%"</label></td>
+        <td><input name="Points" type="number"></td>
+        <td><button type="button" class="btn delete">Delete</button></td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+    var form = $('form');
+    var positions = $('#pointPositions');
+    var newpoint = $('#newpoint');
+
+    $('#add').click(function () {
+        var index = ($('#pointPositions').children().length) + 1;
+        var clone = newpoint.find('tr').clone();
+        clone.html($(clone).html().replace(/\[#\]/g, '[' + index + ']'));
+        clone.html($(clone).html().replace(/"%"/g, '"' + index + '"'));
+        positions.append(clone);
+    });
+
+    $('#pointPositions').on('click', '.delete', function () {
+        $(this).closest('tr').remove();
+    });
+</script>
+
+<style>
+    td, th {
+        width: 180px;
+        text-align: center;
+    }
+
+    .btn-container{
+        width: 360px;
+    }
+</style>
+
+<br />
+<a asp-action="Settings" asp-route-id="@Model.SeasonId">
+    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+</a>

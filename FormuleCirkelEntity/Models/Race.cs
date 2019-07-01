@@ -18,7 +18,7 @@ namespace FormuleCirkelEntity.Models
     public enum Weather
     {
         Sunny = 0,
-        Cloudy = 1,
+        Overcast = 1,
         Rain = 2,
         Storm = 3
     }

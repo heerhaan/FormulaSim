@@ -52,6 +52,11 @@ namespace FormuleCirkelEntity.DAL
                 .HasConversion(
                     dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
                     json => JsonConvert.DeserializeObject<Dictionary<int, int?>>(json) ?? new Dictionary<int, int?>());
+            builder.Entity<Season>()
+                .Property(p => p.PointsPerPosition)
+                .HasConversion(
+                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
+                    json => JsonConvert.DeserializeObject<Dictionary<int, int?>>(json) ?? new Dictionary<int, int?>());
         }
     }
 }

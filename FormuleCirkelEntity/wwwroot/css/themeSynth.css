@@ -1,11 +1,11 @@
 ﻿body.dark {
     background-color: #1C0658;
-    color: #FF1690;
+    color: #36CDC4;
 }
 
     body.dark table {
         background-color: #1C0658;
-        color: #FF1690;
+        color: #36CDC4;
     }
 
         body.dark code[class*=language-],
@@ -15,24 +15,32 @@
         }
 
         body.dark table thead th {
-            border-bottom-color: #36CDC4
+            border-bottom-color: #FF1690
         }
 
         body.dark table th {
-            border-top-color: #36CDC4
+            border-top-color: #FF1690
         }
 
         body.dark table td {
-            border-top-color: #36CDC4
+            border-top-color: #FF1690
         }
 
-h1, h5, dt, i.fas, i.fab {
+h1, h5, dt {
     color: #36CDC4;
+}
+
+i.fas, i.fab {
+    color: #FF1690;
+}
+
+.alt-color {
+    color: #FF1690 !important;
 }
 
 .btn {
     background-color: #5C2686;
-    color: #36CDC4;
+    color: #FF1690;
 }
 
 .page-link {
@@ -52,15 +60,15 @@ h1, h5, dt, i.fas, i.fab {
 }
 
 .badge {
-    color: #FF1690;
+    color: #36CDC4;
 }
 
 .border-top {
-    border-top: 1px solid #36CDC4 !important;
+    border-top: 1px solid #FF1690 !important;
 }
 
 .border-bottom {
-    border-bottom: 1px solid #36CDC4 !important;
+    border-bottom: 1px solid #FF1690 !important;
 }
 
 .navbar {

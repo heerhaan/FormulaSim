@@ -49,7 +49,7 @@
                     <tr>
                         <td>@((pos + 1).ToString())</td>
                         <td>@driver.Points</td>
-                        <td><span class="badge nofullwidth">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
+                        <td><span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
                         <td>@driver.Skill</td>
                         <td>@driver.Style</td>
                         <td>@driver.Tires</td>
@@ -78,6 +78,7 @@
             <tr>
                 <th data-field="name">Name</th>
                 <th data-field="round">Round</th>
+                <th data-field="specification">Spec</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -88,6 +89,7 @@
                 <tr data-obj-id="@race.RaceId">
                     <td data-field="name">@race.Name</td>
                     <td data-field="round">@race.Round</td>
+                    <td data-field="specification">@race.Track.Specification</td>
                     <td>
                         <a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.SeasonId" asp-route-raceId="@race.RaceId">
                             <i class="fas @(race.StintProgress == 0 ? "fa-flag-checkered" : "fa-search") fa-2x"></i>

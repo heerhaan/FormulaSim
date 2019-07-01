@@ -69,7 +69,7 @@ namespace FormulaCirkelEntity.Tests
             };
 
             // Act
-            int driverLevelBonus = generator.GetDriverReliabilityResult(driver);
+            int driverLevelBonus = generator.GetDriverReliabilityResult(driver, 0);
 
             // Assert
             Assert.Equal(expected, driverLevelBonus);

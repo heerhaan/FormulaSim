@@ -14,6 +14,11 @@ namespace FormuleCirkelEntity.Models
 
     public class Season
     {
+        public Season()
+        {
+            PointsPerPosition = new Dictionary<int, int?>();
+        }
+
         [Key]
         public int SeasonId { get; set; }
         public DateTime? SeasonStart { get; set; }
@@ -23,6 +28,7 @@ namespace FormuleCirkelEntity.Models
 
         public int QualificationRemainingDriversQ2 { get; set; }
         public int QualificationRemainingDriversQ3 { get; set; }
+        public IDictionary<int, int?> PointsPerPosition { get; set; }
 
         public virtual IList<Race> Races { get; set; }
         public virtual IList<SeasonDriver> Drivers { get; set; }

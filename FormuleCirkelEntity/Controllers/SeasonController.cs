@@ -48,6 +48,22 @@ namespace FormuleCirkelEntity.Controllers
 
             season.SeasonStart = DateTime.Now;
             season.State = SeasonState.Progress;
+            if (season.PointsPerPosition == null)
+            {
+                // Default assigned points per position
+                season.PointsPerPosition.Add(1, 25);
+                season.PointsPerPosition.Add(2, 18);
+                season.PointsPerPosition.Add(3, 15);
+                season.PointsPerPosition.Add(4, 12);
+                season.PointsPerPosition.Add(5, 10);
+                season.PointsPerPosition.Add(6, 8);
+                season.PointsPerPosition.Add(7, 6);
+                season.PointsPerPosition.Add(8, 5);
+                season.PointsPerPosition.Add(9, 4);
+                season.PointsPerPosition.Add(10, 3);
+                season.PointsPerPosition.Add(11, 2);
+                season.PointsPerPosition.Add(12, 1);
+            }
             _context.Update(season);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id });
@@ -69,6 +85,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var season = await _context.Seasons
                 .Include(s => s.Races)
+                    .ThenInclude(r => r.Track)
                 .Include(s => s.Drivers)
                     .ThenInclude(dr => dr.Driver)
                 .Include(s => s.Teams)
@@ -95,6 +112,8 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return NotFound();
 
+            ViewBag.points = season.PointsPerPosition.Values.ToList();
+
             var seasondrivers = _context.SeasonDrivers
                 .Where(sd => sd.SeasonId == id)
                 .Include(sd => sd.Driver)
@@ -102,7 +121,7 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(st => st.Team)
                 .Include(sd => sd.SeasonTeam)
                     .ThenInclude(st => st.Engine)
-                .OrderByDescending(sd => (sd.Skill + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power))
+                .OrderByDescending(sd => (sd.Skill + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (2-(2*(int)sd.Style)) + (((int)sd.DriverStatus)*-2)+2))
                 .ToList();
 
             return View(seasondrivers);
@@ -140,7 +159,37 @@ namespace FormuleCirkelEntity.Controllers
 
             return View(settingsModel);
         }
-        
+
+        public IActionResult SetPoints(int id)
+        {
+            var model = new SetPointsModel
+            {
+                SeasonId = id
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult SetPoints(SetPointsModel model)
+        {
+            if (model == null)
+                return NotFound();
+
+            var season = _context.Seasons.Single(s => s.SeasonId == model.SeasonId);
+            Dictionary<int, int?> pairs = new Dictionary<int, int?>();
+            int position = 1;
+            foreach (var points in model.Points)
+            {
+                pairs.Add(position, points);
+                position++;
+            }
+
+            season.PointsPerPosition = pairs;
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Settings), new { id = model.SeasonId });
+        }
+
         [Route("[Controller]/{id}/Teams/Add")]
         public async Task<IActionResult> AddTeams(int? id)
         {
@@ -184,10 +233,14 @@ namespace FormuleCirkelEntity.Controllers
             var lastTeam = _context.SeasonTeams.LastOrDefault(s => s.Team.TeamId == globalTeamId);
             if(lastTeam != null)
             {
+                seasonTeam.Principal = lastTeam.Principal;
                 seasonTeam.Chassis = lastTeam.Chassis;
                 seasonTeam.Reliability = lastTeam.Reliability;
                 seasonTeam.EngineId = lastTeam.EngineId;
-                seasonTeam.Specification = lastTeam.Specification;
+                seasonTeam.Topspeed = lastTeam.Topspeed;
+                seasonTeam.Acceleration = lastTeam.Acceleration;
+                seasonTeam.Stability = lastTeam.Stability;
+                seasonTeam.Handling = lastTeam.Handling;
             }
             
             return View("AddOrUpdateTeam", seasonTeam);
@@ -262,7 +315,12 @@ namespace FormuleCirkelEntity.Controllers
 
             if (ModelState.IsValid)
             {
+                team.Principal = updatedTeam.Principal;
                 team.Chassis = updatedTeam.Chassis;
+                team.Topspeed = updatedTeam.Topspeed;
+                team.Acceleration = updatedTeam.Acceleration;
+                team.Stability = updatedTeam.Stability;
+                team.Handling = updatedTeam.Handling;
                 team.Reliability = updatedTeam.Reliability;
                 team.EngineId = updatedTeam.EngineId;
                 _context.Update(team);
@@ -411,6 +469,7 @@ namespace FormuleCirkelEntity.Controllers
                 driver.Skill = updatedDriver.Skill;
                 driver.Tires = updatedDriver.Tires;
                 driver.Style = updatedDriver.Style;
+                driver.DriverStatus = updatedDriver.DriverStatus;
                 _context.Update(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });

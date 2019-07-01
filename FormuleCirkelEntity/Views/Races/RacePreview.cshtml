@@ -33,13 +33,11 @@
             @Html.DisplayFor(model => model.Track.Specification)
         </dd>
         <dt class="col-sm-2">
-            Teams with spec:
+            Weather
         </dt>
         <dd class="col-sm-10">
-            @foreach (var team in ViewBag.teamSpecs)
-            {
-                <span class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;">@(team.Team.Abbreviation)</span>
-            }
+            @Html.DisplayFor(model => model.Weather)
+            <span><i id="weather"></i></span>
         </dd>
         <dt class="col-sm-2">
             DNF chance
@@ -126,6 +124,25 @@
 @Html.Raw(TempData["msg"])
 
 <script>
+    $(function () {
+        var weatherclass = "";
+        switch ("@Model.Weather") {
+            case "Sunny":
+                weatherclass = "fas fa-sun";
+                break;
+            case "Overcast":
+                weatherclass = "fas fa-cloud";
+                break;
+            case "Rain":
+                weatherclass = "fas fa-cloud-rain";
+                break;
+            case "Storm":
+                weatherclass = "fas fa-cloud-moon-rain";
+                break;
+        }
+        $("#weather").addClass(weatherclass);
+    });
+
     function takeScreenshot() {
         html2canvas(document.querySelector('#graphic')).then(function (canvas) {
             $('#screenshot').empty();

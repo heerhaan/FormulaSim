@@ -20,14 +20,39 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResult">The partial <see cref="DriverResult"/> from which to derive certain modifiers.</param>
         /// <param name="stint">The <see cref="Stint"/> supplying the modifiers to use.</param>
         /// <returns>A <see cref="int"/> points value, or <see cref="int.MinValue"/> if a DNF result occured.</returns>
-        public int? GetStintResult(DriverResult driverResult, Stint stint, Track track)
+        public int? GetStintResult(DriverResult driverResult, Stint stint, Track track, Race race)
         {
             // Applies the increased or decreased odds for the specific track.
             int rngTrack = 0;
             int dnfTrack = 0;
+            double engineWeatherMultiplier = 0;
+            int tireWeatherBonus = 0;
+            int tireWeatherWear = 0;
             if (stint.RNGMaximum > 0)
             {
                 if (track.RNGodds == RNGodds.Increased) { rngTrack += 5; } else if (track.RNGodds == RNGodds.Decreased) { rngTrack += -5; }
+
+                // Determines the effect weather has during a stint on-track
+                // Engine may be bonusified
+                switch (race.Weather)
+                {
+                    case Weather.Sunny:
+                        tireWeatherWear += 5;
+                        engineWeatherMultiplier = 0.9;
+                        break;
+                    case Weather.Overcast:
+                        tireWeatherBonus += 3;
+                        engineWeatherMultiplier = 1.1;
+                        break;
+                    case Weather.Rain:
+                        rngTrack += 5;
+                        dnfTrack += -1;
+                        break;
+                    case Weather.Storm:
+                        rngTrack += 8;
+                        dnfTrack += -2;
+                        break;
+                }
             }
             if (track.DNFodds == DNFodds.Increased) { dnfTrack += -1; } else if (track.DNFodds == DNFodds.Decreased) { dnfTrack += 1; }
 
@@ -41,14 +66,19 @@ namespace FormuleCirkelEntity.ResultGenerators
                 result += GetQualifyingBonus(driverResult.Grid, driverResult.SeasonDriver.Season.Drivers.Count);
 
             if (stint.ApplyTireLevel && driverResult.SeasonDriver.Tires == Tires.Softs)
-                result += 10;
+                result += (10 + tireWeatherBonus);
 
             if (stint.ApplyEngineLevel)
-                result += driverResult.SeasonDriver.SeasonTeam.Engine.Power;
+                result += (int)Math.Round(driverResult.SeasonDriver.SeasonTeam.Engine.Power * engineWeatherMultiplier);
 
             if (stint.ApplyTireWear && driverResult.SeasonDriver.Tires == Tires.Softs)
+            {
+                // Calculates the extra wear a tire may have due to weather circumstances.
+                int maxWear = -20;
+                maxWear -= tireWeatherWear;
                 // Maximum of 1 because Random.Next() has an exclusive upper bound.
-                result += _rng.Next(-20, 1);
+                result += _rng.Next(maxWear, 1);
+            }
 
             if (stint.ApplyReliability)
             {
@@ -61,9 +91,9 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             if (stint.ApplyChassisLevel)
             {
-                var specificationPositive = driverResult.SeasonDriver.SeasonTeam.Specification == driverResult.Race.Track.Specification;
-                var multiplier = specificationPositive ? 1.15 : 1;
-                result += (int)Math.Round(driverResult.SeasonDriver.SeasonTeam.Chassis * multiplier);
+                int bonus = GetChassisBonus(driverResult.SeasonDriver.SeasonTeam, track);
+                int statusBonus = (((int)driverResult.SeasonDriver.DriverStatus) * -2) + 2;
+                result += (driverResult.SeasonDriver.SeasonTeam.Chassis + bonus + statusBonus);
             }
 
             return result;
@@ -71,7 +101,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 
         public int GetDriverLevelBonus(SeasonDriver driver)
         {
-            return driver.Skill + (3 - (3 * (int)driver.Style));
+            return driver.Skill + (2 - (2 * (int)driver.Style));
         }
 
         public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount)
@@ -79,8 +109,20 @@ namespace FormuleCirkelEntity.ResultGenerators
             return (totalDriverCount * 3) - (qualifyingPosition * 3);
         }
 
-        public bool TrackSpecificationPositive(DriverResult driverResult)
-            => driverResult.SeasonDriver.SeasonTeam.Specification == driverResult.Race.Track.Specification;
+        public int GetChassisBonus(SeasonTeam team, Track track)
+        {
+            int bonus = 0;
+            Dictionary<string, int> specs = new Dictionary<string, int>();
+            specs.Add("Topspeed", team.Topspeed);
+            specs.Add("Acceleration", team.Acceleration);
+            specs.Add("Stability", team.Stability);
+            specs.Add("Handling", team.Handling);
+
+            var spec = (specs.SingleOrDefault(k => k.Key == track.Specification.ToString()));
+            bonus = spec.Value;
+
+            return bonus;
+        }
 
         /// <summary>
         /// Performs a <see cref="SeasonDriver"/> reliability check.
@@ -116,6 +158,26 @@ namespace FormuleCirkelEntity.ResultGenerators
                 .OrderByDescending(d => d.Points)
                 .ThenBy(d => d.Grid)
                 .ToList();
+
+            // Swap drivers when the driver above is the second driver for the driver below
+            foreach (var driver in orderedResults)
+            {
+                if (driver.SeasonDriver.DriverStatus == DriverStatus.First)
+                {
+                    int index = orderedResults.IndexOf(driver);
+                    if (index != 0)
+                    {
+                        var aboveDriver = orderedResults[(index - 1)];
+                        if (driver.SeasonDriver.SeasonTeam == aboveDriver.SeasonDriver.SeasonTeam)
+                        {
+                            int firstDriverPoints = driver.Points;
+                            driver.Points = aboveDriver.Points;
+                            aboveDriver.Points = firstDriverPoints;
+                        }
+                    }
+                }
+            }
+            orderedResults.Sort((l, r) => -1 * l.Points.CompareTo(r.Points));
 
             return orderedResults.ToDictionary((res => res.DriverResultId), (res => orderedResults.IndexOf(res) + 1));
         }

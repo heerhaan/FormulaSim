@@ -6,8 +6,9 @@ namespace FormuleCirkelEntity.Models.ModelValidation
     {
         public SeasonTeamValidator()
         {
-            RuleFor(t => t.Chassis).NotEmpty().WithMessage("Chassis invoer is verplicht!");
-            RuleFor(t => t.Reliability).NotEmpty().WithMessage("Betrouwbaarheid invoer is verplicht!");
+            RuleFor(t => t.Principal).NotEmpty().WithMessage("Team principal is required!");
+            RuleFor(t => t.Chassis).NotEmpty().WithMessage("Chassis value is required!");
+            RuleFor(t => t.Reliability).NotEmpty().WithMessage("Reliability value is required!");
         }
     }
 }

@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190620141042_NewSpec")]
+    partial class NewSpec
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,10 +47,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("DriverResultId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("DNFCause");
-
-                    b.Property<int>("DSQCause");
 
                     b.Property<int>("Grid");
 
@@ -185,8 +183,6 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("DriverId");
 
-                    b.Property<int>("DriverStatus");
-
                     b.Property<int>("Points");
 
                     b.Property<int>("SeasonId");
@@ -225,8 +221,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("Handling");
 
                     b.Property<int>("Points");
-
-                    b.Property<string>("Principal");
 
                     b.Property<int>("Reliability");
 

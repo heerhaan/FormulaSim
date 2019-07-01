@@ -29,6 +29,11 @@
                 <select asp-for="SeasonTeamId" class="form-control" asp-items="ViewBag.teams"></select>
             </section>
             <section class="form-group">
+                <label asp-for="DriverStatus" class="control-label"></label>
+                @Html.DropDownListFor(model => model.DriverStatus, new SelectList(Enum.GetValues(typeof(DriverStatus))), new { @class = "form-control" })
+                <span asp-validation-for="DriverStatus" class="text-danger"></span>
+            </section>
+            <section class="form-group">
                 <input type="submit" value="Save" class="btn btn-dark" />
             </section>
         </form>

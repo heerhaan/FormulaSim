@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190618113225_PoinsAssign")]
+    partial class PoinsAssign
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,10 +47,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("DriverResultId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("DNFCause");
-
-                    b.Property<int>("DSQCause");
 
                     b.Property<int>("Grid");
 
@@ -145,8 +143,6 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("TrackId");
 
-                    b.Property<int>("Weather");
-
                     b.HasKey("RaceId");
 
                     b.HasIndex("SeasonId");
@@ -185,8 +181,6 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("DriverId");
 
-                    b.Property<int>("DriverStatus");
-
                     b.Property<int>("Points");
 
                     b.Property<int>("SeasonId");
@@ -216,27 +210,19 @@ namespace FormuleCirkelEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Acceleration");
-
                     b.Property<int>("Chassis");
 
                     b.Property<int>("EngineId");
 
-                    b.Property<int>("Handling");
-
                     b.Property<int>("Points");
-
-                    b.Property<string>("Principal");
 
                     b.Property<int>("Reliability");
 
                     b.Property<int>("SeasonId");
 
-                    b.Property<int>("Stability");
+                    b.Property<int>("Specification");
 
                     b.Property<int>("TeamId");
-
-                    b.Property<int>("Topspeed");
 
                     b.HasKey("SeasonTeamId");
 
