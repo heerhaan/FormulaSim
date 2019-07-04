@@ -11,6 +11,7 @@
     <input id="min" type="number" placeholder="Min. RNG" />
     <input id="max" type="number" placeholder="Max. RNG" />
     <button id="develop" class="btn btn-dark">Develop</button>
+    <button id="custom" class="btn btn-dark float-right">Custom</button>
 
     <table id="graphic" class="table">
         <thead>
@@ -20,21 +21,28 @@
                 <th>Old</th>
                 <th>Change</th>
                 <th>New</th>
+                <th>Custom</th>
             </tr>
         </thead>
         <tbody id="devtable">
             @{
+                int number = 1;
                 foreach (var team in Model)
                 {
                     <tr>
                         <td>@team.Team.Name</td>
-                        <td><span class="badge" style="background-color:@(team.Team.Colour);
+                        <td>
+                            <span class="badge" style="background-color:@(team.Team.Colour);
                             color:@(team.Team.Accent);font-size:1rem;">
-                            @team.Team.Abbreviation
-                        </span></td>
-                        <td>@team.Chassis</td>
-                        <td>?</td>
-                        <td>?</td>
+                                @team.Team.Abbreviation
+                            </span>
+                        </td>
+                        <td id="old-value-@number">@team.Chassis</td>
+                        <td id="custom-change-@number">?</td>
+                        <td id="custom-new-@number">-</td>
+                        <td><input id="custom-min-@number" class="input-width" type="number" placeholder="Min. RNG" />
+                        <input id="custom-max-@number" class="input-width" type="number" placeholder="Max. RNG" /></td>
+                        <td id="team-id-@(number++)" style="display:none;">@(team.SeasonTeamId)</td>
                     </tr>
                 }
             }
@@ -47,43 +55,55 @@
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
 </a>
 
-<button class="btn float-right" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 
 <div id="screenshot"></div>
 
 <script>
     $(document).ready(function () {
         $("#save").hide();
+
         $('#develop').click(function () {
-            $.ajax({
-                url: "/Season/Development",
-                type: "GET",
-                data: {
-                    min: document.getElementById("min").value,
-                    max: document.getElementById("max").value,
-                    seasonId: @(ViewBag.seasonId),
-                    source: "team"
-                },
-                success: function (teams) {
-                    $("#devtable").empty();
-                    $.each(teams, function (index, team) {
-                        var row = "<tr><td>" + team.name + "</td><td><span class='badge' style='background-color:" + team.colour + ";color:"
-                            + team.accent + ";font-size:1rem;'>" + team.abbreviation + "</span></td><td>" + team.old + "</td><td>"
-                            + team.dev + "</td><td id='new'>" + team.new + "</td><td id='id' style='display:none;'>" + team.id + "</td></tr>";
-                        $("#devtable").append(row);
-                        $("#save").show();
-                    });
-                }
+            var number = 1;
+            var min = document.getElementById("min").value;
+            var max = document.getElementById("max").value;
+            $('#devtable').children('tr').each(function () {
+                var element = document.getElementById("old-value-" + number);
+                var text = element.textContent;
+                var old = Number(text);
+                var dev = Math.floor(Math.random() * (max - min + 1)) - max;
+                var newdev = (old + dev);
+
+                document.getElementById("custom-change-" + number).innerText = dev;
+                document.getElementById("custom-new-" + number).innerText = newdev;
+
+                number = (number + 1);
             });
+
+            $("#save").show();
         });
+
+        $('#custom').click(function () {
+            var number = 1;
+            $('#devtable').children('tr').each(function () {
+                getDev(number);
+                number = (number + 1);
+            });
+
+            $("#save").show();
+        });
+            
         $("#save").click(function () {
             var teams = new Array();
-            $("#devtable TR").each(function () {
+            var number = 1;
+            $("#devtable").children('tr').each(function () {
                 var row = $(this);
                 var team = {};
-                team.id = row.find("TD").eq(5).html();
-                team.newdev = row.find("TD").eq(4).html();
+                team.id = row.find("#team-id-" + number).html();
+                team.newdev = row.find("#custom-new-" + number).html();
                 teams.push(team);
+
+                number = (number + 1);
             });
 
             $.ajax({
@@ -104,11 +124,4 @@
             });
         });
     });
-
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
 </script>

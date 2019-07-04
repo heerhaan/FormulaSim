@@ -30,7 +30,7 @@
 
 <table id="newpoint" style="display:none;">
     <tr>
-        <td><label>"%"</label></td>
+        <td><label>%</label></td>
         <td><input name="Points" type="number"></td>
         <td><button type="button" class="btn delete">Delete</button></td>
     </tr>
@@ -45,7 +45,7 @@
         var index = ($('#pointPositions').children().length) + 1;
         var clone = newpoint.find('tr').clone();
         clone.html($(clone).html().replace(/\[#\]/g, '[' + index + ']'));
-        clone.html($(clone).html().replace(/"%"/g, '"' + index + '"'));
+        clone.html($(clone).html().replace(/%/g, index));
         positions.append(clone);
     });
 

@@ -74,19 +74,10 @@
     </div>
 </div>
 
-<button class="btn float-right" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 
 <a asp-action="Index">
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
 </a>
 
 <div id="screenshot"></div>
-
-<script>
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
-</script>

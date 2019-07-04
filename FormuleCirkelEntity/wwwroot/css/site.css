@@ -181,3 +181,11 @@ body {
 .nofullwidth {
     width: auto !important;
 }
+
+.font-size-default {
+    font-size: 1rem;
+}
+
+.input-width {
+    width: 100px;
+}

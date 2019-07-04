@@ -4,7 +4,14 @@
     ViewData["Title"] = "Driver bio";
     int dnfs = (Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count());
     int dsqs = (Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count());
-    int finishes = (Model.DriverResults.Where(dr => dr.Status == Status.Finished).Count());
+    int wins = (Model.DriverResults.Where(dr => dr.Position == 1).Count());
+    int podiums = (Model.DriverResults.Where(dr => dr.Position == 2 || dr.Position == 3).Count());
+    int points = (Model.DriverResults.Where(dr => dr.Position > 3 && dr.Position <= 12).Count());
+    int outside = (Model.DriverResults.Where(dr => dr.Position > 12 && dr.Status == Status.Finished).Count());
+    int accidents = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Accident || dr.DNFCause == DNFCause.Puncture).Count());
+    int contact = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Damage || dr.DNFCause == DNFCause.Collision).Count());
+    int engine = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Engine).Count());
+    int mechanical = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Brakes || dr.DNFCause == DNFCause.Clutch || dr.DNFCause == DNFCause.Electrics || dr.DNFCause == DNFCause.Exhaust || dr.DNFCause == DNFCause.Hydraulics || dr.DNFCause == DNFCause.Wheel).Count());
 }
 
 <div id="graphic">
@@ -81,21 +88,21 @@
             <button id="savebio" class="btn btn-dark"><i class="far fa-save"></i></button>
         </div>
     </div>
+    <div class="row">
+        <canvas id="FinishPercentage" width="250" height="250"></canvas>
+        <canvas id="StartsPerTeam" width="250" height="250"></canvas>
+        <canvas id="NonFinishCauses" width="250" height="250"></canvas>
+    </div>
 </div>
 
 <div class="row">
     <a asp-action="Index">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
     </a>
-    <button class="btn ml-auto" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 </div>
 
 <div id="screenshot"></div>
-
-<div class="row">
-    <canvas id="FinishPercentage" width="250" height="250"></canvas>
-    <canvas id="StartsPerTeam" width="250" height="250"></canvas>
-</div>
 
 <script>
     $('#savebio').click(function () {
@@ -104,29 +111,26 @@
             url: "/Drivers/SaveBiography",
             data: { id: @Model.Driver.DriverId, biography: $("#biography").text() },
             dataType: "html",
-            success: function () { alert("Biografie opgeslagen!"); },
-            error: function () { alert("Opslaan mislukt!"); }
+            success: function () { alert("Biography saved!"); },
+            error: function () { alert("Saving failed."); }
         });
     });
 
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
-
     $(function () {
+        // Piechart for the sort of finishing results
         var ctx1 = document.getElementById('FinishPercentage').getContext('2d');
         var config1 = {
             type: 'pie',
         data: {
             datasets: [{
-                data: [@finishes, @dnfs, @dsqs],
-                backgroundColor: ['green', 'darkred', 'black']
+                data: [@wins, @podiums, @points, @outside, @dnfs, @dsqs],
+                backgroundColor: ['gold', 'silver', 'green', 'blue', 'red', 'black']
             }],
             labels: [
-                'Finish',
+                'Wins',
+                'Podiums',
+                'Points',
+                'Finished',
                 'DNF',
                 'DSQ'
             ]
@@ -136,38 +140,60 @@
             }
         }
         var chart1 = new Chart(ctx1, config1);
-        
-        @*var ctx2 = document.getElementById('StartsPerTeam').getContext('2d');
+
+        // Piechart for which teams the driver has started for.
+        var ctx2 = document.getElementById('StartsPerTeam').getContext('2d');
         var config2 = {
             type: 'pie',
-            data: {
-                datasets: [{
-                    data: [],
-                    backgroundColor: []
-                }],
-                labels: []
-            },
+            data: {},
             options: {
                 responsive: false
             }
         };
-        var chart2 = new Chart(ctx2, config2);
+        
+        var teamData = {
+            datasets: [],
+            labels: []
+        };
 
-        var teams = [];
-        var teamcolours = [];
-        var teamsdata = [];
-
+        var teamDataSets = {
+            data: [],
+            backgroundColor: []
+        };
+        
         @foreach (var team in Model.SeasonDriver.Select(select => select.SeasonTeam.Team).Distinct())
         {
-            @:teams.push("@team.Name");
-            @:teamcolours.push("@team.Colour");
+            @:teamData.labels.push("@team.Abbreviation");
+            @:teamDataSets.backgroundColor.push("@team.Colour");
             var amountStarts = Model.DriverResults.Where(d => d.SeasonDriver.SeasonTeam.Team == team).Count();
-            @:teamsdata.push(@amountStarts);
+            @:teamDataSets.data.push(@amountStarts);
         }
-        var teamdatasets = [];
-        teamdatasets.push(teamsdata);
-        teamdatasets.push(teamcolours);
-        config2.data.datasets.push(teamdatasets);
-        config2.data.labels.push(teams);*@
+
+        teamData.datasets.push(teamDataSets);
+        config2.data = teamData;
+        var chart2 = new Chart(ctx2, config2);
+
+        // Piechart to look into the sorts of DNFs / DSQs a driver has
+        var ctx3 = document.getElementById('NonFinishCauses').getContext('2d');
+        var config3 = {
+            type: 'pie',
+        data: {
+            datasets: [{
+                data: [@accidents, @contact, @engine, @mechanical, @dsqs],
+                backgroundColor: ['purple', 'red', 'darkblue', 'grey', 'black']
+            }],
+            labels: [
+                'Accident',
+                'Contact',
+                'Engine',
+                'Mechanical',
+                'DSQ'
+            ]
+            },
+            options: {
+                responsive: false
+            }
+        }
+        var chart3 = new Chart(ctx3, config3);
     });
 </script>

@@ -78,7 +78,7 @@
     </table>
 </section>
 
-<button class="btn" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+<button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 
 <div id="screenshot"></div>
 
@@ -115,7 +115,7 @@
     var DNFCauses = [
         "None",
         "Damage",
-        "Collission",
+        "Collision",
         "Accident",
         "Puncture",
         "Engine",
@@ -179,13 +179,6 @@
             let valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
             return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
         }
-    }
-
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
     }
 
     function drawRaceChart() {

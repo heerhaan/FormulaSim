@@ -115,7 +115,7 @@
             <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn btn-dark" />
         </div>
     </form>
-    <button class="btn ml-auto" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 </div>
 <br />
 
@@ -142,11 +142,4 @@
         }
         $("#weather").addClass(weatherclass);
     });
-
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
 </script>

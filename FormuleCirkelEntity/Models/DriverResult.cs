@@ -18,6 +18,7 @@ namespace FormuleCirkelEntity.Models
         public int Points { get; set; }
         public int Position { get; set; }
         public int Grid { get; set; }
+        public string PenaltyReason { get; set; }
 
         [EnumDataType(typeof(Status))]
         public Status Status { get; set; }
@@ -40,7 +41,7 @@ namespace FormuleCirkelEntity.Models
     {
         None = 0,
         Damage = 1,
-        Collission = 2,
+        Collision = 2,
         Accident = 3,
         Puncture = 4,
         Engine = 5,

@@ -15,6 +15,7 @@
                         <td>Driver</td>
                         <td>Nr.</td>
                         <td>Team</td>
+                        <td>Penalty</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,39 +26,40 @@
                             <td>@driver.Driver.Name</td>
                             <td><span class="badge alt-color">@driver.Driver.DriverNumber</span></td>
                             <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
+                            @if (Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason == null)
+                            {
+                                <td></td> }
+                            else
+                            {
+                                <td><span class="badge badge-dsq">@(Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason)</span></td>
+                            }
                         </tr>
                     }
                 </tbody>
             </table>
+            <div>
+                <h5>Track info</h5>
+                <dl>
+                    <dt>Length</dt>
+                    <dd>@Model.Track.LengthKM KM</dd>
+                    <dt>Weather</dt>
+                    <dd>@Model.Weather</dd>
+                    <dt>Last winner</dt>
+                    <dd>@(Model.Track.MostRecentWinner?.Name ?? "-")</dd>
+                </dl>
+            </div>
         </div>
-        @if (Model.RaceState == RaceState.Concept)
-        {
-            <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Qualifying</a>
-        }
-        <button class="btn float-right" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
-    </div>
-</section>
-
-<section class="row my-1">
-    <div>
-        @if (Model.RaceState != RaceState.Concept)
-        {
-            <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Start</a>
-        }
-    </div>
-</section>
-
-<section class="row my-1">
-    <div>
-        <h5>Track info</h5>
-        <dl>
-            <dt>Length</dt>
-            <dd>@Model.Track.LengthKM KM</dd>
-            <dt>Weather</dt>
-            <dd>@Model.Weather</dd>
-            <dt>Last winner</dt>
-            <dd>@(Model.Track.MostRecentWinner?.Name ?? "-")</dd>
-        </dl>
+        <div class="row">
+            @if (Model.RaceState != RaceState.Concept)
+            {
+                <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Race</a>
+            }
+            @if (Model.RaceState == RaceState.Concept)
+            {
+                <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Qualifying</a>
+            }
+            <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        </div>
     </div>
 </section>
 
@@ -65,12 +67,3 @@
 <section class="row my-1">
     <div id="screenshot"></div>
 </section>
-
-<script>
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
-</script>

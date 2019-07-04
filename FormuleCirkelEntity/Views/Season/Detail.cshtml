@@ -49,7 +49,9 @@
                     <tr>
                         <td>@((pos + 1).ToString())</td>
                         <td>@driver.Points</td>
-                        <td><span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
+                        <td><a asp-action="PenaltyList" asp-route-id="@Model.SeasonId" asp-route-driverid="@driver.SeasonDriverId" class="link">
+                            <span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span><span>@driver.Driver.Name</span>
+                            </a></td>
                         <td>@driver.Skill</td>
                         <td>@driver.Style</td>
                         <td>@driver.Tires</td>

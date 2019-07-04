@@ -12,6 +12,7 @@
     <input id="min" type="number" placeholder="Min. RNG" />
     <input id="max" type="number" placeholder="Max. RNG" />
     <button id="develop" class="btn btn-dark">Develop</button>
+    <button id="custom" class="btn btn-dark float-right">Custom</button>
 
     <table id="graphic" class="table table-sm">
         <thead>
@@ -21,21 +22,26 @@
                 <th>Old</th>
                 <th>Change</th>
                 <th>New</th>
+                <th>Custom</th>
             </tr>
         </thead>
         <tbody id="devtable">
             @{
-                foreach (var driver in Model)
-                {
+                    int number = 1;
+                    foreach (var driver in Model)
+                    {
                     <tr>
                         <td><span class="badge nofullwidth">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
                         <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);
                             color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">
                             @driver.SeasonTeam.Team.Abbreviation
                         </span></td>
-                        <td>@driver.Skill</td>
-                        <td>?</td>
-                        <td>?</td>
+                        <td id="old-value-@number">@driver.Skill</td>
+                        <td id="custom-change-@number">?</td>
+                        <td id="custom-new-@number">-</td>
+                        <td><input id="custom-min-@number" class="input-width" type="number" placeholder="Min. RNG" />
+                        <input id="custom-max-@number" class="input-width" type="number" placeholder="Max. RNG" /></td>
+                        <td  id="driver-id-@(number++)" style="display:none;">@(driver.SeasonDriverId)</td>
                     </tr>
                 }
             }
@@ -48,44 +54,55 @@
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
 </a>
 
-<button class="btn float-right" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 
 <div id="screenshot"></div>
 
 <script>
     $(document).ready(function () {
         $("#save").hide();
+
         $('#develop').click(function () {
-            $.ajax({
-                url: "/Season/Development",
-                type: "GET",
-                data: {
-                    min: document.getElementById("min").value,
-                    max: document.getElementById("max").value,
-                    seasonId: @(seasonId),
-                    source: "driver"
-                },
-                success: function (drivers) {
-                    $("#devtable").empty();
-                    $.each(drivers, function (index, driver) {
-                        var row = "<tr><td><span class='badge nofullwidth'>" + driver.number + "</span>" + driver.name +
-                            "</td><td><div class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent +
-                            ";font-size:1rem;'>" + driver.abbreviation + "</div></td><td>" + driver.old + "</td><td>"
-                            + driver.dev + "</td><td>" + driver.new + "</td><td style='display:none;'>" + driver.id + "</td></tr>";
-                        $("#devtable").append(row);
-                        $("#save").show();
-                    });
-                }
+            var number = 1;
+            var min = document.getElementById("min").value;
+            var max = document.getElementById("max").value;
+            $('#devtable').children('tr').each(function () {
+                var element = document.getElementById("old-value-" + number);
+                var text = element.textContent;
+                var old = Number(text);
+                var dev = Math.floor(Math.random() * (max - min + 1)) - max;
+                var newdev = (old + dev);
+
+                document.getElementById("custom-change-" + number).innerText = dev;
+                document.getElementById("custom-new-" + number).innerText = newdev;
+
+                number = (number + 1);
             });
+
+            $("#save").show();
         });
+
+        $('#custom').click(function () {
+            var number = 1;
+            $('#devtable').children('tr').each(function () {
+                getDev(number);
+                number = (number + 1);
+            });
+
+            $("#save").show();
+        });
+
         $("#save").click(function () {
             var drivers = new Array();
-            $("#devtable TR").each(function () {
+            var number = 1;
+            $("#devtable").children('tr').each(function () {
                 var row = $(this);
                 var driver = {};
-                driver.id = row.find("TD").eq(5).html();
-                driver.newdev = row.find("TD").eq(4).html();
+                driver.id = row.find("#driver-id-" + number).html();
+                driver.newdev = row.find("#custom-new-" + number).html();
                 drivers.push(driver);
+
+                number = (number + 1);
             });
 
             $.ajax({
@@ -106,11 +123,4 @@
             });
         });
     });
-
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
 </script>

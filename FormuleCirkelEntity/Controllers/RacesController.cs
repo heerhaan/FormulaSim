@@ -298,25 +298,25 @@ namespace FormuleCirkelEntity.Controllers
 
             switch (random)
             {
-                case int n when n <= 15:
+                case int n when n <= 10:
                     cause = DNFCause.Damage;
                     break;
-                case int n when n > 15 && n <= 45:
-                    cause = DNFCause.Collission;
+                case int n when n > 10 && n <= 27:
+                    cause = DNFCause.Collision;
                     break;
-                case int n when n > 45 && n <= 60:
+                case int n when n > 27 && n <= 45:
                     cause = DNFCause.Accident;
                     break;
-                case int n when n > 60 && n <= 70:
+                case int n when n > 45 && n <= 50:
                     cause = DNFCause.Puncture;
                     break;
-                case int n when n > 70 && n <= 83:
+                case int n when n > 50 && n <= 70:
                     cause = DNFCause.Engine;
                     break;
-                case int n when n > 83 && n <= 85:
+                case int n when n > 70 && n <= 83:
                     cause = DNFCause.Electrics;
                     break;
-                case int n when n > 85 && n <= 88:
+                case int n when n > 83 && n <= 88:
                     cause = DNFCause.Exhaust;
                     break;
                 case int n when n > 88 && n <= 90:
@@ -346,10 +346,10 @@ namespace FormuleCirkelEntity.Controllers
                 case int n when n <= 5:
                     cause = DSQCause.Illegal;
                     break;
-                case int n when n > 5 && n <= 8:
+                case int n when n > 5 && n <= 7:
                     cause = DSQCause.Fuel;
                     break;
-                case int n when n > 8:
+                case int n when n > 7:
                     cause = DSQCause.Dangerous;
                     break;
             }
@@ -525,10 +525,10 @@ namespace FormuleCirkelEntity.Controllers
 
             IQueryable<Qualification> qualyresult = _context.Qualification.Where(q => q.RaceId == raceId);
             List<DriverResult> driverResults = resultcontext.Where(d => d.RaceId == raceId).ToList();
-            int amountDrivers = driverResults.Count();
             var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id).Include(c => c.Race).ToList();
             var race = _context.Races.Single(r => r.RaceId == raceId);
 
+            List<Qualification> qualifications = new List<Qualification>();
             //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)
             foreach (Qualification result in qualyresult)
             {
@@ -538,27 +538,86 @@ namespace FormuleCirkelEntity.Controllers
                 DriverResult lastDriverResult = currentSeasonResults
                     .LastOrDefault(d => d.SeasonDriverId == result.DriverId && d.Race.RaceState == RaceState.Finished);
 
-                if(driver == null)
+                result.PenaltyPosition = result.Position;
+                // Checks if a driver should get a penalty
+                if (lastDriverResult != null)
+                {
+                    // If the driver was disqualified, then he will always start last.
+                    if (lastDriverResult.Status == Status.DSQ)
+                    {
+                        result.PenaltyPosition += 99;
+                        switch (lastDriverResult.DSQCause)
+                        {
+                            case DSQCause.Illegal:
+                                driver.PenaltyReason = "Illegal car in last race.";
+                                break;
+                            case DSQCause.Fuel:
+                                driver.PenaltyReason = "Exceeded fuel limits last race.";
+                                break;
+                            case DSQCause.Dangerous:
+                                driver.PenaltyReason = "Dangerous driving last race.";
+                                break;
+                        }
+                    }
+                    else if (lastDriverResult.Status == Status.DNF)
+                    {
+                        switch (lastDriverResult.DNFCause)
+                        {
+                            case DNFCause.Collision:
+                                int random = rng.Next(1, 6);
+                                if (random < 3)
+                                {
+                                    result.PenaltyPosition += 5.8;
+                                    driver.PenaltyReason = "+5 grid penalty for causing a collision.";
+                                }
+                                break;
+                            case DNFCause.Accident:
+                                int amountAccidents = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Accident && d.SeasonDriverId == driver.SeasonDriverId).Count());
+                                if (amountAccidents > 2)
+                                {
+                                    result.PenaltyPosition += 3.3;
+                                    driver.PenaltyReason = "+3 grid penalty for excessive amount of accidents";
+                                }
+                                break;
+                            case DNFCause.Engine:
+                                int amountEngines = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Engine && d.SeasonDriverId == driver.SeasonDriverId).Count());
+                                if (amountEngines > 3)
+                                {
+                                    result.PenaltyPosition += 10.9;
+                                    driver.PenaltyReason = "+10 grid penalty for excessive engines used";
+                                }
+                                break;
+                            case DNFCause.Electrics:
+                                int amountElectrics = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Electrics && d.SeasonDriverId == driver.SeasonDriverId).Count());
+                                if (amountElectrics > 2)
+                                {
+                                    result.PenaltyPosition += 5.1;
+                                    driver.PenaltyReason = "+5 penalty for excessive electrics used";
+                                }
+                                break;
+                        }
+                    }
+                }
+                qualifications.Add(result);
+            }
+
+            // Orders the qualifications after applying penalties to positions, then assigns the grid position to it
+            int assignedPosition = 1;
+
+            foreach (var result in qualifications.OrderBy(q => q.PenaltyPosition))
+            {
+                DriverResult driver = driverResults.Single(d => d.RaceId == result.RaceId &&
+                    d.SeasonDriverId == result.DriverId);
+
+                if (driver == null)
                 {
                     return StatusCode(500);
                 }
-                
-                if (lastDriverResult != null)
-                {
-                    if (lastDriverResult.Status == Status.DSQ)
-                    {
-                        driver.Grid = amountDrivers + 1;
-                        driver.Position = amountDrivers + 1;
-                    } else
-                    {
-                        driver.Grid = result.Position.Value;
-                        driver.Position = result.Position.Value;
-                    }
-                } else
-                {
-                    driver.Grid = result.Position.Value;
-                    driver.Position = result.Position.Value;
-                }
+
+                driver.Grid = assignedPosition;
+                driver.Position = assignedPosition;
+
+                assignedPosition++;
             }
 
             race.RaceState = RaceState.Race;
