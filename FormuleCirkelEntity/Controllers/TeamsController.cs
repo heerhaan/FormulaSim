@@ -179,9 +179,19 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var team = await _context.Teams.FindAsync(id);
-            team.Archived = true;
-            _context.Teams.Update(team);
-            await _context.SaveChangesAsync();
+            if (team.Archived == false)
+            {
+                team.Archived = true;
+                _context.Teams.Update(team);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                team.Archived = false;
+                _context.Teams.Update(team);
+                await _context.SaveChangesAsync();
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 

@@ -233,9 +233,21 @@ namespace FormuleCirkelEntity.Controllers
                 result.StintResults.Add(race.StintProgress, stintResult);
                 result.Points = result.StintResults.Sum(sr => sr.Value ?? -999);
 
-                // A null result indicates a DNF result.
+                // A null result indicates a non-finish.
                 if (stintResult == null)
-                    result.Status = Status.DNF;
+                {
+                    // RNG to determine the type of DNF.
+                    Random rng = new Random();
+                    int dnfvalue = rng.Next(1, 21);
+                    if (dnfvalue == 20)
+                    {
+                        result.Status = Status.DSQ;
+                        result.Points += -999;
+                    } else
+                    {
+                        result.Status = Status.DNF;
+                    }
+                }
             }
 
             var positionsList = _resultGenerator.GetPositionsBasedOnRelativePoints(race.DriverResults);
@@ -281,6 +293,8 @@ namespace FormuleCirkelEntity.Controllers
 
             var raceWinnerResult = race.DriverResults.OrderByDescending(res => res.Points).FirstOrDefault();
             race.Track.MostRecentWinner = raceWinnerResult.SeasonDriver.Driver;
+            race.RaceState = RaceState.Finished;
+            _context.Update(race);
             _context.Update(race.Track);
             _context.SaveChanges();
 
@@ -338,6 +352,11 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult Qualifying(int id, int raceId)
         {
             var race = _context.Races.Single(r => r.RaceId == raceId);
+
+            race.RaceState = RaceState.Qualifying;
+            _context.Update(race);
+            _context.SaveChanges();
+
             var season = _context.Seasons.Single(s => s.SeasonId == id);
             ViewBag.race = race;
             ViewBag.season = season;
@@ -445,24 +464,48 @@ namespace FormuleCirkelEntity.Controllers
             {
                 return BadRequest();
             }
+            var resultcontext = _context.DriverResults;
 
             IQueryable<Qualification> qualyresult = _context.Qualification.Where(q => q.RaceId == raceId);
-            List<DriverResult> driverResults = _context.DriverResults.Where(d => d.RaceId == raceId).ToList();
+            List<DriverResult> driverResults = resultcontext.Where(d => d.RaceId == raceId).ToList();
+            int amountDrivers = driverResults.Count();
+            var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id).ToList();
+            var race = _context.Races.Single(r => r.RaceId == raceId);
 
             //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)
-            foreach(Qualification result in qualyresult)
+            foreach (Qualification result in qualyresult)
             {
                 DriverResult driver = driverResults.Single(d => d.RaceId == result.RaceId &&
                     d.SeasonDriverId == result.DriverId);
+
+                DriverResult lastDriverResult = currentSeasonResults
+                    .LastOrDefault(d => d.SeasonDriverId == result.DriverId && d.Race.RaceState == RaceState.Finished);
 
                 if(driver == null)
                 {
                     return StatusCode(500);
                 }
-
-                driver.Grid = result.Position.Value;
-                driver.Position = result.Position.Value;
+                
+                if (lastDriverResult != null)
+                {
+                    if (lastDriverResult.Status == Status.DSQ)
+                    {
+                        driver.Grid = amountDrivers + 1;
+                        driver.Position = amountDrivers + 1;
+                    } else
+                    {
+                        driver.Grid = result.Position.Value;
+                        driver.Position = result.Position.Value;
+                    }
+                } else
+                {
+                    driver.Grid = result.Position.Value;
+                    driver.Position = result.Position.Value;
+                }
             }
+
+            race.RaceState = RaceState.Race;
+            _context.Update(race);
             _context.UpdateRange(driverResults);
             _context.SaveChanges();
 

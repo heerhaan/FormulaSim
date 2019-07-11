@@ -1,10 +1,10 @@
 ﻿@model FormuleCirkelEntity.Models.Track
 
 @{
-    ViewData["Title"] = "Circuit toevoegen";
+    ViewData["Title"] = "Add track";
 }
 
-<h1>Toevoegen circuit</h1>
+<h1>Add track</h1>
 
 <hr />
 <div class="row">
@@ -12,12 +12,12 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label">Naam</label>
+                <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Location" class="control-label">Locatie</label>
+                <label asp-for="Location" class="control-label"></label>
                 <input asp-for="Location" class="form-control" />
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
@@ -30,7 +30,7 @@
                 @Html.DropDownListFor(model => model.RNGodds, new SelectList(Enum.GetValues(typeof(RNGodds))), new { @class = "form-control" })
             </div>
             <div class="form-group">
-                <label>Specificatie</label>
+                <label>Specification</label>
                 @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
             </div>
             <div class="form-group">

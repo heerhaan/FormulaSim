@@ -56,16 +56,6 @@ i.fab {
     color: white;
 }
 
-.hero-image {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/McLarenWest20xx.jpg');
-    height: 550px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: relative;
-    vertical-align: auto;
-}
-
 .hero-text {
     text-align: center;
     position: center;
@@ -129,6 +119,10 @@ dl.inline-flex {
     text-align: center;
 }
 
+td {
+    vertical-align: middle !important;
+}
+
 td .badge {
     width: 100%;
 }
@@ -147,6 +141,10 @@ td .badge {
 
 .badge-third {
     background-color: #CD7F32;
+}
+
+.badge-dsq {
+    background-color: black;
 }
 
 /* Sticky footer styles

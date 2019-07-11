@@ -2,12 +2,14 @@
 
 @{
     ViewData["Title"] = "Archive";
+    string archive = "archive";
+    if (Model.Archived) { archive = "unarchive"; }
 }
 
 <h1>Archive</h1>
 
 <div>
-    <h4>@Model.Name</h4>
+    <h4>Are you sure you want to @archive @Model.Name?</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -26,11 +28,11 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="DriverId" />
-        <input type="submit" value="Archive" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="@archive" class="btn btn-danger" />
     </form>
 </div>
 
+<br />
 <a asp-action="Index">
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
 </a>

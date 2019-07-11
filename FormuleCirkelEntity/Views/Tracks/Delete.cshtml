@@ -1,12 +1,14 @@
 ﻿@model FormuleCirkelEntity.Models.Track
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Archive";
+    string archive = "archive";
+    if (Model.Archived) { archive = "unarchive"; }
 }
 
-<h1>Delete</h1>
+<h1>Archive</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to @archive @Model.Name?</h3>
 <div>
     <h4>Track</h4>
     <hr />
@@ -45,11 +47,11 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="TrackId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="@archive" class="btn btn-danger" />
     </form>
 </div>
 
+<br />
 <div>
     <a asp-action="Index">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>

@@ -28,6 +28,9 @@ namespace FormuleCirkelEntity.Models
         public int Round { get; set; }
         public string Name { get; set; }
 
+        [EnumDataType(typeof(RaceState))]
+        public RaceState RaceState { get; set; }
+
         public int StintProgress { get; set; }
 
         public int TrackId { get; set; }

@@ -70,7 +70,7 @@ namespace FormuleCirkelEntity.Builders
         {
             Stint stint = new Stint()
             {
-                RNGMinimum = -7,
+                RNGMinimum = -10,
                 RNGMaximum = -3
             };
 

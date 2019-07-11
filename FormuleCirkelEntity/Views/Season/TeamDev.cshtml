@@ -4,22 +4,22 @@
     ViewData["Title"] = "Team development";
 }
 
-<h1>Team ontwikkeling</h1>
+<h1>Team development</h1>
 
 <section>
 
     <input id="min" type="number" placeholder="Min. RNG" />
     <input id="max" type="number" placeholder="Max. RNG" />
-    <button id="develop" class="btn btn-dark">Ontwikkel</button>
+    <button id="develop" class="btn btn-dark">Develop</button>
 
     <table id="graphic" class="table">
         <thead>
             <tr>
                 <th>Team</th>
-                <th>Afkorting</th>
-                <th>Oud</th>
-                <th>Verschil</th>
-                <th>Nieuw</th>
+                <th>Abbreviation</th>
+                <th>Old</th>
+                <th>Change</th>
+                <th>New</th>
             </tr>
         </thead>
         <tbody id="devtable">
@@ -40,7 +40,7 @@
             }
         </tbody>
     </table>
-    <button id="save" class="btn btn-dark">Opslaan</button>
+    <button id="save" class="btn btn-dark">Save</button>
 </section>
 
 <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">

@@ -5,22 +5,22 @@
     int seasonId = ViewBag.seasonId;
 }
 
-<h1>Coureur ontwikkeling</h1>
+<h1>Driver development</h1>
 
 <section>
 
     <input id="min" type="number" placeholder="Min. RNG" />
     <input id="max" type="number" placeholder="Max. RNG" />
-    <button id="develop" class="btn btn-dark">Ontwikkel</button>
+    <button id="develop" class="btn btn-dark">Develop</button>
 
     <table id="graphic" class="table table-sm">
         <thead>
             <tr>
-                <th>Naam</th>
+                <th>Name</th>
                 <th>Team</th>
-                <th>Oud</th>
-                <th>Verschil</th>
-                <th>Nieuw</th>
+                <th>Old</th>
+                <th>Change</th>
+                <th>New</th>
             </tr>
         </thead>
         <tbody id="devtable">
@@ -41,7 +41,7 @@
             }
         </tbody>
     </table>
-    <button id="save" class="btn btn-dark">Opslaan</button>
+    <button id="save" class="btn btn-dark">Save</button>
 </section>
 
 <a asp-action="Detail" asp-route-id="@seasonId">

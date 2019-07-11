@@ -37,10 +37,6 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.HasKey("DriverId");
 
-                    b.HasIndex("Abbreviation")
-                        .IsUnique()
-                        .HasFilter("[Abbreviation] IS NOT NULL");
-
                     b.ToTable("Drivers");
                 });
 
@@ -132,6 +128,8 @@ namespace FormuleCirkelEntity.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name");
+
+                    b.Property<int>("RaceState");
 
                     b.Property<int>("Round");
 
@@ -272,7 +270,8 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("DNFodds");
 
-                    b.Property<decimal>("LengthKM");
+                    b.Property<decimal>("LengthKM")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Location");
 
@@ -350,19 +349,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasOne("FormuleCirkelEntity.Models.Team", "Team")
                         .WithMany("SeasonTeams")
                         .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("FormuleCirkelEntity.Models.TeamResult", b =>
-                {
-                    b.HasOne("FormuleCirkelEntity.Models.Race", "Race")
-                        .WithMany("TeamResults")
-                        .HasForeignKey("RaceId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("FormuleCirkelEntity.Models.SeasonTeam", "SeasonTeam")
-                        .WithMany("TeamResults")
-                        .HasForeignKey("SeasonTeamId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190607091518_RaceState.cs" />
+    <Compile Remove="Migrations\20190607091602_RaceState.cs" />
+    <Compile Remove="Migrations\20190607093522_InitialCreate.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\images\FormuleCirkeltrekLogo.png" />
   </ItemGroup>
 

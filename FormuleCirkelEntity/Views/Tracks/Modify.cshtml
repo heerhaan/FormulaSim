@@ -6,7 +6,7 @@
 
 <section>
     <header>
-        <h1 class="row">Circuit bewerken</h1>
+        <h1 class="row">Edit track</h1>
         @if (Model.Name != null)
         {
             <h4 class="row">@Model.Name</h4>
@@ -19,17 +19,17 @@
         <form method="POST" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label">Naam</label>
+                <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Location" class="control-label">Locatie</label>
+                <label asp-for="Location" class="control-label"></label>
                 <input asp-for="Location" class="form-control" />
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LengthKM" class="control-label">Baanlengte</label>
+                <label asp-for="LengthKM" class="control-label">Length</label>
                 <input asp-for="LengthKM" class="form-control" />
                 <span asp-validation-for="LengthKM" class="text-danger"></span>
             </div>
@@ -42,11 +42,11 @@
                 @Html.DropDownListFor(model => model.RNGodds, new SelectList(Enum.GetValues(typeof(RNGodds))), new { @class = "form-control" })
             </div>
             <div class="form-group">
-                <label>Specificatie</label>
+                <label>Specification</label>
                 @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
             </div>
             <div class="form-group">
-                <input type="submit" value="Opslaan" class="btn btn-dark" />
+                <input type="submit" value="Save" class="btn btn-dark" />
             </div>
         </form>
     </div>

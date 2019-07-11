@@ -6,20 +6,20 @@
 @if (Model.Season.State == SeasonState.Progress)
 {
     <div class="table-header-container">
-        @if(Model.StintProgress != Model.Stints.Count)
+        @if(Model.RaceState == RaceState.Race)
         {
-            <a class="btn btn-dark" onclick="advanceStint()">Volgende stint</a>
-        }
+            <a class="btn btn-dark" onclick="advanceStint()">Next stint</a>
 
-        <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish">
-            <input type="submit" value="Finish!" class="btn btn-dark" />
-        </form>
+            <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish">
+                <input type="submit" value="Finish" class="btn btn-dark" />
+            </form>
+        }
     </div>
 }
 
 <section id="graphic" class="row my-1">
     <h2>@Model.Track.Name</h2>
-    <table class="table table-sm">
+    <table id="results" class="table table-sm">
         <thead>
             <tr>
                 <th data-field="position">Pos.</th>
@@ -54,7 +54,7 @@
                         }
                         <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
                     }
-                    @if (driverResult.Points < -50)
+                    @if (driverResult.Status != Status.Finished)
                     {
                         <td data-field="pointsTotal"><span class="badge badge-danger nofullwidth">DNF</span></td>
                     }
@@ -83,7 +83,9 @@
     function processStintResponse(res) {
         res.DriverResults.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
-            row.querySelector("td[data-field='pointsTotal']").innerText = driverResult.Points;
+            if (driverResult.Status == 1) { row.querySelector("td[data-field='pointsTotal']").innerHTML = "<span class='badge badge-danger nofullwidth'>DNF</span>"; }
+            else if (driverResult.Status == 2) { row.querySelector("td[data-field='pointsTotal']").innerHTML = "<span class='badge badge-dsq nofullwidth'>DSQ</span>"; }
+            else { row.querySelector("td[data-field='pointsTotal']").innerText = driverResult.Points; }
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
             row.querySelector("td[data-field='startGrid']").innerText = driverResult.Grid;
             Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {

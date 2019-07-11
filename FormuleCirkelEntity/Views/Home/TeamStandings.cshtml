@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonTeam>
 
 @{
-    ViewData["Title"] = "Stand";
+    ViewData["Title"] = "Standings";
     var rounds = ViewBag.rounds;
     var drivers = ViewBag.drivers;
     int position = 1;
     var track = "";
 }
 
-<h1>Kampioenschap teams</h1>
+<h1>Championship teams</h1>
 
 
 <table id="graphic" class="table table-sm">
@@ -54,6 +54,9 @@
                                 if (result.Status == Status.DNF)
                                 {
                                     <span class="badge badge-danger">DNF</span>
+                                } else if(result.Status == Status.DSQ)
+                                {
+                                    <span class="badge badge-dsq">DSQ</span>
                                 } else if(result.Position == 1)
                                 {
                                     <span class="badge badge-first">@result.Position</span>

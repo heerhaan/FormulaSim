@@ -19,6 +19,8 @@
                 @Html.DisplayNameFor(model => model.Abbreviation)
             </th>
             <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -34,8 +36,19 @@
                 @Html.DisplayFor(modelItem => item.Abbreviation)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.DriverId">Edit</a> |
-                <a asp-action="Stats" asp-route-id="@item.DriverId">Stats</a>
+                <a asp-action="Edit" asp-route-id="@item.DriverId">
+                    <i class="fas fa-edit fa-2x"></i>
+                </a>
+            </td>
+            <td>
+                <a asp-action="Stats" asp-route-id="@item.DriverId">
+                    <i class="fas fa-id-card fa-2x"></i>
+                </a>
+            </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.DriverId">
+                    <i class="fas fa-undo fa-2x"></i>
+                </a>
             </td>
         </tr>
 }

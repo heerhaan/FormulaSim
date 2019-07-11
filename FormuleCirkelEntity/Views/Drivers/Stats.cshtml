@@ -48,9 +48,15 @@
                     @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
                 </dd>
                 <dt>
-                    Teams:
+                    DSQ:
                 </dt>
                 <dd>
+                    @(Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count())
+                </dd>
+                <dt>
+                    Teams:
+                </dt>
+                <dd class="row">
                     @foreach (var team in Model.SeasonDriver.Select(select => select.SeasonTeam.Team).Distinct())
                     {
                         <span class='badge' style='background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;'>@(team.Abbreviation)</span>
@@ -74,7 +80,7 @@
     </div>
 </div>
 
-<div class="row btn-group">
+<div class="row">
     <a asp-action="Index">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
     </a>

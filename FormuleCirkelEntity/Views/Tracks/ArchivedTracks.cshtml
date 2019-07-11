@@ -25,6 +25,7 @@
                 @Html.DisplayNameFor(model => model.Specification)
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -46,7 +47,14 @@
                 @Html.DisplayFor(modelItem => item.Specification)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.TrackId">Edit</a>
+                <a asp-action="Edit" asp-route-id="@item.TrackId">
+                    <i class="fas fa-edit fa-2x"></i>
+                </a>
+            </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.TrackId">
+                    <i class="fas fa-trash-alt fa-2x"></i>
+                </a>
             </td>
         </tr>
 }
