@@ -25,7 +25,7 @@
             <tr>
                 <td>@DNFCause.Collision</td>
                 <td><span class="badge font-size-default">@(Model.DriverResults.Where(d => d.DNFCause == DNFCause.Collision).Count())</span></td>
-                <td><span class="badge badge-danger nofullwidth font-size-default">40%</span></td>
+                <td><span class="badge badge-warning nofullwidth font-size-default">40%</span></td>
             </tr>
             <tr>
                 <td>@DNFCause.Accident</td>
@@ -50,11 +50,11 @@
             </tr>
             <tr>
                 <td>@DNFCause.Engine</td>
-                @if (Model.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count() == 3)
+                @if (Model.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count() == 2)
                 {
                     <td><span class="badge badge-warning nofullwidth font-size-default">@(Model.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count())</span></td>
                 }
-                else if (Model.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count() > 3)
+                else if (Model.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count() > 2)
                 {
                     <td><span class="badge badge-danger nofullwidth font-size-default">@(Model.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count())</span></td>
                 }
@@ -62,15 +62,15 @@
                 {
                     <td><span class="badge font-size-default">@(Model.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count())</span></td>
                 }
-                <td><span class="badge badge-danger nofullwidth font-size-default">3</span></td>
+                <td><span class="badge badge-danger nofullwidth font-size-default">2</span></td>
             </tr>
             <tr>
                 <td>@DNFCause.Electrics</td>
-                @if (Model.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count() == 2)
+                @if (Model.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count() == 1)
                 {
                     <td><span class="badge badge-warning nofullwidth font-size-default">@(Model.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count())</span></td>
                 }
-                else if (Model.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count() > 2)
+                else if (Model.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count() > 1)
                 {
                     <td><span class="badge badge-danger nofullwidth font-size-default">@(Model.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count())</span></td>
                 }
@@ -78,7 +78,7 @@
                 {
                     <td><span class="badge font-size-default">@(Model.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count())</span></td>
                 }
-                <td><span class="badge badge-danger nofullwidth font-size-default">2</span></td>
+                <td><span class="badge badge-danger nofullwidth font-size-default">1</span></td>
             </tr>
             <tr>
                 <td>@DNFCause.Exhaust</td>

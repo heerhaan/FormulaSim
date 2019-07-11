@@ -8,9 +8,9 @@ namespace FormulaCirkelEntity.Tests
     public class RaceResultGeneratorTests
     {
         [Theory]
-        [InlineData(Style.Aggressive, 25)]
+        [InlineData(Style.Aggressive, 22)]
         [InlineData(Style.Neutral, 20)]
-        [InlineData(Style.Defensive, 15)]
+        [InlineData(Style.Defensive, 18)]
         public void DriverLevelBonus_StyleAddition_Correct(Style style, int expected)
         {
             // Arrange
@@ -29,12 +29,12 @@ namespace FormulaCirkelEntity.Tests
         }
 
         [Theory]
-        [InlineData(1, 50)]
+        [InlineData(1, 75)]
         [InlineData(26, 0)]
-        [InlineData(5, 42)]
-        [InlineData(10, 32)]
-        [InlineData(15, 22)]
-        [InlineData(20, 12)]
+        [InlineData(5, 63)]
+        [InlineData(10, 48)]
+        [InlineData(15, 33)]
+        [InlineData(20, 18)]
         public void DriverQualifyingBonus_Calculation_Correct(int qualifyingPosition, int expected)
         {
             // Arrange
@@ -64,7 +64,7 @@ namespace FormulaCirkelEntity.Tests
                 Style = style,
                 SeasonTeam = new SeasonTeam()
                 {
-                    Reliability = 2
+                    Reliability = 1
                 }
             };
 

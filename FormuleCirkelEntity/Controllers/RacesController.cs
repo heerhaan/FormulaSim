@@ -18,7 +18,7 @@ namespace FormuleCirkelEntity.Controllers
         readonly FormulaContext _context;
         readonly RaceResultGenerator _resultGenerator;
         readonly RaceBuilder _raceBuilder;
-        private static readonly Random rng = new Random();
+        public static readonly Random rng = new Random();
 
         public RacesController(FormulaContext context, RaceResultGenerator resultGenerator, RaceBuilder raceBuilder)
         {
@@ -274,7 +274,10 @@ namespace FormuleCirkelEntity.Controllers
             var positionsList = _resultGenerator.GetPositionsBasedOnRelativePoints(race.DriverResults);
 
             foreach (var result in race.DriverResults)
-                result.Position = positionsList[result.DriverResultId];
+            {
+                result.Position = positionsList.OrderedResults[result.DriverResultId];
+                result.Points = positionsList.DriverResults.SingleOrDefault(dr => dr.SeasonDriverId == result.SeasonDriverId).Points;
+            }
 
             _context.UpdateRange(race.DriverResults);
             await _context.SaveChangesAsync();
@@ -298,34 +301,34 @@ namespace FormuleCirkelEntity.Controllers
 
             switch (random)
             {
-                case int n when n <= 10:
+                case int n when n <= 8:
                     cause = DNFCause.Damage;
                     break;
-                case int n when n > 10 && n <= 27:
+                case int n when n > 8 && n <= 22:
                     cause = DNFCause.Collision;
                     break;
-                case int n when n > 27 && n <= 45:
+                case int n when n > 22 && n <= 46:
                     cause = DNFCause.Accident;
                     break;
-                case int n when n > 45 && n <= 50:
+                case int n when n > 46 && n <= 50:
                     cause = DNFCause.Puncture;
                     break;
-                case int n when n > 50 && n <= 70:
+                case int n when n > 50 && n <= 74:
                     cause = DNFCause.Engine;
                     break;
-                case int n when n > 70 && n <= 83:
+                case int n when n > 74 && n <= 89:
                     cause = DNFCause.Electrics;
                     break;
-                case int n when n > 83 && n <= 88:
+                case int n when n > 89 && n <= 91:
                     cause = DNFCause.Exhaust;
                     break;
-                case int n when n > 88 && n <= 90:
+                case int n when n > 91 && n <= 92:
                     cause = DNFCause.Clutch;
                     break;
-                case int n when n > 90 && n <= 95:
+                case int n when n > 92 && n <= 97:
                     cause = DNFCause.Hydraulics;
                     break;
-                case int n when n > 95 && n <= 98:
+                case int n when n > 97 && n <= 98:
                     cause = DNFCause.Wheel;
                     break;
                 case int n when n > 98:
@@ -535,7 +538,7 @@ namespace FormuleCirkelEntity.Controllers
                 DriverResult driver = driverResults.Single(d => d.RaceId == result.RaceId &&
                     d.SeasonDriverId == result.DriverId);
 
-                DriverResult lastDriverResult = currentSeasonResults
+                DriverResult lastDriverResult = currentSeasonResults.OrderBy(s => s.Race.Round)
                     .LastOrDefault(d => d.SeasonDriverId == result.DriverId && d.Race.RaceState == RaceState.Finished);
 
                 result.PenaltyPosition = result.Position;
@@ -581,7 +584,7 @@ namespace FormuleCirkelEntity.Controllers
                                 break;
                             case DNFCause.Engine:
                                 int amountEngines = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Engine && d.SeasonDriverId == driver.SeasonDriverId).Count());
-                                if (amountEngines > 3)
+                                if (amountEngines > 2)
                                 {
                                     result.PenaltyPosition += 10.9;
                                     driver.PenaltyReason = "+10 grid penalty for excessive engines used";
@@ -589,7 +592,7 @@ namespace FormuleCirkelEntity.Controllers
                                 break;
                             case DNFCause.Electrics:
                                 int amountElectrics = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Electrics && d.SeasonDriverId == driver.SeasonDriverId).Count());
-                                if (amountElectrics > 2)
+                                if (amountElectrics > 1)
                                 {
                                     result.PenaltyPosition += 5.1;
                                     driver.PenaltyReason = "+5 penalty for excessive electrics used";

@@ -21,7 +21,7 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Drivers
         public IActionResult Index(int? page)
         {
-            var drivers = _context.Drivers.Where(d => !d.Archived).ToList();
+            var drivers = _context.Drivers.Where(d => !d.Archived).OrderBy(d => d.Name).ToList();
             var pageNumber = page ?? 1;
             var onePageOfDrivers = drivers.ToPagedList(pageNumber, 10);
             ViewBag.OnePage = onePageOfDrivers;
@@ -183,7 +183,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult ArchivedDrivers()
         {
-            var drivers = _context.Drivers.Where(d => d.Archived).ToList();
+            var drivers = _context.Drivers.Where(d => d.Archived).OrderBy(d => d.Name).ToList();
             return View(drivers);
         }
 

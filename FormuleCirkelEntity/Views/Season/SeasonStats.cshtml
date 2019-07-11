@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Season details";
     int position = 1;
+    int style = 0;
 }
 
 <h1>Season details for season @ViewBag.seasonId</h1>
@@ -39,6 +40,9 @@
             <tbody>
                 @foreach (var driver in Model)
                 {
+                    @if (driver.Style == Style.Aggressive) { style = -2; }
+                    else if(driver.Style == Style.Neutral) { style = 0; }
+                    else { style = 2; }
                     <tr>
                         <td>@(position++)</td>
                         <td>
@@ -57,7 +61,7 @@
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Acceleration</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Stability</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Handling</span></td>
-                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability + ((int)driver.Style - 1))</span></td>
+                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability + style)</span></td>
                     </tr>
                 }
             </tbody>

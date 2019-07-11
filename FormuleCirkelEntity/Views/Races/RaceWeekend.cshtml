@@ -50,11 +50,11 @@
             </div>
         </div>
         <div class="row">
-            @if (Model.RaceState != RaceState.Concept)
+            @if (Model.RaceState == RaceState.Race || Model.RaceState == RaceState.Finished)
             {
                 <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Race</a>
             }
-            @if (Model.RaceState == RaceState.Concept)
+            @if (Model.RaceState == RaceState.Concept || Model.RaceState == RaceState.Qualifying)
             {
                 <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Qualifying</a>
             }

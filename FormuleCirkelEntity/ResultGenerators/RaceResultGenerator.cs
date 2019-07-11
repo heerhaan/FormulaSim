@@ -30,7 +30,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             int tireWeatherWear = 0;
             if (stint.RNGMaximum > 0)
             {
-                if (track.RNGodds == RNGodds.Increased) { rngTrack += 5; } else if (track.RNGodds == RNGodds.Decreased) { rngTrack += -5; }
+                if (track.RNGodds == RNGodds.Increased) { rngTrack += 8; } else if (track.RNGodds == RNGodds.Decreased) { rngTrack += -8; }
 
                 // Determines the effect weather has during a stint on-track
                 // Engine may be bonusified
@@ -45,16 +45,16 @@ namespace FormuleCirkelEntity.ResultGenerators
                         engineWeatherMultiplier = 1.1;
                         break;
                     case Weather.Rain:
-                        rngTrack += 5;
-                        dnfTrack += -1;
+                        rngTrack += 10;
+                        dnfTrack += -3;
                         break;
                     case Weather.Storm:
-                        rngTrack += 8;
-                        dnfTrack += -2;
+                        rngTrack += 20;
+                        dnfTrack += -4;
                         break;
                 }
             }
-            if (track.DNFodds == DNFodds.Increased) { dnfTrack += -1; } else if (track.DNFodds == DNFodds.Decreased) { dnfTrack += 1; }
+            if (track.DNFodds == DNFodds.Increased) { dnfTrack += -2; } else if (track.DNFodds == DNFodds.Decreased) { dnfTrack += 2; }
 
             // Add one because Random.Next() has an exclusive upper bound.
             var result = _rng.Next(stint.RNGMinimum, (stint.RNGMaximum + rngTrack) + 1);
@@ -101,7 +101,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 
         public int GetDriverLevelBonus(SeasonDriver driver)
         {
-            return driver.Skill + (2 - (2 * (int)driver.Style));
+            return driver.Skill + (4 - (4 * (int)driver.Style));
         }
 
         public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount)
@@ -131,9 +131,12 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <returns>-1 if the reliability check fails, 1 if it succeeds, and 0 if it's neutral.</returns>
         public int GetDriverReliabilityResult(SeasonDriver driver, int dnfTrack)
         {
-            var driverStyleModifier = ((int)driver.Style - 1);
+            int driverStyleModifier = 0;
+            if (driver.Style == Style.Aggressive) { driverStyleModifier = -2; }
+            else if (driver.Style == Style.Defensive) { driverStyleModifier = 2; }
+
             var reliabilityScore = driver.SeasonTeam.Reliability + driverStyleModifier + dnfTrack;
-            var reliabilityCheckValue = _rng.Next(1, 26); 
+            var reliabilityCheckValue = _rng.Next(1, 51); 
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
 
@@ -142,7 +145,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             var result = 0;
             result += driver.Skill;
             result += driver.SeasonTeam.Chassis;
-            result += _rng.Next(0, 60);
+            result += _rng.Next(0, 61);
             return result;
         }
 
@@ -152,7 +155,7 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResults">The <see cref="DriverResult"/>s to determine the relative positions of.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of the driverResult ID's and the corresponding positions.</returns>
         /// <remarks>When two driver points totals are equal, their position is determined based on their original grid position.</remarks>
-        public IDictionary<int, int> GetPositionsBasedOnRelativePoints(IEnumerable<DriverResult> driverResults)
+        public DriverSwap GetPositionsBasedOnRelativePoints(IEnumerable<DriverResult> driverResults)
         {
             var orderedResults = driverResults
                 .OrderByDescending(d => d.Points)
@@ -178,8 +181,17 @@ namespace FormuleCirkelEntity.ResultGenerators
                 }
             }
             orderedResults.Sort((l, r) => -1 * l.Points.CompareTo(r.Points));
+            DriverSwap swap = new DriverSwap();
+            swap.DriverResults = orderedResults;
+            swap.OrderedResults = orderedResults.ToDictionary((res => res.DriverResultId), (res => orderedResults.IndexOf(res) + 1));
 
-            return orderedResults.ToDictionary((res => res.DriverResultId), (res => orderedResults.IndexOf(res) + 1));
+            return swap;
         }
+    }
+
+    public class DriverSwap
+    {
+        public IDictionary<int, int> OrderedResults { get; set; }
+        public List<DriverResult> DriverResults { get; set; }
     }
 }
