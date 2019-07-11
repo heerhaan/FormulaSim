@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Season details";
     int position = 1;
+    int style = 0;
 }
 
 <h1>Season details for season @ViewBag.seasonId</h1>
@@ -16,49 +17,71 @@
 
 <hr />
 <h3>Power rankings</h3>
-<table id="graphic" class="table table-sm">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Driver</th>
-            <th>Skill</th>
-            <th>Team</th>
-            <th>Chassis</th>
-            <th>Engine</th>
-            <th>Power</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var driver in Model)
-        {
-            <tr>
-                <td>@(position++)</td>
-                <td><span class="badge nofullwidth">@driver.Driver.DriverNumber</span>@driver.Driver.Name</td>
-                <td>@driver.Skill</td>
-                <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
-                <td>@driver.SeasonTeam.Chassis</td>
-                <td>@driver.SeasonTeam.Engine.Name</td>
-                <td>@driver.SeasonTeam.Engine.Power</td>
-                <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power)</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div id="season-container">
+    <div>
+        <table id="graphic" class="table table-sm">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Driver</th>
+                    <th>Skill + Style</th>
+                    <th>Team</th>
+                    <th>Chassis</th>
+                    <th>Engine</th>
+                    <th>Power</th>
+                    <th>Total</th>
+                    <th>TOP</th>
+                    <th>ACC</th>
+                    <th>STB</th>
+                    <th>HDL</th>
+                    <th>Reliability</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var driver in Model)
+                {
+                    @if (driver.Style == Style.Aggressive) { style = -2; }
+                    else if(driver.Style == Style.Neutral) { style = 0; }
+                    else { style = 2; }
+                    <tr>
+                        <td>@(position++)</td>
+                        <td>
+                            <span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span>
+                            @if (driver.DriverStatus == DriverStatus.First) { <b>@driver.Driver.Name</b> }
+                            else if (driver.DriverStatus == DriverStatus.Second) { <i>@driver.Driver.Name</i> }
+                            else { @driver.Driver.Name }
+                        </td>
+                        <td>@driver.Skill + @(2 - (2 * (int)driver.Style))</td>
+                        <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
+                        <td>@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
+                        <td>@driver.SeasonTeam.Engine.Name</td>
+                        <td>@driver.SeasonTeam.Engine.Power</td>
+                        <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2) + (2 - (2 * (int)driver.Style)))</td>
+                        <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Topspeed</span></td>
+                        <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Acceleration</span></td>
+                        <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Stability</span></td>
+                        <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Handling</span></td>
+                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability + style)</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h4>Points earned</h4>
+        <ol>
+            @foreach (var point in ViewBag.points)
+            {
+                <li><span class="badge badge-pill badge-dark">@point points</span></li>
+            }
+        </ol>
+    </div>
+</div>
 
-<button class="btn badge-dark float-right" onclick="takeScreenshot()"><i class="fas fa-image"></i></button>
+<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 
 <a asp-action="Index">
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
 </a>
 
 <div id="screenshot"></div>
-
-<script>
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
-</script>

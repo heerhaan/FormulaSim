@@ -9,53 +9,6 @@
     padding-right: 5px;
 }
 
-body.dark {
-    background-color: rgb(30,34,39);
-    color: white;
-}
-    body.dark table {
-        background-color: rgb(30,34,39);
-        color: white;
-    }    
-
-    body.dark code[class*=language-],
-    body.dark table tbody > tr:nth-child(odd) > td,
-    body.dark table tbody > tr:nth-child(odd) > th {
-        background: #282c34
-    }
-
-        body.dark table thead th {
-            border-bottom-color: #bd2130
-        }
-
-        body.dark table th {
-            border-top-color: #bd2130
-        }
-
-        body.dark table td {
-            border-top-color: #bd2130
-        }
-
-.page-link {
-    background-color: #282c34;
-    color: #bd2130;
-    border-color: #bd2130;
-}
-.page-item.active .page-link {
-    background-color: #bd2130;
-    border-color: #bd2130;
-    color: #282c34;
-}
-
-#graphic {
-    background-color: rgb(30,34,39);
-}
-
-i.fas,
-i.fab {
-    color: white;
-}
-
 .hero-text {
     text-align: center;
     position: center;
@@ -63,8 +16,15 @@ i.fab {
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
-/* Fixes the placing of items in the Biography view by using flexboxes */
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
 
+h1 {
+    font-family: 'Formula1 Display';
+}
+
+/* Fixes the placing of items in the Biography view by using flexboxes */
 .biocontainer {
     display: flex;
 }
@@ -127,24 +87,36 @@ td .badge {
     width: 100%;
 }
 
-.nofullwidth {
-    width: auto !important;
-}
-
 .badge-first {
     background-color: #DAA520;
+    color: white !important;
 }
 
 .badge-second {
     background-color: #C0C0C0;
+    color: white !important;
 }
 
 .badge-third {
     background-color: #CD7F32;
+    color: white !important;
+}
+
+.badge-danger {
+    color: white !important;
 }
 
 .badge-dsq {
     background-color: black;
+    color: white !important;
+}
+
+.badge-success {
+    color: white !important;
+}
+
+.badge-primary {
+    color: white !important;
 }
 
 /* Sticky footer styles
@@ -157,14 +129,6 @@ html {
     html {
         font-size: 16px;
     }
-}
-
-.border-top {
-    border-top: 1px solid #bd2130 !important;
-}
-
-.border-bottom {
-    border-bottom: 1px solid #bd2130 !important;
 }
 
 .box-shadow {
@@ -198,6 +162,30 @@ body {
     line-height: 60px; /* Vertically center the text there */
 }
 
+.theme-button {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+
+.theme-buttons {
+    float: right;
+}
+
 .cursor-pointer:hover {
     cursor: pointer;
+}
+
+/* Generic classes for functionality */
+
+.nofullwidth {
+    width: auto !important;
+}
+
+.font-size-default {
+    font-size: 1rem;
+}
+
+.input-width {
+    width: 100px;
 }

@@ -21,7 +21,7 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Teams
         public IActionResult Index(int? page)
         {
-            var teams =_context.Teams.Where(t => !t.Archived);
+            var teams =_context.Teams.Where(t => !t.Archived).OrderBy(t => t.Name);
             var pageNumber = page ?? 1;
             var onePageOfTeams = teams.ToPagedList(pageNumber, 10);
             ViewBag.OnePage = onePageOfTeams;
@@ -197,7 +197,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult ArchivedTeams()
         {
-            var teams = _context.Teams.Where(t => t.Archived).ToList();
+            var teams = _context.Teams.Where(t => t.Archived).OrderBy(t => t.Name).ToList();
             return View(teams);
         }
 

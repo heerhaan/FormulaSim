@@ -32,6 +32,9 @@
             <th>
                 Pnt.
             </th>
+            <th>
+                Avg.
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -45,7 +48,7 @@
                     @Html.DisplayFor(modelItem => item.Driver.Name)
                 </td>
                 <td>
-                    <span class="badge">@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</span>
+                    <span class="badge alt-color">@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</span>
                 </td>
                 <td>
                     <span class="badge" style="background-color:@(item.SeasonTeam.Team.Colour);color:@(item.SeasonTeam.Team.Accent);font-size:1rem;">@item.SeasonTeam.Team.Abbreviation</span>
@@ -74,7 +77,7 @@
                         } else if(result.Position == 3)
                         {
                             <td><span class="badge badge-third">@result.Position</span></td>
-                        } else if(result.Position <= 12)
+                        } else if(result.Position <= ViewBag.lastpointpos)
                         {
                             <td><span class="badge badge-success">@result.Position</span></td>
                         }
@@ -85,7 +88,16 @@
                     }
                 }
                 <td>
-                    <span class="badge">@Html.DisplayFor(modelItem => item.Points)</span>
+                    <span>@Html.DisplayFor(modelItem => item.Points)</span>
+                </td>
+                <td>
+                    @foreach (var avg in ViewBag.averages)
+                    {
+                        if (avg.driver == item)
+                        {
+                            <span class="badge alt-color">@avg.averagepos</span>
+                        }
+                    }
                 </td>
             </tr>
             position++;
@@ -93,7 +105,7 @@
     </tbody>
 </table>
 
-<button class="btn badge-dark" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+<button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 
 <div id="screenshot"></div>
 
@@ -106,12 +118,3 @@
         height:60px;
     }
 </style>
-
-<script>
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
-</script>

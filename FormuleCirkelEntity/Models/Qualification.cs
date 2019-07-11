@@ -24,5 +24,6 @@ namespace FormuleCirkelEntity.Models
         public string DriverName { get; set; }
         public int? Score { get; set; }
         public int? Position { get; set; }
+        public double? PenaltyPosition { get; set; }
     }
 }

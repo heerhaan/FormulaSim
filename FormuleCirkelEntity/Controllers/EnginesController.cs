@@ -19,7 +19,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult Index(int? page)
         {
-            var engines = _context.Engines;
+            var engines = _context.Engines.Where(e => e.Archived == false).OrderBy(e => e.Name);
             var pageNumber = page ?? 1;
             var onePageOfEngines = engines.ToPagedList(pageNumber, 10);
             ViewBag.OnePage = onePageOfEngines;

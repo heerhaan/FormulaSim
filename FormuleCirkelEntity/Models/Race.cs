@@ -15,6 +15,14 @@ namespace FormuleCirkelEntity.Models
         Finished = 3
     }
 
+    public enum Weather
+    {
+        Sunny = 0,
+        Overcast = 1,
+        Rain = 2,
+        Storm = 3
+    }
+
     public class Race
     {
         public Race()
@@ -30,6 +38,8 @@ namespace FormuleCirkelEntity.Models
 
         [EnumDataType(typeof(RaceState))]
         public RaceState RaceState { get; set; }
+        [EnumDataType(typeof(Weather))]
+        public Weather Weather { get; set; }
 
         public int StintProgress { get; set; }
 

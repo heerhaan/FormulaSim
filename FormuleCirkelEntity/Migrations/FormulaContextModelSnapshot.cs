@@ -46,7 +46,13 @@ namespace FormuleCirkelEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("DNFCause");
+
+                    b.Property<int>("DSQCause");
+
                     b.Property<int>("Grid");
+
+                    b.Property<string>("PenaltyReason");
 
                     b.Property<int>("Points");
 
@@ -108,6 +114,8 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<string>("DriverName");
 
+                    b.Property<double?>("PenaltyPosition");
+
                     b.Property<int?>("Position");
 
                     b.Property<int>("RaceId");
@@ -141,6 +149,8 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("TrackId");
 
+                    b.Property<int>("Weather");
+
                     b.HasKey("RaceId");
 
                     b.HasIndex("SeasonId");
@@ -155,6 +165,8 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("SeasonId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("PointsPerPosition");
 
                     b.Property<int>("QualificationRemainingDriversQ2");
 
@@ -176,6 +188,8 @@ namespace FormuleCirkelEntity.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("DriverId");
+
+                    b.Property<int>("DriverStatus");
 
                     b.Property<int>("Points");
 
@@ -206,19 +220,27 @@ namespace FormuleCirkelEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Acceleration");
+
                     b.Property<int>("Chassis");
 
                     b.Property<int>("EngineId");
 
+                    b.Property<int>("Handling");
+
                     b.Property<int>("Points");
+
+                    b.Property<string>("Principal");
 
                     b.Property<int>("Reliability");
 
                     b.Property<int>("SeasonId");
 
-                    b.Property<int>("Specification");
+                    b.Property<int>("Stability");
 
                     b.Property<int>("TeamId");
+
+                    b.Property<int>("Topspeed");
 
                     b.HasKey("SeasonTeamId");
 

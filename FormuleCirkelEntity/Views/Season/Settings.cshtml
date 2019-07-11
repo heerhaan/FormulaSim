@@ -20,12 +20,12 @@
                 <span asp-validation-for="QualificationRemainingDriversQ3" class="text-danger"></span>
             </section>
             <section class="form-group">
-                <input type="submit" value="Save" class="btn btn-dark" />
+                <input type="submit" value="Save" class="btn" />
+                <a asp-action="SetPoints" asp-route-id="@Model.SeasonId" class="btn float-right">Setup points</a>
             </section>
         </form>
     </section>
+    <a asp-action="Detail" asp-route-id="@Model.SeasonId" class="row">
+        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+    </a>
 </section>
-
-<a asp-action="Detail" asp-route-id="@Model.SeasonId">
-    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-</a>

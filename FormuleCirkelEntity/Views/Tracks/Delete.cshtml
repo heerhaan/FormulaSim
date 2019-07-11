@@ -2,13 +2,13 @@
 
 @{
     ViewData["Title"] = "Archive";
-    string archive = "archive";
-    if (Model.Archived) { archive = "unarchive"; }
+    string archive = "Archive";
+    if (Model.Archived) { archive = "Unarchive"; }
 }
 
-<h1>Archive</h1>
+<h1>@archive</h1>
 
-<h3>Are you sure you want to @archive @Model.Name?</h3>
+<h3>Are you sure you want to move @Model.Name?</h3>
 <div>
     <h4>Track</h4>
     <hr />

@@ -90,7 +90,7 @@
     <a asp-action="Index">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
     </a>
-    <button class="btn badge-dark ml-auto" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 </div>
 
 <div id="screenshot"></div>
@@ -102,15 +102,8 @@
             url: "/Teams/SaveBiography",
             data: { id: @Model.Team.TeamId, biography: $("#biography").text() },
             dataType: "html",
-            success: function () { alert("Biografie opgeslagen!"); },
-            error: function () { alert("Opslaan mislukt!"); }
+            success: function () { alert("Biography saved."); },
+            error: function () { alert("Saving biography failed."); }
         });
     });
-
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
 </script>

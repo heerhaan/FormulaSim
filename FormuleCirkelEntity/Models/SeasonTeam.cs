@@ -8,12 +8,14 @@ namespace FormuleCirkelEntity.Models
     public class SeasonTeam
     {
         public int SeasonTeamId { get; set; }
+        public string Principal { get; set; }
         public int Chassis { get; set; }
         public int Reliability { get; set; }
         public int Points { get; set; }
-
-        [EnumDataType(typeof(Specification))]
-        public Specification Specification { get; set; }
+        public int Topspeed { get; set; }
+        public int Acceleration { get; set; }
+        public int Stability { get; set; }
+        public int Handling { get; set; }
 
         public int SeasonId { get; set; }
         public Season Season { get; set; }

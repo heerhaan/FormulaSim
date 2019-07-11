@@ -22,7 +22,7 @@ namespace FormuleCirkelEntity.Controllers
         // GET: Tracks
         public IActionResult Index(int? page)
         {
-            var tracks = _context.Tracks.Where(t => t.Archived == false);
+            var tracks = _context.Tracks.Where(t => t.Archived == false).OrderBy(t => t.Location);
             var pageNumber = page ?? 1;
             var onePageOfTracks = tracks.ToPagedList(pageNumber, 10);
             ViewBag.OnePage = onePageOfTracks;
@@ -125,7 +125,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult ArchivedTracks()
         {
-            var tracks = _context.Tracks.Where(t => t.Archived).ToList();
+            var tracks = _context.Tracks.Where(t => t.Archived).OrderBy(t => t.Location).ToList();
             return View(tracks);
         }
     }

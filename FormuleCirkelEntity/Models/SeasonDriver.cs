@@ -6,15 +6,6 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public enum Style
-    {
-        Agressief = 0,
-        Neutraal = 1,
-        Defensief = 2
-    }
-
-    public enum Tires { Hard, Zacht }
-
     public class SeasonDriver
     {
         [Key]
@@ -23,9 +14,11 @@ namespace FormuleCirkelEntity.Models
 
         [EnumDataType(typeof(Style))]
         public Style Style { get; set; }
-
         [EnumDataType(typeof(Tires))]
         public Tires Tires { get; set; }
+        [EnumDataType(typeof(DriverStatus))]
+        public DriverStatus DriverStatus { get; set; }
+
         public int Points { get; set; }
 
         public int DriverId { get; set; }
@@ -39,4 +32,15 @@ namespace FormuleCirkelEntity.Models
 
         public virtual ICollection<DriverResult> DriverResults { get; set; }
     }
+
+    public enum Style
+    {
+        Aggressive = 0,
+        Neutral = 1,
+        Defensive = 2
+    }
+
+    public enum Tires { Hards, Softs }
+
+    public enum DriverStatus { First, None, Second }
 }

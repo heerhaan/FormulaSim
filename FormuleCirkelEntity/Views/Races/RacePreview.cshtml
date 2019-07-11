@@ -33,13 +33,11 @@
             @Html.DisplayFor(model => model.Track.Specification)
         </dd>
         <dt class="col-sm-2">
-            Teams with spec:
+            Weather
         </dt>
         <dd class="col-sm-10">
-            @foreach (var team in ViewBag.teamSpecs)
-            {
-                <span class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;">@(team.Team.Abbreviation)</span>
-            }
+            @Html.DisplayFor(model => model.Weather)
+            <span><i id="weather"></i></span>
         </dd>
         <dt class="col-sm-2">
             DNF chance
@@ -117,7 +115,7 @@
             <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn btn-dark" />
         </div>
     </form>
-    <button class="btn badge-dark ml-auto" onclick="takeScreenshot()"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 </div>
 <br />
 
@@ -126,10 +124,22 @@
 @Html.Raw(TempData["msg"])
 
 <script>
-    function takeScreenshot() {
-        html2canvas(document.querySelector('#graphic')).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
-    }
+    $(function () {
+        var weatherclass = "";
+        switch ("@Model.Weather") {
+            case "Sunny":
+                weatherclass = "fas fa-sun";
+                break;
+            case "Overcast":
+                weatherclass = "fas fa-cloud";
+                break;
+            case "Rain":
+                weatherclass = "fas fa-cloud-rain";
+                break;
+            case "Storm":
+                weatherclass = "fas fa-cloud-moon-rain";
+                break;
+        }
+        $("#weather").addClass(weatherclass);
+    });
 </script>

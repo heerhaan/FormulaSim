@@ -2,6 +2,8 @@
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -32,6 +34,8 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderBy(s => s.SeasonStart)
                 .FirstOrDefault();
 
+                ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
+
                 var standings = _context.SeasonDrivers
                     .Include(s => s.DriverResults)
                     .Include(s => s.Driver)
@@ -44,6 +48,35 @@ namespace FormuleCirkelEntity.Controllers
                     .Where(r => r.SeasonId == currentSeason.SeasonId)
                     .Include(r => r.Track)
                     .OrderBy(r => r.Round).ToList();
+
+                // Calculates the average finishing position
+                List<AverageFinish> averageFinishes = new List<AverageFinish>();
+                foreach (var driver in standings)
+                {
+                    List<double> positions = new List<double>();
+                    double average = 0;
+                    if (driver.DriverResults.Any())
+                    {
+                        foreach (var result in driver.DriverResults)
+                        {
+                            if (result.Status == Status.Finished)
+                            {
+                                positions.Add(result.Position);
+                            }
+                        }
+                        if (positions.Count() != 0)
+                        {
+                            average = Math.Round((positions.Average()), 2);
+                        }
+                    }
+                    AverageFinish avg = new AverageFinish()
+                    {
+                        driver = driver,
+                        averagepos = average
+                    };
+                    averageFinishes.Add(avg);
+                }
+                ViewBag.averages = averageFinishes;
 
                 return View(standings);
             } else
@@ -59,6 +92,8 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == seasonId)
                 .FirstOrDefault();
 
+            ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
+
             var standings = _context.SeasonDrivers
                 .Include(s => s.DriverResults)
                 .Include(s => s.Driver)
@@ -66,6 +101,32 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == currentSeason.SeasonId)
                 .OrderByDescending(s => s.Points)
                 .ToList();
+
+            // Calculates the average finishing position
+            List<AverageFinish> averageFinishes = new List<AverageFinish>();
+            foreach (var driver in standings)
+            {
+                List<double> positions = new List<double>();
+                double average = 0;
+                foreach (var result in driver.DriverResults)
+                {
+                    if (result.Status == Status.Finished)
+                    {
+                        positions.Add(result.Position);
+                    }
+                }
+                if (positions.Count() != 0)
+                {
+                    average = Math.Round((positions.Average()), 2);
+                }
+                AverageFinish avg = new AverageFinish()
+                {
+                    driver = driver,
+                    averagepos = average
+                };
+                averageFinishes.Add(avg);
+            }
+            ViewBag.averages = averageFinishes;
 
             ViewBag.rounds = _context.Races
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
@@ -85,6 +146,8 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
                 .OrderBy(s => s.SeasonStart)
                 .FirstOrDefault();
+
+                ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
 
                 var standings = _context.SeasonTeams
                     .Include(t => t.Team)
@@ -115,6 +178,8 @@ namespace FormuleCirkelEntity.Controllers
             var currentSeason = _context.Seasons
                 .Where(s => s.SeasonId == seasonId)
                 .FirstOrDefault();
+
+            ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
 
             var standings = _context.SeasonTeams
                 .Include(t => t.Team)
@@ -162,5 +227,11 @@ namespace FormuleCirkelEntity.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+    }
+
+    public class AverageFinish
+    {
+        public SeasonDriver driver { get; set; }
+        public double averagepos { get; set; }
     }
 }
