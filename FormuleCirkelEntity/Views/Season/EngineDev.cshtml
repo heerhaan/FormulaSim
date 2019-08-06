@@ -58,13 +58,13 @@
 
         $('#develop').click(function () {
             var number = 1;
-            var min = document.getElementById("min").value;
-            var max = document.getElementById("max").value;
+            var min = Math.ceil(document.getElementById("min").value);
+            var max = Math.floor(document.getElementById("max").value);
             $('#devtable').children('tr').each(function () {
                 var element = document.getElementById("old-value-" + number);
                 var text = element.textContent;
                 var old = Number(text);
-                var dev = Math.floor(Math.random() * (max - min + 1)) - max;
+                var dev = Math.floor(Math.random() * (max - min + 1)) + min;
                 var newdev = (old + dev);
 
                 document.getElementById("custom-change-" + number).innerText = dev;

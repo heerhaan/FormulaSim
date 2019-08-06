@@ -10,6 +10,8 @@ namespace FormuleCirkelEntity.ViewModels
         public SeasonSettingsViewModel(Season season)
         {
             SeasonId = season.SeasonId;
+            SeasonNumber = season.SeasonNumber;
+            QualificationRNG = season.QualificationRNG;
             QualificationRemainingDriversQ2 = season.QualificationRemainingDriversQ2;
             QualificationRemainingDriversQ3 = season.QualificationRemainingDriversQ3;
         }
@@ -18,6 +20,8 @@ namespace FormuleCirkelEntity.ViewModels
         { }
 
         public int SeasonId { get; set; }
+        public int SeasonNumber { get; set; }
+        public int QualificationRNG { get; set; }
         public int QualificationRemainingDriversQ2 { get; set; }
         public int QualificationRemainingDriversQ3 { get; set; }
     }

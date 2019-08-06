@@ -41,7 +41,11 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.SeasonTeam)
                     .ThenInclude(t => t.Team);
             var driverresult = _context.DriverResults
-                .Where(dr => dr.SeasonDriver.DriverId == id);
+                .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
+                .Include(dr => dr.SeasonDriver)
+                    .ThenInclude(sd => sd.Season);
+            var seasons = _context.Seasons
+                .Where(s => s.Championship.ActiveChampionship);
 
             // Calculates the amount of WDCs a driver might have.
             int championships = 0;
@@ -67,19 +71,18 @@ namespace FormuleCirkelEntity.Controllers
             {
                 Driver = driver,
                 SeasonDriver = seasondriver,
-                DriverResults = driverresult
+                DriverResults = driverresult,
+                Seasons = seasons
             };
 
             return View(stats);
         }
 
-        // GET: Drivers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Drivers/Create
         [HttpPost]
         public async Task<IActionResult> Create([Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
         {
@@ -92,7 +95,6 @@ namespace FormuleCirkelEntity.Controllers
             return View(driver);
         }
 
-        // GET: Drivers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -108,7 +110,6 @@ namespace FormuleCirkelEntity.Controllers
             return View(driver);
         }
 
-        // POST: Drivers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)

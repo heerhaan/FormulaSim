@@ -13,6 +13,7 @@ namespace FormuleCirkelEntity.ViewModels
             Points = new List<int>();
         }
         public int SeasonId { get; set; }
+        public int SeasonNumber { get; set; }
         public List<int> Points { get; set; }
     }
 }

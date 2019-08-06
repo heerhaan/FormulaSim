@@ -59,6 +59,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Finds the last time track was used and uses same stintsetup as then
             var lastracemodel = _context.Races
+                .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
                 .LastOrDefault(lr => lr.Track.TrackId == track.TrackId);
 
             if(lastracemodel != null)
@@ -96,8 +97,11 @@ namespace FormuleCirkelEntity.Controllers
                 TrackId = trackId
             };
 
+            var season = _context.Seasons.SingleOrDefault(s => s.SeasonId == id);
+
             // Finds the last time track was used and uses same stintsetup as then
             var lastracemodel = _context.Races
+                .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
                 .LastOrDefault(lr => lr.Track.TrackId == trackId);
             if (lastracemodel != null)
             {
@@ -466,7 +470,7 @@ namespace FormuleCirkelEntity.Controllers
                 foreach (var qualificationResult in qualificationResultsToUpdate)
                 {
                     var qualifyingDriver = drivers.Single(d => d.SeasonDriverId == qualificationResult.DriverId);
-                    qualificationResult.Score = _resultGenerator.GetQualifyingResult(qualifyingDriver);
+                    qualificationResult.Score = _resultGenerator.GetQualifyingResult(qualifyingDriver, race.Season.QualificationRNG);
                 }
 
                 var qualificationResults = qualificationResultsToUpdate.OrderByDescending(q => q.Score).ToList();

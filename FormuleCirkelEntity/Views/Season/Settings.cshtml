@@ -4,11 +4,21 @@
 <section>
     <header>
         <h1 class="row">Settings</h1>
-        <h4 class="row">Season @Model.SeasonId</h4>
+        <h4 class="row">Season @Model.SeasonNumber</h4>
     </header>
     <section class="row">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <section class="form-group">
+                <label asp-for="SeasonNumber" class="control-label">Year</label>
+                <input asp-for="SeasonNumber" class="form-control" />
+                <span asp-validation-for="SeasonNumber" class="text-danger"></span>
+            </section>
+            <section class="form-group">
+                <label asp-for="QualificationRNG" class="control-label">Maximum RNG in Qualifications</label>
+                <input asp-for="QualificationRNG" class="form-control" />
+                <span asp-validation-for="QualificationRNG" class="text-danger"></span>
+            </section>
             <section class="form-group">
                 <label asp-for="QualificationRemainingDriversQ2" class="control-label">Drivers in Q2</label>
                 <input asp-for="QualificationRemainingDriversQ2" class="form-control" />

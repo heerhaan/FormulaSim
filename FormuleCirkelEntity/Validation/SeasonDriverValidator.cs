@@ -6,7 +6,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
     {
         public SeasonDriverValidator()
         {
-            RuleFor(d => d.Skill).NotEmpty().WithMessage("Vaardigheid is verplicht!");
+            RuleFor(d => d.Skill).NotEmpty().WithMessage("Skill is required!");
         }
     }
 }

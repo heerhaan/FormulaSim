@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20190607091518_RaceState.cs" />
     <Compile Remove="Migrations\20190607091602_RaceState.cs" />
     <Compile Remove="Migrations\20190607093522_InitialCreate.cs" />
+    <Compile Remove="Migrations\20190711115747_Championships.cs" />
+    <Compile Remove="Migrations\20190711120616_Championship.cs" />
   </ItemGroup>
 
   <ItemGroup>

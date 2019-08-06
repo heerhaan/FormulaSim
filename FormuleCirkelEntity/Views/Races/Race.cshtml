@@ -41,12 +41,26 @@
         <tbody>
             @foreach (var driverResult in Model.DriverResults.OrderBy(d => d.Position))
             {
+                int gridChange = (driverResult.Grid - driverResult.Position);
                 <tr data-obj-id="@driverResult.SeasonDriverId">
                     <td data-field="position">@driverResult.Position</td>
                     <td data-field="driverNumber"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
                     <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
                     <td data-field="teamName"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
-                    <td data-field="startGrid">@driverResult.Grid</td>
+                    <td data-field="startGrid">
+                        @if (gridChange > 0)
+                        {
+                            <i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth'>@gridChange</span>
+                        }
+                        else if (gridChange < 0)
+                        {
+                            <i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth'>@(gridChange * -1)</span>
+                        }
+                        else
+                        {
+                            <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth'>@gridChange</span>
+                        }
+                    </td>
                     @foreach (var stint in Model.Stints)
                     {
                         var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
@@ -150,9 +164,18 @@
                 row.querySelector("td[data-field='pointsTotal']").innerText = driverResult.Points;
                 row.querySelector("td[data-field='dnfCause']").innerText = "-";
             }
-            
+
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
-            row.querySelector("td[data-field='startGrid']").innerText = driverResult.Grid;
+            let gridChange = (driverResult.Grid - driverResult.Position);
+            if (gridChange > 0) {
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth'> " + gridChange + " </span>";
+            }
+            else if (gridChange < 0) {
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth'> " + (gridChange * -1) + " </span>";
+            }
+            else {
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth'> " + gridChange + " </span>";
+            }
             Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
                 let stintResult = driverResult.StintResults[stintKey];
                 row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);

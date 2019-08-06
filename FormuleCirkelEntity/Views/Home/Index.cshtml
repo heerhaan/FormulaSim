@@ -3,7 +3,16 @@
 }
 
 <div class="text-center hero-text">
-    <h1 class="display-4">Welcome to Formula Sim!</h1>
+
+    @if (ViewBag.championship == false)
+    {
+        <h1 class="display-4">Welcome to Formula Sim!</h1>
+        <h2 class="display-4">Please create a championship before proceeding!</h2>
+    }
+    else
+    {
+        <h1 class="display-4">Welcome to @ViewBag.name</h1>
+    }
 </div>
 
 <style>

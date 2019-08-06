@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190711122426_Championship")]
+    partial class Championship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,13 +187,9 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<string>("PointsPerPosition");
 
-                    b.Property<int>("QualificationRNG");
-
                     b.Property<int>("QualificationRemainingDriversQ2");
 
                     b.Property<int>("QualificationRemainingDriversQ3");
-
-                    b.Property<int>("SeasonNumber");
 
                     b.Property<DateTime?>("SeasonStart");
 

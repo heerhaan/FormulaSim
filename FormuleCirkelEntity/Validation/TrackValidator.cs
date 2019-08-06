@@ -6,8 +6,8 @@ namespace FormuleCirkelEntity.Models.ModelValidation
     {
         public TrackValidator()
         {
-            RuleFor(t => t.Name).NotEmpty().WithMessage("Naam van circuit is verplicht!");
-            RuleFor(t => t.Location).NotEmpty().WithMessage("Locatie voor circuit is verplicht!");
+            RuleFor(t => t.Name).NotEmpty().WithMessage("Name is required!");
+            RuleFor(t => t.Location).NotEmpty().WithMessage("Location is required!");
         }
     }
 }

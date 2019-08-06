@@ -6,7 +6,13 @@
     int dsqs = (Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count());
     int wins = (Model.DriverResults.Where(dr => dr.Position == 1).Count());
     int podiums = (Model.DriverResults.Where(dr => dr.Position == 2 || dr.Position == 3).Count());
-    int points = (Model.DriverResults.Where(dr => dr.Position > 3 && dr.Position <= 12).Count());
+    int points = 0;
+    foreach (var season in Model.Seasons)
+    {
+        var current = Model.DriverResults.Where(dr => dr.SeasonDriver.SeasonId == season.SeasonId);
+        var pointsMax = season.PointsPerPosition.Keys.Max();
+        points += (current.Where(dr => dr.Position > 3 && dr.Position <= pointsMax).Count());
+    }
     int outside = (Model.DriverResults.Where(dr => dr.Position > 12 && dr.Status == Status.Finished).Count());
     int accidents = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Accident || dr.DNFCause == DNFCause.Puncture).Count());
     int contact = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Damage || dr.DNFCause == DNFCause.Collision).Count());

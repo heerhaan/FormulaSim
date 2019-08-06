@@ -3,10 +3,10 @@
 @{
     ViewData["Title"] = "Season details";
     int position = 1;
-    int style = 0;
+    string style = "";
 }
 
-<h1>Season details for season @ViewBag.seasonId</h1>
+<h1>Season details for season @ViewBag.number</h1>
 
 <a asp-controller="Home" asp-action="PastDriverStandings" asp-route-seasonId="@ViewBag.seasonId">
     <span class="badge badge-light" style="font-size:1rem;">WDC standings</span>
@@ -40,9 +40,9 @@
             <tbody>
                 @foreach (var driver in Model)
                 {
-                    @if (driver.Style == Style.Aggressive) { style = -2; }
-                    else if(driver.Style == Style.Neutral) { style = 0; }
-                    else { style = 2; }
+                    @if (driver.Style == Style.Aggressive) { style = "+ 3"; }
+                    else if(driver.Style == Style.Neutral) { style = ""; }
+                    else { style = "- 3"; }
                     <tr>
                         <td>@(position++)</td>
                         <td>
@@ -51,17 +51,17 @@
                             else if (driver.DriverStatus == DriverStatus.Second) { <i>@driver.Driver.Name</i> }
                             else { @driver.Driver.Name }
                         </td>
-                        <td>@driver.Skill + @(2 - (2 * (int)driver.Style))</td>
+                        <td>@driver.Skill @style</td>
                         <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
                         <td>@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
                         <td>@driver.SeasonTeam.Engine.Name</td>
                         <td>@driver.SeasonTeam.Engine.Power</td>
-                        <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2) + (2 - (2 * (int)driver.Style)))</td>
+                        <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2) + (3 - (3 * (int)driver.Style)))</td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Topspeed</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Acceleration</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Stability</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Handling</span></td>
-                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability + style)</span></td>
+                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability + (-2 - (-2 * (int)driver.Style)))</span></td>
                     </tr>
                 }
             </tbody>

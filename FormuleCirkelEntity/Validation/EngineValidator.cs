@@ -7,8 +7,8 @@ namespace FormuleCirkelEntity.Models.ModelValidation
     {
         public EngineValidator(FormulaContext context)
         {
-            RuleFor(e => e.Name).NotEmpty().WithMessage("Naam is verplicht!");
-            RuleFor(e => e.Power).NotEmpty().WithMessage("Motor kracht is verplicht!");
+            RuleFor(e => e.Name).NotEmpty().WithMessage("Name is required!");
+            RuleFor(e => e.Power).NotEmpty().WithMessage("Engine power is required!");
         }
     }
 }

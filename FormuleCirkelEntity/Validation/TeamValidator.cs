@@ -13,9 +13,9 @@ namespace FormuleCirkelEntity.Models.ModelValidation
             //Sets up database
             _context = context;
 
-            RuleFor(t => t.Name).NotEmpty().WithMessage("Naam voor team is verplicht!");
-            RuleFor(t => t.Abbreviation).NotEmpty().WithMessage("Afkorting is verplicht!")
-                .Must(UniqueAbbreviation).WithMessage("Afkorting is al bezet!");
+            RuleFor(t => t.Name).NotEmpty().WithMessage("Name is required!");
+            RuleFor(t => t.Abbreviation).NotEmpty().WithMessage("Abbreviation is required!")
+                .Must(UniqueAbbreviation).WithMessage("Abbreviation is already used!");
         }
 
         private bool UniqueAbbreviation(Team team, string abb)

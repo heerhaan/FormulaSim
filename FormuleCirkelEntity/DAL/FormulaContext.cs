@@ -13,6 +13,7 @@ namespace FormuleCirkelEntity.DAL
     {
         public FormulaContext(DbContextOptions<FormulaContext> options) : base(options) { }
 
+        public DbSet<Championship> Championships { get; set; }
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Engine> Engines { get; set; }
         public DbSet<Race> Races { get; set; }

@@ -20,12 +20,23 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult Index()
         {
+            bool championship = false;
+            string name = "Formula";
+            if (_context.Championships.Any())
+            {
+                championship = true;
+                var champname = _context.Championships.FirstOrDefault(c => c.ActiveChampionship);
+                name = champname.ChampionshipName;
+            }
+            
+            ViewBag.championship = championship;
+            ViewBag.name = name;
             return View();
         }
 
         public IActionResult DriverStandings()
         {
-            var seasons = _context.Seasons;
+            var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship);
 
             if (seasons.Any(s => s.State == SeasonState.Progress))
             {
@@ -71,8 +82,8 @@ namespace FormuleCirkelEntity.Controllers
                     }
                     AverageFinish avg = new AverageFinish()
                     {
-                        driver = driver,
-                        averagepos = average
+                        Driver = driver,
+                        Averagepos = average
                     };
                     averageFinishes.Add(avg);
                 }
@@ -92,7 +103,12 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == seasonId)
                 .FirstOrDefault();
 
-            ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
+            int lastpoint = 10;
+            if (currentSeason.PointsPerPosition.Count != 0)
+            {
+                lastpoint = currentSeason.PointsPerPosition.Keys.Max();
+            }
+            ViewBag.lastpointpos = lastpoint;
 
             var standings = _context.SeasonDrivers
                 .Include(s => s.DriverResults)
@@ -121,8 +137,8 @@ namespace FormuleCirkelEntity.Controllers
                 }
                 AverageFinish avg = new AverageFinish()
                 {
-                    driver = driver,
-                    averagepos = average
+                    Driver = driver,
+                    Averagepos = average
                 };
                 averageFinishes.Add(avg);
             }
@@ -138,7 +154,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult TeamStandings()
         {
-            var seasons = _context.Seasons;
+            var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship);
 
             if (seasons.Any(s => s.State == SeasonState.Progress))
             {
@@ -179,7 +195,13 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == seasonId)
                 .FirstOrDefault();
 
-            ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
+            int lastpoint = 10;
+            if (currentSeason.PointsPerPosition.Count != 0)
+            {
+                lastpoint = currentSeason.PointsPerPosition.Keys.Max();
+            }
+
+            ViewBag.lastpointpos = lastpoint;
 
             var standings = _context.SeasonTeams
                 .Include(t => t.Team)
@@ -200,7 +222,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult NextRace()
         {
-            var seasons = _context.Seasons;
+            var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship);
 
             if(seasons.Any(s => s.State == SeasonState.Progress))
             {
@@ -214,8 +236,16 @@ namespace FormuleCirkelEntity.Controllers
                     .OrderBy(r => r.Round)
                     .FirstOrDefault(r => r.StintProgress == 0);
 
-                return RedirectToAction("RacePreview", "Races", new { id = currentSeason.SeasonId, raceId = nextrace.RaceId });
-            } else
+                if (nextrace == null)
+                {
+                    return RedirectToAction("Index", "Season");
+                }
+                else
+                {
+                    return RedirectToAction("RacePreview", "Races", new { id = currentSeason.SeasonId, raceId = nextrace.RaceId });
+                }
+            }
+            else
             {
                 return RedirectToAction("Index", "Season");
             }
@@ -231,7 +261,7 @@ namespace FormuleCirkelEntity.Controllers
 
     public class AverageFinish
     {
-        public SeasonDriver driver { get; set; }
-        public double averagepos { get; set; }
+        public SeasonDriver Driver { get; set; }
+        public double Averagepos { get; set; }
     }
 }

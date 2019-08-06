@@ -2,7 +2,7 @@
 
 <section class="row my-1">
     <header>
-        <h1>Seasons</h1>
+        <h1>Seasons in @ViewBag.championship</h1>
     </header>
 </section>
 
@@ -28,7 +28,7 @@
                 var topDriver = item.Drivers.OrderByDescending(d => d.Points).FirstOrDefault();
                 var topTeam = item.Teams.OrderByDescending(t => t.Points).FirstOrDefault();
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.SeasonId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.SeasonNumber)</td>
                     @if(topDriver == null || topTeam == null)
                     {
                         <td>X</td>

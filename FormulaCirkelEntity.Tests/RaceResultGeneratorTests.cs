@@ -8,9 +8,9 @@ namespace FormulaCirkelEntity.Tests
     public class RaceResultGeneratorTests
     {
         [Theory]
-        [InlineData(Style.Aggressive, 22)]
+        [InlineData(Style.Aggressive, 23)]
         [InlineData(Style.Neutral, 20)]
-        [InlineData(Style.Defensive, 18)]
+        [InlineData(Style.Defensive, 17)]
         public void DriverLevelBonus_StyleAddition_Correct(Style style, int expected)
         {
             // Arrange
