@@ -2,7 +2,11 @@
 
 @{
     ViewData["Title"] = "Engines";
-    var pageCount = (int)ViewBag.pageCount;
+    var pageCount = (int)ViewData["pageCount"];
+    var pageSize = (int)ViewData["pageSize"];
+    var pageNumber = (int)ViewData["pageNumber"];
+    var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
+    var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
 }
 
 <section>
@@ -45,14 +49,14 @@
 <nav>
     <ul class="pagination">
         <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous"><span>&laquo;</span></a>
+            <a class="page-link" asp-route-ps="@pageSize" asp-route-p="@backPage"><span>&laquo;</span></a>
         </li>
         @for (int i = 1; i <= pageCount; i++)
         {
-            <li class="page-item"><a class="page-link" href="#">@i</a></li>
+            <li class="page-item"><a class="page-link" asp-route-ps="@pageSize" asp-route-p="@i">@i</a></li>
         }
         <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next"><span>&raquo;</span></a>
+            <a class="page-link" asp-route-ps="@pageSize" asp-route-p="@nextPage"><span>&raquo;</span></a>
         </li>
     </ul>
 </nav>

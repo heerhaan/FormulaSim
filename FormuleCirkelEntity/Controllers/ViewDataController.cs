@@ -6,7 +6,6 @@ using FormuleCirkelEntity.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,18 +24,10 @@ namespace FormuleCirkelEntity.Controllers
             Data = DataContext.Set<T>();
         }
 
-        public virtual async Task<IActionResult> Index([FromQuery] int? page = 1, [FromQuery] int? givenPageSize = 10)
+        [SortResult, PagedResult]
+        public virtual async Task<IActionResult> Index()
         {
-            var pageSize = PagingHelper.CheckPageSize(givenPageSize ?? 10);
-            int pageNumber = page ?? 1;
-
-            int count = await DataContext.Set<T>().CountAsync();
-
-            IQueryable<T> drivers = Data.Skip(pageSize * (pageNumber - 1))
-                .Take(pageSize);
-
-            ViewBag.pageCount = PagingHelper.GetPageCount(pageSize, count);
-            return await AsTask(View(drivers));
+            return await AsTask(View(Data));
         }
 
         [Route("Create")]
@@ -51,7 +42,7 @@ namespace FormuleCirkelEntity.Controllers
         public virtual async Task<IActionResult> Create(T newObject)
         {
             newObject.Id = default(int);
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return View("Modify", newObject);
             DataContext.Add(newObject);
             await DataContext.SaveChangesAsync();
@@ -64,7 +55,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             T updatingObject = await Data.FindAsync(id);
 
-            if (updatingObject == null)
+            if(updatingObject == null)
                 return NotFound();
 
             return View("Modify", updatingObject);
@@ -77,10 +68,10 @@ namespace FormuleCirkelEntity.Controllers
         {
             updatedObject.Id = id;
 
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
                 return View("Modify", updatedObject);
 
-            if (!await Data.AnyAsync(obj => obj.Id == id))
+            if(!await Data.AnyAsync(obj => obj.Id == id))
                 return NotFound();
 
             DataContext.Update(updatedObject);
@@ -92,12 +83,12 @@ namespace FormuleCirkelEntity.Controllers
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if(id == null)
                 return NotFound();
 
             var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
 
-            if (team == null)
+            if(team == null)
                 return NotFound();
 
             return View(team);
@@ -109,10 +100,10 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var objectToDelete = await Data.IgnoreQueryFilters().FindAsync(id);
-            if (objectToDelete == null)
+            if(objectToDelete == null)
                 return NotFound();
 
-            if (objectToDelete is IArchivable archivable && archivable.Archived)
+            if(objectToDelete is IArchivable archivable && archivable.Archived)
                 DataContext.Restore(archivable);
             else
                 DataContext.Remove(objectToDelete);
