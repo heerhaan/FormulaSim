@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,24 +10,11 @@ using X.PagedList;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class DriversController : Controller
+    public class DriversController : ViewDataController<Driver>
     {
-        private readonly FormulaContext _context;
-
-        public DriversController(FormulaContext context)
-        {
-            _context = context;
-        }
-
-        // GET: Drivers
-        public IActionResult Index(int? page)
-        {
-            var drivers = _context.Drivers.Where(d => !d.Archived).OrderBy(d => d.Name).ToList();
-            var pageNumber = page ?? 1;
-            var onePageOfDrivers = drivers.ToPagedList(pageNumber, 10);
-            ViewBag.OnePage = onePageOfDrivers;
-            return View();
-        }
+        public DriversController(FormulaContext context, PagingHelper pagingHelper)
+            : base(context, pagingHelper)
+        { }
 
         public async Task<IActionResult> Stats(int? id)
         {
@@ -34,24 +22,23 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             // Prepares table items for ViewModel
-            var driver = await _context.Drivers
-                .FirstOrDefaultAsync(m => m.DriverId == id);
-            var seasondriver = _context.SeasonDrivers
-                .Where(s => s.Driver.DriverId == id)
+            var driver = await Data.FindAsync(id);
+            var seasondriver = DataContext.SeasonDrivers
+                .Where(s => s.Driver.Id == id)
                 .Include(s => s.SeasonTeam)
                     .ThenInclude(t => t.Team);
-            var driverresult = _context.DriverResults
+            var driverresult = DataContext.DriverResults
                 .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Season);
-            var seasons = _context.Seasons
+            var seasons = DataContext.Seasons
                 .Where(s => s.Championship.ActiveChampionship);
 
             // Calculates the amount of WDCs a driver might have.
             int championships = 0;
-            foreach(var season in _context.Seasons)
+            foreach(var season in DataContext.Seasons)
             {
-                var winner = _context.SeasonDrivers
+                var winner = DataContext.SeasonDrivers
                     .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
                     .OrderByDescending(dr => dr.Points)
                     .FirstOrDefault();
@@ -78,128 +65,19 @@ namespace FormuleCirkelEntity.Controllers
             return View(stats);
         }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create([Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(driver);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(driver);
-        }
-
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var driver = await _context.Drivers.FindAsync(id);
-            if (driver == null)
-            {
-                return NotFound();
-            }
-            return View(driver);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
-        {
-            if (id != driver.DriverId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var edit = _context.Drivers.First(d => d.DriverId == driver.DriverId);
-                    _context.Entry(edit).CurrentValues.SetValues(driver);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DriverExists(driver.DriverId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(driver);
-        }
-
-        // GET: Drivers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var driver = await _context.Drivers
-                .FirstOrDefaultAsync(m => m.DriverId == id);
-            if (driver == null)
-            {
-                return NotFound();
-            }
-
-            return View(driver);
-        }
-
-        // POST: Drivers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var driver = await _context.Drivers.FindAsync(id);
-            if (driver.Archived == false)
-            {
-                driver.Archived = true;
-                _context.Drivers.Update(driver);
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                driver.Archived = false;
-                _context.Drivers.Update(driver);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
-        }
-
         public IActionResult ArchivedDrivers()
         {
-            var drivers = _context.Drivers.Where(d => d.Archived).OrderBy(d => d.Name).ToList();
+            var drivers = DataContext.Drivers.Where(d => d.Archived).OrderBy(d => d.Name).ToList();
             return View(drivers);
-        }
-
-        private bool DriverExists(int id)
-        {
-            return _context.Drivers.Any(e => e.DriverId == id);
         }
 
         [HttpPost]
         public IActionResult SaveBiography(int id, string biography)
         {
-            var driver = _context.Drivers.SingleOrDefault(d => d.DriverId == id);
+            var driver = DataContext.Drivers.SingleOrDefault(d => d.Id == id);
             driver.Biography = biography;
-            _context.Drivers.Update(driver);
-            _context.SaveChanges();
+            DataContext.Drivers.Update(driver);
+            DataContext.SaveChanges();
             return RedirectToAction("Stats", new { id });
         }
     }

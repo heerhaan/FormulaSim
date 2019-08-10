@@ -115,7 +115,7 @@
         $.ajax({
             type: "POST",
             url: "/Drivers/SaveBiography",
-            data: { id: @Model.Driver.DriverId, biography: $("#biography").text() },
+            data: { id: @Model.Driver.Id, biography: $("#biography").text() },
             dataType: "html",
             success: function () { alert("Biography saved!"); },
             error: function () { alert("Saving failed."); }

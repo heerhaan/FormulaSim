@@ -367,7 +367,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             var unregisteredDrivers = _context.Drivers
                 .Where(d => d.Archived == false)
-                .Where(d => !existingDriverIds.Contains(d.DriverId)).ToList();
+                .Where(d => !existingDriverIds.Contains(d.Id)).ToList();
 
             ViewBag.seasonId = id;
             return View(unregisteredDrivers);
@@ -380,7 +380,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.DriverId == globalDriverId);
+            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
 
             if (season == null || globalDriver == null)
                 return NotFound();
@@ -398,7 +398,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Adds last previous used values from driver as default
             var lastDriver = _context.SeasonDrivers
-                .LastOrDefault(s => s.Driver.DriverId == globalDriverId);
+                .LastOrDefault(s => s.Driver.Id == globalDriverId);
             if (lastDriver != null)
             {
                 seasonDriver.Skill = lastDriver.Skill;
@@ -419,7 +419,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.DriverId == globalDriverId);
+            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
 
             if (season == null || globalDriver == null)
                 return NotFound();
