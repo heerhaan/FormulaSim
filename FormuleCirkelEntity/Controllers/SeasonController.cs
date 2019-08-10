@@ -234,8 +234,8 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null || globalTeam == null)
                 return NotFound();
 
-            var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
-            ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
+            var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.Id, t.Name });
+            ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
             ViewBag.seasonId = id;
 
             var seasonTeam = new SeasonTeam
@@ -290,8 +290,8 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
-                ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
+                var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.Id, t.Name });
+                ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
                 return View("AddOrUpdateTeam", seasonTeam);
             }
         }
@@ -309,8 +309,8 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null || team == null)
                 return NotFound();
 
-            var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
-            ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
+            var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.Id, t.Name });
+            ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
             ViewBag.seasonId = id;
             return View("AddOrUpdateTeam", team);
         }
@@ -344,8 +344,8 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
-                ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
+                var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.Id, t.Name });
+                ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
                 return View("AddOrUpdateDriver", team);
             }
         }
@@ -594,7 +594,7 @@ namespace FormuleCirkelEntity.Controllers
             var engines = _context.Engines.Where(e => e.Available == true);
             foreach (var enginedev in dev)
             {
-                var engine = engines.First(e => e.EngineId == enginedev.Id);
+                var engine = engines.First(e => e.Id == enginedev.Id);
                 engine.Power = enginedev.Newdev;
             }
             _context.UpdateRange(engines);
