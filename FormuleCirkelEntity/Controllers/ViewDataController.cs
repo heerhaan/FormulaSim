@@ -56,6 +56,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int? id)
         {
             T updatingObject = await Data.FindAsync(id);
@@ -68,6 +69,7 @@ namespace FormuleCirkelEntity.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int id, T updatedObject)
         {
             updatedObject.Id = id;
@@ -83,7 +85,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Teams/Delete/5
+        [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -99,6 +101,7 @@ namespace FormuleCirkelEntity.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var objectToDelete = await Data.IgnoreQueryFilters().FindAsync(id);

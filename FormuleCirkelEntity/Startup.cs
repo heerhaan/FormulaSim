@@ -43,6 +43,7 @@ namespace FormuleCirkelEntity
             });
 
             services.AddMvc()
+                .WithRazorPagesAtContentRoot()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
