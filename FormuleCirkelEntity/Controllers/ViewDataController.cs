@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace FormuleCirkelEntity.Controllers
 {
     public abstract class ViewDataController<T> : FormulaController
-        where T : ModelBase
+        where T : ModelBase, new()
     {
         protected FormulaContext DataContext { get; }
         protected PagingHelper PagingHelper { get; }
@@ -39,8 +39,8 @@ namespace FormuleCirkelEntity.Controllers
 
         public virtual async Task<IActionResult> Create()
         {
-            var team = new Team();
-            return await AsTask(View("Modify", team));
+            var newObject = new T();
+            return await AsTask(View("Modify", newObject));
         }
 
         [HttpPost]
