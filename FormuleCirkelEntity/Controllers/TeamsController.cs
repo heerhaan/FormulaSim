@@ -9,12 +9,14 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
+    [Route("[controller]")]
     public class TeamsController : ViewDataController<Team>
     {
         public TeamsController(FormulaContext context, PagingHelper pagingHelper)
             : base(context, pagingHelper)
         { }
 
+        [Route("Stats/{id}")]
         public async Task<IActionResult> Stats(int? id)
         {
             if (id == null)
@@ -74,13 +76,14 @@ namespace FormuleCirkelEntity.Controllers
             return View(stats);
         }
 
+        [Route("Archived")]
         public IActionResult ArchivedTeams()
         {
             var teams = Data.IgnoreQueryFilters().Where(t => t.Archived).OrderBy(t => t.Name).ToList();
             return View(teams);
         }
-
-        [HttpPost]
+        
+        [HttpPost("SaveBiography")]
         public IActionResult SaveBiography(int id, string biography)
         {
             var team = DataContext.Teams.SingleOrDefault(t => t.Id == id);

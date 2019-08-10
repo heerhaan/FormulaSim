@@ -8,11 +8,13 @@ using System.Linq;
 
 namespace FormuleCirkelEntity.Controllers
 {
+    [Route("[controller]")]
     public class EnginesController : ViewDataController<Engine>
     {
         public EnginesController(FormulaContext context, PagingHelper pagingHelper) : base(context, pagingHelper)
         { }
 
+        [Route("Archived")]
         public IActionResult ArchivedEngines()
         {
             List<Engine> engines = Data.IgnoreQueryFilters().Where(e => e.Archived).ToList();

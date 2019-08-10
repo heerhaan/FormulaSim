@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Extensions;
+using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -38,13 +39,14 @@ namespace FormuleCirkelEntity.Controllers
             return await AsTask(View(drivers));
         }
 
+        [Route("Create")]
         public virtual async Task<IActionResult> Create()
         {
             var newObject = new T();
             return await AsTask(View("Modify", newObject));
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Create(T newObject)
         {
@@ -56,6 +58,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Route("{id}")]
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int? id)
         {
@@ -67,7 +70,7 @@ namespace FormuleCirkelEntity.Controllers
             return View("Modify", updatingObject);
         }
 
-        [HttpPost]
+        [HttpPost("{id}")]
         [ValidateAntiForgeryToken]
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int id, T updatedObject)
@@ -85,6 +88,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Route("Delete/{id}")]
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -99,7 +103,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(team);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost("Delete/{id}")]
         [ValidateAntiForgeryToken]
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> DeleteConfirmed(int id)

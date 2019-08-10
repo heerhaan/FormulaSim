@@ -6,16 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using X.PagedList;
 
 namespace FormuleCirkelEntity.Controllers
 {
+    [Route("[controller]")]
     public class DriversController : ViewDataController<Driver>
     {
         public DriversController(FormulaContext context, PagingHelper pagingHelper)
             : base(context, pagingHelper)
         { }
 
+        [Route("Stats/{id}")]
         public async Task<IActionResult> Stats(int? id)
         {
             if (id == null)
@@ -65,13 +66,14 @@ namespace FormuleCirkelEntity.Controllers
             return View(stats);
         }
 
+        [Route("Archived")]
         public IActionResult ArchivedDrivers()
         {
             var drivers = Data.IgnoreQueryFilters().Where(d => d.Archived).OrderBy(d => d.Name).ToList();
             return View(drivers);
         }
 
-        [HttpPost]
+        [HttpPost("SaveBiography")]
         public IActionResult SaveBiography(int id, string biography)
         {
             var driver = DataContext.Drivers.SingleOrDefault(d => d.Id == id);
