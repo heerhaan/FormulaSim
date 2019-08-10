@@ -76,7 +76,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult ArchivedTeams()
         {
-            var teams = DataContext.Teams.Where(t => t.Archived).OrderBy(t => t.Name).ToList();
+            var teams = Data.IgnoreQueryFilters().Where(t => t.Archived).OrderBy(t => t.Name).ToList();
             return View(teams);
         }
 

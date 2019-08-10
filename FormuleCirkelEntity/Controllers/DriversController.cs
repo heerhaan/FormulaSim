@@ -67,7 +67,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult ArchivedDrivers()
         {
-            var drivers = DataContext.Drivers.Where(d => d.Archived).OrderBy(d => d.Name).ToList();
+            var drivers = Data.IgnoreQueryFilters().Where(d => d.Archived).OrderBy(d => d.Name).ToList();
             return View(drivers);
         }
 

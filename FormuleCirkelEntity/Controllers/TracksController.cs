@@ -2,6 +2,7 @@
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,7 +16,7 @@ namespace FormuleCirkelEntity.Controllers
         
         public IActionResult ArchivedTracks()
         {
-            List<Track> tracks = Data.Where(t => t.Archived).OrderBy(t => t.Location).ToList();
+            List<Track> tracks = Data.IgnoreQueryFilters().Where(t => t.Archived).OrderBy(t => t.Location).ToList();
             return View(tracks);
         }
     }

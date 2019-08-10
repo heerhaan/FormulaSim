@@ -1,4 +1,5 @@
 ﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Extensions;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -88,7 +89,7 @@ namespace FormuleCirkelEntity.Controllers
             if (id == null)
                 return NotFound();
 
-            var team = await Data.FindAsync(id);
+            var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
 
             if (team == null)
                 return NotFound();
@@ -100,19 +101,15 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var objectToDelete = await Data.FindAsync(id);
+            var objectToDelete = await Data.IgnoreQueryFilters().FindAsync(id);
             if (objectToDelete == null)
                 return NotFound();
 
-            if (objectToDelete is IArchivable archivable)
-            {
-                archivable.Archived = !archivable.Archived;
-                DataContext.Update(objectToDelete);
-            }
+            if (objectToDelete is IArchivable archivable && archivable.Archived)
+                DataContext.Restore(archivable);
             else
-            {
                 DataContext.Remove(objectToDelete);
-            }
+
             await DataContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
