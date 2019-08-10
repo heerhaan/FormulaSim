@@ -218,7 +218,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             var unregisteredTeams = _context.Teams
                 .Where(t => t.Archived == false)
-                .Where(t => !existingTeamIds.Contains(t.TeamId)).ToList();
+                .Where(t => !existingTeamIds.Contains(t.Id)).ToList();
 
             ViewBag.seasonId = id;
             return View(unregisteredTeams);
@@ -229,7 +229,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var season = await _context.Seasons
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.TeamId == globalTeamId);
+            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
 
             if (season == null || globalTeam == null)
                 return NotFound();
@@ -245,7 +245,7 @@ namespace FormuleCirkelEntity.Controllers
             };
 
             // Adds last previous used values from team as default
-            var lastTeam = _context.SeasonTeams.LastOrDefault(s => s.Team.TeamId == globalTeamId);
+            var lastTeam = _context.SeasonTeams.LastOrDefault(s => s.Team.Id == globalTeamId);
             if (lastTeam != null)
             {
                 seasonTeam.Principal = lastTeam.Principal;
@@ -269,7 +269,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.TeamId == globalTeamId);
+            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
 
             if (season == null || globalTeam == null)
                 return NotFound();

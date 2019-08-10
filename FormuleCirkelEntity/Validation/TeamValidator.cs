@@ -26,7 +26,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
 
             if (group == null) return true;
 
-            return team.TeamId == group.TeamId;
+            return team.Id == group.Id;
         }
     }
 }
