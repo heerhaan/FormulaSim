@@ -38,7 +38,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var existingTrackIds = season.Races.Select(r => r.TrackId);
-            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.Id) && t.Archived == false).ToList();
+            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.Id)).ToList();
 
             ViewBag.seasonId = id;
             return View(unusedTracks);

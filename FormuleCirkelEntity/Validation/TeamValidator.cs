@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FormuleCirkelEntity.DAL;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace FormuleCirkelEntity.Models.ModelValidation
@@ -20,7 +21,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
 
         private bool UniqueAbbreviation(Team team, string abb)
         {
-            var group = _context.Teams
+            var group = _context.Teams.IgnoreQueryFilters()
                 .Where(t => t.Abbreviation.ToUpper() == abb.ToUpper())
                 .SingleOrDefault();
 

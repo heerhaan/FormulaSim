@@ -1,4 +1,5 @@
 ﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Extensions;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
@@ -22,7 +23,7 @@ namespace FormuleCirkelEntity.Controllers
             if (id == null)
                 return NotFound();
 
-            var team = await Data.FindAsync(id);
+            var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
 
             var seasondrivers = DataContext.SeasonDrivers
                 .Where(sd => sd.SeasonTeam.TeamId == id)
@@ -86,7 +87,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("SaveBiography")]
         public IActionResult SaveBiography(int id, string biography)
         {
-            var team = DataContext.Teams.SingleOrDefault(t => t.Id == id);
+            var team = DataContext.Teams.IgnoreQueryFilters().SingleOrDefault(t => t.Id == id);
             team.Biography = biography;
             DataContext.Teams.Update(team);
             DataContext.SaveChanges();

@@ -1,4 +1,5 @@
 ﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Extensions;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
@@ -23,7 +24,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             // Prepares table items for ViewModel
-            var driver = await Data.FindAsync(id);
+            var driver = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
             var seasondriver = DataContext.SeasonDrivers
                 .Where(s => s.Driver.Id == id)
                 .Include(s => s.SeasonTeam)
