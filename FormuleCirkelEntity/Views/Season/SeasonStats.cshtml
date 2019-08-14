@@ -53,15 +53,15 @@
                         </td>
                         <td>@driver.Skill @style</td>
                         <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
-                        <td>@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
+                        <td>@(driver.SeasonTeam.Chassis + driver.ChassisMod + (((int)driver.DriverStatus) * -2) + 2)</td>
                         <td>@driver.SeasonTeam.Engine.Name</td>
                         <td>@driver.SeasonTeam.Engine.Power</td>
-                        <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2) + (3 - (3 * (int)driver.Style)))</td>
+                        <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.ChassisMod + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2) + (3 - (3 * (int)driver.Style)))</td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Topspeed</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Acceleration</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Stability</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Handling</span></td>
-                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability + (-2 - (-2 * (int)driver.Style)))</span></td>
+                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability + driver.ReliabilityMod + (-2 - (-2 * (int)driver.Style)))</span></td>
                     </tr>
                 }
             </tbody>

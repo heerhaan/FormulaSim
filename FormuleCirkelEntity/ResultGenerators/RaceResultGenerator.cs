@@ -93,7 +93,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             {
                 int bonus = GetChassisBonus(driverResult.SeasonDriver.SeasonTeam, track);
                 int statusBonus = (((int)driverResult.SeasonDriver.DriverStatus) * -2) + 2;
-                result += (driverResult.SeasonDriver.SeasonTeam.Chassis + bonus + statusBonus);
+                result += (driverResult.SeasonDriver.SeasonTeam.Chassis + driverResult.SeasonDriver.ChassisMod + bonus + statusBonus);
             }
 
             return result;
@@ -135,7 +135,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             if (driver.Style == Style.Aggressive) { driverStyleModifier = -2; }
             else if (driver.Style == Style.Defensive) { driverStyleModifier = 2; }
 
-            var reliabilityScore = driver.SeasonTeam.Reliability + driverStyleModifier + dnfTrack;
+            var reliabilityScore = driver.SeasonTeam.Reliability + driver.ReliabilityMod + driverStyleModifier + dnfTrack;
             var reliabilityCheckValue = _rng.Next(1, 51); 
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
