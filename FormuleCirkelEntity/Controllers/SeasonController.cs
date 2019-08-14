@@ -404,6 +404,7 @@ namespace FormuleCirkelEntity.Controllers
                 seasonDriver.Skill = lastDriver.Skill;
                 seasonDriver.Style = lastDriver.Style;
                 seasonDriver.Tires = lastDriver.Tires;
+                seasonDriver.DriverStatus = lastDriver.DriverStatus;
             }
 
             return View("AddOrUpdateDriver", seasonDriver);
