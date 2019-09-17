@@ -128,7 +128,8 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(st => st.Team)
                 .Include(sd => sd.SeasonTeam)
                     .ThenInclude(st => st.Engine)
-                .OrderByDescending(sd => (sd.Skill + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (3 - (3 * (int)sd.Style)) + (((int)sd.DriverStatus) * -2) + 2))
+                .OrderByDescending(sd => (sd.Skill + sd.ChassisMod + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (3 - (3 * (int)sd.Style)) + (((int)sd.DriverStatus) * -2) + 2))
+                //.OrderBy(sd => sd.SeasonTeam.Team.Name)
                 .ToList();
 
             return View(seasondrivers);
@@ -162,6 +163,7 @@ namespace FormuleCirkelEntity.Controllers
                 season.QualificationRNG = settingsModel.QualificationRNG;
                 season.QualificationRemainingDriversQ2 = settingsModel.QualificationRemainingDriversQ2;
                 season.QualificationRemainingDriversQ3 = settingsModel.QualificationRemainingDriversQ3;
+                season.PolePoints = settingsModel.PolePoints;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
             }
@@ -405,6 +407,8 @@ namespace FormuleCirkelEntity.Controllers
                 seasonDriver.Style = lastDriver.Style;
                 seasonDriver.Tires = lastDriver.Tires;
                 seasonDriver.DriverStatus = lastDriver.DriverStatus;
+                seasonDriver.ChassisMod = lastDriver.ChassisMod;
+                seasonDriver.ReliabilityMod = lastDriver.ReliabilityMod;
             }
 
             return View("AddOrUpdateDriver", seasonDriver);
@@ -490,6 +494,8 @@ namespace FormuleCirkelEntity.Controllers
                 driver.Tires = updatedDriver.Tires;
                 driver.Style = updatedDriver.Style;
                 driver.DriverStatus = updatedDriver.DriverStatus;
+                driver.ChassisMod = updatedDriver.ChassisMod;
+                driver.ReliabilityMod = updatedDriver.ReliabilityMod;
                 _context.Update(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
@@ -584,15 +590,16 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult EngineDev(int id)
         {
             ViewBag.seasonId = id;
+            //var current = _context.Seasons.Where(s => s.SeasonId == id).Include(s => s.Teams).Select(t => t.Teams);
 
-            return View(_context.Engines.Where(e => e.Available == true).ToList());
+            return View(_context.Engines.Where(e => e.Available).ToList());
         }
 
         //Receives development values and saves them in the DB
         [HttpPost]
         public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var engines = _context.Engines.Where(e => e.Available == true);
+            var engines = _context.Engines.Where(e => e.Available);
             foreach (var enginedev in dev)
             {
                 var engine = engines.First(e => e.EngineId == enginedev.Id);

@@ -30,6 +30,11 @@
                 <span asp-validation-for="QualificationRemainingDriversQ3" class="text-danger"></span>
             </section>
             <section class="form-group">
+                <label asp-for="PolePoints" class="control-label">Points for pole</label>
+                <input asp-for="PolePoints" class="form-control" />
+                <span asp-validation-for="PolePoints" class="text-danger"></span>
+            </section>
+            <section class="form-group">
                 <input type="submit" value="Save" class="btn" />
                 <a asp-action="SetPoints" asp-route-id="@Model.SeasonId" class="btn float-right">Setup points</a>
             </section>

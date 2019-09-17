@@ -38,7 +38,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var existingTrackIds = season.Races.Select(r => r.TrackId);
-            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId) && t.Archived == false).ToList();
+            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId) && t.Archived == false).OrderBy(t => t.Location).ToList();
 
             ViewBag.seasonId = id;
             return View(unusedTracks);
@@ -396,7 +396,10 @@ namespace FormuleCirkelEntity.Controllers
                 {
                     points = race.Season.PointsPerPosition[result.Position].Value;
                 }
-                //int points = PointsEarned(result.Position);
+                if (result.Grid == 1)
+                {
+                    points += race.Season.PolePoints;
+                }
                 result.SeasonDriver.Points += points;
                 result.SeasonDriver.SeasonTeam.Points += points;
                 _context.UpdateRange(result.SeasonDriver, result.SeasonDriver.SeasonTeam);

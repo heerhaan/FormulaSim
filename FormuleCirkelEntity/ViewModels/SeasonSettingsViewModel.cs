@@ -14,6 +14,7 @@ namespace FormuleCirkelEntity.ViewModels
             QualificationRNG = season.QualificationRNG;
             QualificationRemainingDriversQ2 = season.QualificationRemainingDriversQ2;
             QualificationRemainingDriversQ3 = season.QualificationRemainingDriversQ3;
+            PolePoints = season.PolePoints;
         }
 
         public SeasonSettingsViewModel()
@@ -24,5 +25,6 @@ namespace FormuleCirkelEntity.ViewModels
         public int QualificationRNG { get; set; }
         public int QualificationRemainingDriversQ2 { get; set; }
         public int QualificationRemainingDriversQ3 { get; set; }
+        public int PolePoints { get; set; }
     }
 }

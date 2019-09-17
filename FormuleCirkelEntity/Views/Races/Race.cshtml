@@ -1,12 +1,13 @@
 ﻿@model Race
 @{
     ViewData["Title"] = "Race";
+    int maxPos = Model.Season.PointsPerPosition.Keys.Max();
 }
 
 @if (Model.Season.State == SeasonState.Progress)
 {
     <div class="table-header-container">
-        @if(Model.RaceState == RaceState.Race)
+        @if (Model.RaceState == RaceState.Race)
         {
             <a class="btn btn-dark" onclick="advanceStint()">Next stint</a>
 
@@ -30,11 +31,14 @@
                 <th>Grid</th>
                 @foreach (var stint in Model.Stints)
                 {
-                <th data-field="stintResultHeader-@stint.Key">
-                    @stint.Key
-                </th>
+                    <th data-field="stintResultHeader-@stint.Key">
+                        @stint.Key
+                    </th>
                 }
                 <th data-field="pointsTotal">Score</th>
+                <th></th>
+                <th>Pts.</th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -45,7 +49,7 @@
                 <tr data-obj-id="@driverResult.SeasonDriverId">
                     <td data-field="position">@driverResult.Position</td>
                     <td data-field="driverNumber"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
-                    <td data-field="driverName">@driverResult.SeasonDriver.Driver.Name</td>
+                    <td data-field="driverName"><span class="result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
                     <td data-field="teamName"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
                     <td data-field="startGrid">
                         @if (gridChange > 0)
@@ -86,6 +90,17 @@
                         <td data-field="pointsTotal">@driverResult.Points</td>
                         <td data-field="dnfCause">-</td>
                     }
+
+                    @if (driverResult.Position > maxPos)
+                    {
+                        <td data-field="points"></td>
+                    }
+                    else
+                    {
+                        <td data-field="points"><span class="badge">@Model.Season.PointsPerPosition[driverResult.Position]</span></td>
+                    }
+                    <td data-field="abbreviation"><span class="badge alt-color nofullwidth" style="display:none;">@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
+                    <td data-field="fullTeamName"><span class="badge alt-color nofullwidth" style="display:none;">@driverResult.SeasonDriver.SeasonTeam.Team.Name</span></td>
                 </tr>
             }
         </tbody>
@@ -96,7 +111,26 @@
 
 <div id="screenshot"></div>
 
-<canvas id="raceChart"></canvas>
+<div id="resultScreenshot"></div>
+
+<div style="overflow: hidden; height: 0;">
+    <div id="formulaGraphic">
+        <div id="position">0</div>
+        <div id="divider"></div>
+
+        <div id="details">
+            <div id="name">Firstname Lastname</div>
+            <div id="team">Racing Team</div>
+        </div>
+
+        <div id="extra">
+            <div id="number">0</div>
+            <div id="tla">LAS</div>
+        </div>
+    </div>
+</div>
+
+<!--<canvas id="raceChart"></canvas>-->
 
 <script>
     //$(drawRaceChart);
@@ -149,6 +183,7 @@
     ];
 
     function processStintResponse(res) {
+        let pointsPosition = @(Json.Serialize(Model.Season.PointsPerPosition))
         res.DriverResults.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
 
@@ -180,6 +215,11 @@
                 let stintResult = driverResult.StintResults[stintKey];
                 row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);
             });
+            if (driverResult.Position > @maxPos) {
+                row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'></td>";
+            } else {
+                row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'><span class='badge'>" + pointsPosition[driverResult.Position] + "</span></td>";
+            }
         });
 
         let th = table.querySelector("th[data-field='position']")
@@ -203,6 +243,35 @@
             return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
         }
     }
+
+    $(".result-click").click(function () {
+        var row = $(this).closest("tr");
+        var position = row.find("td[data-field='position']").text();
+        var name = row.find("td[data-field='driverName']").text();
+        var number = row.find("td[data-field='driverNumber']").text();
+        var team = row.find("td[data-field='fullTeamName']").text();
+        var tla = row.find("td[data-field='abbreviation']").text();
+        var colour = row.find("td[data-field='teamName']").find("span").css("background-color");
+        var dnf = row.find("td[data-field='dnfCause']").text();
+
+        if (name == $('#name').text()) {
+            colour = row.find("td[data-field='teamName']").find("span").css("color");
+        }
+
+        $('#position').text(position);
+        $('#name').text(name);
+        $('#tla').text(tla);
+        $('#team').text(team);
+        $('#number').text(number);
+        $('#divider').css('background-color', colour);
+        $('#extra').css('color', colour);
+        if (dnf !== "-") {
+            $('#position').addClass('eliminated');
+        } else {
+            $('#position').removeClass('eliminated');
+        }
+        takeScreenshot("#formulaGraphic", "#resultScreenshot");
+    });
 
     function drawRaceChart() {
         var ctx = document.getElementById('raceChart').getContext('2d');
@@ -287,5 +356,91 @@
     #weather {
         margin-right: 27px;
         margin-top: 15px;
+    }
+
+    #formulaGraphic {
+        margin-top: 50px;
+        background-color: black;
+        color: white;
+        display: flex;
+        flex-direction: row;
+        border-bottom-right-radius: 15px;
+        width: 890px;
+        height: 105px;
+        font-family: "Formula1 Display";
+    }
+
+        #formulaGraphic #position {
+            background-color: white;
+            color: black;
+            width: 91px;
+            height: 91px;
+            margin: 7px;
+            margin-right: 0;
+            line-height: 91px;
+            vertical-align: middle;
+            text-align: center;
+            font-size: 48px;
+            border-bottom-right-radius: 15px;
+        }
+
+        #formulaGraphic #divider {
+            background-color: #28E8EE;
+            width: 9px;
+            margin: 17px 12px;
+        }
+
+        #formulaGraphic #details {
+            margin-top: 17px;
+            margin-bottom: 17px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+            #formulaGraphic #details #name {
+                font-size: 2.5em;
+                margin-top: -18px;
+                font-family: "Formula1 Display";
+            }
+
+            #formulaGraphic #details #team {
+                margin-top: auto;
+                margin-bottom: -5px;
+                font-size: 28px;
+            }
+
+        #formulaGraphic #extra {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            color: #28E8EE;
+            text-align: center;
+            margin-right: 30px;
+        }
+
+            #formulaGraphic #extra #number {
+                font-size: 3em;
+                margin-top: -10px;
+            }
+
+            #formulaGraphic #extra #tla {
+                font-size: 1.5em;
+            }
+
+    #resultScreenshot {
+        margin-top: 20px;
+    }
+
+        #resultScreenshot canvas:hover {
+            cursor: pointer;
+        }
+
+    canvas {
+        background-color: black;
+    }
+
+    .eliminated {
+        background-color: #870019 !important;
+        color: white !important;
     }
 </style>

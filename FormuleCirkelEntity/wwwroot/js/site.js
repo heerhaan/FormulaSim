@@ -27,3 +27,4 @@ function getDev(number) {
     document.getElementById("custom-change-" + number).innerText = dev;
     document.getElementById("custom-new-" + number).innerText = newdev;
 }
+

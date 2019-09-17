@@ -19,6 +19,7 @@
                 @Html.DisplayNameFor(model => model.Available)
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -34,7 +35,14 @@
                 @Html.DisplayFor(modelItem => item.Available)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.EngineId">Edit</a>
+                <a asp-action="Edit" asp-route-id="@item.EngineId">
+                    <i class="fas fa-edit fa-2x"></i>
+                </a>
+            </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.EngineId">
+                    <i class="fas fa-undo fa-2x"></i>
+                </a>
             </td>
         </tr>
 }

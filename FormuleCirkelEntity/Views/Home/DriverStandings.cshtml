@@ -40,46 +40,99 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @position
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Driver.Name)
-                </td>
-                <td>
-                    <span class="badge alt-color">@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</span>
-                </td>
-                <td>
-                    <span class="badge" style="background-color:@(item.SeasonTeam.Team.Colour);color:@(item.SeasonTeam.Team.Accent);font-size:1rem;">@item.SeasonTeam.Team.Abbreviation</span>
-                </td>
-                @foreach (var round in rounds)
+        <tr>
+            <td>
+                @position
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Driver.Name)
+            </td>
+            <td>
+                <span class="badge alt-color">@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</span>
+            </td>
+            <td>
+                <span class="badge" style="background-color:@(item.SeasonTeam.Team.Colour);color:@(item.SeasonTeam.Team.Accent);font-size:1rem;">@item.SeasonTeam.Team.Abbreviation</span>
+            </td>
+            @foreach (var round in rounds)
+            {
+                DriverResult result = item.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
+                if (result == null || result.Position == 0)
                 {
-                    DriverResult result = item.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
-                    if (result == null || result.Position == 0)
+                    <td><span>-</span></td>
+                }
+                else
+                {
+                    if (result.Status == Status.DNF)
                     {
-                        <td><span>-</span></td>
+                        if (result.Grid == 1)
+                        {
+                            <td><span class="badge badge-danger pole">DNF</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-danger">DNF</span></td>
+                        }
+                    }
+                    else if (result.Status == Status.DSQ)
+                    {
+                        if (result.Grid == 1)
+                        {
+                            <td><span class="badge badge-dsq pole">DSQ</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-dsq">DSQ</span></td>
+                        }
+                    }
+                    else if (result.Position == 1)
+                    {
+                        if (result.Grid == 1)
+                        {
+                            <td><span class="badge badge-first pole">@result.Position</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-first">@result.Position</span></td>
+                        }
+                    }
+                    else if (result.Position == 2)
+                    {
+                        if (result.Grid == 1)
+                        {
+                            <td><span class="badge badge-second pole">@result.Position</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-second">@result.Position</span></td>
+                        }
+                    }
+                    else if (result.Position == 3)
+                    {
+                        if (result.Grid == 1)
+                        {
+                            <td><span class="badge badge-third pole">@result.Position</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-third">@result.Position</span></td>
+                        }
+                    }
+                    else if (result.Position <= ViewBag.lastpointpos)
+                    {
+                        if (result.Grid == 1)
+                        {
+                            <td><span class="badge badge-success pole">@result.Position</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-success">@result.Position</span></td>
+                        }
                     }
                     else
                     {
-                        if (result.Status == Status.DNF)
+                        if (result.Grid == 1)
                         {
-                            <td><span class="badge badge-danger">DNF</span></td>
-                        } else if(result.Status == Status.DSQ)
-                        {
-                            <td><span class="badge badge-dsq">DSQ</span></td>
-                        } else if(result.Position == 1)
-                        {
-                            <td><span class="badge badge-first">@result.Position</span></td>
-                        } else if(result.Position == 2)
-                        {
-                            <td><span class="badge badge-second">@result.Position</span></td>
-                        } else if(result.Position == 3)
-                        {
-                            <td><span class="badge badge-third">@result.Position</span></td>
-                        } else if(result.Position <= ViewBag.lastpointpos)
-                        {
-                            <td><span class="badge badge-success">@result.Position</span></td>
+                            <td><span class="badge badge-primary pole">@result.Position</span></td>
                         }
                         else
                         {
@@ -87,19 +140,20 @@
                         }
                     }
                 }
-                <td>
-                    <span>@Html.DisplayFor(modelItem => item.Points)</span>
-                </td>
-                <td>
-                    @foreach (var avg in ViewBag.averages)
+            }
+            <td>
+                <span>@Html.DisplayFor(modelItem => item.Points)</span>
+            </td>
+            <td>
+                @foreach (var avg in ViewBag.averages)
+                {
+                    if (avg.Driver == item)
                     {
-                        if (avg.Driver == item)
-                        {
-                            <span class="badge alt-color">@avg.Averagepos</span>
-                        }
+                        <span class="badge alt-color">@avg.Averagepos</span>
                     }
-                </td>
-            </tr>
+                }
+            </td>
+        </tr>
             position++;
         }
     </tbody>
@@ -116,5 +170,9 @@
 
     table td{
         height:60px;
+    }
+
+    .pole {
+        border: 1.5px solid white;
     }
 </style>

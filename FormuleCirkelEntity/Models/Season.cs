@@ -31,6 +31,7 @@ namespace FormuleCirkelEntity.Models
         public int QualificationRemainingDriversQ3 { get; set; }
         public int QualificationRNG { get; set; }
         public IDictionary<int, int?> PointsPerPosition { get; set; }
+        public int PolePoints { get; set; }
 
         public int ChampionshipId { get; set; }
         public Championship Championship { get; set; }

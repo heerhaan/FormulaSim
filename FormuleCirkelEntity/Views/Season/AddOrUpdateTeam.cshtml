@@ -4,7 +4,7 @@
 
 <section>
     <header>
-        <h1 class="row">Season: @Model.Season.SeasonId</h1>
+        <h1 class="row">Season: @Model.Season.SeasonNumber</h1>
         <h4 class='row badge' style='background-color:@(Model.Team.Colour);color:@(Model.Team.Accent);font-size:1.5rem;'>@Model.Team.Name</h4>
     </header>
     <section class="row">
@@ -62,7 +62,7 @@
 
 <script>
     function reldev() {
-        var newdev = Math.floor((Math.random() * 4) + 21);
+        var newdev = Math.floor((Math.random() * 8) + 43);
         $('#relbox').val(newdev);
     }
 </script>
