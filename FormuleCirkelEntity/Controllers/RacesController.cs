@@ -440,6 +440,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 var race = await _context.Races
                     .Include(r => r.Season)
+                    .Include(r => r.Track)
                     .Include(r => r.DriverResults)
                         .ThenInclude(dr => dr.SeasonDriver)
                             .ThenInclude(sd => sd.SeasonTeam)
@@ -473,7 +474,7 @@ namespace FormuleCirkelEntity.Controllers
                 foreach (var qualificationResult in qualificationResultsToUpdate)
                 {
                     var qualifyingDriver = drivers.Single(d => d.SeasonDriverId == qualificationResult.DriverId);
-                    qualificationResult.Score = _resultGenerator.GetQualifyingResult(qualifyingDriver, race.Season.QualificationRNG);
+                    qualificationResult.Score = _resultGenerator.GetQualifyingResult(qualifyingDriver, race.Season.QualificationRNG, race.Track);
                 }
 
                 var qualificationResults = qualificationResultsToUpdate.OrderByDescending(q => q.Score).ToList();

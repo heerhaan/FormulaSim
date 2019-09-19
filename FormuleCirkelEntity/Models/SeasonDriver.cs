@@ -18,6 +18,8 @@ namespace FormuleCirkelEntity.Models
         public Tires Tires { get; set; }
         [EnumDataType(typeof(DriverStatus))]
         public DriverStatus DriverStatus { get; set; }
+        public int QualyPace { get; set; }
+        public int RacePace { get; set; }
         public int ChassisMod { get; set; }
         public int ReliabilityMod { get; set; }
 

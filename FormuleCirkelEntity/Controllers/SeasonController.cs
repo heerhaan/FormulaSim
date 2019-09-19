@@ -407,6 +407,8 @@ namespace FormuleCirkelEntity.Controllers
                 seasonDriver.Style = lastDriver.Style;
                 seasonDriver.Tires = lastDriver.Tires;
                 seasonDriver.DriverStatus = lastDriver.DriverStatus;
+                seasonDriver.QualyPace = lastDriver.QualyPace;
+                seasonDriver.RacePace = lastDriver.RacePace;
                 seasonDriver.ChassisMod = lastDriver.ChassisMod;
                 seasonDriver.ReliabilityMod = lastDriver.ReliabilityMod;
             }
@@ -494,6 +496,8 @@ namespace FormuleCirkelEntity.Controllers
                 driver.Tires = updatedDriver.Tires;
                 driver.Style = updatedDriver.Style;
                 driver.DriverStatus = updatedDriver.DriverStatus;
+                driver.QualyPace = updatedDriver.QualyPace;
+                driver.RacePace = updatedDriver.RacePace;
                 driver.ChassisMod = updatedDriver.ChassisMod;
                 driver.ReliabilityMod = updatedDriver.ReliabilityMod;
                 _context.Update(driver);
