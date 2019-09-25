@@ -41,7 +41,7 @@ namespace FormulaCirkelEntity.Tests
             RaceResultGenerator generator = new RaceResultGenerator(new Random(1));
 
             // Act
-            var qualifyingBonus = generator.GetQualifyingBonus(qualifyingPosition, 26);
+            var qualifyingBonus = generator.GetQualifyingBonus(qualifyingPosition, 26, 3);
 
             // Assert
             Assert.Equal(expected, qualifyingBonus);

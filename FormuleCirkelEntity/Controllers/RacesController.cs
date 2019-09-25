@@ -405,8 +405,6 @@ namespace FormuleCirkelEntity.Controllers
                 _context.UpdateRange(result.SeasonDriver, result.SeasonDriver.SeasonTeam);
             }
 
-            var raceWinnerResult = race.DriverResults.OrderByDescending(res => res.Points).FirstOrDefault();
-            race.Track.MostRecentWinner = raceWinnerResult.SeasonDriver.Driver;
             race.RaceState = RaceState.Finished;
             _context.Update(race);
             _context.Update(race.Track);

@@ -163,6 +163,7 @@ namespace FormuleCirkelEntity.Controllers
                 season.QualificationRNG = settingsModel.QualificationRNG;
                 season.QualificationRemainingDriversQ2 = settingsModel.QualificationRemainingDriversQ2;
                 season.QualificationRemainingDriversQ3 = settingsModel.QualificationRemainingDriversQ3;
+                season.QualyBonus = settingsModel.QualyBonus;
                 season.PolePoints = settingsModel.PolePoints;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
@@ -236,7 +237,7 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null || globalTeam == null)
                 return NotFound();
 
-            var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
+            var engines = _context.Engines.Where(e => e.Archived == false).Select(t => new { t.EngineId, t.Name });
             ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
             ViewBag.seasonId = id;
 
@@ -292,7 +293,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
+                var engines = _context.Engines.Where(e => e.Archived == false).Select(t => new { t.EngineId, t.Name });
                 ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
                 return View("AddOrUpdateTeam", seasonTeam);
             }
@@ -311,7 +312,7 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null || team == null)
                 return NotFound();
 
-            var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
+            var engines = _context.Engines.Where(e => e.Archived == false).Select(t => new { t.EngineId, t.Name });
             ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
             ViewBag.seasonId = id;
             return View("AddOrUpdateTeam", team);
@@ -346,7 +347,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var engines = _context.Engines.Where(e => e.Available).Select(t => new { t.EngineId, t.Name });
+                var engines = _context.Engines.Where(e => e.Archived == false).Select(t => new { t.EngineId, t.Name });
                 ViewBag.engines = new SelectList(engines, nameof(Engine.EngineId), nameof(Engine.Name));
                 return View("AddOrUpdateDriver", team);
             }
@@ -594,16 +595,21 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult EngineDev(int id)
         {
             ViewBag.seasonId = id;
-            //var current = _context.Seasons.Where(s => s.SeasonId == id).Include(s => s.Teams).Select(t => t.Teams);
+            var teams = _context.SeasonTeams.Where(s => s.SeasonId == id);
+            var engines = teams
+                .GroupBy(e => e.Engine)
+                .Select(e => e.First())
+                .Select(e => e.Engine)
+                .ToList();
 
-            return View(_context.Engines.Where(e => e.Available).ToList());
+            return View(engines);
         }
 
         //Receives development values and saves them in the DB
         [HttpPost]
         public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var engines = _context.Engines.Where(e => e.Available);
+            var engines = _context.Engines;
             foreach (var enginedev in dev)
             {
                 var engine = engines.First(e => e.EngineId == enginedev.Id);

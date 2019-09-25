@@ -33,8 +33,6 @@ namespace FormuleCirkelEntity.Models
         public Specification Specification { get; set; }
         public bool Archived { get; set; }
 
-        public Driver MostRecentWinner { get; set; }
-
         public virtual ICollection<Race> Races { get; set; }
     }
 }

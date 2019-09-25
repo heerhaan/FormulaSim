@@ -15,9 +15,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Power)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Available)
-            </th>
             <th></th>
             <th></th>
         </tr>
@@ -30,9 +27,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Power)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Available)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.EngineId">

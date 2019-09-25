@@ -30,6 +30,7 @@ namespace FormuleCirkelEntity.Models
         public int QualificationRemainingDriversQ2 { get; set; }
         public int QualificationRemainingDriversQ3 { get; set; }
         public int QualificationRNG { get; set; }
+        public int QualyBonus { get; set; }
         public IDictionary<int, int?> PointsPerPosition { get; set; }
         public int PolePoints { get; set; }
 

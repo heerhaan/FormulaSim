@@ -30,7 +30,6 @@ namespace FormuleCirkelEntity.Controllers
         {
             var engine = new Engine();
             engine.Power = 0;
-            engine.Available = true;
             return View("Modify", engine);
         }
 
@@ -65,7 +64,6 @@ namespace FormuleCirkelEntity.Controllers
 
             if (ModelState.IsValid)
             {
-                engine.Available = updatedEngine.Available;
                 engine.Power = updatedEngine.Power;
                 engine.Name = updatedEngine.Name;
                 _context.Update(engine);

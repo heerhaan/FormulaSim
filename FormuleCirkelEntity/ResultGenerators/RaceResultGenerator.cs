@@ -63,7 +63,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 result = result + GetDriverLevelBonus(driverResult.SeasonDriver);
 
             if (stint.ApplyQualifyingBonus)
-                result += GetQualifyingBonus(driverResult.Grid, driverResult.SeasonDriver.Season.Drivers.Count);
+                result += GetQualifyingBonus(driverResult.Grid, driverResult.SeasonDriver.Season.Drivers.Count, driverResult.SeasonDriver.Season.QualyBonus);
 
             if (stint.ApplyTireLevel && driverResult.SeasonDriver.Tires == Tires.Softs)
                 result += (10 + tireWeatherBonus);
@@ -104,9 +104,9 @@ namespace FormuleCirkelEntity.ResultGenerators
             return driver.Skill + driver.RacePace + (3 - (3 * (int)driver.Style));
         }
 
-        public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount)
+        public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount, int qualyBonus)
         {
-            return (totalDriverCount * 3) - (qualifyingPosition * 3);
+            return (totalDriverCount * qualyBonus) - (qualifyingPosition * qualyBonus);
         }
 
         public int GetChassisBonus(SeasonTeam team, Track track)
