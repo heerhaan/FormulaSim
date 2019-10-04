@@ -5,8 +5,13 @@
     var race = ViewBag.race;
 }
 
+
 <h1>Qualifying in @(race.Name)</h1>
 <hr />
+<div class="float-right">
+    <input id="two-run-check" type="checkbox" name="tworun" style="margin-right:5px; transform:scale(2);" />
+    <label for="two-run-check">2-run</label>
+</div>
 <nav>
     <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <a class="nav-item nav-link active" id="nav-q1-tab" data-toggle="tab" href="#nav-q1" role="tab" aria-controls="nav-q1" aria-selected="true">Q1</a>
@@ -65,7 +70,7 @@
 
 <form asp-action="Return" asp-route-id="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
     <div class="form-group">
-        <input type="submit" value="Finish!" class="btn btn-dark"/>
+        <input type="submit" value="Finish!" class="btn btn-dark" />
     </div>
 </form>
 
@@ -73,6 +78,8 @@
 
 <script>
     $(document).ready(function () {
+        var secondRun = false;
+        var tworun = $("#two-run-check");
         $("#generateq2").hide();
         $("#generateq3").hide();
         $("#return").hide();
@@ -82,8 +89,12 @@
                 type: "GET",
                 data: {
                     source: "Q1",
+                    secondRun
                 },
                 success: function (drivers) {
+                    if (secondRun) {
+                        $("#q1table").empty();
+                    }
                     $.each(drivers, function (index, driver) {
                         if (driver.position > @ViewBag.season.QualificationRemainingDriversQ2) {
                             var row = "<tr><td><span class='badge badge-danger' style='font-size:1rem;'>" + driver.position +
@@ -98,8 +109,13 @@
                         }
                     });
                     $('#screenshot').empty();
-                    $("#generateq1").hide();
-                    $("#generateq2").show();
+                    if (secondRun || tworun.is(":not(:checked)")) {
+                        $("#generateq1").hide();
+                        $("#generateq2").show();
+                        secondRun = false;
+                    } else {
+                        secondRun = true;
+                    }
                 }
             });
         });
@@ -108,9 +124,13 @@
                 url: "Qualifying/Update",
                 type: "GET",
                 data: {
-                    source: "Q2"
+                    source: "Q2",
+                    secondRun
                 },
                 success: function (drivers) {
+                    if (secondRun) {
+                        $("#q2table").empty();
+                    }
                     $.each(drivers, function (index, driver) {
                         if (driver.position > @ViewBag.season.QualificationRemainingDriversQ3) {
                             var row = "<tr><td><span class='badge badge-danger' style='font-size:1rem;'>" + driver.position +
@@ -125,8 +145,13 @@
                         }
                     });
                     $('#screenshot').empty();
-                    $("#generateq2").hide();
-                    $("#generateq3").show();
+                    if (secondRun || tworun.is(":not(:checked)")) {
+                        $("#generateq2").hide();
+                        $("#generateq3").show();
+                        secondRun = false;
+                    } else {
+                        secondRun = true;
+                    }
                 }
             });
         });
@@ -135,9 +160,13 @@
                 url: "Qualifying/Update",
                 type: "GET",
                 data: {
-                    source: "Q3"
+                    source: "Q3",
+                    secondRun
                 },
                 success: function (drivers) {
+                    if (secondRun) {
+                        $("#q3table").empty();
+                    }
                     $.each(drivers, function (index, driver) {
                         var row = "<tr><td>" + driver.position +
                             "</td><td><span class='badge' style='background-color:" + driver.colour + ";color:" + driver.accent + ";font-size:1rem;'>"
@@ -145,8 +174,13 @@
                         $("#q3table").append(row);
                     });
                     $('#screenshot').empty();
-                    $("#generateq3").hide();
-                    $("#return").show();
+                    if (secondRun || tworun.is(":not(:checked)")) {
+                        $("#generateq3").hide();
+                        $("#return").show();
+                        secondRun = false;
+                    } else {
+                        secondRun = true;
+                    }
                 }
             });
         });

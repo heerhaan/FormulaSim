@@ -389,10 +389,10 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == seasonId);
 
-            foreach (var result in race.DriverResults.Where(res => res.Status == Status.Finished))
+            foreach (var result in race.DriverResults)
             {
                 int points = 0;
-                if (result.Position <= race.Season.PointsPerPosition.Keys.Max())
+                if (result.Position <= race.Season.PointsPerPosition.Keys.Max() && result.Status == Status.Finished)
                 {
                     points = race.Season.PointsPerPosition[result.Position].Value;
                 }
@@ -429,7 +429,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying/Update")]
-        public async Task<IActionResult> UpdateQualifying(int id, int raceId, string source)
+        public async Task<IActionResult> UpdateQualifying(int id, int raceId, string source, bool secondRun)
         {
             if (string.IsNullOrWhiteSpace(source))
                 return BadRequest();
@@ -472,7 +472,14 @@ namespace FormuleCirkelEntity.Controllers
                 foreach (var qualificationResult in qualificationResultsToUpdate)
                 {
                     var qualifyingDriver = drivers.Single(d => d.SeasonDriverId == qualificationResult.DriverId);
+                    var previousScore = qualificationResult.Score;
                     qualificationResult.Score = _resultGenerator.GetQualifyingResult(qualifyingDriver, race.Season.QualificationRNG, race.Track);
+
+                    if (secondRun)
+                    {
+                        if (previousScore > qualificationResult.Score)
+                            qualificationResult.Score = previousScore;
+                    }
                 }
 
                 var qualificationResults = qualificationResultsToUpdate.OrderByDescending(q => q.Score).ToList();
