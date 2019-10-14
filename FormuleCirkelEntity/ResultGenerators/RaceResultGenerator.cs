@@ -112,11 +112,13 @@ namespace FormuleCirkelEntity.ResultGenerators
         public int GetChassisBonus(SeasonTeam team, Track track)
         {
             int bonus = 0;
-            Dictionary<string, int> specs = new Dictionary<string, int>();
-            specs.Add("Topspeed", team.Topspeed);
-            specs.Add("Acceleration", team.Acceleration);
-            specs.Add("Stability", team.Stability);
-            specs.Add("Handling", team.Handling);
+            Dictionary<string, int> specs = new Dictionary<string, int>
+            {
+                { "Topspeed", team.Topspeed },
+                { "Acceleration", team.Acceleration },
+                { "Stability", team.Stability },
+                { "Handling", team.Handling }
+            };
 
             var spec = (specs.SingleOrDefault(k => k.Key == track.Specification.ToString()));
             bonus = spec.Value;
@@ -184,9 +186,11 @@ namespace FormuleCirkelEntity.ResultGenerators
                 }
             }
             orderedResults.Sort((l, r) => -1 * l.Points.CompareTo(r.Points));
-            DriverSwap swap = new DriverSwap();
-            swap.DriverResults = orderedResults;
-            swap.OrderedResults = orderedResults.ToDictionary((res => res.DriverResultId), (res => orderedResults.IndexOf(res) + 1));
+            DriverSwap swap = new DriverSwap
+            {
+                DriverResults = orderedResults,
+                OrderedResults = orderedResults.ToDictionary((res => res.DriverResultId), (res => orderedResults.IndexOf(res) + 1))
+            };
 
             return swap;
         }

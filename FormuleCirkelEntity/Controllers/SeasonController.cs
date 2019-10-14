@@ -528,6 +528,7 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult DriverDev(int id)
         {
             ViewBag.seasonId = id;
+            ViewBag.year = GetCurrentYear(id);
 
             return View(_context.SeasonDrivers
                 .Where(s => s.SeasonId == id)
@@ -535,6 +536,12 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(t => t.Team)
                 .Include(d => d.Driver)
                 .OrderBy(s => s.SeasonTeam.Team.Name).ToList());
+        }
+
+        public int GetCurrentYear(int seasonId)
+        {
+            var season = _context.Seasons.FirstOrDefault(s => s.SeasonId == seasonId);
+            return season.SeasonNumber;
         }
 
         //Receives development values and saves them in the DB

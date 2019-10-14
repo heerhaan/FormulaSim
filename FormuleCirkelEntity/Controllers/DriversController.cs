@@ -84,7 +84,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
+        public async Task<IActionResult> Create([Bind("DriverId,DriverNumber,Name,Abbreviation,DateOfBirth")] Driver driver)
         {
             if (ModelState.IsValid)
             {
@@ -112,7 +112,7 @@ namespace FormuleCirkelEntity.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DriverId,DriverNumber,Name,Abbreviation")] Driver driver)
+        public async Task<IActionResult> Edit(int id, [Bind("DriverId,DriverNumber,Name,Abbreviation,DateOfBirth")] Driver driver)
         {
             if (id != driver.DriverId)
             {

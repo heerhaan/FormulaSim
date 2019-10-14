@@ -28,8 +28,10 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult Create()
         {
-            var engine = new Engine();
-            engine.Power = 0;
+            var engine = new Engine
+            {
+                Power = 0
+            };
             return View("Modify", engine);
         }
 

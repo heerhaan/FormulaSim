@@ -188,9 +188,44 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
+            ViewBag.favourites = Favourites(race);
+
             return View(race);
         }
-        
+
+        // Gets the three favourites for that race.
+        private List<SeasonDriver> Favourites(Race race)
+        {
+            var drivers = _context.SeasonDrivers
+                .Where(sd => sd.SeasonId == race.SeasonId)
+                .Include(sd => sd.Driver)
+                .Include(sd => sd.SeasonTeam)
+                    .ThenInclude(st => st.Team)
+                .OrderByDescending(sd => (sd.Skill + sd.ChassisMod + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (3 - (3 * (int)sd.Style)) + (((int)sd.DriverStatus) * -2) + 2) + GetChassisBonus(sd.SeasonTeam, race.Track))
+                .Take(3)
+                .ToList();
+
+            return drivers;
+        }
+
+        // To determine the bonus to a chassis a team gets to a specific track
+        private int GetChassisBonus(SeasonTeam team, Track track)
+        {
+            int bonus = 0;
+            Dictionary<string, int> specs = new Dictionary<string, int>
+            {
+                { "Topspeed", team.Topspeed },
+                { "Acceleration", team.Acceleration },
+                { "Stability", team.Stability },
+                { "Handling", team.Handling }
+            };
+
+            var spec = (specs.SingleOrDefault(k => k.Key == track.Specification.ToString()));
+            bonus = spec.Value;
+
+            return bonus;
+        }
+
         [HttpPost("Season/{id}/[Controller]/{raceId}/Start")]
         public async Task<IActionResult> RaceStart(int id, int raceId)
         {

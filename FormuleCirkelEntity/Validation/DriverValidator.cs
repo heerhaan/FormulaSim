@@ -6,9 +6,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
 {
     public class DriverValidator : AbstractValidator<Driver>
     {
-        private readonly FormulaContext _context;
-
-        public DriverValidator(FormulaContext context)
+        public DriverValidator()
         {
             RuleFor(d => d.DriverNumber).NotEmpty().WithMessage("Number of driver is required!");
             RuleFor(d => d.Name).NotEmpty().WithMessage("Name of driver is required!");
