@@ -79,6 +79,7 @@
         <thead>
             <tr>
                 <th data-field="name">Name</th>
+                <td data-field="location">Location</td>
                 <th data-field="round">Round</th>
                 <th data-field="specification">Spec</th>
                 <th></th>
@@ -90,11 +91,12 @@
             {
                 <tr data-obj-id="@race.RaceId">
                     <td data-field="name">@race.Name</td>
+                    <td data-field="location">@race.Track.Location</td>
                     <td data-field="round">@race.Round</td>
                     <td data-field="specification">@race.Track.Specification</td>
                     <td>
                         <a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.SeasonId" asp-route-raceId="@race.RaceId">
-                            <i class="fas @(race.StintProgress == 0 ? "fa-flag-checkered" : "fa-search") fa-2x"></i>
+                            <i class="fas @(race.RaceState == RaceState.Finished ? "fa-search" : "fa-flag-checkered") fa-2x"></i>
                         </a>
                     </td>
                     @if(Model.State == SeasonState.Draft)
