@@ -17,15 +17,15 @@
             <table class="table" id="racestints">
                 <thead>
                     <tr>
-                        <th>Driver skill</th>
-                        <th>Chassis</th>
-                        <th>Engine</th>
-                        <th>Tire bonus</th>
-                        <th>Tire wear</th>
-                        <th>Qualifying bonus</th>
-                        <th>Reliability</th>
-                        <th>@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMinimum)</th>
-                        <th>@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMaximum)</th>
+                        <th data-toggle="tooltip" data-placement="right" title="Applies the skill of the driver plus the style bonus.">Driver skill</th>
+                        <th data-toggle="tooltip" data-placement="right" title="Applies the chassis of the team plus various bonusses, like specification.">Chassis</th>
+                        <th data-toggle="tooltip" data-placement="right" title="Applies the power of the engine.">Engine</th>
+                        <th data-toggle="tooltip" data-placement="right" title="Gives solid +10 to drivers with soft tires.">Tire bonus</th>
+                        <th data-toggle="tooltip" data-placement="right" title="RNG of [-20 to 0] for drivers with soft tires.">Tire wear</th>
+                        <th data-toggle="tooltip" data-placement="right" title="Applies the bonus the qualifying position gives.">Qualifying bonus</th>
+                        <th data-toggle="tooltip" data-placement="right" title="Roll between [0 to 100] that causes a DNF when the roll is higher than the drivers reliability.">Reliability</th>
+                        <th data-toggle="tooltip" data-placement="right" title="Lowest possible RNG for a stint.">@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMinimum)</th>
+                        <th data-toggle="tooltip" data-placement="right" title="Highest possible RNG for a stint.">@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMaximum)</th>
                         <th></th>
                     </tr>
                 </thead>

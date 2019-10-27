@@ -10,6 +10,7 @@
             <tr>
                 <th>Number</th>
                 <th>Name</th>
+                <th>Age</th>
                 <th></th>
             </tr>
         </thead>
@@ -19,6 +20,7 @@
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.DriverNumber)</td>
                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@(ViewBag.year - item.DateOfBirth.Year)</td>
                     <td><a asp-action="AddDriver" asp-route-id="@ViewBag.seasonId" asp-route-globalDriverId="@item.DriverId" class="btn btn-outline-primary btn-sm">Add</a></td>
                 </tr>
             }

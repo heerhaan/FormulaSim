@@ -141,7 +141,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction("AddTracks", new { id = raceModel.SeasonId });
         }
 
-        Weather RandomWeather()
+        public Weather RandomWeather()
         {
             int random = rng.Next(1, 21);
             Weather weather = Weather.Sunny;
@@ -618,16 +618,16 @@ namespace FormuleCirkelEntity.Controllers
                                 int random = rng.Next(1, 6);
                                 if (random < 3)
                                 {
-                                    result.PenaltyPosition += 5.8;
-                                    driver.PenaltyReason = "+5 grid penalty for causing a collision.";
+                                    result.PenaltyPosition += 3.2;
+                                    driver.PenaltyReason = "+3 grid penalty for causing a collision.";
                                 }
                                 break;
                             case DNFCause.Accident:
                                 int amountAccidents = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Accident && d.SeasonDriverId == driver.SeasonDriverId).Count());
                                 if (amountAccidents > 2)
                                 {
-                                    result.PenaltyPosition += 3.3;
-                                    driver.PenaltyReason = "+3 grid penalty for excessive amount of accidents";
+                                    result.PenaltyPosition += 5.3;
+                                    driver.PenaltyReason = "+5 grid penalty for excessive amount of accidents";
                                 }
                                 break;
                             case DNFCause.Engine:

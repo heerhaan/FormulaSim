@@ -17,6 +17,9 @@
         <a asp-action="AddDrivers" asp-route-id="@Model.SeasonId" class="btn btn-dark">Add drivers</a>
         <a asp-action="AddTeams" asp-route-id="@Model.SeasonId" class="btn btn-dark">Add teams</a>
         <a asp-action="Settings" asp-route-id="@Model.SeasonId" class="btn btn-dark"><i class="fas fa-cog"></i> Settings</a>
+        <a asp-action="AddDefault" asp-route-id="@Model.SeasonId" class="btn btn-dark" data-toggle="tooltip" data-placement="top"
+                               title="Default returns the same season setup and races as the previous season.">
+        <i class="fas fa-recycle"></i> Default</a>
     }
     @if (Model.State == SeasonState.Progress)
     {
@@ -50,7 +53,8 @@
                         <td>@((pos + 1).ToString())</td>
                         <td>@driver.Points</td>
                         <td><a asp-action="PenaltyList" asp-route-id="@Model.SeasonId" asp-route-driverid="@driver.SeasonDriverId" class="link">
-                            <span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span><span>@driver.Driver.Name</span>
+                            <span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span>
+                            <span class="badge nofullwidth" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.Driver.Name</span>
                             </a></td>
                         <td>@driver.Skill</td>
                         <td>@driver.Style</td>
@@ -79,11 +83,15 @@
         <thead>
             <tr>
                 <th data-field="name">Name</th>
-                <td data-field="location">Location</td>
+                <th data-field="location">Location</th>
                 <th data-field="round">Round</th>
                 <th data-field="specification">Spec</th>
                 <th></th>
-                <th></th>
+                @if (Model.State == SeasonState.Draft)
+                {
+                    <th></th>
+                    <th></th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -102,8 +110,13 @@
                     @if(Model.State == SeasonState.Draft)
                     {
                         <td>
-                            <a class="cursor-pointer" onclick="moveRound(@Model.SeasonId, @race.RaceId, -1)"><i class="fas fa-chevron-up fa-lg"></i></a>
-                            <a class="cursor-pointer" onclick="moveRound(@Model.SeasonId, @race.RaceId, 1)"><i class="fas fa-chevron-down fa-lg"></i></a>
+                            <a class="cursor-pointer" onclick="moveRound(@Model.SeasonId, @race.RaceId, -1)"><i class="fas fa-chevron-up fa"></i></a>
+                            <a class="cursor-pointer" onclick="moveRound(@Model.SeasonId, @race.RaceId, 1)"><i class="fas fa-chevron-down fa"></i></a>
+                        </td>
+                        <td>
+                            <a asp-action="RemoveRace" asp-route-id="@race.RaceId" asp-route-seasonId="@Model.SeasonId">
+                                <i class="fas fa-trash-alt fa-2x"></i>
+                            </a>
                         </td>
                     }
                 </tr>
@@ -116,7 +129,7 @@
     <header>
         <h3>Teams</h3>
     </header>
-    <table class="table">
+    <table class="table table-sm">
         <thead>
             <tr>
                 <th>#</th>
