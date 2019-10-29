@@ -32,7 +32,11 @@ namespace FormuleCirkelEntity.Controllers
                 .ToList();
 
             var championship = _context.Championships.FirstOrDefault(s => s.ActiveChampionship);
-            ViewBag.championship = championship.ChampionshipName;
+            if (championship != null)
+                ViewBag.championship = championship.ChampionshipName;
+            else
+                ViewBag.championship = "NaN";
+
             return View(seasons);
         }
 
