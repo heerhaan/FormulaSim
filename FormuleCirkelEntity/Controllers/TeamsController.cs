@@ -87,7 +87,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("SaveBiography")]
         public IActionResult SaveBiography(int id, string biography)
         {
-            var team = DataContext.Teams.IgnoreQueryFilters().SingleOrDefault(t => t.Id == id);
+            var team = DataContext.Teams.SingleOrDefault(t => t.Id == id);
             team.Biography = biography;
             DataContext.Teams.Update(team);
             DataContext.SaveChanges();
