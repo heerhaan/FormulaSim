@@ -1,0 +1,53 @@
+﻿@model FormuleCirkelEntity.Models.Team
+
+@{
+    ViewData["Title"] = "Team";
+}
+
+<section>
+    <header class="row">
+        <h1>Team bewerken</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.Name))
+        {
+            <h4 class="badge" style="background-color:@(Model.Colour);color:@(Model.Accent);font-size:1.5rem;">@Model.Name</h4>
+        }
+    </header>
+    <form method="POST">
+        <fieldset class="row">
+            <div class="col-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Abbreviation" class="control-label"></label>
+                    <input asp-for="Abbreviation" class="form-control" />
+                    <span asp-validation-for="Abbreviation" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Colour" class="control-label"></label>
+                    <input asp-for="Colour" type="color" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Accent" class="control-label"></label>
+                    <input asp-for="Accent" type="color" class="form-control" />
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="submit" value="Opslaan" class="btn btn-dark" />
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <div>
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
+</section>

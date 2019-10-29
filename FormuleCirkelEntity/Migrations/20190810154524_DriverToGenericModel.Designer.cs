@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20190810154524_DriverToGenericModel")]
+    partial class DriverToGenericModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,15 +48,11 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<string>("Biography");
 
-                    b.Property<DateTime>("DateOfBirth");
-
                     b.Property<int>("DriverNumber");
 
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Archived");
 
                     b.ToTable("Drivers");
                 });
@@ -102,13 +100,13 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<bool>("Archived");
 
+                    b.Property<bool>("Available");
+
                     b.Property<string>("Name");
 
                     b.Property<int>("Power");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Archived");
 
                     b.HasIndex("Name")
                         .IsUnique()
@@ -189,15 +187,11 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<string>("PointsPerPosition");
 
-                    b.Property<int>("PolePoints");
-
                     b.Property<int>("QualificationRNG");
 
                     b.Property<int>("QualificationRemainingDriversQ2");
 
                     b.Property<int>("QualificationRemainingDriversQ3");
-
-                    b.Property<int>("QualyBonus");
 
                     b.Property<int>("SeasonNumber");
 
@@ -218,19 +212,11 @@ namespace FormuleCirkelEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ChassisMod");
-
                     b.Property<int>("DriverId");
 
                     b.Property<int>("DriverStatus");
 
                     b.Property<int>("Points");
-
-                    b.Property<int>("QualyPace");
-
-                    b.Property<int>("RacePace");
-
-                    b.Property<int>("ReliabilityMod");
 
                     b.Property<int>("SeasonId");
 
@@ -318,8 +304,6 @@ namespace FormuleCirkelEntity.Migrations
                         .IsUnique()
                         .HasFilter("[Abbreviation] IS NOT NULL");
 
-                    b.HasIndex("Archived");
-
                     b.ToTable("Teams");
                 });
 
@@ -338,6 +322,8 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<string>("Location");
 
+                    b.Property<int?>("MostRecentWinnerId");
+
                     b.Property<string>("Name");
 
                     b.Property<int>("RNGodds");
@@ -346,7 +332,7 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Archived");
+                    b.HasIndex("MostRecentWinnerId");
 
                     b.ToTable("Tracks");
                 });
@@ -418,6 +404,14 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasOne("FormuleCirkelEntity.Models.Team", "Team")
                         .WithMany("SeasonTeams")
                         .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("FormuleCirkelEntity.Models.Track", b =>
+                {
+                    b.HasOne("FormuleCirkelEntity.Models.Driver", "MostRecentWinner")
+                        .WithMany()
+                        .HasForeignKey("MostRecentWinnerId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618

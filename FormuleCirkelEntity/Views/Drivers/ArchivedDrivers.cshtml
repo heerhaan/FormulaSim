@@ -36,17 +36,17 @@
                 @Html.DisplayFor(modelItem => item.Abbreviation)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.DriverId">
+                <a asp-action="Edit" asp-route-id="@item.Id">
                     <i class="fas fa-edit fa-2x"></i>
                 </a>
             </td>
             <td>
-                <a asp-action="Stats" asp-route-id="@item.DriverId">
+                <a asp-action="Stats" asp-route-id="@item.Id">
                     <i class="fas fa-id-card fa-2x"></i>
                 </a>
             </td>
             <td>
-                <a asp-action="Delete" asp-route-id="@item.DriverId">
+                <a asp-action="Delete" asp-route-id="@item.Id">
                     <i class="fas fa-undo fa-2x"></i>
                 </a>
             </td>

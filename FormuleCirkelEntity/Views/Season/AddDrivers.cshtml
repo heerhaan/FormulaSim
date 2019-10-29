@@ -19,7 +19,7 @@
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.DriverNumber)</td>
                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td><a asp-action="AddDriver" asp-route-id="@ViewBag.seasonId" asp-route-globalDriverId="@item.DriverId" class="btn btn-outline-primary btn-sm">Add</a></td>
+                    <td><a asp-action="AddDriver" asp-route-id="@ViewBag.seasonId" asp-route-globalDriverId="@item.Id" class="btn btn-outline-primary btn-sm">Add</a></td>
                 </tr>
             }
         </tbody>

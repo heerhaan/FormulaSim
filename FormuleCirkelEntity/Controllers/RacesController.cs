@@ -38,7 +38,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var existingTrackIds = season.Races.Select(r => r.TrackId);
-            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.TrackId) && t.Archived == false).OrderBy(t => t.Location).ToList();
+            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.Id)).OrderBy(t => t.Location).OrderBy(t => t.Location).ToList();
 
             ViewBag.seasonId = id;
             return View(unusedTracks);
@@ -47,7 +47,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] Track track)
         {
-            track = await _context.Tracks.SingleOrDefaultAsync(m => m.TrackId == track.TrackId);
+            track = await _context.Tracks.SingleOrDefaultAsync(m => m.Id == track.Id);
 
             var season = await _context.Seasons
                 .Include(s => s.Races)
@@ -60,7 +60,7 @@ namespace FormuleCirkelEntity.Controllers
             // Finds the last time track was used and uses same stintsetup as then
             var lastracemodel = _context.Races
                 .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
-                .LastOrDefault(lr => lr.Track.TrackId == track.TrackId);
+                .LastOrDefault(lr => lr.Track.Id == track.Id);
 
             if(lastracemodel != null)
             {
@@ -102,14 +102,14 @@ namespace FormuleCirkelEntity.Controllers
             // Finds the last time track was used and uses same stintsetup as then
             var lastracemodel = _context.Races
                 .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
-                .LastOrDefault(lr => lr.Track.TrackId == trackId);
+                .LastOrDefault(lr => lr.Track.Id == trackId);
             if (lastracemodel != null)
             {
                 var stintlist = lastracemodel.Stints.Values.ToList();
                 model.RaceStints = stintlist;
             }
 
-            var track = _context.Tracks.SingleOrDefault(m => m.TrackId == trackId);
+            var track = _context.Tracks.SingleOrDefault(m => m.Id == trackId);
             ViewBag.trackname = track.Name;
 
             return View(model);
@@ -121,7 +121,7 @@ namespace FormuleCirkelEntity.Controllers
             if (raceModel == null)
                 return NotFound();
 
-            var track = _context.Tracks.SingleOrDefault(m => m.TrackId == raceModel.TrackId);
+            var track = _context.Tracks.SingleOrDefault(m => m.Id == raceModel.TrackId);
 
             var season = await _context.Seasons
                 .Include(s => s.Races)

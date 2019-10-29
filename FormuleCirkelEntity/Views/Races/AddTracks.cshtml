@@ -30,12 +30,12 @@
                     <td>@Html.DisplayFor(modelItem => item.Specification)</td>
                     <td>
                         <form method="POST">
-                            <input type="hidden" name="trackId" value="@item.TrackId" />
+                            <input type="hidden" name="trackId" value="@item.Id" />
                             <input type="submit" class="btn btn-outline-primary btn-sm" style="width:69px;" value="Add" />
                         </form>
                     </td>
                     <td>
-                        <a asp-controller="Races" asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.TrackId">
+                        <a asp-controller="Races" asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.Id">
                             <i class="fas fa-cog"></i>
                         </a>
                     </td>
