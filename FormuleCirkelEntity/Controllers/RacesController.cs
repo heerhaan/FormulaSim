@@ -45,9 +45,9 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost("Season/{id}/[Controller]/Add/")]
-        public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] Track track)
+        public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] int trackId)
         {
-            track = await _context.Tracks.SingleOrDefaultAsync(m => m.Id == track.Id);
+            var track = await _context.Tracks.SingleOrDefaultAsync(m => m.Id == trackId);
 
             var season = await _context.Seasons
                 .Include(s => s.Races)
