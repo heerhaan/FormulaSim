@@ -1,4 +1,9 @@
-﻿function tableComparer(index, isAscending) {
+﻿// Enables tooltips
+$(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+
+function tableComparer(index, isAscending) {
     let getCellValue = (row, idx) => row.children[idx].innerText || row.children[idx].textContent;
     let isNumber = (val) => val !== '' && !isNaN(val);
     return function (a, b) {

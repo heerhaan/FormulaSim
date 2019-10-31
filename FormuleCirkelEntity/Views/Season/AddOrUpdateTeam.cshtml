@@ -7,51 +7,68 @@
         <h1 class="row">Season: @Model.Season.SeasonNumber</h1>
         <h4 class='row badge' style='background-color:@(Model.Team.Colour);color:@(Model.Team.Accent);font-size:1.5rem;'>@Model.Team.Name</h4>
     </header>
-    <section class="row">
+    <section>
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Principal" class="control-label">Team principal</label>
-                <input asp-for="Principal" class="form-control" />
-                <span asp-validation-for="Principal" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Chassis" class="control-label"></label>
-                <input asp-for="Chassis" class="form-control" />
-                <span asp-validation-for="Chassis" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reliability" class="control-label"></label>
-                <input asp-for="Reliability" id="relbox" class="form-control" />
-                <button type="button" class="btn btn-dark" onclick="reldev()"><i class="fas fa-dice"></i></button>
-                <span asp-validation-for="Reliability" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EngineId" value="Motor" class="control-label">Engine</label>
-                <select asp-for="EngineId" class="form-control" asp-items="@ViewBag.engines"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Topspeed" class="control-label"></label>
-                <input asp-for="Topspeed" class="form-control" />
-                <span asp-validation-for="Topspeed" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Acceleration" class="control-label"></label>
-                <input asp-for="Acceleration" class="form-control" />
-                <span asp-validation-for="Acceleration" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Stability" class="control-label"></label>
-                <input asp-for="Stability" class="form-control" />
-                <span asp-validation-for="Stability" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Handling" class="control-label"></label>
-                <input asp-for="Handling" class="form-control" />
-                <span asp-validation-for="Handling" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-dark" />
+            <div class="row">
+                <div class="col-md-3">
+                    <div>
+                        <div class="form-group">
+                            <label asp-for="Principal" class="control-label">Team principal</label>
+                            <input asp-for="Principal" class="form-control" />
+                            <span asp-validation-for="Principal" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Chassis" class="control-label"></label>
+                            <input asp-for="Chassis" class="form-control" />
+                            <span asp-validation-for="Chassis" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Reliability" class="control-label"></label>
+                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
+                               title="Every reliability roll will be between 0 and 100. If the roll is higher than the drivers reliablity value then it causes a DNF."></i>
+                            <input asp-for="Reliability" id="relbox" class="form-control" />
+                            <button type="button" class="btn btn-dark float-right" onclick="reldev()">
+                                <i class="fas fa-dice" data-toggle="tooltip" data-placement="right"
+                                   title="RNG for this roll is between 88 and 100"></i>
+                            </button>
+                            <span asp-validation-for="Reliability" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EngineId" value="Motor" class="control-label">Engine</label>
+                            <select asp-for="EngineId" class="form-control" asp-items="@ViewBag.engines"></select>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-dark" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="float-right">
+                        <h4>Specifications</h4><i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" 
+                                                  title="Specific values that get added to the chassis when the track matches the specification."></i>
+                        <div class="form-group">
+                            <label asp-for="Topspeed" class="control-label"></label>
+                            <input asp-for="Topspeed" class="form-control" />
+                            <span asp-validation-for="Topspeed" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Acceleration" class="control-label"></label>
+                            <input asp-for="Acceleration" class="form-control" />
+                            <span asp-validation-for="Acceleration" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Stability" class="control-label"></label>
+                            <input asp-for="Stability" class="form-control" />
+                            <span asp-validation-for="Stability" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Handling" class="control-label"></label>
+                            <input asp-for="Handling" class="form-control" />
+                            <span asp-validation-for="Handling" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </section>
@@ -62,7 +79,7 @@
 
 <script>
     function reldev() {
-        var newdev = Math.floor((Math.random() * 8) + 43);
+        var newdev = Math.floor((Math.random() * 13) + 88);
         $('#relbox').val(newdev);
     }
 </script>

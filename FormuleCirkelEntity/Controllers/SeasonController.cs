@@ -1,6 +1,7 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
+using FormuleCirkelEntity.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,13 @@ namespace FormuleCirkelEntity.Controllers
     public class SeasonController : Controller
     {
         private readonly FormulaContext _context;
+        private readonly Utility _utility;
         private static readonly Random rng = new Random();
 
-        public SeasonController(FormulaContext context)
+        public SeasonController(FormulaContext context, Utility utility)
         {
             _context = context;
+            _utility = utility;
         }
 
         public IActionResult Index()
@@ -42,12 +45,52 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Create()
         {
+            // make an option to insert the default races and setup from previous season.
             var season = new Season();
             var championship = _context.Championships.FirstOrDefault(c => c.ActiveChampionship);
             season.Championship = championship;
             await _context.AddAsync(season);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
+        }
+
+        public IActionResult AddDefault(int? id)
+        {
+            // gets the current and previous season in this championship
+            var season = _context.Seasons.Include(s => s.Races).SingleOrDefault(s => s.SeasonId == id);
+            var lastSeason = _context.Seasons.Include(s => s.Races).LastOrDefault(s => s.State == SeasonState.Finished && s.ChampionshipId == season.ChampionshipId);
+
+            if (lastSeason != null)
+            {
+                season.PointsPerPosition = lastSeason.PointsPerPosition;
+                season.QualificationRemainingDriversQ2 = lastSeason.QualificationRemainingDriversQ2;
+                season.QualificationRemainingDriversQ3 = lastSeason.QualificationRemainingDriversQ3;
+                season.QualificationRNG = lastSeason.QualificationRNG;
+                season.QualyBonus = lastSeason.QualyBonus;
+                season.SeasonNumber = (lastSeason.SeasonNumber + 1);
+
+                // Adds the previous season races if there aren't any added yet.
+                if (season.Races.Count == 0)
+                {
+                    foreach (var race in lastSeason.Races)
+                    {
+                        Race newRace = new Race
+                        {
+                            Season = season,
+                            Name = race.Name,
+                            Round = race.Round,
+                            Stints = race.Stints,
+                            TrackId = race.TrackId,
+                            Weather = _utility.RandomWeather(),
+                            RaceState = RaceState.Concept
+                        };
+                        season.Races.Add(newRace);
+                    }
+                }
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction(nameof(Detail), new { id });
         }
 
         public async Task<IActionResult> Start(int? id)
@@ -108,6 +151,27 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             return View(nameof(Detail), season);
+        }
+
+        public async Task<IActionResult> RemoveRace(int? id, int seasonId)
+        {
+            var race = await _context.Races.SingleOrDefaultAsync(s => s.RaceId == id);
+            var season = await _context.Seasons.Include(s => s.Races).SingleOrDefaultAsync(s => s.SeasonId == seasonId);
+            if (race == null)
+                return NotFound();
+
+            season.Races.Remove(race);
+            int round = 0;
+            foreach (var seasonRace in season.Races.OrderBy(r => r.Round))
+            {
+                round++;
+                seasonRace.Round = round;
+            }
+
+            _context.Remove(race);
+            _context.Update(season);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Detail), new { season.SeasonId });
         }
 
         // Page that displays certain statistics related to the selected season
@@ -374,9 +438,11 @@ namespace FormuleCirkelEntity.Controllers
             }
             var unregisteredDrivers = _context.Drivers
                 .Where(d => d.Archived == false)
-                .Where(d => !existingDriverIds.Contains(d.Id)).ToList();
+                .Where(d => !existingDriverIds.Contains(d.Id))
+                .OrderByDescending(d => d.Name).ToList();
 
             ViewBag.seasonId = id;
+            ViewBag.year = _context.Seasons.SingleOrDefault(s => s.SeasonId == id).SeasonNumber;
             return View(unregisteredDrivers);
         }
 

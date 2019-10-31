@@ -7,7 +7,7 @@
     <header>
         <h3>Season @ViewBag.seasonId - Add races</h3>
     </header>
-    <table class="table">
+    <table class="table table-sm">
         <thead>
             <tr>
                 <th>Name</th>
@@ -16,7 +16,7 @@
                 <th>RNG</th>
                 <th>Specification</th>
                 <th></th>
-                <th>Edit</th>
+                <th data-toggle="tooltip" data-placement="right" title="Press the cog wheel to modify the stints and what happens each stint.">Edit</th>
             </tr>
         </thead>
         <tbody>
@@ -36,7 +36,7 @@
                     </td>
                     <td>
                         <a asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.Id">
-                            <i class="fas fa-cog"></i>
+                            <i class="fas fa-cog fa-2x"></i>
                         </a>
                     </td>
                 </tr>

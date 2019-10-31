@@ -134,11 +134,11 @@ namespace FormuleCirkelEntity.ResultGenerators
         public int GetDriverReliabilityResult(SeasonDriver driver, int dnfTrack)
         {
             int driverStyleModifier = 0;
-            if (driver.Style == Style.Aggressive) { driverStyleModifier = -2; }
-            else if (driver.Style == Style.Defensive) { driverStyleModifier = 2; }
+            if (driver.Style == Style.Aggressive) { driverStyleModifier = -4; }
+            else if (driver.Style == Style.Defensive) { driverStyleModifier = 4; }
 
             var reliabilityScore = driver.SeasonTeam.Reliability + driver.ReliabilityMod + driverStyleModifier + dnfTrack;
-            var reliabilityCheckValue = _rng.Next(1, 51); 
+            var reliabilityCheckValue = _rng.Next(1, 101); 
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
 
@@ -170,7 +170,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             // Swap drivers when the driver above is the second driver for the driver below
             foreach (var driver in orderedResults)
             {
-                if (driver.SeasonDriver.DriverStatus == DriverStatus.First)
+                if (driver.SeasonDriver.DriverStatus == DriverStatus.First && driver.Status == Status.Finished)
                 {
                     int index = orderedResults.IndexOf(driver);
                     if (index != 0)
