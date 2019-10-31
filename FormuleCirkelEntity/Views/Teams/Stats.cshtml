@@ -100,7 +100,7 @@
         $.ajax({
             type: "POST",
             url: "/Teams/SaveBiography",
-            data: { id: @Model.Team.TeamId, biography: $("#biography").text() },
+            data: { id: @Model.Team.Id, biography: $("#biography").text() },
             dataType: "html",
             success: function () { alert("Biography saved."); },
             error: function () { alert("Saving biography failed."); }

@@ -1,9 +1,12 @@
-﻿@using X.PagedList.Mvc.Core;
-@using X.PagedList;
-@model IEnumerable<FormuleCirkelEntity.Models.Engine>
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Engine>
 
 @{
     ViewData["Title"] = "Engines";
+    var pageCount = (int)ViewData["pageCount"];
+    var pageSize = (int)ViewData["pageSize"];
+    var pageNumber = (int)ViewData["pageNumber"];
+    var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
+    var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
 }
 
 <section>
@@ -27,18 +30,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in ViewBag.OnePage)
+                @foreach (var item in Model)
                 {
                     <tr>
                         <td>@item.Name</td>
                         <td>@item.Power</td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.EngineId">
+                            <a asp-action="Edit" asp-route-id="@item.Id">
                                 <i class="fas fa-edit fa-2x"></i>
                             </a>
                         </td>
                         <td>
-                            <a asp-action="Delete" asp-route-id="@item.EngineId">
+                            <a asp-action="Delete" asp-route-id="@item.Id">
                                 <i class="fas fa-trash-alt fa-2x"></i>
                             </a>
                         </td>
@@ -49,8 +52,17 @@
     </section>
 </section>
 
-@Html.PagedListPager((IPagedList)ViewBag.OnePage, page => Url.Action("Index", new { page }),
-    new X.PagedList.Mvc.Common.PagedListRenderOptionsBase {
-        LiElementClasses = new string[] { "page-item" },
-        PageClasses = new string[] { "page-link" }
-    })
+<nav>
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link" asp-route-ps="@pageSize" asp-route-p="@backPage"><span>&laquo;</span></a>
+        </li>
+        @for (int i = 1; i <= pageCount; i++)
+        {
+            <li class="page-item"><a class="page-link" asp-route-ps="@pageSize" asp-route-p="@i">@i</a></li>
+        }
+        <li class="page-item">
+            <a class="page-link" asp-route-ps="@pageSize" asp-route-p="@nextPage"><span>&raquo;</span></a>
+        </li>
+    </ul>
+</nav>

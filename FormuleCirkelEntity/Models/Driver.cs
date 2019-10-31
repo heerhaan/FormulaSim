@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public class Driver
+    public class Driver : ModelBase, IArchivable
     {
-        [Key]
-        public int DriverId { get; set; }
         public int DriverNumber { get; set; }
         public string Name { get; set; }
         public string Abbreviation { get; set; }

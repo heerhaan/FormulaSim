@@ -1,18 +1,28 @@
-﻿@model FormuleCirkelEntity.Models.Team
+﻿@model FormuleCirkelEntity.Models.Driver
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4 class="badge" style="background-color:@(Model.Colour);color:@(Model.Accent);font-size:1.5rem;">@Model.Name</h4>
+<section>
+    <header>
+        <h1 class="row">Modify driver</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.Name))
+        {
+            <h4 class="row">@Model.Name</h4>
+        }
+    </header>
+</section>
 <hr />
-<div class="row">
+<section class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="TeamId" />
+            <div class="form-group">
+                <label asp-for="DriverNumber" class="control-label">Number</label>
+                <input asp-for="DriverNumber" class="form-control" />
+                <span asp-validation-for="DriverNumber" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -24,19 +34,16 @@
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Colour" class="control-label"></label>
-                <input asp-for="Colour" type="color" value="@(Model.Colour)" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Accent" class="control-label"></label>
-                <input asp-for="Accent" type="color" value="@(Model.Accent)" class="form-control" />
+                <label asp-for="DateOfBirth" class="control-label">Date of Birth</label>
+                <input asp-for="DateOfBirth" type="date" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-dark" />
             </div>
         </form>
     </div>
-</div>
+</section>
 
 <div>
     <a asp-action="Index">

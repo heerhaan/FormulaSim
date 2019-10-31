@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public class Team
+    public class Team : ModelBase, IArchivable
     {
-        [Key]
-        public int TeamId { get; set; }
-
         public string Name { get; set; }
         public string Abbreviation { get; set; }
 

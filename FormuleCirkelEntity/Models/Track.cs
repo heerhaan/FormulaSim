@@ -9,7 +9,8 @@ namespace FormuleCirkelEntity.Models
     public enum DNFodds { Increased, Neutral, Decreased }
     public enum RNGodds { Increased, Neutral, Decreased }
     public enum Specification { Topspeed, Acceleration, Stability, Handling }
-    public class Track
+
+    public class Track : ModelBase, IArchivable
     {
         public Track()
         {
@@ -17,8 +18,6 @@ namespace FormuleCirkelEntity.Models
             RNGodds = RNGodds.Neutral;
         }
 
-        [Key]
-        public int TrackId { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
         public decimal LengthKM { get; set; }

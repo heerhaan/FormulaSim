@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using FormuleCirkelEntity.Validation;
+using FormuleCirkelEntity.Services;
 
 namespace FormuleCirkelEntity
 {
@@ -42,6 +43,7 @@ namespace FormuleCirkelEntity
             });
 
             services.AddMvc()
+                .WithRazorPagesAtContentRoot()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
@@ -49,6 +51,7 @@ namespace FormuleCirkelEntity
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();
             services.AddTransient<SeasonSettingsValidator>();
+            services.AddTransient<PagingHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

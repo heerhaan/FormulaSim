@@ -5,10 +5,8 @@ using System.Linq;
 
 namespace FormuleCirkelEntity.Models
 {
-    public class Engine
+    public class Engine : ModelBase, IArchivable
     {
-        [Key]
-        public int EngineId { get; set; }
         public string Name { get; set; }
         public int Power { get; set; }
         public bool Archived { get; set; }
