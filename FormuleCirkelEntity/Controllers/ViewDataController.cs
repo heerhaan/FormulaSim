@@ -86,12 +86,12 @@ namespace FormuleCirkelEntity.Controllers
             if(id == null)
                 return NotFound();
 
-            var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
+            var item = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
 
-            if(team == null)
+            if(item == null)
                 return NotFound();
 
-            return View(team);
+            return View(item);
         }
 
         [HttpPost("Delete/{id}")]
