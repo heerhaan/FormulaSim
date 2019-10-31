@@ -171,7 +171,7 @@ namespace FormuleCirkelEntity.Controllers
             _context.Remove(race);
             _context.Update(season);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Detail), new { season.SeasonId });
+            return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
 
         // Page that displays certain statistics related to the selected season
