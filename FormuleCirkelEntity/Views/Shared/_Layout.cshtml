@@ -69,9 +69,10 @@
         <div class="container text-muted">
             &copy; 2019 - Haan#0420
             <div class="theme-buttons">
+                <a id="lighttheme" class="theme-button">☀️</a>
                 <a id="darktheme" class="theme-button">🌑</a>
                 <a id="synththeme" class="theme-button">🕶</a>
-                <a id="lighttheme" class="theme-button">☀️</a>
+                <a id="yoshitheme" class="theme-button">🐲</a>
             </div>
         </div>
 
@@ -92,6 +93,10 @@
         $("#lighttheme").click(function () {
             $("link#theme").attr("href", "@Url.Content("~/css/themeLight.css")");
             $.cookie('theme-cookie', "@Url.Content("~/css/themeLight.css")");
+        });
+        $("#yoshitheme").click(function () {
+            $("link#theme").attr("href", "@Url.Content("~/css/themeYoshiWTCC.css")");
+            $.cookie('theme-cookie', "@Url.Content("~/css/themeYoshiWTCC.css")");
         });
     });
 </script>

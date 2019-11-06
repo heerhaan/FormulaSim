@@ -27,6 +27,7 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult Index()
         {
             var seasons = _context.Seasons
+                .IgnoreQueryFilters()
                 .Where(s => s.Championship.ActiveChampionship)
                 .Include(s => s.Drivers)
                     .ThenInclude(dr => dr.Driver)
@@ -190,6 +191,7 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.points = season.PointsPerPosition.Values.ToList();
 
             var seasondrivers = _context.SeasonDrivers
+                .IgnoreQueryFilters()
                 .Where(sd => sd.SeasonId == id)
                 .Include(sd => sd.Driver)
                 .Include(sd => sd.SeasonTeam)

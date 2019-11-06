@@ -111,6 +111,7 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.lastpointpos = lastpoint;
 
             var standings = _context.SeasonDrivers
+                .IgnoreQueryFilters()
                 .Include(s => s.DriverResults)
                 .Include(s => s.Driver)
                 .Include(s => s.SeasonTeam.Team)
@@ -145,6 +146,7 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.averages = averageFinishes;
 
             ViewBag.rounds = _context.Races
+                .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
                 .Include(r => r.Track)
                 .OrderBy(r => r.Round).ToList();
@@ -204,6 +206,7 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.lastpointpos = lastpoint;
 
             var standings = _context.SeasonTeams
+                .IgnoreQueryFilters()
                 .Include(t => t.Team)
                 .Include(t => t.SeasonDrivers)
                     .ThenInclude(s => s.DriverResults)
@@ -212,6 +215,7 @@ namespace FormuleCirkelEntity.Controllers
                 .ToList();
 
             ViewBag.rounds = _context.Races
+                .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
                 .Include(r => r.Track)
                 .OrderBy(r => r.Round).ToList();
