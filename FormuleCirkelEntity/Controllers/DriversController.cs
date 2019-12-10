@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Extensions;
+using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
@@ -17,6 +18,12 @@ namespace FormuleCirkelEntity.Controllers
             : base(context, pagingHelper)
         { }
 
+        [SortResult(nameof(Driver.Name)), PagedResult]
+        public override Task<IActionResult> Index()
+        {
+            return base.Index();
+        }
+
         [Route("Stats/{id}")]
         public async Task<IActionResult> Stats(int? id)
         {
@@ -25,13 +32,19 @@ namespace FormuleCirkelEntity.Controllers
 
             // Prepares table items for ViewModel
             var driver = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
-            var seasondriver = DataContext.SeasonDrivers
+            var seasondriver = DataContext
+                .SeasonDrivers
                 .Where(s => s.Driver.Id == id)
+                .Include(s => s.SeasonTeam)
+                    .Where(st => st.Season.Championship.ActiveChampionship)
                 .Include(s => s.SeasonTeam)
                     .ThenInclude(t => t.Team);
             var driverresult = DataContext.DriverResults
                 .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver)
+                    .ThenInclude(sd => sd.SeasonTeam)
+                    .ThenInclude(st => st.Team)
+                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Season);
             var seasons = DataContext.Seasons
                 .Where(s => s.Championship.ActiveChampionship);
@@ -45,7 +58,7 @@ namespace FormuleCirkelEntity.Controllers
                     .OrderByDescending(dr => dr.Points)
                     .FirstOrDefault();
 
-                if(winner != null)
+                if (winner != null)
                 {
                     if (winner.DriverId == id)
                     {

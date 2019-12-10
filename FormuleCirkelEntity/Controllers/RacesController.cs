@@ -169,6 +169,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Race(int id, int raceId)
         {
             var race = await _context.Races
+                .IgnoreQueryFilters()
                 .Include(r => r.Season)
                 .Include(r => r.Track)
                 .Include(r => r.DriverResults)
@@ -197,6 +198,7 @@ namespace FormuleCirkelEntity.Controllers
         private List<SeasonDriver> Favourites(Race race)
         {
             var drivers = _context.SeasonDrivers
+                .IgnoreQueryFilters()
                 .Where(sd => sd.SeasonId == race.SeasonId)
                 .Include(sd => sd.Driver)
                 .Include(sd => sd.SeasonTeam)
@@ -254,6 +256,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RaceWeekend(int id, int raceId)
         {
             var race = await _context.Races
+                .IgnoreQueryFilters()
                 .Include(r => r.DriverResults)
                     .ThenInclude(dr => dr.SeasonDriver)
                         .ThenInclude(sd => sd.Driver)
@@ -403,9 +406,11 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult GetResults(int id, int raceId)
         {
             var driverResults = _context.DriverResults
+                .IgnoreQueryFilters()
                 .Where(res => res.RaceId == raceId)
                 .Include(res => res.SeasonDriver.Driver)
-                .Include(res => res.SeasonDriver.SeasonTeam.Team).ToList();
+                .Include(res => res.SeasonDriver.SeasonTeam.Team)
+                .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Name).ToList();
 
             return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }

@@ -22,6 +22,9 @@ namespace FormuleCirkelEntity.Services
             var pageCount = Convert.ToInt32(Math.Ceiling(Convert.ToDecimal(itemCount / pageSize)));
             if (pageCount <= 0)
                 pageCount = 1;
+            else
+                pageCount++;
+
             return pageCount;
         }
     }

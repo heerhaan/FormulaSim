@@ -138,6 +138,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Detail(int? id)
         {
             var season = await _context.Seasons
+                .IgnoreQueryFilters()
                 .Include(s => s.Races)
                     .ThenInclude(r => r.Track)
                 .Include(s => s.Drivers)
@@ -585,16 +586,18 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        [Route("[Controller]/{id}/Driver/Penalty/{driverId}")]
-        public IActionResult PenaltyList(int id, int driverId)
+        [Route("[Controller]/{id}/Driver/Penaltylist/")]
+        public IActionResult PenaltyList(int id)
         {
-            var driver = _context.SeasonDrivers
+            var drivers = _context.SeasonDrivers
                 .Include(s => s.DriverResults)
                 .Include(s => s.Driver)
                 .Include(s => s.SeasonTeam)
-                .ThenInclude(t => t.Team)
-                .SingleOrDefault(s => s.SeasonId == id && s.SeasonDriverId == driverId);
-            return View(driver);
+                    .ThenInclude(t => t.Team)
+                .Where(s => s.SeasonId == id)
+                .OrderBy(s => s.SeasonTeam.Team.Name)
+                .ToList();
+            return View(drivers);
         }
 
         public IActionResult DriverDev(int id)

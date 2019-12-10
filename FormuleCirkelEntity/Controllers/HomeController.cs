@@ -2,6 +2,7 @@
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -46,6 +47,8 @@ namespace FormuleCirkelEntity.Controllers
                 .FirstOrDefault();
 
                 ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
+                ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
+                ViewBag.seasonId = currentSeason.SeasonId;
 
                 var standings = _context.SeasonDrivers
                     .Include(s => s.DriverResults)
@@ -109,6 +112,8 @@ namespace FormuleCirkelEntity.Controllers
                 lastpoint = currentSeason.PointsPerPosition.Keys.Max();
             }
             ViewBag.lastpointpos = lastpoint;
+            ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
+            ViewBag.seasonId = seasonId;
 
             var standings = _context.SeasonDrivers
                 .IgnoreQueryFilters()
@@ -152,6 +157,32 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderBy(r => r.Round).ToList();
 
             return View("DriverStandings", standings);
+        }
+
+        [HttpPost("[Controller]/{seasonId}/GetDriverGraphData")]
+        public IActionResult GetDriverGraphData(int seasonId)
+        {
+            var season = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId);
+            if (season == null)
+                return null;
+
+            var standings = _context.SeasonDrivers
+                .IgnoreQueryFilters()
+                .Include(sd => sd.Driver)
+                .Include(sd => sd.DriverResults)
+                .Include(sd => sd.SeasonTeam)
+                    .ThenInclude(sd => sd.Team)
+                .Where(sd => sd.SeasonId == seasonId)
+                .OrderBy(sd => sd.SeasonTeam.Team.Name)
+                .ToList();
+
+            // This makes the method quite slow
+            foreach (var driver in standings)
+            {
+                driver.DriverResults.OrderByDescending(dr => dr.Race.Round);
+            }
+
+            return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
         public IActionResult TeamStandings()

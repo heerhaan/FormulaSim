@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Race";
     int maxPos = Model.Season.PointsPerPosition.Keys.Max();
+    int progress = Model.StintProgress;
+    int countdrivers = Model.Season.Drivers.Count;
 }
 
 @if (Model.Season.State == SeasonState.Progress)
@@ -107,7 +109,10 @@
     </table>
 </section>
 
-<button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+<div class="row">
+    <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn" onclick="redrawChart()"><i class="fas fa-chart-bar fa-2x mt-auto"></i></button>
+</div>
 
 <div id="screenshot"></div>
 
@@ -130,10 +135,11 @@
     </div>
 </div>
 
-<!--<canvas id="raceChart"></canvas>-->
+<div id="raceChartWrap">
+    <canvas id="raceChart"></canvas>
+</div>
 
 <script>
-    //$(drawRaceChart);
     $(function () {
         var weatherclass = "";
         switch ("@Model.Weather") {
@@ -273,82 +279,170 @@
         takeScreenshot("#formulaGraphic", "#resultScreenshot");
     });
 
-    function drawRaceChart() {
-        var ctx = document.getElementById('raceChart').getContext('2d');
-        var chart = new Chart(ctx, {
+    function drawRaceChart(res) {
+        var ctx = document.getElementById('raceChart');
+        ctx.height = 250;
+        ctx.getContext('2d');
+        var driversets = [];
+        var stints = @progress;
+
+        $(res).each(function (driverKey, driverValue) {
+            var stintresults = [];
+            let total = 0;
+            stintresults.push(driverValue.Grid);
+            for (i = 0; i <= stints; i++) {
+                stintresults.push(0);
+            }
+            for (var key in driverValue.StintResults) {
+                if (!driverValue.StintResults.hasOwnProperty(key)) continue;
+                var obj = driverValue.StintResults[key];
+                if (obj == null) {
+                    obj = 0;
+                    total = 0;
+                }
+                total = total + obj;
+                stintresults[key] = total;
+            }
+            var driverDataset = {
+                label: driverValue.SeasonDriver.Driver.Name,
+                backgroundColor: driverValue.SeasonDriver.SeasonTeam.Team.Accent,
+                borderColor: driverValue.SeasonDriver.SeasonTeam.Team.Colour,
+                data: stintresults,
+                fill: false,
+                teamName: driverValue.SeasonDriver.SeasonTeam.Team.Name
+            };
+            if (driversets.some(d => d.backgroundColor === driverValue.SeasonDriver.SeasonTeam.Team.Accent && d.borderColor === driverValue.SeasonDriver.SeasonTeam.Team.Colour)) {
+                driverDataset.borderDash = [5, 5];
+            }
+            driversets.push(driverDataset);
+        });
+
+        for (i = 0; i <= stints; i++) {
+            if (i === 0) continue;
+            driversets.sort(function (a, b) {
+                return (a.data[i] != null) - (b.data[i] != null) || b.data[i] - a.data[i];
+            });
+            let position = 1;
+            driversets.forEach(function (result) {
+                result.data[i] = position;
+                position = position + 1;
+            });
+        }
+
+        driversets.sort((a, b) => (a.teamName > b.teamName) ? 1 : -1);
+        var stintlabels = [];
+
+        for (i = 0; i <= stints; i++) {
+            var stringstint = i;
+            stintlabels.push(stringstint);
+        }
+
+        Chart.pluginService.register({
+            beforeDraw: function (chart, easing) {
+            if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
+                var ctx = chart.chart.ctx;
+
+                ctx.save();
+                ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
+                ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+                ctx.restore();
+                }
+            }
+        });
+
+        let chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['1', '2', '3', '4', '5', '6', '7'],
-                datasets: [],
-                //labels: ['yobama', 'yobama', 'yobama', 'yobama'],
-                //datasets: [{
-                //    label: 'wew lad',
-                //    fill: false,
-                //    backgroundColor: 'rgb(255, 99, 132)',
-                //    borderColor: 'rgb(255, 99, 132)',
-                //    data: [1, 2, 2, 5]
-                //}, {
-                //        label: 'gay lad',
-                //        fill: false,
-                //        backgroundColor: 'rgb(233, 88, 111)',
-                //        borderColor: 'rgb(233, 88, 132)',
-                //        data: [4, 3, 1, 3]
-                //}]
+                labels: stintlabels,
+                datasets: driversets
             },
-
             options: {
-                responsive: true,
                 title: {
                     display: true,
-                    text: '@Model.Track.Name'
+                    text: '@Model.Track.Name',
+                    fontColor: '#e6e6e6'
                 },
                 tooltips: {
-                    mode: 'index',
-                    intersect: false,
+                    //enabled: false
                 },
                 hover: {
-                    mode: 'nearest',
-                    intersect: true
+                    //mode: null
                 },
                 scales: {
                     xAxes: [{
-                        display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'Stints'
+                            labelString: 'Stints',
+                            fontColor: '#e6e6e6'
+                        },
+                        ticks: {
+                            fontColor: '#e6e6e6'
                         }
                     }],
                     yAxes: [{
                         display: true,
                         scaleLabel: {
                             display: true,
-                            labelString: 'Position'
-                        }
-                    }]
+                            labelString: 'Position',
+                            fontColor: '#e6e6e6'
+                        },
+                        ticks: {
+                            reverse: true,
+                            min: 1,
+                            max: @countdrivers,
+                            fontColor: '#e6e6e6'
+                        },
+                        position: 'left'
+                    }, {
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Position',
+                            fontColor: '#e6e6e6'
+                        },
+                        ticks: {
+                            reverse: true,
+                            min: 1,
+                            max: @countdrivers,
+                            fontColor: '#e6e6e6'
+                        },
+                        position: 'right'
+                        }]
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                },
+                legend: {
+                    labels: {
+                        boxWidth: 28,
+                        fontSize: 13,
+                        fontColor: '#e6e6e6'
+                    }
+                },
+                chartCanvas: {
+                    backgroundColor: 'rgba(30, 34, 39, 0.9)'
                 }
             }
         });
 
-        // foreach driver, score dataset and all that.
-        var driverResults = {};
-        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/getResults", { method: "POST" })
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (jsonResult) {
-                driverResults = jsonResult;
+        let legends = chart.legend.legendItems;
+            legends.forEach(function (e) {
+                [e.fillStyle, e.strokeStyle] = [e.strokeStyle, e.fillStyle];
             });
-        console.log(driverResults);
-        $(driverResults).each(function (driverKey, driverValue) {
-            var driverDataset = {
-                label: driverValue.seasonDriver.driver.name,
-                backgroundColor: driverValue.seasonDriver.seasonTeam.team.colour,
-                borderColor: driverValue.seasonDriver.seasonTeam.team.accent,
-                data: [1, 2, 3, 4, 5, 6, 7],
-                fill: false
-            };
-            chart.data.datasets.push(driverDataset);
-        });
+    }
+
+    function getCurrentResults() {
+        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/getResults", { method: "POST" })
+            .then(response => response.json())
+            .then(result => drawRaceChart(result));
+    }
+
+    function redrawChart() {
+        $("canvas#raceChart").remove();
+        $("#raceChartWrap").append("<canvas id='raceChart'></canvas>");
+        getCurrentResults();
     }
 </script>
 
@@ -434,10 +528,6 @@
         #resultScreenshot canvas:hover {
             cursor: pointer;
         }
-
-    canvas {
-        background-color: black;
-    }
 
     .eliminated {
         background-color: #870019 !important;

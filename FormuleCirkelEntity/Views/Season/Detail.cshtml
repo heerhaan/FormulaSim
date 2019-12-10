@@ -20,6 +20,9 @@
         <a asp-action="AddDefault" asp-route-id="@Model.SeasonId" class="btn btn-dark" data-toggle="tooltip" data-placement="top"
                                title="Default returns the same season setup and races as the previous season.">
         <i class="fas fa-recycle"></i> Default</a>
+    } else
+    {
+        <a asp-action="PenaltyList" asp-route-id="@Model.SeasonId" class="btn btn-dark"><i class="fas fa-wrench"></i> Parts list</a>
     }
     @if (Model.State == SeasonState.Progress)
     {
@@ -52,10 +55,9 @@
                     <tr>
                         <td>@((pos + 1).ToString())</td>
                         <td>@driver.Points</td>
-                        <td><a asp-action="PenaltyList" asp-route-id="@Model.SeasonId" asp-route-driverid="@driver.SeasonDriverId" class="link">
-                            <span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span>
+                        <td><span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span>
                             <span class="badge nofullwidth" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.Driver.Name</span>
-                            </a></td>
+                            </td>
                         <td>@driver.Skill</td>
                         <td>@driver.Style</td>
                         <td>@driver.Tires</td>
