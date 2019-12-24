@@ -18,13 +18,6 @@
                             <span asp-validation-for="Skill" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Style" class="control-label"></label>
-                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="Style determines gives a +3/-3 effect to the driver skill for the race only but also causes a -4/+4 to reliability."></i>
-                            @Html.DropDownListFor(model => model.Style, new SelectList(Enum.GetValues(typeof(Style))), new { @class = "form-control" })
-                            <span asp-validation-for="Style" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
                             <label asp-for="Tires" class="control-label"></label>
                             <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
                                title="Soft tires get +10 when tyre bonus applies in stint but will get [-20 to 0] RNG when tyre wear applies."></i>

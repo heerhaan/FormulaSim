@@ -12,6 +12,10 @@
     <Compile Remove="Migrations\20190711115747_Championships.cs" />
     <Compile Remove="Migrations\20190711120616_Championship.cs" />
     <Compile Remove="Migrations\20191014143248_SpecificationsOverhaul.cs" />
+    <Compile Remove="Migrations\20191223113032_Traits.cs" />
+    <Compile Remove="Migrations\20191223113032_Traits.Designer.cs" />
+    <Compile Remove="Migrations\20191223165233_TraitFix.cs" />
+    <Compile Remove="Migrations\20191223165233_TraitFix.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,8 +29,12 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
   </ItemGroup>
 

@@ -1,0 +1,124 @@
+﻿@model FormuleCirkelEntity.Models.Trait
+
+@{
+    ViewData["Title"] = "Info";
+}
+
+<h1>Info @Html.DisplayNameFor(model => model.Name)</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Applies to
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TraitGroup)
+        </dd>
+        <dt class="col-sm-2">
+            Description
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TraitDescription)
+        </dd>
+        @if (Model.QualyPace.HasValue)
+        {
+            <dt class="col-sm-2">
+                Qualification pace modifier
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.QualyPace)
+            </dd>
+        }
+        @if (Model.DriverRacePace.HasValue)
+        {
+            <dt class="col-sm-2">
+                Racepace driver modifier
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DriverRacePace)
+            </dd>
+        }
+        @if (Model.ChassisRacePace.HasValue)
+        {
+            <dt class="col-sm-2">
+                Racepace chassis modifier
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ChassisRacePace)
+            </dd>
+        }
+        @if (Model.ChassisReliability.HasValue)
+        {
+            <dt class="col-sm-2">
+                Chassis reliability modifier
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ChassisReliability)
+            </dd>
+        }
+        @if (Model.DriverReliability.HasValue)
+        {
+            <dt class="col-sm-2">
+                Driver reliability modifier
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DriverReliability)
+            </dd>
+        }
+        @if (Model.MaximumRNG.HasValue)
+        {
+            <dt class="col-sm-2">
+                Maximum RNG modifier
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.MaximumRNG)
+            </dd>
+        }
+        @if (Model.MinimumRNG.HasValue)
+        {
+            <dt class="col-sm-2">
+                Minimum RNG modifier
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.MinimumRNG)
+            </dd>
+        }
+        @if (Model.ChassisMultiplier.HasValue)
+        {
+            <dt class="col-sm-2">
+                Multiplier chassis
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ChassisMultiplier)
+            </dd>
+        }
+        @if (Model.DriverMultiplier.HasValue)
+        {
+            <dt class="col-sm-2">
+                Multiplier driver
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DriverMultiplier)
+            </dd>
+        }
+        @if (Model.EngineMultiplier.HasValue)
+        {
+            <dt class="col-sm-2">
+                Multiplier engine
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.EngineMultiplier)
+            </dd>
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Index"><i class="fas fa-arrow-alt-circle-left fa-2x"></i></a>
+</div>

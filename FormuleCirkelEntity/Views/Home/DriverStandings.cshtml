@@ -176,11 +176,13 @@
         ctx.getContext('2d');
         var driversets = [];
         var points = @(Html.Raw(ViewBag.points));
+
         $(res).each(function (driverKey, driverValue) {
             var raceresults = [];
             let total = 0;
+
             driverValue.DriverResults.forEach(function (result) {
-                if (result.Position < @ViewBag.lastpointpos) {
+                if (result.Position <= @ViewBag.lastpointpos) {
                     total = total + points[result.Position];
                     raceresults.push(total);
                 }
@@ -188,7 +190,6 @@
                     raceresults.push(total);
                 }
             });
-            console.log(raceresults);
             var driverDataset = {
                 label: driverValue.Driver.Name,
                 backgroundColor: driverValue.SeasonTeam.Team.Accent,
@@ -201,12 +202,14 @@
             }
             driversets.push(driverDataset);
         });
+
         let roundsDriven = driversets[0].data.length;
         var roundlabels = [];
         for (i = 1; i <= roundsDriven; i++) {
             var roundlabel = i;
             roundlabels.push(roundlabel);
         }
+
         var chart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -266,6 +269,7 @@
                 }
             }
         });
+
         Chart.pluginService.register({
             beforeDraw: function (chart, easing) {
                 // Makes it possible to give a backgroundcolor to the canvas

@@ -1,7 +1,7 @@
 ﻿@model FormuleCirkelEntity.Models.Season
 
 @{
-    ViewData["Title"] = "Season " + Model.SeasonId;
+    ViewData["Title"] = "Season detail";
 }
 <section class="row my-1">
     <header>
@@ -64,6 +64,9 @@
                         <td>
                             <a asp-action="UpdateDriver" asp-route-id="@Model.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
                                 <i class="fas fa-wrench fa-2x"></i>
+                            </a>
+                            <a asp-action="DriverTraits" asp-route-id="@driver.SeasonDriverId">
+                                <i class="fas fa-yin-yang fa-2x"></i>
                             </a>
                         </td>
                     </tr>
@@ -161,6 +164,9 @@
                         <td>
                             <a asp-action="UpdateTeam" asp-route-id="@Model.SeasonId" asp-route-teamId="@team.SeasonTeamId">
                                 <i class="fas fa-wrench fa-2x"></i>
+                            </a>
+                            <a asp-action="TeamTraits" asp-route-id="@team.SeasonTeamId">
+                                <i class="fas fa-yin-yang fa-2x"></i>
                             </a>
                         </td>
                     </tr>

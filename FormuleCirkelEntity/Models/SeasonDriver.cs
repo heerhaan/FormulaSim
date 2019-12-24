@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,20 +9,18 @@ namespace FormuleCirkelEntity.Models
 {
     public class SeasonDriver
     {
+        public SeasonDriver()
+        {
+            Traits = new Dictionary<int, Trait>();
+        }
         [Key]
         public int SeasonDriverId { get; set; }
         public int Skill { get; set; }
-
-        [EnumDataType(typeof(Style))]
-        public Style Style { get; set; }
+        public int Reliability { get; set; }
         [EnumDataType(typeof(Tires))]
         public Tires Tires { get; set; }
         [EnumDataType(typeof(DriverStatus))]
         public DriverStatus DriverStatus { get; set; }
-        public int QualyPace { get; set; }
-        public int RacePace { get; set; }
-        public int ChassisMod { get; set; }
-        public int ReliabilityMod { get; set; }
 
         public int Points { get; set; }
 
@@ -34,16 +33,11 @@ namespace FormuleCirkelEntity.Models
         public int SeasonId { get; set; }
         public Season Season { get; set; }
 
+        public IDictionary<int, Trait> Traits { get; set; }
         public virtual ICollection<DriverResult> DriverResults { get; set; }
     }
 
-    public enum Style
-    {
-        Aggressive = 0,
-        Neutral = 1,
-        Defensive = 2
-    }
-
+    // How tires work should be expanded
     public enum Tires { Hards, Softs }
 
     public enum DriverStatus { First, None, Second }

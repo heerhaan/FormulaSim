@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,6 +8,11 @@ namespace FormuleCirkelEntity.Models
 {
     public class SeasonTeam
     {
+        public SeasonTeam()
+        {
+            Traits = new Dictionary<int, Trait>();
+        }
+
         public int SeasonTeamId { get; set; }
         public string Principal { get; set; }
         public int Chassis { get; set; }
@@ -26,6 +32,7 @@ namespace FormuleCirkelEntity.Models
         public int EngineId { get; set; }
         public Engine Engine { get; set; }
 
+        public IDictionary<int, Trait> Traits { get; set; }
         public virtual ICollection<SeasonDriver> SeasonDrivers { get; set; }
     }
 }

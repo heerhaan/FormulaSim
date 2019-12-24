@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Helpers
 {
-    public class Utility
+    public static class Utility
     {
         public static readonly Random rng = new Random();
 
         // Here should methods be placed that have some utility function, like RNG-ing a DNFcause.
-        public Weather RandomWeather()
+        public static Weather RandomWeather()
         {
             int random = rng.Next(1, 21);
             Weather weather = Weather.Sunny;

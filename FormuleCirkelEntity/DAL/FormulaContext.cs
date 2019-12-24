@@ -28,6 +28,7 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<SeasonDriver> SeasonDrivers { get; set; }
         public DbSet<DriverResult> DriverResults { get; set; }
         public DbSet<Qualification> Qualification { get; set; }
+        public DbSet<Trait> Traits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -39,14 +40,20 @@ namespace FormuleCirkelEntity.DAL
             }
 
             //Makes table property unique
-            builder.Entity<Team>()
-                .HasIndex(t => t.Abbreviation)
-                .IsUnique();
             builder.Entity<Engine>()
                 .HasIndex(e => e.Name)
                 .IsUnique();
             builder.Entity<Track>()
                 .Property(t => t.LengthKM)
+                .HasColumnType("decimal(18,2)");
+            builder.Entity<Trait>()
+                .Property(t => t.ChassisMultiplier)
+                .HasColumnType("decimal(18,2)");
+            builder.Entity<Trait>()
+                .Property(t => t.EngineMultiplier)
+                .HasColumnType("decimal(18,2)");
+            builder.Entity<Trait>()
+                .Property(t => t.DriverMultiplier)
                 .HasColumnType("decimal(18,2)");
             builder.Entity<Race>()
                 .Property(r => r.Stints)
@@ -63,6 +70,21 @@ namespace FormuleCirkelEntity.DAL
                 .HasConversion(
                     dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
                     json => JsonConvert.DeserializeObject<Dictionary<int, int?>>(json) ?? new Dictionary<int, int?>());
+            builder.Entity<Track>()
+                .Property(t => t.Traits)
+                .HasConversion(
+                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
+                    json => JsonConvert.DeserializeObject<Dictionary<int, Trait>>(json) ?? new Dictionary<int, Trait>());
+            builder.Entity<SeasonDriver>()
+                .Property(t => t.Traits)
+                .HasConversion(
+                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
+                    json => JsonConvert.DeserializeObject<Dictionary<int, Trait>>(json) ?? new Dictionary<int, Trait>());
+            builder.Entity<SeasonTeam>()
+                .Property(t => t.Traits)
+                .HasConversion(
+                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
+                    json => JsonConvert.DeserializeObject<Dictionary<int, Trait>>(json) ?? new Dictionary<int, Trait>());
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

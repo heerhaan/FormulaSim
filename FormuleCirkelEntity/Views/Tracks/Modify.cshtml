@@ -1,16 +1,17 @@
 ﻿@model FormuleCirkelEntity.Models.Track
 
 @{
-    ViewData["Title"] = "Circuit toevoegen";
+    ViewData["Title"] = "Add track";
 }
 
 <section>
     <header>
-        <h1 class="row">Edit track</h1>
+        <h1 class="row">Modify track</h1>
         @if (Model.Name != null)
         {
             <h4 class="row">@Model.Name</h4>
         }
+        <a asp-action="TrackTraits" asp-route-id="@Model.Id" class="btn float-right">Traits</a>
     </header>
 </section>
 <hr />

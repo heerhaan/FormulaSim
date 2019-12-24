@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -78,7 +79,7 @@ namespace FormuleCirkelEntity.Controllers
                                 positions.Add(result.Position);
                             }
                         }
-                        if (positions.Count() != 0)
+                        if (positions.Any())
                         {
                             average = Math.Round((positions.Average()), 2);
                         }
@@ -137,7 +138,7 @@ namespace FormuleCirkelEntity.Controllers
                         positions.Add(result.Position);
                     }
                 }
-                if (positions.Count() != 0)
+                if (positions.Any())
                 {
                     average = Math.Round((positions.Average()), 2);
                 }
@@ -166,6 +167,7 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return null;
 
+            // Overweeg om dit te herschrijven dat hij de races pakt in plaats van de seizoenrijders, of vindt een manier om het zo te krijgen dat de racevolgorde klopt.
             var standings = _context.SeasonDrivers
                 .IgnoreQueryFilters()
                 .Include(sd => sd.Driver)
@@ -175,12 +177,6 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(sd => sd.SeasonId == seasonId)
                 .OrderBy(sd => sd.SeasonTeam.Team.Name)
                 .ToList();
-
-            // This makes the method quite slow
-            foreach (var driver in standings)
-            {
-                driver.DriverResults.OrderByDescending(dr => dr.Race.Round);
-            }
 
             return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
@@ -284,7 +280,6 @@ namespace FormuleCirkelEntity.Controllers
             {
                 return RedirectToAction("Index", "Season");
             }
-            
         }
         
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

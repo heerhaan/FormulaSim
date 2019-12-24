@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Race";
     int maxPos = Model.Season.PointsPerPosition.Keys.Max();
-    int progress = Model.StintProgress;
     int countdrivers = Model.Season.Drivers.Count;
 }
 
@@ -38,7 +37,7 @@
                     </th>
                 }
                 <th data-field="pointsTotal">Score</th>
-                <th></th>
+                <th>Gap</th>
                 <th>Pts.</th>
                 <th></th>
                 <th></th>
@@ -140,7 +139,10 @@
 </div>
 
 <script>
+    var progress = 0;
+
     $(function () {
+        // Appends the correct icon for the corresponding weather for the race
         var weatherclass = "";
         switch ("@Model.Weather") {
             case "Sunny":
@@ -157,6 +159,10 @@
                 break;
         }
         $("#weather").addClass(weatherclass);
+
+        // Also starts the function to calculate the gap between drivers.
+        progress = @Model.StintProgress;
+        calculateGap();
     });
 
     const table = document.querySelector('#results');
@@ -189,6 +195,7 @@
     ];
 
     function processStintResponse(res) {
+        progress = res.stintProgress;
         let pointsPosition = @(Json.Serialize(Model.Season.PointsPerPosition))
         res.DriverResults.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
@@ -233,6 +240,8 @@
         Array.from(tableRows)
             .sort(tableComparer(Array.from(th.parentNode.children).indexOf(th), true))
             .forEach(tr => table.querySelector("tbody").appendChild(tr));
+
+        calculateGap();
     }
 
     function advanceStint() {
@@ -248,6 +257,20 @@
             let valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
             return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
         }
+    }
+
+    function calculateGap() {
+        let leaderscore = tableBody.querySelector("td[data-field='pointsTotal']").innerText;
+        $("#results tbody tr").each(function (index, row) {
+            let score = row.querySelector("td[data-field='pointsTotal']").innerText;
+            if (score != "DNF" && score != "DSQ") {
+                let gap = "+" + ((leaderscore - score) * 0.27).toFixed(2);
+                if (gap == "+0.00") {
+                    gap = "-";
+                }
+                row.querySelector("td[data-field='dnfCause'").innerText = gap;
+            }
+        });
     }
 
     $(".result-click").click(function () {
@@ -272,7 +295,7 @@
         $('#divider').css('background-color', colour);
         $('#extra').css('color', colour);
         if (dnf !== "-") {
-            $('#position').addClass('eliminated');
+            $('#position').removeClass('eliminated');
         } else {
             $('#position').removeClass('eliminated');
         }
@@ -284,7 +307,7 @@
         ctx.height = 250;
         ctx.getContext('2d');
         var driversets = [];
-        var stints = @progress;
+        var stints = progress;
 
         $(res).each(function (driverKey, driverValue) {
             var stintresults = [];

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Track>
 
 @{
-    ViewData["Title"] = "Circuits";
+    ViewData["Title"] = "Tracks";
     var pageCount = (int)ViewData["pageCount"];
     var pageSize = (int)ViewData["pageSize"];
     var pageNumber = (int)ViewData["pageNumber"];
@@ -9,7 +9,7 @@
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
 }
 
-<h1>Circuits</h1>
+<h1>Tracks</h1>
 <div>
     <a asp-action="Create">
         <i class="fas fa-plus-square fa-2x"></i>

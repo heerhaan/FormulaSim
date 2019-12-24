@@ -19,10 +19,11 @@ namespace FormuleCirkelEntity.Controllers
             _context = context;
         }
 
-        // GET: Championships
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Championships.ToListAsync());
+            return View(await _context.Championships
+                .ToListAsync()
+                .ConfigureAwait(false));
         }
 
         [HttpPost]
@@ -51,22 +52,25 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> Stats(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        // Underlying Task doesn't even have a View yet, but it's supposed to show the highscores for that certain championship.
+        //
+        //public async Task<IActionResult> Stats(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var championship = await _context.Championships
-                .FirstOrDefaultAsync(m => m.ChampionshipId == id);
-            if (championship == null)
-            {
-                return NotFound();
-            }
+        //    var championship = await _context.Championships
+        //        .FirstOrDefaultAsync(m => m.ChampionshipId == id)
+        //        .ConfigureAwait(false);
+        //    if (championship == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(championship);
-        }
+        //    return View(championship);
+        //}
 
         public IActionResult Create()
         {
@@ -87,7 +91,8 @@ namespace FormuleCirkelEntity.Controllers
 
                 championship.ActiveChampionship = true;
                 _context.Add(championship);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
                 return RedirectToAction("Index", "Home");
             }
             return View(championship);
@@ -101,7 +106,9 @@ namespace FormuleCirkelEntity.Controllers
             }
 
             var championship = await _context.Championships
-                .FirstOrDefaultAsync(m => m.ChampionshipId == id);
+                .FirstOrDefaultAsync(m => m.ChampionshipId == id)
+                .ConfigureAwait(false);
+
             if (championship == null)
             {
                 return NotFound();
@@ -115,9 +122,9 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var championship = await _context.Championships.FindAsync(id);
+            var championship = await _context.Championships.FindAsync(id).ConfigureAwait(false);
             _context.Championships.Remove(championship);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return RedirectToAction(nameof(Index));
         }
 

@@ -31,8 +31,10 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddTracks(int? id)
         {
             var season = await _context.Seasons
-                   .Include(s => s.Races)
-                   .SingleOrDefaultAsync(s => s.SeasonId == id);
+                .AsNoTracking()
+                .Include(s => s.Races)
+                .SingleOrDefaultAsync(s => s.SeasonId == id)
+                .ConfigureAwait(false);
 
             if (season == null)
                 return NotFound();
@@ -47,12 +49,12 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] int trackId)
         {
-            var track = await _context.Tracks.SingleOrDefaultAsync(m => m.Id == trackId);
+            var track = await _context.Tracks.SingleOrDefaultAsync(m => m.Id == trackId).ConfigureAwait(false);
 
             var season = await _context.Seasons
                 .Include(s => s.Races)
                 .Include(s => s.Drivers)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
+                .SingleOrDefaultAsync(s => s.SeasonId == id).ConfigureAwait(false);
 
             if (track == null || season == null)
                 return NotFound();
@@ -72,7 +74,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 race.Weather = RandomWeather();
                 season.Races.Add(race);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
             }
             else
             {
@@ -83,7 +85,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 race.Weather = RandomWeather();
                 season.Races.Add(race);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
             }
             
             return RedirectToAction(nameof(AddTracks), new { id });
@@ -103,6 +105,7 @@ namespace FormuleCirkelEntity.Controllers
             var lastracemodel = _context.Races
                 .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
                 .LastOrDefault(lr => lr.Track.Id == trackId);
+
             if (lastracemodel != null)
             {
                 var stintlist = lastracemodel.Stints.Values.ToList();
@@ -126,7 +129,7 @@ namespace FormuleCirkelEntity.Controllers
             var season = await _context.Seasons
                 .Include(s => s.Races)
                 .Include(s => s.Drivers)
-                .SingleOrDefaultAsync(s => s.SeasonId == raceModel.SeasonId);
+                .SingleOrDefaultAsync(s => s.SeasonId == raceModel.SeasonId).ConfigureAwait(false);
 
             IList<Stint> stints = raceModel.RaceStints;
 
@@ -485,8 +488,14 @@ namespace FormuleCirkelEntity.Controllers
                                 .ThenInclude(st => st.Team)
                     .Include(r => r.DriverResults)
                         .ThenInclude(dr => dr.SeasonDriver)
+                            .ThenInclude(sd => sd.SeasonTeam)
+                                .ThenInclude(sd => sd.Engine)
+                    .Include(r => r.DriverResults)
+                        .ThenInclude(dr => dr.SeasonDriver)
                             .ThenInclude(sd => sd.Driver)
-                    .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id);
+                    .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id)
+                    .ConfigureAwait(false);
+
                 var drivers = race.DriverResults
                     .Select(dr => dr.SeasonDriver)
                     .ToList();
@@ -533,7 +542,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 // Update everything and save.
                 _context.UpdateRange(qualificationResultsToUpdate);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
                 return new JsonResult(qualificationResultsToUpdate);
             }
             catch
@@ -693,7 +702,8 @@ namespace FormuleCirkelEntity.Controllers
             var race = await _context.Races
                 .Include(r => r.Season)
                     .ThenInclude(s => s.Races)
-                .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id);
+                .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id)
+                .ConfigureAwait(false);
 
             if (race == null)
                 return NotFound();
@@ -709,7 +719,7 @@ namespace FormuleCirkelEntity.Controllers
 
             (race.Round, raceToSwitch.Round) = (raceToSwitch.Round, race.Round);
             _context.UpdateRange(race, raceToSwitch);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             // Prepare race object for serialization
             race.DriverResults = null;

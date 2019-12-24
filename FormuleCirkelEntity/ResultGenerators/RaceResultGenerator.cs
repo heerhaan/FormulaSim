@@ -23,17 +23,15 @@ namespace FormuleCirkelEntity.ResultGenerators
         public int? GetStintResult(DriverResult driverResult, Stint stint, Track track, Race race)
         {
             // Applies the increased or decreased odds for the specific track.
-            int rngTrack = 0;
-            int dnfTrack = 0;
             double engineWeatherMultiplier = 0;
             int tireWeatherBonus = 0;
             int tireWeatherWear = 0;
+            
             if (stint.RNGMaximum > 0)
             {
                 if (track.RNGodds == RNGodds.Increased) { rngTrack += 8; } else if (track.RNGodds == RNGodds.Decreased) { rngTrack += -8; }
 
                 // Determines the effect weather has during a stint on-track
-                // Engine may be bonusified
                 switch (race.Weather)
                 {
                     case Weather.Sunny:
@@ -85,8 +83,6 @@ namespace FormuleCirkelEntity.ResultGenerators
                 var reliablityResult = GetDriverReliabilityResult(driverResult.SeasonDriver, dnfTrack);
                 if (reliablityResult == -1)
                     return null;
-                else if (reliablityResult == 0)
-                    result += -20;
             }
 
             if (stint.ApplyChassisLevel)
@@ -99,17 +95,17 @@ namespace FormuleCirkelEntity.ResultGenerators
             return result;
         }
 
-        public int GetDriverLevelBonus(SeasonDriver driver)
+        public static int GetDriverLevelBonus(SeasonDriver driver)
         {
             return driver.Skill + driver.RacePace + (3 - (3 * (int)driver.Style));
         }
 
-        public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount, int qualyBonus)
+        public static int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount, int qualyBonus)
         {
             return (totalDriverCount * qualyBonus) - (qualifyingPosition * qualyBonus);
         }
 
-        public int GetChassisBonus(SeasonTeam team, Track track)
+        public static int GetChassisBonus(SeasonTeam team, Track track)
         {
             int bonus = 0;
             Dictionary<string, int> specs = new Dictionary<string, int>
@@ -146,9 +142,8 @@ namespace FormuleCirkelEntity.ResultGenerators
         {
             var result = 0;
             result += driver.Skill;
-            result += driver.QualyPace;
             result += driver.SeasonTeam.Chassis;
-            result += driver.ChassisMod;
+            result += driver.SeasonTeam.Engine.Power;
             result += GetChassisBonus(driver.SeasonTeam, track);
             result += _rng.Next(0, (qualyRNG + 1));
             return result;
@@ -160,7 +155,7 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResults">The <see cref="DriverResult"/>s to determine the relative positions of.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of the driverResult ID's and the corresponding positions.</returns>
         /// <remarks>When two driver points totals are equal, their position is determined based on their original grid position.</remarks>
-        public DriverSwap GetPositionsBasedOnRelativePoints(IEnumerable<DriverResult> driverResults)
+        public static DriverSwap GetPositionsBasedOnRelativePoints(IEnumerable<DriverResult> driverResults)
         {
             var orderedResults = driverResults
                 .OrderByDescending(d => d.Points)
@@ -200,5 +195,25 @@ namespace FormuleCirkelEntity.ResultGenerators
     {
         public IDictionary<int, int> OrderedResults { get; set; }
         public List<DriverResult> DriverResults { get; set; }
+    }
+
+    // Race modifiers should be calculated pre-race for every driver
+    public class RaceModifiers
+    {
+        public RaceModifiers()
+        {
+            ChassisMulti = 1;
+            DriverMulti = 1;
+            EngineMulti = 1;
+        }
+        public int DriverRacePace { get; set; }
+        public int ChassisRacePace { get; set; }
+        public int MinRNG { get; set; }
+        public int MaxRNG { get; set; }
+        public int DriverRelMod { get; set; }
+        public int ChassisRelMod { get; set; }
+        public decimal ChassisMulti { get; set; }
+        public decimal DriverMulti { get; set; }
+        public decimal EngineMulti { get; set; }
     }
 }
