@@ -41,8 +41,9 @@
                 <th>Points</th>
                 <th>Driver</th>
                 <th>Skill</th>
-                <th>Style</th>
+                <th>Reliability</th>
                 <th>Tire</th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -59,12 +60,14 @@
                             <span class="badge nofullwidth" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.Driver.Name</span>
                             </td>
                         <td>@driver.Skill</td>
-                        <td>@driver.Style</td>
+                        <td>@driver.Reliability</td>
                         <td>@driver.Tires</td>
                         <td>
                             <a asp-action="UpdateDriver" asp-route-id="@Model.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
                                 <i class="fas fa-wrench fa-2x"></i>
                             </a>
+                        </td>
+                        <td>
                             <a asp-action="DriverTraits" asp-route-id="@driver.SeasonDriverId">
                                 <i class="fas fa-yin-yang fa-2x"></i>
                             </a>
@@ -144,6 +147,7 @@
                 <th>Reliability</th>
                 <th>Engine</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -165,6 +169,8 @@
                             <a asp-action="UpdateTeam" asp-route-id="@Model.SeasonId" asp-route-teamId="@team.SeasonTeamId">
                                 <i class="fas fa-wrench fa-2x"></i>
                             </a>
+                        </td>
+                        <td>
                             <a asp-action="TeamTraits" asp-route-id="@team.SeasonTeamId">
                                 <i class="fas fa-yin-yang fa-2x"></i>
                             </a>

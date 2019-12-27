@@ -92,18 +92,95 @@ namespace FormuleCirkelEntity.Builders
             return this;
         }
 
-        public RaceBuilder AddAllDrivers()
+        public RaceBuilder AddAllDrivers(Track track)
         {
             if (_race.Season != null)
-                AddDrivers(_race.Season.Drivers);
+                AddDrivers(_race.Season.Drivers, track);
             return this;
         }
 
-        public RaceBuilder AddDrivers(IEnumerable<SeasonDriver> drivers)
+        public RaceBuilder AddDrivers(IEnumerable<SeasonDriver> drivers, Track track)
         {
             foreach (var driver in drivers)
-                _race.DriverResults.Add(new DriverResult() { SeasonDriver = driver });
+            {
+                DriverResult driverResult = new DriverResult
+                {
+                    SeasonDriver = driver
+                };
+
+                _race.DriverResults.Add(SetTraitMods(driverResult, track));
+            }
+                
             return this;
+        }
+
+        private DriverResult SetTraitMods(DriverResult driver, Track track)
+        {
+            try
+            {
+                if (driver.SeasonDriver.Traits.Any())
+                {
+                    foreach (var trait in driver.SeasonDriver.Traits.Values)
+                    {
+                        SetIndividualTraitMod(driver, trait);
+                    }
+                }
+
+                if (driver.SeasonDriver.SeasonTeam.Traits.Any())
+                {
+                    foreach (var trait in driver.SeasonDriver.SeasonTeam.Traits.Values)
+                    {
+                        SetIndividualTraitMod(driver, trait);
+                    }
+                }
+
+                if (track.Traits.Any())
+                {
+                    foreach (var trait in track.Traits.Values)
+                    {
+                        SetIndividualTraitMod(driver, trait);
+                    }
+                }
+
+                return driver;
+            }
+            catch (NullReferenceException)
+            {
+                return driver;
+            }
+        }
+
+        private void SetIndividualTraitMod(DriverResult driver, Trait trait)
+        {
+            if (trait.QualyPace.HasValue)
+                driver.QualyMod += trait.QualyPace.Value;
+
+            if (trait.DriverRacePace.HasValue)
+                driver.DriverRacePace += trait.DriverRacePace.Value;
+
+            if (trait.ChassisRacePace.HasValue)
+                driver.ChassisRacePace += trait.ChassisRacePace.Value;
+
+            if (trait.ChassisReliability.HasValue)
+                driver.ChassisRelMod += trait.ChassisReliability.Value;
+
+            if (trait.DriverReliability.HasValue)
+                driver.DriverRelMod += trait.DriverReliability.Value;
+
+            if (trait.MaximumRNG.HasValue)
+                driver.MaxRNG += trait.MaximumRNG.Value;
+
+            if (trait.MinimumRNG.HasValue)
+                driver.MinRNG += trait.MinimumRNG.Value;
+
+            if (trait.ChassisMultiplier.HasValue)
+                driver.ChassisMulti += trait.ChassisMultiplier.Value;
+
+            if (trait.DriverMultiplier.HasValue)
+                driver.DriverMulti += trait.DriverMultiplier.Value;
+
+            if (trait.EngineMultiplier.HasValue)
+                driver.EngineMulti += trait.EngineMultiplier.Value;
         }
         
         public void Refresh() => _race = new Race();

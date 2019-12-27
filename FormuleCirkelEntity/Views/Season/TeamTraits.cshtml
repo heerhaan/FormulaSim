@@ -23,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var trait in Model.Team.Traits.Values)
+                @foreach (var trait in Model.Team.Traits.Values)
                 {
                     <tr>
                         <td>
@@ -90,4 +90,10 @@
     {
         <h4>There are no traits available for this team!</h4>
     }
+</div>
+
+<div>
+    <a asp-action="Detail" asp-route-id="@Model.Team.SeasonId">
+        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+    </a>
 </div>

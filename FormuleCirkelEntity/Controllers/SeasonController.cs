@@ -199,7 +199,7 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(st => st.Team)
                 .Include(sd => sd.SeasonTeam)
                     .ThenInclude(st => st.Engine)
-                .OrderByDescending(sd => (sd.Skill + sd.ChassisMod + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (3 - (3 * (int)sd.Style)) + (((int)sd.DriverStatus) * -2) + 2))
+                .OrderByDescending(sd => (sd.Skill + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (((int)sd.DriverStatus) * -2) + 2))
                 //.OrderBy(sd => sd.SeasonTeam.Team.Name)
                 .ToList();
 
@@ -303,7 +303,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var season = await _context.Seasons
                 .SingleOrDefaultAsync(s => s.SeasonId == id).ConfigureAwait(false);
-            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
+            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId).ConfigureAwait(false);
 
             if (season == null || globalTeam == null)
                 return NotFound();
@@ -330,6 +330,7 @@ namespace FormuleCirkelEntity.Controllers
                 seasonTeam.Acceleration = lastTeam.Acceleration;
                 seasonTeam.Stability = lastTeam.Stability;
                 seasonTeam.Handling = lastTeam.Handling;
+                seasonTeam.Traits = lastTeam.Traits;
             }
 
             return View("AddOrUpdateTeam", seasonTeam);
@@ -342,8 +343,8 @@ namespace FormuleCirkelEntity.Controllers
             var season = await _context.Seasons
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
+                .SingleOrDefaultAsync(s => s.SeasonId == id).ConfigureAwait(false);
+            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId).ConfigureAwait(false);
 
             if (season == null || globalTeam == null)
                 return NotFound();
@@ -358,8 +359,8 @@ namespace FormuleCirkelEntity.Controllers
                 seasonTeam.TeamId = globalTeamId ?? throw new ArgumentNullException(nameof(globalTeamId));
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
-                await _context.AddAsync(seasonTeam);
-                await _context.SaveChangesAsync();
+                await _context.AddAsync(seasonTeam).ConfigureAwait(false);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
                 return RedirectToAction(nameof(AddTeams), new { id });
             }
             else
@@ -377,7 +378,7 @@ namespace FormuleCirkelEntity.Controllers
             var season = await _context.Seasons
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
+                .SingleOrDefaultAsync(s => s.SeasonId == id).ConfigureAwait(false);
             var team = season.Teams.SingleOrDefault(t => t.SeasonTeamId == teamId);
 
             if (season == null || team == null)
@@ -396,7 +397,7 @@ namespace FormuleCirkelEntity.Controllers
             var season = await _context.Seasons
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
+                .SingleOrDefaultAsync(s => s.SeasonId == id).ConfigureAwait(false);
             var team = season.Teams.SingleOrDefault(d => d.SeasonTeamId == teamId);
 
             if (season == null || team == null)
@@ -413,7 +414,7 @@ namespace FormuleCirkelEntity.Controllers
                 team.Reliability = updatedTeam.Reliability;
                 team.EngineId = updatedTeam.EngineId;
                 _context.Update(team);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
                 return RedirectToAction(nameof(Detail), new { id });
             }
             else
@@ -455,8 +456,8 @@ namespace FormuleCirkelEntity.Controllers
             var season = await _context.Seasons
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
+                .SingleOrDefaultAsync(s => s.SeasonId == id).ConfigureAwait(false);
+            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId).ConfigureAwait(false);
 
             if (season == null || globalDriver == null)
                 return NotFound();
@@ -478,13 +479,10 @@ namespace FormuleCirkelEntity.Controllers
             if (lastDriver != null)
             {
                 seasonDriver.Skill = lastDriver.Skill;
-                seasonDriver.Style = lastDriver.Style;
+                seasonDriver.Reliability = lastDriver.Reliability;
                 seasonDriver.Tires = lastDriver.Tires;
                 seasonDriver.DriverStatus = lastDriver.DriverStatus;
-                seasonDriver.QualyPace = lastDriver.QualyPace;
-                seasonDriver.RacePace = lastDriver.RacePace;
-                seasonDriver.ChassisMod = lastDriver.ChassisMod;
-                seasonDriver.ReliabilityMod = lastDriver.ReliabilityMod;
+                seasonDriver.Traits = lastDriver.Traits;
             }
 
             return View("AddOrUpdateDriver", seasonDriver);
@@ -499,8 +497,8 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(d => d.Driver)
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
+                .SingleOrDefaultAsync(s => s.SeasonId == id).ConfigureAwait(false);
+            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId).ConfigureAwait(false);
 
             if (season == null || globalDriver == null)
                 return NotFound();
@@ -566,14 +564,10 @@ namespace FormuleCirkelEntity.Controllers
             if (ModelState.IsValid)
             {
                 driver.SeasonTeamId = updatedDriver.SeasonTeamId;
+                driver.Reliability = updatedDriver.Reliability;
                 driver.Skill = updatedDriver.Skill;
                 driver.Tires = updatedDriver.Tires;
-                driver.Style = updatedDriver.Style;
                 driver.DriverStatus = updatedDriver.DriverStatus;
-                driver.QualyPace = updatedDriver.QualyPace;
-                driver.RacePace = updatedDriver.RacePace;
-                driver.ChassisMod = updatedDriver.ChassisMod;
-                driver.ReliabilityMod = updatedDriver.ReliabilityMod;
                 _context.Update(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });

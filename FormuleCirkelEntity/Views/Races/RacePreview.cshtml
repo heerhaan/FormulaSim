@@ -7,51 +7,52 @@
 <div id="graphic">
     <h1>Preview of @Model.Name</h1>
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Round
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Round)
-        </dd>
-        <dt class="col-sm-2">
-            Location
-        </dt>
-        <dd class="col-sm-10">
-            @(Model.Track.Location)
-        </dd>
-        <dt class="col-sm-2">
-            Track
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Track.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Specification
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Track.Specification)
-        </dd>
-        <dt class="col-sm-2">
-            Weather
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Weather)
-            <span><i id="weather"></i></span>
-        </dd>
-        <dt class="col-sm-2">
-            DNF chance
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Track.DNFodds)
-        </dd>
-        <dt class="col-sm-2">
-            RNG
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Track.RNGodds)
-        </dd>
-    </dl>
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                Round
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Round)
+            </dd>
+            <dt class="col-sm-2">
+                Location
+            </dt>
+            <dd class="col-sm-10">
+                @(Model.Track.Location)
+            </dd>
+            <dt class="col-sm-2">
+                Track
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Track.Name)
+            </dd>
+            <dt class="col-sm-2">
+                Specification
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Track.Specification)
+            </dd>
+            <dt class="col-sm-2">
+                Weather
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Weather)
+                <span><i id="weather"></i></span>
+            </dd>
+        </dl>
+        @if (Model.Track.Traits.Any())
+        {
+            <h5>Traits</h5>
+            <ul>
+                @foreach (var trait in Model.Track.Traits.Values)
+                {
+                    <li><strong>@trait.Name:</strong>  @trait.TraitDescription</li>
+                }
+            </ul>
+        }
+    </div>
+    
     <hr />
     <table class="table table-bordered table-dark table-sm">
         <thead>
@@ -114,12 +115,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var driver in ViewBag.favourites)
+            @foreach (var team in ViewBag.favourites)
             {
                 <tr>
-                    <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@(driver.Driver.DriverNumber)</span></td>
-                    <td>@(driver.Driver.Name)</td>
-                    <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@(driver.SeasonTeam.Team.Name)</span></td>
+                    <td>@(team.Principal)</td>
+                    <td><span class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;">@(team.Team.Name)</span></td>
                 </tr>
             }
         </tbody>

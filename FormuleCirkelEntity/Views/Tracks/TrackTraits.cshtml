@@ -23,7 +23,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var trait in Model.Track.Traits.Values)
+                @foreach (var trait in Model.Track.Traits.Values)
                 {
                     <tr>
                         <td>
@@ -90,4 +90,10 @@
     {
         <h4>There are no traits available for this track!</h4>
     }
+</div>
+
+<div>
+    <a asp-action="Index">
+        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+    </a>
 </div>

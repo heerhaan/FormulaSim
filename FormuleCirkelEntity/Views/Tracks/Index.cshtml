@@ -27,14 +27,9 @@
                 Location
             </th>
             <th>
-                DNF
-            </th>
-            <th>
-                RNG
-            </th>
-            <th>
                 Specification
             </th>
+            <th></th>
             <th></th>
             <th></th>
         </tr>
@@ -50,17 +45,16 @@
                     @item.Location
                 </td>
                 <td>
-                    @item.DNFodds
-                </td>
-                <td>
-                    @item.RNGodds
-                </td>
-                <td>
                     @item.Specification
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">
                         <i class="fas fa-edit fa-2x"></i>
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="TrackTraits" asp-route-id="@item.Id">
+                        <i class="fas fa-yin-yang fa-2x"></i>
                     </a>
                 </td>
                 <td>
