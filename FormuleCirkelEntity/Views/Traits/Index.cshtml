@@ -1,49 +1,135 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.Trait>
+﻿@model TraitsIndexModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Trait index</h1>
+<h1>Index of traits</h1>
 
-<p>
-    <a asp-action="Create"><i class="fas fa-plus-square fa-2x"></i></a>
-</p>
-<table class="table table-sm">
-    <thead>
-        <tr>
-            <th>
-                Trait
-            </th>
-            <th>
-                Applies to
-            </th>
-            <th>
-                Description
-            </th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TraitGroup)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TraitDescription)
-            </td>
-            <td>
-                <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
-            </td>
-            <td>
-                <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-edit fa-2x"></i></a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<a asp-action="Create"><i class="fas fa-plus-square fa-2x"></i></a>
+<hr />
+
+<div class="col">
+    <h3>Driver traits</h3>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>
+                    Trait
+                </th>
+                <th>
+                    Applies to
+                </th>
+                <th>
+                    Description
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DriverTraits)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TraitGroup)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TraitDescription)
+                    </td>
+                    <td>
+                        <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                    </td>
+                    <td>
+                        <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-edit fa-2x"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Team traits</h3>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>
+                    Trait
+                </th>
+                <th>
+                    Applies to
+                </th>
+                <th>
+                    Description
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TeamTraits)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TraitGroup)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TraitDescription)
+                    </td>
+                    <td>
+                        <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                    </td>
+                    <td>
+                        <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-edit fa-2x"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Track traits</h3>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>
+                    Trait
+                </th>
+                <th>
+                    Applies to
+                </th>
+                <th>
+                    Description
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TrackTraits)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TraitGroup)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TraitDescription)
+                    </td>
+                    <td>
+                        <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                    </td>
+                    <td>
+                        <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-edit fa-2x"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

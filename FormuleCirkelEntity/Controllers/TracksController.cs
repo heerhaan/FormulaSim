@@ -30,7 +30,6 @@ namespace FormuleCirkelEntity.Controllers
             var track = await Data.IgnoreQueryFilters()
                 .SingleOrDefaultAsync(t => t.Id == id)
                 .ConfigureAwait(false);
-            // Still requires a check if the chosen track doesnt already contain the trait.
             var traits = DataContext.Traits
                 .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Values.Contains(tr));
 
@@ -61,6 +60,23 @@ namespace FormuleCirkelEntity.Controllers
             await DataContext.SaveChangesAsync().ConfigureAwait(false);
 
             return RedirectToAction(nameof(TrackTraits), new { id });
+        }
+
+        [Route("Traits/Remove/{trackId}")]
+        public async Task<IActionResult> RemoveTrait(int trackId, int traitId)
+        {
+            var track = await Data.SingleOrDefaultAsync(t => t.Id == trackId).ConfigureAwait(false);
+            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId).ConfigureAwait(false);
+
+            if (track == null || trait == null)
+                return NotFound();
+
+            var removetrait = track.Traits.First(item => item.Value.TraitId == trait.TraitId);
+            track.Traits.Remove(removetrait);
+            DataContext.Update(track);
+            await DataContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return RedirectToAction(nameof(TrackTraits), new { id = trackId });
         }
 
         [Route("Archived")]

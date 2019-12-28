@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.ViewModels;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -21,7 +22,14 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Traits.OrderBy(t => t.TraitGroup).ToListAsync().ConfigureAwait(false));
+            var traits = await _context.Traits.ToListAsync().ConfigureAwait(false);
+            var indexmodel = new TraitsIndexModel
+            {
+                DriverTraits = traits.Where(t => t.TraitGroup == TraitGroup.Driver),
+                TeamTraits = traits.Where(t => t.TraitGroup == TraitGroup.Team),
+                TrackTraits = traits.Where(t => t.TraitGroup == TraitGroup.Track)
+            };
+            return View(indexmodel);
         }
 
         public async Task<IActionResult> Info(int? id)

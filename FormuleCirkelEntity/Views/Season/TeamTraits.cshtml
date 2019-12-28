@@ -20,6 +20,7 @@
                     <th>Trait</th>
                     <th>Description</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +36,9 @@
                         <td>
                             <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
+                        <td>
+                            <a asp-action="RemoveTeamTrait" asp-route-teamId="@Model.Team.SeasonTeamId" asp-route-traitId="@trait.TraitId"><i class="fas fa-trash-alt fa-2x"></i></a>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -49,8 +53,10 @@
 <br />
 
 <div>
-    <h3>Add traits</h3>
-    <a asp-controller="Traits" asp-action="Create" class="btn btn-dark float-right">New trait</a>
+    <div class="row">
+        <h3>Add traits</h3>
+        <a asp-controller="Traits" asp-action="Create" class="btn btn-dark ml-auto">New trait</a>
+    </div>
     @if (Model.Traits.Any())
     {
         <table class="table table-sm">
@@ -73,13 +79,13 @@
                             @Html.DisplayFor(modelItem => trait.TraitDescription)
                         </td>
                         <td>
+                            <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                        </td>
+                        <td>
                             <form method="POST">
                                 <input type="hidden" name="traitId" value="@trait.TraitId" />
                                 <input type="submit" class="btn btn-outline-primary btn-sm" style="width:69px;" value="Add" />
                             </form>
-                        </td>
-                        <td>
-                            <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                     </tr>
                 }

@@ -7,27 +7,28 @@ namespace FormulaCirkelEntity.Tests
 {
     public class RaceResultGeneratorTests
     {
-        // Test underneath should be redone considering recent changes.
-        //
-        //[Theory]
-        //[InlineData(23)]
-        //[InlineData(20)]
-        //[InlineData(17)]
-        //public void DriverLevelBonus_StyleAddition_Correct(int expected)
-        //{
-        //    // Arrange
-        //    RaceResultGenerator generator = new RaceResultGenerator(new Random(1));
-        //    SeasonDriver driver = new SeasonDriver()
-        //    {
-        //        Skill = 20
-        //    };
+        [Theory]
+        [InlineData(4, Specification.Topspeed)]
+        [InlineData(0, Specification.Stability)]
+        public void ChassisTrackSpec_Calculation_Correct(int expected, Specification spec)
+        {
+            // Arrange
+            RaceResultGenerator generator = new RaceResultGenerator(new Random(1));
+            SeasonTeam team = new SeasonTeam
+            {
+                Topspeed = 4
+            };
+            Track track = new Track
+            {
+                Specification = spec
+            };
 
-        //    // Act
-        //    int driverLevelBonus = generator.GetDriverLevelBonus(driver);
+            // Act
+            int chassisBonus = generator.GetChassisBonus(team, track);
 
-        //    // Assert
-        //    Assert.Equal(expected, driverLevelBonus);
-        //}
+            // Assert
+            Assert.Equal(expected, chassisBonus);
+        }
 
         [Theory]
         [InlineData(1, 75)]
@@ -47,36 +48,6 @@ namespace FormulaCirkelEntity.Tests
             // Assert
             Assert.Equal(expected, qualifyingBonus);
         }
-
-        // Test underneath should be redone considering recent changes.
-        //
-        // The Driver Reliability Result uses a combination of Team Reliability and Driver Style to get the Driver Reliability Score.
-        // It is compared against a random value to determine whether the random Value is greater, equal or less than the result.
-        // Aggressive subtracts 2 off the team reliability, defensive adds 2, and neutral stays equal.
-        // Thus, use a static random value of 1 and a Team Reliability of 2 to test the Reliability Score generation.
-        //[Theory]
-        //[InlineData(Style.Aggressive, -1)]
-        //[InlineData(Style.Neutral, 0)]
-        //[InlineData(Style.Defensive, 1)]
-        //public void DriverReliability_Style_Correct(Style style, int expected)
-        //{
-        //    // Arrange
-        //    RaceResultGenerator generator = new RaceResultGenerator(new StaticRandom(1));
-        //    SeasonDriver driver = new SeasonDriver()
-        //    {
-        //        Style = style,
-        //        SeasonTeam = new SeasonTeam()
-        //        {
-        //            Reliability = 1
-        //        }
-        //    };
-
-        //    // Act
-        //    int driverLevelBonus = generator.GetDriverReliabilityResult(driver, 0);
-
-        //    // Assert
-        //    Assert.Equal(expected, driverLevelBonus);
-        //}
 
         class StaticRandom : Random
         {

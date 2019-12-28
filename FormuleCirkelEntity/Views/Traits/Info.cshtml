@@ -4,116 +4,117 @@
     ViewData["Title"] = "Info";
 }
 
-<h1>Info @Html.DisplayNameFor(model => model.Name)</h1>
+<h1>Info about trait</h1>
+<h2>@Html.DisplayFor(model => model.Name)</h2>
 
 <div>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">
+        <dt class="col-3">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-9">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-3">
             Applies to
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-9">
             @Html.DisplayFor(model => model.TraitGroup)
         </dd>
-        <dt class="col-sm-2">
+        <dt class="col-3">
             Description
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-9">
             @Html.DisplayFor(model => model.TraitDescription)
         </dd>
         @if (Model.QualyPace.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Qualification pace modifier
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.QualyPace)
             </dd>
         }
         @if (Model.DriverRacePace.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Racepace driver modifier
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.DriverRacePace)
             </dd>
         }
         @if (Model.ChassisRacePace.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Racepace chassis modifier
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.ChassisRacePace)
             </dd>
         }
         @if (Model.ChassisReliability.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Chassis reliability modifier
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.ChassisReliability)
             </dd>
         }
         @if (Model.DriverReliability.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Driver reliability modifier
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.DriverReliability)
             </dd>
         }
         @if (Model.MaximumRNG.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Maximum RNG modifier
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.MaximumRNG)
             </dd>
         }
         @if (Model.MinimumRNG.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Minimum RNG modifier
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.MinimumRNG)
             </dd>
         }
         @if (Model.ChassisMultiplier.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Multiplier chassis
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.ChassisMultiplier)
             </dd>
         }
         @if (Model.DriverMultiplier.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Multiplier driver
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.DriverMultiplier)
             </dd>
         }
         @if (Model.EngineMultiplier.HasValue)
         {
-            <dt class="col-sm-2">
+            <dt class="col-3">
                 Multiplier engine
             </dt>
-            <dd class="col-sm-10">
+            <dd class="col-9">
                 @Html.DisplayFor(model => model.EngineMultiplier)
             </dd>
         }
