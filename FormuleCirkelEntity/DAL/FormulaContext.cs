@@ -46,15 +46,6 @@ namespace FormuleCirkelEntity.DAL
             builder.Entity<Track>()
                 .Property(t => t.LengthKM)
                 .HasColumnType("decimal(18,2)");
-            builder.Entity<Trait>()
-                .Property(t => t.ChassisMultiplier)
-                .HasColumnType("decimal(18,2)");
-            builder.Entity<Trait>()
-                .Property(t => t.EngineMultiplier)
-                .HasColumnType("decimal(18,2)");
-            builder.Entity<Trait>()
-                .Property(t => t.DriverMultiplier)
-                .HasColumnType("decimal(18,2)");
             builder.Entity<Race>()
                 .Property(r => r.Stints)
                 .HasConversion(

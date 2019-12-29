@@ -23,6 +23,8 @@ namespace FormuleCirkelEntity.Models
         public int? DriverRacePace { get; set; }
         // The value that gets add up whenever the chassis value counts during the race.
         public int? ChassisRacePace { get; set; }
+        // The value that gets add up whenever the engine power counts during the race.
+        public int? EngineRacePace { get; set; }
         // The value that impacts the reliability of the chassis.
         public int? ChassisReliability { get; set; }
         // The value that impacts the reliablity of the driver.
@@ -31,12 +33,6 @@ namespace FormuleCirkelEntity.Models
         public int? MaximumRNG { get; set; }
         // Impacts the lower value of the minimum amount of possible dev for drivers/teams or RNG per stint for tracks.
         public int? MinimumRNG { get; set; }
-        // Multiplies the value of the chassis.
-        public decimal? ChassisMultiplier { get; set; }
-        // Multiplies the skill value of the driver.
-        public decimal? DriverMultiplier { get; set; }
-        // Multiplies the engine power.
-        public decimal? EngineMultiplier { get; set; }
         // Determines if the trait is still in use in the application.
         public bool Archived { get; set; }
     }

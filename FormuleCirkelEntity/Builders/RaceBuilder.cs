@@ -161,6 +161,9 @@ namespace FormuleCirkelEntity.Builders
             if (trait.ChassisRacePace.HasValue)
                 driver.ChassisRacePace += trait.ChassisRacePace.Value;
 
+            if (trait.EngineRacePace.HasValue)
+                driver.EngineRacePace += trait.EngineRacePace.Value;
+
             if (trait.ChassisReliability.HasValue)
                 driver.ChassisRelMod += trait.ChassisReliability.Value;
 
@@ -172,15 +175,6 @@ namespace FormuleCirkelEntity.Builders
 
             if (trait.MinimumRNG.HasValue)
                 driver.MinRNG += trait.MinimumRNG.Value;
-
-            if (trait.ChassisMultiplier.HasValue)
-                driver.ChassisMulti += trait.ChassisMultiplier.Value;
-
-            if (trait.DriverMultiplier.HasValue)
-                driver.DriverMulti += trait.DriverMultiplier.Value;
-
-            if (trait.EngineMultiplier.HasValue)
-                driver.EngineMulti += trait.EngineMultiplier.Value;
         }
         
         public void Refresh() => _race = new Race();

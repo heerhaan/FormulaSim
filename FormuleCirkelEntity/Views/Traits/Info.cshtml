@@ -55,6 +55,15 @@
                 @Html.DisplayFor(model => model.ChassisRacePace)
             </dd>
         }
+        @if (Model.EngineRacePace.HasValue)
+        {
+            <dt class="col-3">
+                Racepace engine modifier
+            </dt>
+            <dd class="col-9">
+                @Html.DisplayFor(model => model.EngineRacePace)
+            </dd>
+        }
         @if (Model.ChassisReliability.HasValue)
         {
             <dt class="col-3">
@@ -89,33 +98,6 @@
             </dt>
             <dd class="col-9">
                 @Html.DisplayFor(model => model.MinimumRNG)
-            </dd>
-        }
-        @if (Model.ChassisMultiplier.HasValue)
-        {
-            <dt class="col-3">
-                Multiplier chassis
-            </dt>
-            <dd class="col-9">
-                @Html.DisplayFor(model => model.ChassisMultiplier)
-            </dd>
-        }
-        @if (Model.DriverMultiplier.HasValue)
-        {
-            <dt class="col-3">
-                Multiplier driver
-            </dt>
-            <dd class="col-9">
-                @Html.DisplayFor(model => model.DriverMultiplier)
-            </dd>
-        }
-        @if (Model.EngineMultiplier.HasValue)
-        {
-            <dt class="col-3">
-                Multiplier engine
-            </dt>
-            <dd class="col-9">
-                @Html.DisplayFor(model => model.EngineMultiplier)
             </dd>
         }
     </dl>

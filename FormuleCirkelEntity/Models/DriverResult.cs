@@ -11,9 +11,6 @@ namespace FormuleCirkelEntity.Models
         public DriverResult()
         {
             StintResults = new Dictionary<int, int?>();
-            ChassisMulti = 1;
-            DriverMulti = 1;
-            EngineMulti = 1;
         }
 
         [Key]
@@ -36,13 +33,11 @@ namespace FormuleCirkelEntity.Models
         public int QualyMod { get; set; }
         public int DriverRacePace { get; set; }
         public int ChassisRacePace { get; set; }
+        public int EngineRacePace { get; set; }
         public int MinRNG { get; set; }
         public int MaxRNG { get; set; }
         public int DriverRelMod { get; set; }
         public int ChassisRelMod { get; set; }
-        public decimal ChassisMulti { get; set; }
-        public decimal DriverMulti { get; set; }
-        public decimal EngineMulti { get; set; }
 
         public int SeasonDriverId { get; set; }
         public SeasonDriver SeasonDriver { get; set; }

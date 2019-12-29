@@ -23,7 +23,7 @@ namespace FormuleCirkelEntity.ResultGenerators
         public int? GetStintResult(DriverResult driverResult, Stint stint, Track track, Race race)
         {
             // Applies the increased or decreased odds for the specific track.
-            double engineWeatherMultiplier = 0;
+            double engineWeatherMultiplier = 1;
             int tireWeatherBonus = 0;
             int tireWeatherWear = 0;
 
@@ -65,8 +65,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             if (stint.ApplyDriverLevel)
             {
-                decimal driverval = (driverResult.SeasonDriver.Skill + driverResult.DriverRacePace) * driverResult.DriverMulti;
-                result += (int)driverval;
+                result += driverResult.SeasonDriver.Skill + driverResult.DriverRacePace;
             }
 
             if (stint.ApplyQualifyingBonus)
@@ -76,7 +75,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 result += (10 + tireWeatherBonus);
 
             if (stint.ApplyEngineLevel)
-                result += (int)Math.Round((int)Math.Round(driverResult.SeasonDriver.SeasonTeam.Engine.Power * driverResult.EngineMulti) * engineWeatherMultiplier);
+                result += (int)Math.Round((driverResult.SeasonDriver.SeasonTeam.Engine.Power + driverResult.EngineRacePace) * engineWeatherMultiplier);
 
             if (stint.ApplyTireWear && driverResult.SeasonDriver.Tires == Tires.Softs)
             {
@@ -104,8 +103,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             {
                 int bonus = GetChassisBonus(driverResult.SeasonDriver.SeasonTeam, track);
                 int statusBonus = (((int)driverResult.SeasonDriver.DriverStatus) * -2) + 2;
-                decimal chassisval = (driverResult.SeasonDriver.SeasonTeam.Chassis + driverResult.ChassisRacePace + bonus + statusBonus) * driverResult.ChassisMulti;
-                result += (int)chassisval;
+                result += (driverResult.SeasonDriver.SeasonTeam.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
             }
 
             return result;
