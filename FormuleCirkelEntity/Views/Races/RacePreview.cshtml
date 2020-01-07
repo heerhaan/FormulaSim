@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Preview";
+    int minRNGMod = 0;
+    int maxRNGMod = 0;
 }
 
 <div id="graphic">
@@ -48,6 +50,8 @@
                 @foreach (var trait in Model.Track.Traits.Values)
                 {
                     <li><strong>@trait.Name:</strong>  @trait.TraitDescription</li>
+                    if (trait.MinimumRNG.HasValue) { minRNGMod += trait.MinimumRNG.Value; }
+                    if (trait.MaximumRNG.HasValue) { maxRNGMod += trait.MaximumRNG.Value; }
                 }
             </ul>
         }
@@ -102,8 +106,16 @@
                         @if (stint.Value.ApplyReliability)
                         {<span class="badge badge-success nofullwidth">✓</span>}
                     </td>
-                    <td>@stint.Value.RNGMinimum</td>
-                    <td>@stint.Value.RNGMaximum</td>
+                    @if (stint.Value.RNGMaximum > 0)
+                    {
+                        <td>@(stint.Value.RNGMinimum + minRNGMod)</td>
+                        <td>@(stint.Value.RNGMaximum + maxRNGMod)</td>
+                    } else
+                    {
+                        <td>@(stint.Value.RNGMinimum)</td>
+                        <td>@(stint.Value.RNGMaximum)</td>
+                    }
+
                 </tr>
             }
         </tbody>

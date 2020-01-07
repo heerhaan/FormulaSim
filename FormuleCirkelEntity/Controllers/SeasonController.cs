@@ -185,7 +185,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
 
-        // Page that displays certain statistics related to the selected season
+        // Page that displays the power rankings and a few settings, like the points distribution, of a season.
         public async Task<IActionResult> SeasonStats(int? id)
         {
             var season = await _context.Seasons
@@ -215,9 +215,36 @@ namespace FormuleCirkelEntity.Controllers
                 //.OrderBy(sd => sd.SeasonTeam.Team.Name)
                 .ToList();
 
+            seasondrivers = AddTraitReliabilityEffects(seasondrivers);
+
             return View(seasondrivers);
         }
 
+        // Adds the effects of a trait to the total driver and chassis reliablity to all the drivers.
+        private List<SeasonDriver> AddTraitReliabilityEffects(List<SeasonDriver> drivers)
+        {
+            foreach (var driver in drivers)
+            {
+                // This loop looks over all the traits a driver has.
+                foreach (var trait in driver.Traits.Values)
+                {
+                    if (trait.DriverReliability.HasValue)
+                        driver.Reliability += trait.DriverReliability.Value;
+                    if (trait.ChassisReliability.HasValue)
+                        driver.SeasonTeam.Reliability += trait.ChassisReliability.Value;
+                }
+                // This loop looks over all the traits a team has.
+                foreach (var trait in driver.SeasonTeam.Traits.Values)
+                {
+                    if (trait.DriverReliability.HasValue)
+                        driver.Reliability += trait.DriverReliability.Value;
+                    if (trait.ChassisReliability.HasValue)
+                        driver.SeasonTeam.Reliability += trait.ChassisReliability.Value;
+                }
+            }
+
+            return drivers;
+        }
 
         [Route("[Controller]/{id}/Settings")]
         public async Task<IActionResult> Settings(int id)
