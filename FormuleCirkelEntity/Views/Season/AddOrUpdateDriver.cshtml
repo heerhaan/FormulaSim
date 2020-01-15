@@ -19,7 +19,11 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="Reliability" class="control-label"></label>
-                            <input asp-for="Reliability" class="form-control" />
+                            <input asp-for="Reliability" id="relbox" class="form-control" />
+                            <button type="button" class="btn btn-dark float-right" onclick="reldev()">
+                                <i class="fas fa-dice" data-toggle="tooltip" data-placement="right"
+                                   title="RNG for this roll is between 95 and 100"></i>
+                            </button>
                             <span asp-validation-for="Reliability" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -62,3 +66,10 @@
 <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
 </a>
+
+<script>
+    function reldev() {
+        var newdev = Math.floor((Math.random() * 6) + 95);
+        $('#relbox').val(newdev);
+    }
+</script>
