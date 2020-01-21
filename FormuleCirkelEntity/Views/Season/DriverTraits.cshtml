@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Traits for driver";
+    int position = 1;
 }
 
 <div>
@@ -62,6 +63,7 @@
         <table class="table table-sm">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Trait</th>
                     <th>Description</th>
                     <th></th>
@@ -72,6 +74,9 @@
                 @foreach (var trait in Model.Traits)
                 {
                     <tr>
+                        <td>
+                            #@(position++)
+                        </td>
                         <td>
                             @Html.DisplayFor(modelItem => trait.Name)
                         </td>

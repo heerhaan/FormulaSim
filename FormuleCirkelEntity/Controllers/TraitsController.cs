@@ -25,9 +25,9 @@ namespace FormuleCirkelEntity.Controllers
             var traits = await _context.Traits.ToListAsync().ConfigureAwait(false);
             var indexmodel = new TraitsIndexModel
             {
-                DriverTraits = traits.Where(t => t.TraitGroup == TraitGroup.Driver),
-                TeamTraits = traits.Where(t => t.TraitGroup == TraitGroup.Team),
-                TrackTraits = traits.Where(t => t.TraitGroup == TraitGroup.Track)
+                DriverTraits = traits.Where(t => t.TraitGroup == TraitGroup.Driver).OrderBy(t => t.Name),
+                TeamTraits = traits.Where(t => t.TraitGroup == TraitGroup.Team).OrderBy(t => t.Name),
+                TrackTraits = traits.Where(t => t.TraitGroup == TraitGroup.Track).OrderBy(t => t.Name)
             };
             return View(indexmodel);
         }

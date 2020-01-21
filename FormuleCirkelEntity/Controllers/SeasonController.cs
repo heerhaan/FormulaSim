@@ -754,7 +754,8 @@ namespace FormuleCirkelEntity.Controllers
                 .SingleOrDefaultAsync(t => t.SeasonDriverId == id)
                 .ConfigureAwait(false);
             var traits = _context.Traits
-                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Values.Contains(tr));
+                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Values.Contains(tr))
+                .OrderBy(t => t.Name);
 
             if (seasondriver == null)
                 return NotFound();
@@ -812,7 +813,8 @@ namespace FormuleCirkelEntity.Controllers
                 .SingleOrDefaultAsync(st => st.SeasonTeamId == id)
                 .ConfigureAwait(false);
             var traits = _context.Traits
-                .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Values.Contains(tr));
+                .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Values.Contains(tr))
+                .OrderBy(t => t.Name);
 
             if (seasonteam == null)
                 return NotFound();
