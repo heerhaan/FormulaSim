@@ -5,6 +5,14 @@ VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormuleCirkeltrek.WebUI", "FormuleCirkeltrek.Application\FormuleCirkeltrek.WebUI.csproj", "{87D0D5DE-3933-4240-A661-9A3C94A7459C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{9BC33E86-C550-4E96-9E94-B8C2523A91E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F3A0F9E8-0DD5-4344-A3ED-05CFE904B4F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{CE535E53-9FBB-4B48-80A1-BFC56438137A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{55CF0CC8-9169-4A9C-9F3A-ABB2BA2740D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +26,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{87D0D5DE-3933-4240-A661-9A3C94A7459C} = {9BC33E86-C550-4E96-9E94-B8C2523A91E7}
+		{9BC33E86-C550-4E96-9E94-B8C2523A91E7} = {CE535E53-9FBB-4B48-80A1-BFC56438137A}
+		{F3A0F9E8-0DD5-4344-A3ED-05CFE904B4F5} = {CE535E53-9FBB-4B48-80A1-BFC56438137A}
+		{55CF0CC8-9169-4A9C-9F3A-ABB2BA2740D2} = {CE535E53-9FBB-4B48-80A1-BFC56438137A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {361C6041-F5C8-4129-A2B7-558D3C505638}
