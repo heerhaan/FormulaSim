@@ -1,5 +1,5 @@
-﻿using FormuleCirkeltrek.Domain.Entities.Registrations;
-using FormuleCirkeltrek.Domain.ValueObjects;
+﻿using FormuleCirkeltrek.Common.ValueObjects;
+using FormuleCirkeltrek.Domain.Entities.Registrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

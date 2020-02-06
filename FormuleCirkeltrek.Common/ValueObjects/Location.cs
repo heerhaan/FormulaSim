@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FormuleCirkeltrek.Domain.ValueObjects
+namespace FormuleCirkeltrek.Common.ValueObjects
 {
     public struct Location
     {

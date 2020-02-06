@@ -1,4 +1,4 @@
-﻿using FormuleCirkeltrek.Domain.ValueObjects;
+﻿using FormuleCirkeltrek.Common.ValueObjects;
 using System;
 using System.Linq;
 

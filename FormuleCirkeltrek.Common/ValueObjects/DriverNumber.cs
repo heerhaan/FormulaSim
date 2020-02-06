@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace FormuleCirkeltrek.Domain.ValueObjects
+namespace FormuleCirkeltrek.Common.ValueObjects
 {
     public struct DriverNumber : IEquatable<DriverNumber>, IEquatable<DriverNumber?>
     {
