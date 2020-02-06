@@ -81,6 +81,7 @@
     @if (Model.Season.State == SeasonState.Progress)
     {
         <a asp-action="DriverDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Driver development</a>
+        <a asp-action="DriverReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Reliability</a>
     }
 </section>
 
@@ -186,6 +187,7 @@
         <div class="row btn-group my-1">
             <a asp-action="TeamDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Chassis development</a>
             <a asp-action="EngineDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Engine development</a>
+            <a asp-action="TeamReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Reliability</a>
         </div>
     }
 </section>

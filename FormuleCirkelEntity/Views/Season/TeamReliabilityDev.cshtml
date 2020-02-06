@@ -1,0 +1,113 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonTeam>
+
+@{
+    ViewData["Title"] = "Team development";
+}
+
+<h1>Team reliability</h1>
+
+<section>
+
+    <input id="min" type="number" placeholder="Min. RNG" />
+    <input id="max" type="number" placeholder="Max. RNG" />
+    <button id="develop" class="btn btn-dark">Develop</button>
+
+    <table id="graphic" class="table">
+        <thead>
+            <tr>
+                <th>Team</th>
+                <th>Abbreviation</th>
+                <th>Old</th>
+                <th>Change</th>
+                <th>New</th>
+            </tr>
+        </thead>
+        <tbody id="devtable">
+            @{
+                int number = 1;
+                foreach (var team in Model)
+                {
+                    <tr>
+                        <td>@team.Team.Name</td>
+                        <td>
+                            <span class="badge" style="background-color:@(team.Team.Colour);
+                            color:@(team.Team.Accent);font-size:1rem;">
+                                @team.Team.Abbreviation
+                            </span>
+                        </td>
+                        <td id="old-value-@number">@team.Reliability</td>
+                        <td id="custom-change-@number">?</td>
+                        <td id="custom-new-@number">-</td>
+                        <td id="team-id-@(number++)" style="display:none;">@(team.SeasonTeamId)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button id="save" class="btn btn-dark">Save</button>
+</section>
+
+<a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+</a>
+
+<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+
+<div id="screenshot"></div>
+
+<script>
+    $(document).ready(function () {
+        $("#save").hide();
+
+        $('#develop').click(function () {
+            var number = 1;
+            var min = Math.ceil(document.getElementById("min").value);
+            var max = Math.floor(document.getElementById("max").value);
+            $('#devtable').children('tr').each(function () {
+                var element = document.getElementById("old-value-" + number);
+                var text = element.textContent;
+                var old = Number(text);
+                var dev = Math.floor(Math.random() * (max - min + 1)) + min;
+                var newdev = (old + dev);
+
+                document.getElementById("custom-change-" + number).innerText = dev;
+                document.getElementById("custom-new-" + number).innerText = newdev;
+
+                number = (number + 1);
+            });
+
+            $("#save").show();
+        });
+
+        $("#save").click(function () {
+            var teams = new Array();
+            var number = 1;
+            $("#devtable").children('tr').each(function () {
+                var row = $(this);
+                var team = {};
+                team.id = row.find("#team-id-" + number).html();
+                team.newdev = row.find("#custom-new-" + number).html();
+                teams.push(team);
+
+                number = (number + 1);
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Season/SaveTeamReliabilityDev",
+                headers: {
+                    'Accept': 'application/html',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(teams),
+                dataType: "json",
+                complete: function (result) {
+                    if (result.responseText) {
+                        $('head').html(result.responseJSON);
+                        $('body').html(result.responseText);
+                    }
+                }
+            });
+        });
+    });
+</script>

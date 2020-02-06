@@ -351,6 +351,24 @@ namespace FormuleCirkelEntity.Controllers
             {
                 switch (random)
                 {
+                    case int n when n <= 16:
+                        cause = DNFCause.Damage;
+                        break;
+                    case int n when n > 16 && n <= 44:
+                        cause = DNFCause.Collision;
+                        break;
+                    case int n when n > 44 && n <= 92:
+                        cause = DNFCause.Accident;
+                        break;
+                    case int n when n > 92:
+                        cause = DNFCause.Puncture;
+                        break;
+                }
+            }
+            else
+            {
+                switch (random)
+                {
                     case int n when n <= 48:
                         cause = DNFCause.Engine;
                         break;
@@ -371,24 +389,6 @@ namespace FormuleCirkelEntity.Controllers
                         break;
                     case int n when n > 98:
                         cause = DNFCause.Brakes;
-                        break;
-                }
-            }
-            else
-            {
-                switch (random)
-                {
-                    case int n when n <= 16:
-                        cause = DNFCause.Damage;
-                        break;
-                    case int n when n > 16 && n <= 44:
-                        cause = DNFCause.Collision;
-                        break;
-                    case int n when n > 44 && n <= 92:
-                        cause = DNFCause.Accident;
-                        break;
-                    case int n when n > 92:
-                        cause = DNFCause.Puncture;
                         break;
                 }
             }

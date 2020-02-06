@@ -1,0 +1,117 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+
+@{
+    ViewData["Title"] = "Driver development";
+    int seasonId = ViewBag.seasonId;
+    int year = ViewBag.year;
+}
+
+<h1>Driver reliability</h1>
+
+<section>
+
+    <input id="min" type="number" placeholder="Min. RNG" />
+    <input id="max" type="number" placeholder="Max. RNG" />
+    <button id="develop" class="btn btn-dark">Develop</button>
+
+    <table id="graphic" class="table table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Team</th>
+                <th>Old</th>
+                <th>Change</th>
+                <th>New</th>
+            </tr>
+        </thead>
+        <tbody id="devtable">
+            @{
+                int number = 1;
+                foreach (var driver in Model)
+                {
+                    <tr>
+                        <td><span class="badge nofullwidth">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
+                        <td>@(year - driver.Driver.DateOfBirth.Year)</td>
+                        <td>
+                            <span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);
+                            color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">
+                                @driver.SeasonTeam.Team.Abbreviation
+                            </span>
+                        </td>
+                        <td id="old-value-@number">@driver.Reliability</td>
+                        <td id="custom-change-@number">?</td>
+                        <td id="custom-new-@number">-</td>
+                        <td id="driver-id-@(number++)" style="display:none;">@(driver.SeasonDriverId)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <button id="save" class="btn btn-dark">Save</button>
+</section>
+
+<a asp-action="Detail" asp-route-id="@seasonId">
+    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+</a>
+
+<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+
+<div id="screenshot"></div>
+
+<script>
+    $(document).ready(function () {
+        $("#save").hide();
+
+        $('#develop').click(function () {
+            var number = 1;
+            var min = Math.ceil(document.getElementById("min").value);
+            var max = Math.floor(document.getElementById("max").value);
+            $('#devtable').children('tr').each(function () {
+                var element = document.getElementById("old-value-" + number);
+                var text = element.textContent;
+                var old = Number(text);
+                var dev = Math.floor(Math.random() * (max - min + 1)) + min;
+                var newdev = (old + dev);
+
+                document.getElementById("custom-change-" + number).innerText = dev;
+                document.getElementById("custom-new-" + number).innerText = newdev;
+
+                number = (number + 1);
+            });
+
+            $("#save").show();
+        });
+
+        $("#save").click(function () {
+            var drivers = new Array();
+            var number = 1;
+            $("#devtable").children('tr').each(function () {
+                var row = $(this);
+                var driver = {};
+                driver.id = row.find("#driver-id-" + number).html();
+                driver.newdev = row.find("#custom-new-" + number).html();
+                drivers.push(driver);
+
+                number = (number + 1);
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Season/SaveDriverReliabilityDev",
+                headers: {
+                    'Accept': 'application/html',
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(drivers),
+                dataType: "json",
+                complete: function (result) {
+                    if (result.responseText) {
+                        $('head').html(result.responseJSON);
+                        $('body').html(result.responseText);
+                    }
+                }
+            });
+        });
+    });
+</script>

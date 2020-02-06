@@ -230,16 +230,12 @@ namespace FormuleCirkelEntity.Controllers
                 {
                     if (trait.DriverReliability.HasValue)
                         driver.Reliability += trait.DriverReliability.Value;
-                    if (trait.ChassisReliability.HasValue)
-                        driver.SeasonTeam.Reliability += trait.ChassisReliability.Value;
                 }
                 // This loop looks over all the traits a team has.
                 foreach (var trait in driver.SeasonTeam.Traits.Values)
                 {
                     if (trait.DriverReliability.HasValue)
                         driver.Reliability += trait.DriverReliability.Value;
-                    if (trait.ChassisReliability.HasValue)
-                        driver.SeasonTeam.Reliability += trait.ChassisReliability.Value;
                 }
             }
 
@@ -482,7 +478,7 @@ namespace FormuleCirkelEntity.Controllers
             var unregisteredDrivers = _context.Drivers
                 .Where(d => d.Archived == false)
                 .Where(d => !existingDriverIds.Contains(d.Id))
-                .OrderByDescending(d => d.Name).ToList();
+                .OrderBy(d => d.Name).ToList();
 
             ViewBag.seasonId = id;
             ViewBag.year = _context.Seasons.SingleOrDefault(s => s.SeasonId == id).SeasonNumber;
@@ -739,7 +735,75 @@ namespace FormuleCirkelEntity.Controllers
 
             return RedirectToAction("EngineDev", new { id = seasonId.SeasonId });
         }
-        
+
+        public IActionResult TeamReliabilityDev(int id)
+        {
+            ViewBag.seasonId = id;
+
+            return View(_context.SeasonTeams
+                .Where(s => s.SeasonId == id)
+                .Include(t => t.Team)
+                .OrderBy(t => t.Team.Name).ToList());
+        }
+
+        //Receives development values and saves them in the DB
+        [HttpPost]
+        public IActionResult SaveTeamReliabilityDev([FromBody]IEnumerable<GetDev> dev)
+        {
+            var seasonId = _context.Seasons
+                .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
+                .FirstOrDefault();
+
+            var teams = _context.SeasonTeams
+                .Where(s => s.SeasonId == seasonId.SeasonId)
+                .OrderBy(t => t.Team.Name);
+
+            foreach (var teamdev in dev)
+            {
+                var team = teams.First(t => t.SeasonTeamId == teamdev.Id);
+                team.Reliability = teamdev.Newdev;
+            }
+            _context.UpdateRange(teams);
+            _context.SaveChanges();
+
+            return RedirectToAction("TeamReliabilityDev", new { id = seasonId.SeasonId });
+        }
+
+        public IActionResult DriverReliabilityDev(int id)
+        {
+            ViewBag.seasonId = id;
+            ViewBag.year = GetCurrentYear(id);
+
+            return View(_context.SeasonDrivers
+                .Where(s => s.SeasonId == id)
+                .Include(t => t.SeasonTeam)
+                    .ThenInclude(t => t.Team)
+                .Include(d => d.Driver)
+                .OrderBy(s => s.SeasonTeam.Team.Name).ToList());
+        }
+
+        //Receives development values and saves them in the DB
+        [HttpPost]
+        public IActionResult SaveDriverReliabilityDev([FromBody]IEnumerable<GetDev> dev)
+        {
+            var seasonId = _context.Seasons
+                .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
+                .FirstOrDefault();
+
+            var drivers = _context.SeasonDrivers
+                .Where(s => s.SeasonId == seasonId.SeasonId);
+
+            foreach (var driverdev in dev)
+            {
+                var driver = drivers.First(d => d.SeasonDriverId == driverdev.Id);
+                driver.Reliability = driverdev.Newdev;
+            }
+            _context.UpdateRange(drivers);
+            _context.SaveChanges();
+
+            return RedirectToAction("DriverReliabilityDev", new { id = seasonId.SeasonId });
+        }
+
         public class GetDev
         {
             public int Id { get; set; }
