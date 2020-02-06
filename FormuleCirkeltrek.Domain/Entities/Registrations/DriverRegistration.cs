@@ -14,7 +14,6 @@ namespace FormuleCirkeltrek.Domain.Entities.Registrations
             Abbreviation = string.Empty;
             DateOfBirth = DateTime.Today;
             Biography = string.Empty;
-
         }
 
         public Guid Id { get; set; }
