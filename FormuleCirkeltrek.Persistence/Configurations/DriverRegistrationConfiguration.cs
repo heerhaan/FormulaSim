@@ -1,4 +1,5 @@
 ﻿using FormuleCirkeltrek.Domain.Entities.Registrations;
+using FormuleCirkeltrek.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -10,7 +11,10 @@ namespace FormuleCirkeltrek.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<DriverRegistration> builder)
         {
-            builder.Ignore(x => x.Number);
+            builder.Property(x => x.Number)
+                .HasConversion(
+                v => v.ToString(),
+                v => new DriverNumber(v));
         }
     }
 }

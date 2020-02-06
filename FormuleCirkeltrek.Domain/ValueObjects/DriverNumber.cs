@@ -10,15 +10,16 @@ namespace FormuleCirkeltrek.Domain.ValueObjects
     public struct DriverNumber
     {
         public DriverNumber(short number)
+            : this(number.ToString())
+        {}
+
+        public DriverNumber(string number)
         {
             _number = string.Empty;
             TryAssign(this, number);
         }
 
         string _number;
-
-        static void TryAssign(DriverNumber instance, short number)
-            => TryAssign(instance, number.ToString());
 
         static void TryAssign(DriverNumber instance, string number)
         {
