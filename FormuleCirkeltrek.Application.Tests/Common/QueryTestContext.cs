@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using FormuleCirkeltrek.Application.Common.Interfaces;
 using FormuleCirkeltrek.Application.Common.Mappings;
 using FormuleCirkeltrek.Persistence;
 using System;
