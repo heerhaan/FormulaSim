@@ -36,6 +36,7 @@ namespace FormuleCirkeltrek.Application.Tests.DriverRegistrations.Queries
                 var sut = new GetAllDriverRegistrationsHandler(dataLayer, testContext.GetMapper());
                 var result = await sut.Handle(new Registrations.DriverRegistrations.Queries.GetAllDriverRegistrations(), CancellationToken.None);
 
+                // Assert
                 Assert.Single(result);
                 Assert.Single(result, (dr) =>
                     dr.Name == "Hamilton"
