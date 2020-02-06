@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace FormuleCirkeltrek.Common.ValueObjects
 {
-    public struct DriverNumber : IEquatable<DriverNumber>, IEquatable<DriverNumber?>
+    public struct DriverNumber : IEquatable<DriverNumber>, IEquatable<DriverNumber?>, IEquatable<short>, IEquatable<int>, IEquatable<long>
     {
         public DriverNumber(long number)
             : this(number.ToString()) { }
@@ -45,6 +45,15 @@ namespace FormuleCirkeltrek.Common.ValueObjects
         public bool Equals(DriverNumber? other)
             => _number.Equals(other?._number);
 
+        public bool Equals(short other)
+            => Equals(other.ToString());
+        
+        public bool Equals(int other)
+            => Equals(other.ToString());
+        
+        public bool Equals(long other)
+            => Equals(other.ToString());
+
         #endregion
 
         #region Implicit conversions
@@ -60,6 +69,30 @@ namespace FormuleCirkeltrek.Common.ValueObjects
 
         public static implicit operator DriverNumber(long value)
             => new DriverNumber(value);
+
+        #endregion
+
+        #region Operator overloads
+
+        public static bool operator ==(DriverNumber x, string y)
+            => x.Equals(y);
+        public static bool operator !=(DriverNumber x, string y)
+            => !x.Equals(y);
+
+        public static bool operator ==(DriverNumber x, short y)
+            => x.Equals(y);
+        public static bool operator !=(DriverNumber x, short y)
+            => !x.Equals(y);
+
+        public static bool operator ==(DriverNumber x, int y)
+            => x.Equals(y);
+        public static bool operator !=(DriverNumber x, int y)
+            => !x.Equals(y);
+
+        public static bool operator ==(DriverNumber x, long y)
+            => x.Equals(y);
+        public static bool operator !=(DriverNumber x, long y)
+            => !x.Equals(y);
 
         #endregion
     }
