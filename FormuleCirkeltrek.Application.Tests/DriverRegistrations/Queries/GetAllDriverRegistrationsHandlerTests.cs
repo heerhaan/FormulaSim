@@ -9,10 +9,10 @@ using static FormuleCirkeltrek.Application.Registrations.DriverRegistrations.Que
 
 namespace FormuleCirkeltrek.Application.Tests.DriverRegistrations.Queries
 {
-    public class GetAllDriverRegistrationsQueryHandlerTests
+    public class GetAllDriverRegistrationsHandlerTests
     {
         [Fact]
-        public async Task Returns_Results()
+        public async Task Should_ReturnMappedDataFromDatabase()
         {
             // Arrange
             using var testContext = new QueryTestContext();
