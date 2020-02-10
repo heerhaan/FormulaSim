@@ -18,11 +18,13 @@
                             <span asp-validation-for="Skill" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="Style" class="control-label"></label>
-                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="Style determines gives a +3/-3 effect to the driver skill for the race only but also causes a -4/+4 to reliability."></i>
-                            @Html.DropDownListFor(model => model.Style, new SelectList(Enum.GetValues(typeof(Style))), new { @class = "form-control" })
-                            <span asp-validation-for="Style" class="text-danger"></span>
+                            <label asp-for="Reliability" class="control-label"></label>
+                            <input asp-for="Reliability" id="relbox" class="form-control" />
+                            <button type="button" class="btn btn-dark float-right" onclick="reldev()">
+                                <i class="fas fa-dice" data-toggle="tooltip" data-placement="right"
+                                   title="RNG for this roll is between 95 and 100"></i>
+                            </button>
+                            <span asp-validation-for="Reliability" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Tires" class="control-label"></label>
@@ -38,7 +40,7 @@
                         <div class="form-group">
                             <label asp-for="DriverStatus" class="control-label">Status in team</label>
                             <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                                     title="First drivers swaps positions with their second driver if one position behind. Also gives +2/-2 to chassis."></i>
+                               title="First drivers swaps positions with their second driver if one position behind. Also gives +2/-2 to chassis."></i>
                             @Html.DropDownListFor(model => model.DriverStatus, new SelectList(Enum.GetValues(typeof(DriverStatus))), new { @class = "form-control" })
                             <span asp-validation-for="DriverStatus" class="text-danger"></span>
                         </div>
@@ -50,38 +52,10 @@
                 <div class="col-md-3">
                     <div class="float-right">
                         <div class="form-group">
-                            <h4>Pace</h4>
                         </div>
                         <div class="form-group">
-                            <label asp-for="QualyPace" class="control-label">Qualifying pace</label>
-                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="Extra value only applied during the qualifications."></i>
-                            <input asp-for="QualyPace" class="form-control" />
-                            <span asp-validation-for="QualyPace" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="RacePace" class="control-label">Race pace</label>
-                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="Extra value applied to the driver skill only during races."></i>
-                            <input asp-for="RacePace" class="form-control" />
-                            <span asp-validation-for="RacePace" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <h4>Modifiers</h4>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="ChassisMod" class="control-label">Chassis modifier</label>
-                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="Extra value to the chassis only applied for this driver."></i>
-                            <input asp-for="ChassisMod" class="form-control" />
-                            <span asp-validation-for="ChassisMod" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="ReliabilityMod" class="control-label">Reliability modifier</label>
-                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="Extra value to the reliability of a chassis only applied for this driver."></i>
-                            <input asp-for="ReliabilityMod" class="form-control" />
-                            <span asp-validation-for="ReliabilityMod" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -92,3 +66,10 @@
 <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
     <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
 </a>
+
+<script>
+    function reldev() {
+        var newdev = Math.floor((Math.random() * 6) + 95);
+        $('#relbox').val(newdev);
+    }
+</script>

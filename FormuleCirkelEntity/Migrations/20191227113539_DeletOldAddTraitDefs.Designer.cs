@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20191227113539_DeletOldAddTraitDefs")]
+    partial class DeletOldAddTraitDefs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +67,8 @@ namespace FormuleCirkelEntity.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<decimal>("ChassisMulti");
+
                     b.Property<int>("ChassisRacePace");
 
                     b.Property<int>("ChassisRelMod");
@@ -73,11 +77,13 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<int>("DSQCause");
 
+                    b.Property<decimal>("DriverMulti");
+
                     b.Property<int>("DriverRacePace");
 
                     b.Property<int>("DriverRelMod");
 
-                    b.Property<int>("EngineRacePace");
+                    b.Property<decimal>("EngineMulti");
 
                     b.Property<int>("Grid");
 
@@ -365,15 +371,22 @@ namespace FormuleCirkelEntity.Migrations
 
                     b.Property<bool>("Archived");
 
+                    b.Property<decimal?>("ChassisMultiplier")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int?>("ChassisRacePace");
 
                     b.Property<int?>("ChassisReliability");
+
+                    b.Property<decimal?>("DriverMultiplier")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("DriverRacePace");
 
                     b.Property<int?>("DriverReliability");
 
-                    b.Property<int?>("EngineRacePace");
+                    b.Property<decimal?>("EngineMultiplier")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("MaximumRNG");
 

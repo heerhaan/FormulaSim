@@ -2,10 +2,12 @@
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -46,6 +48,8 @@ namespace FormuleCirkelEntity.Controllers
                 .FirstOrDefault();
 
                 ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
+                ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
+                ViewBag.seasonId = currentSeason.SeasonId;
 
                 var standings = _context.SeasonDrivers
                     .Include(s => s.DriverResults)
@@ -75,7 +79,7 @@ namespace FormuleCirkelEntity.Controllers
                                 positions.Add(result.Position);
                             }
                         }
-                        if (positions.Count() != 0)
+                        if (positions.Any())
                         {
                             average = Math.Round((positions.Average()), 2);
                         }
@@ -109,6 +113,8 @@ namespace FormuleCirkelEntity.Controllers
                 lastpoint = currentSeason.PointsPerPosition.Keys.Max();
             }
             ViewBag.lastpointpos = lastpoint;
+            ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
+            ViewBag.seasonId = seasonId;
 
             var standings = _context.SeasonDrivers
                 .IgnoreQueryFilters()
@@ -132,7 +138,7 @@ namespace FormuleCirkelEntity.Controllers
                         positions.Add(result.Position);
                     }
                 }
-                if (positions.Count() != 0)
+                if (positions.Any())
                 {
                     average = Math.Round((positions.Average()), 2);
                 }
@@ -152,6 +158,27 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderBy(r => r.Round).ToList();
 
             return View("DriverStandings", standings);
+        }
+
+        [HttpPost("[Controller]/{seasonId}/GetDriverGraphData")]
+        public IActionResult GetDriverGraphData(int seasonId)
+        {
+            var season = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId);
+            if (season == null)
+                return null;
+
+            // Overweeg om dit te herschrijven dat hij de races pakt in plaats van de seizoenrijders, of vindt een manier om het zo te krijgen dat de racevolgorde klopt.
+            var standings = _context.SeasonDrivers
+                .IgnoreQueryFilters()
+                .Include(sd => sd.Driver)
+                .Include(sd => sd.DriverResults)
+                .Include(sd => sd.SeasonTeam)
+                    .ThenInclude(sd => sd.Team)
+                .Where(sd => sd.SeasonId == seasonId)
+                .OrderBy(sd => sd.SeasonTeam.Team.Name)
+                .ToList();
+
+            return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
         public IActionResult TeamStandings()
@@ -253,7 +280,6 @@ namespace FormuleCirkelEntity.Controllers
             {
                 return RedirectToAction("Index", "Season");
             }
-            
         }
         
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

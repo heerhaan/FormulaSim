@@ -30,7 +30,7 @@
                             <input asp-for="Reliability" id="relbox" class="form-control" />
                             <button type="button" class="btn btn-dark float-right" onclick="reldev()">
                                 <i class="fas fa-dice" data-toggle="tooltip" data-placement="right"
-                                   title="RNG for this roll is between 88 and 100"></i>
+                                   title="RNG for this roll is between 94 and 100"></i>
                             </button>
                             <span asp-validation-for="Reliability" class="text-danger"></span>
                         </div>
@@ -79,7 +79,7 @@
 
 <script>
     function reldev() {
-        var newdev = Math.floor((Math.random() * 13) + 88);
+        var newdev = Math.floor((Math.random() * 7) + 94);
         $('#relbox').val(newdev);
     }
 </script>

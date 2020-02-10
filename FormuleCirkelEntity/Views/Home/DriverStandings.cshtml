@@ -5,6 +5,7 @@
     var rounds = ViewBag.rounds;
     int position = 1;
     var track = "";
+    var seasonId = ViewBag.seasonId;
 }
 
 <h1>Championship drivers</h1>
@@ -159,9 +160,140 @@
     </tbody>
 </table>
 
-<button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-
+<div class="row">
+    <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn" onclick="getStandingsGraph()"><i class="fas fa-chart-bar fa-2x ml-auto"></i></button>
+</div>
 <div id="screenshot"></div>
+
+<canvas id="standingsChart"></canvas>
+
+<script>
+    function drawStandingsChart(res) {
+        var ctx = document.getElementById('standingsChart');
+        ctx.height = 300;
+        ctx.backgroundColor = 'rgba(30, 34, 39, 0.9)';
+        ctx.getContext('2d');
+        var driversets = [];
+        var points = @(Html.Raw(ViewBag.points));
+
+        $(res).each(function (driverKey, driverValue) {
+            var raceresults = [];
+            let total = 0;
+
+            driverValue.DriverResults.forEach(function (result) {
+                if (result.Position <= @ViewBag.lastpointpos) {
+                    total = total + points[result.Position];
+                    raceresults.push(total);
+                }
+                else {
+                    raceresults.push(total);
+                }
+            });
+            var driverDataset = {
+                label: driverValue.Driver.Name,
+                backgroundColor: driverValue.SeasonTeam.Team.Accent,
+                borderColor: driverValue.SeasonTeam.Team.Colour,
+                data: raceresults,
+                fill: false
+            };
+            if (driversets.some(d => d.backgroundColor === driverValue.SeasonTeam.Team.Accent && d.borderColor === driverValue.SeasonTeam.Team.Colour)) {
+                driverDataset.borderDash = [5, 5];
+            }
+            driversets.push(driverDataset);
+        });
+
+        let roundsDriven = driversets[0].data.length;
+        var roundlabels = [];
+        for (i = 1; i <= roundsDriven; i++) {
+            var roundlabel = i;
+            roundlabels.push(roundlabel);
+        }
+
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: roundlabels,
+                datasets: driversets
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'WDC standings',
+                    fontColor: '#e6e6e6'
+                },
+                tooltips: {
+                    //enabled: false
+                },
+                hover: {
+                    //mode: null
+                },
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Rounds',
+                            fontColor: '#e6e6e6'
+                        },
+                        ticks: {
+                            fontColor: '#e6e6e6'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Points',
+                            fontColor: '#e6e6e6'
+                        },
+                        ticks: {
+                            fontColor: '#e6e6e6'
+                        },
+                        position: 'right'
+                    }]
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                },
+                legend: {
+                    labels: {
+                        boxWidth: 28,
+                        fontSize: 13,
+                        fontColor: '#e6e6e6'
+                    }
+                },
+                chartCanvas: {
+                    backgroundColor: 'rgba(30, 34, 39, 0.9)'
+                }
+            }
+        });
+
+        Chart.pluginService.register({
+            beforeDraw: function (chart, easing) {
+                // Makes it possible to give a backgroundcolor to the canvas
+            if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
+                var ctx = chart.chart.ctx;
+                ctx.save();
+                ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
+                ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+                ctx.restore();
+            }}
+        });
+
+        let legends = chart.legend.legendItems;
+            legends.forEach(function (e) {
+                [e.fillStyle, e.strokeStyle] = [e.strokeStyle, e.fillStyle];
+            });
+    }
+
+    function getStandingsGraph() {
+        fetch("/Home/@seasonId/GetDriverGraphData", { method: "POST" })
+            .then(response => response.json())
+            .then(result => drawStandingsChart(result));
+    }
+</script>
 
 <style>
     .badge {

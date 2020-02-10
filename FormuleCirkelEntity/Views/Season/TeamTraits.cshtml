@@ -1,0 +1,110 @@
+﻿@model FormuleCirkelEntity.ViewModels.TraitsTeamModel
+
+@{
+    ViewData["Title"] = "Traits for team";
+    int position = 1;
+}
+
+<div>
+    <h1>Traits for @Model.Team.Team.Name</h1>
+</div>
+
+<br />
+
+<div>
+    <h3>Applied traits</h3>
+    @if (Model.Team.Traits != null)
+    {
+        <table class="table table-sm">
+            <thead>
+                <tr>    
+                    <th>Trait</th>
+                    <th>Description</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var trait in Model.Team.Traits.Values)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => trait.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => trait.TraitDescription)
+                        </td>
+                        <td>
+                            <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                        </td>
+                        <td>
+                            <a asp-action="RemoveTeamTrait" asp-route-teamId="@Model.Team.SeasonTeamId" asp-route-traitId="@trait.TraitId"><i class="fas fa-trash-alt fa-2x"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h4>This team doesn't have any traits applied yet!</h4>
+    }
+</div>
+
+<br />
+
+<div>
+    <div class="row">
+        <h3>Add traits</h3>
+        <a asp-controller="Traits" asp-action="Create" class="btn btn-dark ml-auto">New trait</a>
+    </div>
+    @if (Model.Traits.Any())
+    {
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Trait</th>
+                    <th>Description</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var trait in Model.Traits)
+                {
+                    <tr>
+                        <td>
+                            #@(position++)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => trait.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => trait.TraitDescription)
+                        </td>
+                        <td>
+                            <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                        </td>
+                        <td>
+                            <form method="POST">
+                                <input type="hidden" name="traitId" value="@trait.TraitId" />
+                                <input type="submit" class="btn btn-outline-primary btn-sm" style="width:69px;" value="Add" />
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h4>There are no traits available for this team!</h4>
+    }
+</div>
+
+<div>
+    <a asp-action="Detail" asp-route-id="@Model.Team.SeasonId">
+        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+    </a>
+</div>

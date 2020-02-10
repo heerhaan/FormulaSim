@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Extensions;
+using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
@@ -16,6 +17,12 @@ namespace FormuleCirkelEntity.Controllers
         public TeamsController(FormulaContext context, PagingHelper pagingHelper)
             : base(context, pagingHelper)
         { }
+
+        [SortResult(nameof(Team.Name)), PagedResult]
+        public override Task<IActionResult> Index()
+        {
+            return base.Index();
+        }
 
         [Route("Stats/{id}")]
         public async Task<IActionResult> Stats(int? id)

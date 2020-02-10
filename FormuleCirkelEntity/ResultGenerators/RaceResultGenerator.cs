@@ -23,17 +23,18 @@ namespace FormuleCirkelEntity.ResultGenerators
         public int? GetStintResult(DriverResult driverResult, Stint stint, Track track, Race race)
         {
             // Applies the increased or decreased odds for the specific track.
-            int rngTrack = 0;
-            int dnfTrack = 0;
-            double engineWeatherMultiplier = 0;
+            double engineWeatherMultiplier = 1;
             int tireWeatherBonus = 0;
             int tireWeatherWear = 0;
+
+            int weatherRNG = 0;
+            int weatherDNF = 0;
+
+            int result = 0;
+
+            // If the stint is not a pitstop then it applies the RNG modifiers and the weather effects.
             if (stint.RNGMaximum > 0)
             {
-                if (track.RNGodds == RNGodds.Increased) { rngTrack += 8; } else if (track.RNGodds == RNGodds.Decreased) { rngTrack += -8; }
-
-                // Determines the effect weather has during a stint on-track
-                // Engine may be bonusified
                 switch (race.Weather)
                 {
                     case Weather.Sunny:
@@ -45,22 +46,27 @@ namespace FormuleCirkelEntity.ResultGenerators
                         engineWeatherMultiplier = 1.1;
                         break;
                     case Weather.Rain:
-                        rngTrack += 10;
-                        dnfTrack += -3;
+                        weatherRNG += 10;
+                        weatherDNF += -3;
                         break;
                     case Weather.Storm:
-                        rngTrack += 20;
-                        dnfTrack += -4;
+                        weatherRNG += 20;
+                        weatherDNF += -4;
                         break;
                 }
-            }
-            if (track.DNFodds == DNFodds.Increased) { dnfTrack += -2; } else if (track.DNFodds == DNFodds.Decreased) { dnfTrack += 2; }
 
-            // Add one because Random.Next() has an exclusive upper bound.
-            var result = _rng.Next(stint.RNGMinimum, (stint.RNGMaximum + rngTrack) + 1);
+                // Add one because Random.Next() has an exclusive upper bound.
+                result = _rng.Next((stint.RNGMinimum + driverResult.MinRNG), (stint.RNGMaximum + weatherRNG + driverResult.MaxRNG) + 1);
+            }
+            else
+            {
+                result = _rng.Next((stint.RNGMinimum), (stint.RNGMaximum) + 1);
+            }
 
             if (stint.ApplyDriverLevel)
-                result = result + GetDriverLevelBonus(driverResult.SeasonDriver);
+            {
+                result += driverResult.SeasonDriver.Skill + driverResult.DriverRacePace;
+            }
 
             if (stint.ApplyQualifyingBonus)
                 result += GetQualifyingBonus(driverResult.Grid, driverResult.SeasonDriver.Season.Drivers.Count, driverResult.SeasonDriver.Season.QualyBonus);
@@ -69,7 +75,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 result += (10 + tireWeatherBonus);
 
             if (stint.ApplyEngineLevel)
-                result += (int)Math.Round(driverResult.SeasonDriver.SeasonTeam.Engine.Power * engineWeatherMultiplier);
+                result += (int)Math.Round((driverResult.SeasonDriver.SeasonTeam.Engine.Power + driverResult.EngineRacePace) * engineWeatherMultiplier);
 
             if (stint.ApplyTireWear && driverResult.SeasonDriver.Tires == Tires.Softs)
             {
@@ -82,26 +88,25 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             if (stint.ApplyReliability)
             {
-                var reliablityResult = GetDriverReliabilityResult(driverResult.SeasonDriver, dnfTrack);
-                if (reliablityResult == -1)
+                // Check for the reliability of the chassis.
+                var reliabilityResult = GetChassisReliabilityResult(driverResult.SeasonDriver.SeasonTeam, driverResult.ChassisRelMod);
+                if (reliabilityResult == -1)
                     return null;
-                else if (reliablityResult == 0)
-                    result += -20;
+
+                // Check for the reliability of the driver.
+                reliabilityResult = GetDriverReliabilityResult(driverResult.SeasonDriver, weatherDNF + driverResult.DriverRelMod);
+                if (reliabilityResult == -1)
+                    return -1000;
             }
 
             if (stint.ApplyChassisLevel)
             {
                 int bonus = GetChassisBonus(driverResult.SeasonDriver.SeasonTeam, track);
                 int statusBonus = (((int)driverResult.SeasonDriver.DriverStatus) * -2) + 2;
-                result += (driverResult.SeasonDriver.SeasonTeam.Chassis + driverResult.SeasonDriver.ChassisMod + bonus + statusBonus);
+                result += (driverResult.SeasonDriver.SeasonTeam.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
             }
 
             return result;
-        }
-
-        public int GetDriverLevelBonus(SeasonDriver driver)
-        {
-            return driver.Skill + driver.RacePace + (3 - (3 * (int)driver.Style));
         }
 
         public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount, int qualyBonus)
@@ -126,29 +131,32 @@ namespace FormuleCirkelEntity.ResultGenerators
             return bonus;
         }
 
+        public int GetChassisReliabilityResult(SeasonTeam team, int additionalDNF)
+        {
+            var reliabilityScore = team.Reliability + additionalDNF;
+            var reliabilityCheckValue = _rng.Next(1, 101);
+            return reliabilityScore.CompareTo(reliabilityCheckValue);
+        }
+
         /// <summary>
         /// Performs a <see cref="SeasonDriver"/> reliability check.
         /// </summary>
         /// <param name="driver">The <see cref="SeasonDriver"/> to perform the reliability check on.</param>
         /// <returns>-1 if the reliability check fails, 1 if it succeeds, and 0 if it's neutral.</returns>
-        public int GetDriverReliabilityResult(SeasonDriver driver, int dnfTrack)
+        public int GetDriverReliabilityResult(SeasonDriver driver, int additionalDNF)
         {
-            int driverStyleModifier = 0;
-            if (driver.Style == Style.Aggressive) { driverStyleModifier = -4; }
-            else if (driver.Style == Style.Defensive) { driverStyleModifier = 4; }
-
-            var reliabilityScore = driver.SeasonTeam.Reliability + driver.ReliabilityMod + driverStyleModifier + dnfTrack;
+            var reliabilityScore = driver.Reliability + additionalDNF;
             var reliabilityCheckValue = _rng.Next(1, 101); 
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
 
-        public int GetQualifyingResult(SeasonDriver driver, int qualyRNG, Track track)
+        public int GetQualifyingResult(SeasonDriver driver, int qualyRNG, Track track, int qualypace)
         {
             var result = 0;
             result += driver.Skill;
-            result += driver.QualyPace;
+            result += qualypace;
             result += driver.SeasonTeam.Chassis;
-            result += driver.ChassisMod;
+            result += driver.SeasonTeam.Engine.Power;
             result += GetChassisBonus(driver.SeasonTeam, track);
             result += _rng.Next(0, (qualyRNG + 1));
             return result;

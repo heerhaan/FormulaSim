@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Track>
 
 @{
-    ViewData["Title"] = "Circuits";
+    ViewData["Title"] = "Tracks";
     var pageCount = (int)ViewData["pageCount"];
     var pageSize = (int)ViewData["pageSize"];
     var pageNumber = (int)ViewData["pageNumber"];
@@ -9,7 +9,7 @@
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
 }
 
-<h1>Circuits</h1>
+<h1>Tracks</h1>
 <div>
     <a asp-action="Create">
         <i class="fas fa-plus-square fa-2x"></i>
@@ -27,14 +27,9 @@
                 Location
             </th>
             <th>
-                DNF
-            </th>
-            <th>
-                RNG
-            </th>
-            <th>
                 Specification
             </th>
+            <th></th>
             <th></th>
             <th></th>
         </tr>
@@ -50,17 +45,16 @@
                     @item.Location
                 </td>
                 <td>
-                    @item.DNFodds
-                </td>
-                <td>
-                    @item.RNGodds
-                </td>
-                <td>
                     @item.Specification
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">
                         <i class="fas fa-edit fa-2x"></i>
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="TrackTraits" asp-route-id="@item.Id">
+                        <i class="fas fa-yin-yang fa-2x"></i>
                     </a>
                 </td>
                 <td>

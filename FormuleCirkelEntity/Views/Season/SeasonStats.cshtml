@@ -3,7 +3,8 @@
 @{
     ViewData["Title"] = "Season details";
     int position = 1;
-    string style = "";
+    int driverRel = 0;
+    int teamRel = 0;
 }
 
 <h1>Season details for season @ViewBag.number</h1>
@@ -24,7 +25,8 @@
                 <tr>
                     <th>#</th>
                     <th>Driver</th>
-                    <th>Skill + Style</th>
+                    <th>Skill</th>
+                    <th>Drvr. rel.</th>
                     <th>Team</th>
                     <th>Chassis</th>
                     <th>Engine</th>
@@ -34,15 +36,12 @@
                     <th>ACC</th>
                     <th>STB</th>
                     <th>HDL</th>
-                    <th>Reliability</th>
+                    <th>Team rel.</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var driver in Model)
                 {
-                    @if (driver.Style == Style.Aggressive) { style = "+ 3"; }
-                    else if(driver.Style == Style.Neutral) { style = ""; }
-                    else { style = "- 3"; }
                     <tr>
                         <td>@(position++)</td>
                         <td>
@@ -51,30 +50,64 @@
                             else if (driver.DriverStatus == DriverStatus.Second) { <i>@driver.Driver.Name</i> }
                             else { @driver.Driver.Name }
                         </td>
-                        <td>@driver.Skill @style</td>
+                        <td>@driver.Skill</td>
+                        <td><span class="badge alt-color nofullwidth">@driver.Reliability</span></td>
                         <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
-                        <td>@(driver.SeasonTeam.Chassis + driver.ChassisMod + (((int)driver.DriverStatus) * -2) + 2)</td>
+                        <td>@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
                         <td>@driver.SeasonTeam.Engine.Name</td>
                         <td>@driver.SeasonTeam.Engine.Power</td>
-                        <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.ChassisMod + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2) + (3 - (3 * (int)driver.Style)))</td>
+                        <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2))</td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Topspeed</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Acceleration</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Stability</span></td>
                         <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Handling</span></td>
-                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability + driver.ReliabilityMod + (-2 - (-2 * (int)driver.Style)))</span></td>
+                        <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability)</span></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-    <div>
-        <h4>Points earned</h4>
-        <ol>
-            @foreach (var point in ViewBag.points)
-            {
-                <li><span class="badge badge-pill badge-dark">@point points</span></li>
-            }
-        </ol>
+    <div class="row">
+        <div>
+            <h4>Points earned</h4>
+            <ol>
+                @foreach (var point in ViewBag.points)
+                {
+                    <li><span class="badge badge-pill badge-dark">@point points</span></li>
+                }
+            </ol>
+        </div>
+        <div class="flex-item" style="margin-left:100px;">
+            <h4>Team traits</h4>
+            <div>
+                <dl class="row">
+                    @{
+                        var teams = Model.Select(st => st.SeasonTeam).Distinct().OrderBy(st => st.Team.Abbreviation);
+                        @foreach (var team in teams)
+                        {
+                            <dt class="badge nofullwidth col-2" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);">
+                                @team.Team.Abbreviation
+                            </dt>
+                            @if (team.Traits.Any())
+                            {
+                                <dd class="col-10">
+                                    @foreach (var trait in team.Traits.Values)
+                                    {
+                                        <span class="badge nofullwidth">[@trait.Name]</span>
+                                    }
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="col-10">
+                                    <span class="badge nofullwidth">-</span>
+                                </dd>
+                            }
+                        }
+                    }
+                </dl>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -2,6 +2,7 @@
 using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
+using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -21,6 +22,62 @@ namespace FormuleCirkelEntity.Controllers
         public override Task<IActionResult> Index()
         {
             return base.Index();
+        }
+        
+        [Route("Traits/{id}")]
+        public async Task<IActionResult> TrackTraits(int id)
+        {
+            var track = await Data.IgnoreQueryFilters()
+                .SingleOrDefaultAsync(t => t.Id == id)
+                .ConfigureAwait(false);
+            var traits = DataContext.Traits
+                .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Values.Contains(tr))
+                .OrderBy(t => t.Name);
+
+            if (track == null)
+                return NotFound();
+
+            var model = new TraitsTrackModel
+            {
+                Track = track,
+                Traits = traits
+            };
+
+            return View(model);
+        }
+
+        [HttpPost("Traits/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TrackTraits(int id, [Bind("TraitId")] int traitId)
+        {
+            var track = await Data.SingleOrDefaultAsync(t => t.Id == id).ConfigureAwait(false);
+            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId).ConfigureAwait(false);
+
+            if (track == null || trait == null)
+                return NotFound();
+
+            track.Traits.Add(track.Traits.Count, trait);
+            DataContext.Update(track);
+            await DataContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return RedirectToAction(nameof(TrackTraits), new { id });
+        }
+
+        [Route("Traits/Remove/{trackId}")]
+        public async Task<IActionResult> RemoveTrait(int trackId, int traitId)
+        {
+            var track = await Data.SingleOrDefaultAsync(t => t.Id == trackId).ConfigureAwait(false);
+            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId).ConfigureAwait(false);
+
+            if (track == null || trait == null)
+                return NotFound();
+
+            var removetrait = track.Traits.First(item => item.Value.TraitId == trait.TraitId);
+            track.Traits.Remove(removetrait);
+            DataContext.Update(track);
+            await DataContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return RedirectToAction(nameof(TrackTraits), new { id = trackId });
         }
 
         [Route("Archived")]
