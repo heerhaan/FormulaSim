@@ -139,7 +139,7 @@
 </div>
 
 <script>
-    var progress = 0;
+    var progress = @Model.StintProgress;
 
     $(function () {
         // Appends the correct icon for the corresponding weather for the race
@@ -161,7 +161,6 @@
         $("#weather").addClass(weatherclass);
 
         // Also starts the function to calculate the gap between drivers.
-        progress = @Model.StintProgress;
         calculateGap();
     });
 
@@ -195,7 +194,7 @@
     ];
 
     function processStintResponse(res) {
-        progress = res.stintProgress;
+        progress = res.StintProgress;
         let pointsPosition = @(Json.Serialize(Model.Season.PointsPerPosition))
         res.DriverResults.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");

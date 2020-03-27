@@ -169,6 +169,8 @@
 <canvas id="standingsChart"></canvas>
 
 <script>
+    var polepoint = @ViewBag.polepoint;
+
     function drawStandingsChart(res) {
         var ctx = document.getElementById('standingsChart');
         ctx.height = 300;
@@ -176,6 +178,7 @@
         ctx.getContext('2d');
         var driversets = [];
         var points = @(Html.Raw(ViewBag.points));
+        console.log(res);
 
         $(res).each(function (driverKey, driverValue) {
             var raceresults = [];
@@ -184,11 +187,11 @@
             driverValue.DriverResults.forEach(function (result) {
                 if (result.Position <= @ViewBag.lastpointpos) {
                     total = total + points[result.Position];
-                    raceresults.push(total);
                 }
-                else {
-                    raceresults.push(total);
+                if (result.Grid == 1) {
+                    total = total + polepoint;
                 }
+                raceresults.push(total);
             });
             var driverDataset = {
                 label: driverValue.Driver.Name,
@@ -200,6 +203,7 @@
             if (driversets.some(d => d.backgroundColor === driverValue.SeasonTeam.Team.Accent && d.borderColor === driverValue.SeasonTeam.Team.Colour)) {
                 driverDataset.borderDash = [5, 5];
             }
+            console.log(driverDataset);
             driversets.push(driverDataset);
         });
 

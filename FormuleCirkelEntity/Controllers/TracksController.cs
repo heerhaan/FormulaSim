@@ -29,7 +29,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var track = await Data.IgnoreQueryFilters()
                 .SingleOrDefaultAsync(t => t.Id == id)
-                .ConfigureAwait(false);
+                ;
             var traits = DataContext.Traits
                 .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Values.Contains(tr))
                 .OrderBy(t => t.Name);
@@ -50,15 +50,15 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TrackTraits(int id, [Bind("TraitId")] int traitId)
         {
-            var track = await Data.SingleOrDefaultAsync(t => t.Id == id).ConfigureAwait(false);
-            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId).ConfigureAwait(false);
+            var track = await Data.SingleOrDefaultAsync(t => t.Id == id);
+            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
             if (track == null || trait == null)
                 return NotFound();
 
             track.Traits.Add(track.Traits.Count, trait);
             DataContext.Update(track);
-            await DataContext.SaveChangesAsync().ConfigureAwait(false);
+            await DataContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(TrackTraits), new { id });
         }
@@ -66,8 +66,8 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{trackId}")]
         public async Task<IActionResult> RemoveTrait(int trackId, int traitId)
         {
-            var track = await Data.SingleOrDefaultAsync(t => t.Id == trackId).ConfigureAwait(false);
-            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId).ConfigureAwait(false);
+            var track = await Data.SingleOrDefaultAsync(t => t.Id == trackId);
+            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
             if (track == null || trait == null)
                 return NotFound();
@@ -75,7 +75,7 @@ namespace FormuleCirkelEntity.Controllers
             var removetrait = track.Traits.First(item => item.Value.TraitId == trait.TraitId);
             track.Traits.Remove(removetrait);
             DataContext.Update(track);
-            await DataContext.SaveChangesAsync().ConfigureAwait(false);
+            await DataContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(TrackTraits), new { id = trackId });
         }

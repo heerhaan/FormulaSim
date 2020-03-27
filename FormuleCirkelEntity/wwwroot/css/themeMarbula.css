@@ -1,0 +1,90 @@
+﻿body.dark {
+    background-color: rgb(94, 0, 0);
+    color: white;
+}
+
+    body.dark table {
+        background-color: rgb(94, 0, 0);
+        color: white;
+    }
+
+        body.dark code[class*=language-],
+        body.dark table tbody > tr:nth-child(odd) > td,
+        body.dark table tbody > tr:nth-child(odd) > th {
+            background: rgb(92, 0, 46);
+        }
+
+        body.dark table thead th {
+            border-bottom-color: rgb(0, 255, 255);
+        }
+
+        body.dark table th {
+            border-top-color: rgb(0, 255, 255);
+        }
+
+        body.dark table td {
+            border-top-color: rgb(0, 255, 255);
+        }
+
+.page-link {
+    background-color: rgb(92, 0, 46);
+    color: rgb(0, 255, 255);
+    border-color: rgb(0, 255, 255);
+}
+
+.page-item.active .page-link {
+    background-color: rgb(0, 255, 255);
+    border-color: rgb(0, 255, 255);
+    color: rgb(92, 0, 46);
+}
+
+.btn {
+    background-color: rgb(92, 0, 46);
+    color: white;
+}
+
+#graphic {
+    background-color: rgb(94, 0, 0);
+}
+
+i.fas,
+i.fab, .link {
+    color: white;
+}
+
+.border-top {
+    border-top: 1px solid rgb(0, 255, 255) !important;
+}
+
+.border-bottom {
+    border-bottom: 1px solid rgb(0, 255, 255) !important;
+}
+
+.navbar {
+    background-color: rgb(92, 0, 46);
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.footer {
+    background-color: rgb(92, 0, 46);
+    color: white;
+}
+
+.tcc-chassis span {
+    display: none;
+}
+
+.tcc-chassis::after {
+    content: 'Material'
+}
+
+.tcc-crew span {
+    display: none;
+}
+
+.tcc-crew::after {
+    content: 'Team'
+}

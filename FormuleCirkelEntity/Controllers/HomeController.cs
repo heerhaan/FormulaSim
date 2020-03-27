@@ -49,6 +49,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
                 ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
+                ViewBag.polepoint = currentSeason.PolePoints;
                 ViewBag.seasonId = currentSeason.SeasonId;
 
                 var standings = _context.SeasonDrivers

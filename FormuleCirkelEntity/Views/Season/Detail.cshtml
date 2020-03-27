@@ -145,9 +145,9 @@
                 <th>#</th>
                 <th>Points</th>
                 <th>Team</th>
-                <th>Chassis</th>
+                <th class="tcc-crew"><span>Chassis</span></th>
                 <th>Reliability</th>
-                <th>Engine</th>
+                <th class="tcc-chassis"><span>Engine</span></th>
                 <th></th>
                 <th></th>
             </tr>
@@ -166,7 +166,7 @@
                         </td>
                         <td>@team.Chassis</td>
                         <td>@team.Reliability</td>
-                        <td>@team.Engine.Name</td>
+                        <td>@team.Engine.Name<span class="badge alt-color nofullwidth">@team.Engine.Power</span></td>
                         <td>
                             <a asp-action="UpdateTeam" asp-route-id="@Model.Season.SeasonId" asp-route-teamId="@team.SeasonTeamId">
                                 <i class="fas fa-wrench fa-2x"></i>
