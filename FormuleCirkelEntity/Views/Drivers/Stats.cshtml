@@ -1,28 +1,12 @@
 ﻿@model FormuleCirkelEntity.ViewModels.DriverStatsModel
 
-@{
-    ViewData["Title"] = "Driver bio";
-    int dnfs = (Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count());
-    int dsqs = (Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count());
-    int wins = (Model.DriverResults.Where(dr => dr.Position == 1).Count());
-    int podiums = (Model.DriverResults.Where(dr => dr.Position == 2 || dr.Position == 3).Count());
-    int points = 0;
-    foreach (var season in Model.Seasons)
-    {
-        var current = Model.DriverResults.Where(dr => dr.SeasonDriver.SeasonId == season.SeasonId);
-        var pointsMax = season.PointsPerPosition.Keys.Max();
-        points += (current.Where(dr => dr.Position > 3 && dr.Position <= pointsMax).Count());
+    @{
+        ViewData["Title"] = "Driver bio";
     }
-    int outside = (Model.DriverResults.Where(dr => dr.Position > 12 && dr.Status == Status.Finished).Count());
-    int accidents = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Accident || dr.DNFCause == DNFCause.Puncture).Count());
-    int contact = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Damage || dr.DNFCause == DNFCause.Collision).Count());
-    int engine = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Engine).Count());
-    int mechanical = (Model.DriverResults.Where(dr => dr.DNFCause == DNFCause.Brakes || dr.DNFCause == DNFCause.Clutch || dr.DNFCause == DNFCause.Electrics || dr.DNFCause == DNFCause.Exhaust || dr.DNFCause == DNFCause.Hydraulics || dr.DNFCause == DNFCause.Wheel).Count());
-}
 
 <div id="graphic">
     <h1>Biography</h1>
-    <h4>@Model.Driver.Name</h4>
+    <h4>@Model.DriverName</h4>
     <hr />
     <div class="biocontainer">
         <div class="fixed">
@@ -31,49 +15,49 @@
                     Starts:
                 </dt>
                 <dd>
-                    @Model.DriverResults.Count()
+                    @Model.StartCount
                 </dd>
                 <dt>
                     Poles:
                 </dt>
                 <dd>
-                    @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
+                    @Model.PoleCount
                 </dd>
                 <dt>
                     Podiums:
                 </dt>
                 <dd>
-                    @(Model.DriverResults.Where(dr => dr.Position <= 3).Count())
+                    @Model.PodiumCount
                 </dd>
                 <dt>
                     Wins:
                 </dt>
                 <dd>
-                    @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
+                    @Model.WinCount
                 </dd>
                 <dt>
                     WDCs:
                 </dt>
                 <dd>
-                    @ViewBag.championships
+                    @Model.WDCCount
                 </dd>
                 <dt>
                     DNFs:
                 </dt>
                 <dd>
-                    @dnfs
+                    @Model.DNFCount
                 </dd>
                 <dt>
                     DSQ:
                 </dt>
                 <dd>
-                    @dsqs
+                    @Model.DSQCount
                 </dd>
                 <dt>
                     Teams:
                 </dt>
                 <dd class="row">
-                    @foreach (var team in Model.SeasonDriver.Select(select => select.SeasonTeam.Team).Distinct())
+                    @foreach (var team in Model.Teams)
                     {
                         <span class='badge' style='background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;'>@(team.Abbreviation)</span>
                     }
@@ -82,13 +66,13 @@
         </div>
         <div class="flex-item">
             <p id="biography" contenteditable="true">
-                @if (Model.Driver.Biography == null)
+                @if (Model.DriverBio == null)
                 {
                     <i>This driver has no bio yet!</i>
                 }
                 else
                 {
-                    @Model.Driver.Biography
+                    @Model.DriverBio
                 }
             </p>
             <button id="savebio" class="btn btn-dark"><i class="far fa-save"></i></button>
@@ -96,7 +80,6 @@
     </div>
     <div class="row">
         <canvas id="FinishPercentage" width="250" height="250"></canvas>
-        <canvas id="StartsPerTeam" width="250" height="250"></canvas>
         <canvas id="NonFinishCauses" width="250" height="250"></canvas>
     </div>
 </div>
@@ -115,7 +98,7 @@
         $.ajax({
             type: "POST",
             url: "/Drivers/SaveBiography",
-            data: { id: @Model.Driver.Id, biography: $("#biography").text() },
+            data: { id: @Model.DriverId, biography: $("#biography").text() },
             dataType: "html",
             success: function () { alert("Biography saved!"); },
             error: function () { alert("Saving failed."); }
@@ -129,7 +112,7 @@
             type: 'pie',
         data: {
             datasets: [{
-                data: [@wins, @podiums, @points, @outside, @dnfs, @dsqs],
+                data: [@Model.WinCount, @Model.PodiumCount, @Model.PointFinishCount, @Model.OutsideCount, @Model.DNFCount, @Model.DSQCount],
                 backgroundColor: ['gold', 'silver', 'green', 'blue', 'red', 'black']
             }],
             labels: [
@@ -147,45 +130,13 @@
         }
         var chart1 = new Chart(ctx1, config1);
 
-        // Piechart for which teams the driver has started for.
-        var ctx2 = document.getElementById('StartsPerTeam').getContext('2d');
-        var config2 = {
-            type: 'pie',
-            data: {},
-            options: {
-                responsive: false
-            }
-        };
-        
-        var teamData = {
-            datasets: [],
-            labels: []
-        };
-
-        var teamDataSets = {
-            data: [],
-            backgroundColor: []
-        };
-        
-        @foreach (var team in Model.SeasonDriver.Select(select => select.SeasonTeam.Team).Distinct())
-        {
-            @:teamData.labels.push("@team.Abbreviation");
-            @:teamDataSets.backgroundColor.push("@team.Colour");
-            var amountStarts = Model.DriverResults.Where(d => d.SeasonDriver.SeasonTeam.Team == team).Count();
-            @:teamDataSets.data.push(@amountStarts);
-        }
-
-        teamData.datasets.push(teamDataSets);
-        config2.data = teamData;
-        var chart2 = new Chart(ctx2, config2);
-
         // Piechart to look into the sorts of DNFs / DSQs a driver has
         var ctx3 = document.getElementById('NonFinishCauses').getContext('2d');
         var config3 = {
             type: 'pie',
         data: {
             datasets: [{
-                data: [@accidents, @contact, @engine, @mechanical, @dsqs],
+                data: [@Model.AccidentCount, @Model.ContactCount, @Model.EngineCount, @Model.MechanicalCount, @Model.DSQCount],
                 backgroundColor: ['purple', 'red', 'darkblue', 'grey', 'black']
             }],
             labels: [

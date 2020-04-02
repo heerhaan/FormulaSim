@@ -15,8 +15,9 @@
                         <td>Driver</td>
                         <td>Nr.</td>
                         <td>Team</td>
-                        <td>Traits</td>
                         <td>Penalty</td>
+                        <td>Driver traits</td>
+                        <td>Team traits</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,6 +28,14 @@
                             <td>@driver.Driver.Name</td>
                             <td><span class="badge alt-color">@driver.Driver.DriverNumber</span></td>
                             <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
+                            @if (Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason == null)
+                            {
+                                <td></td> 
+                                }
+                            else
+                            {
+                                <td><span class="badge badge-dsq">@(Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason)</span></td>
+                            }
                             <td>
                                 @if (driver.Traits.Any())
                                 {
@@ -40,14 +49,19 @@
                                     <span>-</span>
                                 }
                             </td>
-                            @if (Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason == null)
-                            {
-                                <td></td> 
+                            <td>
+                                @if (driver.SeasonTeam.Traits.Any())
+                                {
+                                    foreach (var trait in driver.SeasonTeam.Traits.Values)
+                                    {
+                                        <span class="badge alt-color nofullwidth" style="font-size:1rem;">[@trait.Name]</span>
+                                    }
                                 }
-                            else
-                            {
-                                <td><span class="badge badge-dsq">@(Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason)</span></td>
-                            }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>

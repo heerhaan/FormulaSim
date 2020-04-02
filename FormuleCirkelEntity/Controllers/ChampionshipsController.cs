@@ -105,8 +105,7 @@ namespace FormuleCirkelEntity.Controllers
             }
 
             var championship = await _context.Championships
-                .FirstOrDefaultAsync(m => m.ChampionshipId == id)
-                ;
+                .FirstOrDefaultAsync(m => m.ChampionshipId == id);
 
             if (championship == null)
             {

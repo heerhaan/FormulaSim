@@ -35,7 +35,7 @@
                         <td>X</td>
                     } else
                     {
-                        <td>@topDriver.Driver.Name</td>
+                        <td><span class="badge" style="background-color:@(topDriver.SeasonTeam.Team.Colour);color:@(topDriver.SeasonTeam.Team.Accent);font-size:1rem;">@topDriver.Driver.Name</span></td>
                         <td><span class="badge" style="background-color:@(topTeam.Team.Colour);color:@(topTeam.Team.Accent);font-size:1rem;">@topTeam.Team.Name</span></td>
                     }
                     <td>
