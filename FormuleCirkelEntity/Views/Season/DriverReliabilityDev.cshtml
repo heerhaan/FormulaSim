@@ -34,9 +34,9 @@
                         <td><span class="badge nofullwidth">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
                         <td>@(year - driver.Driver.DateOfBirth.Year)</td>
                         <td>
-                            <span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);
-                            color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">
-                                @driver.SeasonTeam.Team.Abbreviation
+                            <span class="badge" style="background-color:@(driver.SeasonTeam.Colour);
+                            color:@(driver.SeasonTeam.Accent);font-size:1rem;">
+                                @driver.SeasonTeam.Name
                             </span>
                         </td>
                         <td id="old-value-@number">@driver.Reliability</td>

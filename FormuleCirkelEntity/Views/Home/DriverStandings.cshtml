@@ -52,7 +52,7 @@
                 <span class="badge alt-color">@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</span>
             </td>
             <td>
-                <span class="badge" style="background-color:@(item.SeasonTeam.Team.Colour);color:@(item.SeasonTeam.Team.Accent);font-size:1rem;">@item.SeasonTeam.Team.Abbreviation</span>
+                <span class="badge" style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);font-size:1rem;">@item.SeasonTeam.Team.Abbreviation</span>
             </td>
             @foreach (var round in rounds)
             {
@@ -195,15 +195,14 @@
             });
             var driverDataset = {
                 label: driverValue.Driver.Name,
-                backgroundColor: driverValue.SeasonTeam.Team.Accent,
-                borderColor: driverValue.SeasonTeam.Team.Colour,
+                backgroundColor: driverValue.SeasonTeam.Accent,
+                borderColor: driverValue.SeasonTeam.Colour,
                 data: raceresults,
                 fill: false
             };
-            if (driversets.some(d => d.backgroundColor === driverValue.SeasonTeam.Team.Accent && d.borderColor === driverValue.SeasonTeam.Team.Colour)) {
+            if (driversets.some(d => d.backgroundColor === driverValue.SeasonTeam.Accent && d.borderColor === driverValue.SeasonTeam.Colour)) {
                 driverDataset.borderDash = [5, 5];
             }
-            console.log(driverDataset);
             driversets.push(driverDataset);
         });
 

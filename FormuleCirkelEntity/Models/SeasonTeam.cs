@@ -14,7 +14,13 @@ namespace FormuleCirkelEntity.Models
         }
 
         public int SeasonTeamId { get; set; }
+        public string Name { get; set; }
         public string Principal { get; set; }
+        [StringLength(7)]
+        public string Colour { get; set; }
+
+        [StringLength(7)]
+        public string Accent { get; set; }
         public int Chassis { get; set; }
         public int Reliability { get; set; }
         public int Points { get; set; }

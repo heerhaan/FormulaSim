@@ -18,7 +18,7 @@ namespace FormuleCirkelEntity.Controllers
             : base(context, pagingHelper)
         { }
 
-        [SortResult(nameof(Team.Name)), PagedResult]
+        [SortResult(nameof(Team.Abbreviation)), PagedResult]
         public override Task<IActionResult> Index()
         {
             return base.Index();
@@ -87,7 +87,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Archived")]
         public IActionResult ArchivedTeams()
         {
-            var teams = Data.IgnoreQueryFilters().Where(t => t.Archived).OrderBy(t => t.Name).ToList();
+            var teams = Data.IgnoreQueryFilters().Where(t => t.Archived).OrderBy(t => t.Abbreviation).ToList();
             return View(teams);
         }
         

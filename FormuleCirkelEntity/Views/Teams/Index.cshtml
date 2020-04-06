@@ -20,7 +20,6 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Abbreviation</th>
             <th></th>
             <th></th>
             <th></th>
@@ -30,8 +29,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Name</td>
-                <td><span class="badge" style="background-color:@(item.Colour);color:@(item.Accent);font-size:1rem;">@item.Abbreviation</span></td>
+                <td>@item.Abbreviation</td>
                 <td><a asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit fa-2x"></i></a></td>
                 <td><a asp-action="Stats" asp-route-id="@item.Id"><i class="fas fa-signal fa-2x"></i></a></td>
                 <td><a asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt fa-2x"></i></a></td>

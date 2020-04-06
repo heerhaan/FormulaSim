@@ -426,7 +426,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(res => res.RaceId == raceId)
                 .Include(res => res.SeasonDriver.Driver)
                 .Include(res => res.SeasonDriver.SeasonTeam.Team)
-                .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Name).ToList();
+                .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Abbreviation).ToList();
 
             return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
@@ -574,9 +574,9 @@ namespace FormuleCirkelEntity.Controllers
                     {
                         DriverId = driver.SeasonDriverId,
                         RaceId = raceId,
-                        TeamName = driver.SeasonTeam.Team.Abbreviation,
-                        Colour = driver.SeasonTeam.Team.Colour,
-                        Accent = driver.SeasonTeam.Team.Accent,
+                        TeamName = driver.SeasonTeam.Name,
+                        Colour = driver.SeasonTeam.Colour,
+                        Accent = driver.SeasonTeam.Accent,
                         DriverName = driver.Driver.Name,
                         Score = 0
                     });

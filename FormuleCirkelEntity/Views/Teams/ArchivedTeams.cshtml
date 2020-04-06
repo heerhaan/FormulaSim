@@ -10,9 +10,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Abbreviation)
             </th>
             <th></th>
@@ -24,10 +21,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <span class="badge" style="background-color:@(item.Colour);color:@(item.Accent);font-size:1rem;">@item.Abbreviation</span>
+                <span>@item.Abbreviation</span>
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">

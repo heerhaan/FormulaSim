@@ -9,7 +9,6 @@ namespace FormuleCirkelEntity.Models.ModelValidation
     {
         public TeamValidator(FormulaContext context)
         {
-            RuleFor(t => t.Name).NotEmpty().WithMessage("Name is required!");
             RuleFor(t => t.Abbreviation).NotEmpty().WithMessage("Abbreviation is required!");
         }
     }

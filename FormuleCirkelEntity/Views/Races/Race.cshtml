@@ -49,9 +49,9 @@
                 int gridChange = (driverResult.Grid - driverResult.Position);
                 <tr data-obj-id="@driverResult.SeasonDriverId">
                     <td data-field="position">@driverResult.Position</td>
-                    <td data-field="driverNumber"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
+                    <td data-field="driverNumber"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
                     <td data-field="driverName"><span class="result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
-                    <td data-field="teamName"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Team.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Team.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
+                    <td data-field="teamName"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
                     <td data-field="startGrid">
                         @if (gridChange > 0)
                         {
@@ -101,7 +101,7 @@
                         <td data-field="points"><span class="badge">@Model.Season.PointsPerPosition[driverResult.Position]</span></td>
                     }
                     <td data-field="abbreviation"><span class="badge alt-color nofullwidth" style="display:none;">@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
-                    <td data-field="fullTeamName"><span class="badge alt-color nofullwidth" style="display:none;">@driverResult.SeasonDriver.SeasonTeam.Team.Name</span></td>
+                    <td data-field="fullTeamName"><span class="badge alt-color nofullwidth" style="display:none;">@driverResult.SeasonDriver.SeasonTeam.Name</span></td>
                 </tr>
             }
         </tbody>
@@ -327,13 +327,13 @@
             }
             var driverDataset = {
                 label: driverValue.SeasonDriver.Driver.Name,
-                backgroundColor: driverValue.SeasonDriver.SeasonTeam.Team.Accent,
-                borderColor: driverValue.SeasonDriver.SeasonTeam.Team.Colour,
+                backgroundColor: driverValue.SeasonDriver.SeasonTeam.Accent,
+                borderColor: driverValue.SeasonDriver.SeasonTeam.Colour,
                 data: stintresults,
                 fill: false,
                 teamName: driverValue.SeasonDriver.SeasonTeam.Team.Name
             };
-            if (driversets.some(d => d.backgroundColor === driverValue.SeasonDriver.SeasonTeam.Team.Accent && d.borderColor === driverValue.SeasonDriver.SeasonTeam.Team.Colour)) {
+            if (driversets.some(d => d.backgroundColor === driverValue.SeasonDriver.SeasonTeam.Accent && d.borderColor === driverValue.SeasonDriver.SeasonTeam.Colour)) {
                 driverDataset.borderDash = [5, 5];
             }
             driversets.push(driverDataset);
