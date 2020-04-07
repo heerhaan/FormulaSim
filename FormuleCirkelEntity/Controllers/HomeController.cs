@@ -49,6 +49,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
                 ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
+                ViewBag.polepoint = currentSeason.PolePoints;
                 ViewBag.seasonId = currentSeason.SeasonId;
 
                 var standings = _context.SeasonDrivers
@@ -175,7 +176,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(sd => sd.SeasonTeam)
                     .ThenInclude(sd => sd.Team)
                 .Where(sd => sd.SeasonId == seasonId)
-                .OrderBy(sd => sd.SeasonTeam.Team.Name)
+                .OrderBy(sd => sd.SeasonTeam.Team.Abbreviation)
                 .ToList();
 
             return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
@@ -195,7 +196,6 @@ namespace FormuleCirkelEntity.Controllers
                 ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
 
                 var standings = _context.SeasonTeams
-                    .Include(t => t.Team)
                     .Include(t => t.SeasonDrivers)
                         .ThenInclude(s => s.DriverResults)
                     .Where(s => s.SeasonId == currentSeason.SeasonId)
@@ -234,7 +234,6 @@ namespace FormuleCirkelEntity.Controllers
 
             var standings = _context.SeasonTeams
                 .IgnoreQueryFilters()
-                .Include(t => t.Team)
                 .Include(t => t.SeasonDrivers)
                     .ThenInclude(s => s.DriverResults)
                 .Where(s => s.SeasonId == currentSeason.SeasonId)

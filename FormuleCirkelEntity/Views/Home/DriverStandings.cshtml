@@ -52,7 +52,7 @@
                 <span class="badge alt-color">@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</span>
             </td>
             <td>
-                <span class="badge" style="background-color:@(item.SeasonTeam.Team.Colour);color:@(item.SeasonTeam.Team.Accent);font-size:1rem;">@item.SeasonTeam.Team.Abbreviation</span>
+                <span class="badge" style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);font-size:1rem;">@item.SeasonTeam.Team.Abbreviation</span>
             </td>
             @foreach (var round in rounds)
             {
@@ -169,6 +169,8 @@
 <canvas id="standingsChart"></canvas>
 
 <script>
+    var polepoint = @ViewBag.polepoint;
+
     function drawStandingsChart(res) {
         var ctx = document.getElementById('standingsChart');
         ctx.height = 300;
@@ -176,6 +178,7 @@
         ctx.getContext('2d');
         var driversets = [];
         var points = @(Html.Raw(ViewBag.points));
+        console.log(res);
 
         $(res).each(function (driverKey, driverValue) {
             var raceresults = [];
@@ -184,20 +187,20 @@
             driverValue.DriverResults.forEach(function (result) {
                 if (result.Position <= @ViewBag.lastpointpos) {
                     total = total + points[result.Position];
-                    raceresults.push(total);
                 }
-                else {
-                    raceresults.push(total);
+                if (result.Grid == 1) {
+                    total = total + polepoint;
                 }
+                raceresults.push(total);
             });
             var driverDataset = {
                 label: driverValue.Driver.Name,
-                backgroundColor: driverValue.SeasonTeam.Team.Accent,
-                borderColor: driverValue.SeasonTeam.Team.Colour,
+                backgroundColor: driverValue.SeasonTeam.Accent,
+                borderColor: driverValue.SeasonTeam.Colour,
                 data: raceresults,
                 fill: false
             };
-            if (driversets.some(d => d.backgroundColor === driverValue.SeasonTeam.Team.Accent && d.borderColor === driverValue.SeasonTeam.Team.Colour)) {
+            if (driversets.some(d => d.backgroundColor === driverValue.SeasonTeam.Accent && d.borderColor === driverValue.SeasonTeam.Colour)) {
                 driverDataset.borderDash = [5, 5];
             }
             driversets.push(driverDataset);

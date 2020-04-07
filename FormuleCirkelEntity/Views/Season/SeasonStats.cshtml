@@ -28,8 +28,8 @@
                     <th>Skill</th>
                     <th>Drvr. rel.</th>
                     <th>Team</th>
-                    <th>Chassis</th>
-                    <th>Engine</th>
+                    <th class="tcc-crew"><span>Chassis</span></th>
+                    <th class="tcc-chassis"><span>Engine</span></th>
                     <th>Power</th>
                     <th>Total</th>
                     <th>TOP</th>
@@ -52,7 +52,7 @@
                         </td>
                         <td>@driver.Skill</td>
                         <td><span class="badge alt-color nofullwidth">@driver.Reliability</span></td>
-                        <td><span class="badge" style="background-color:@(driver.SeasonTeam.Team.Colour);color:@(driver.SeasonTeam.Team.Accent);font-size:1rem;">@driver.SeasonTeam.Team.Name</span></td>
+                        <td><span class="badge" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);font-size:1rem;">@driver.SeasonTeam.Name</span></td>
                         <td>@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
                         <td>@driver.SeasonTeam.Engine.Name</td>
                         <td>@driver.SeasonTeam.Engine.Power</td>
@@ -85,7 +85,7 @@
                         var teams = Model.Select(st => st.SeasonTeam).Distinct().OrderBy(st => st.Team.Abbreviation);
                         @foreach (var team in teams)
                         {
-                            <dt class="badge nofullwidth col-2" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);">
+                            <dt class="badge nofullwidth col-2" style="background-color:@(team.Colour);color:@(team.Accent);">
                                 @team.Team.Abbreviation
                             </dt>
                             @if (team.Traits.Any())

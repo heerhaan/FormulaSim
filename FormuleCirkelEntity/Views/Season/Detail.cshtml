@@ -58,7 +58,7 @@
                         <td>@((pos + 1).ToString())</td>
                         <td>@driver.Points</td>
                         <td><span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span>
-                            <span class="badge nofullwidth" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;">@driver.Driver.Name</span>
+                            <span class="badge nofullwidth" style="background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;">@driver.Driver.Name</span>
                             </td>
                         <td>@driver.Skill</td>
                         <td>@driver.Reliability</td>
@@ -145,9 +145,9 @@
                 <th>#</th>
                 <th>Points</th>
                 <th>Team</th>
-                <th>Chassis</th>
+                <th class="tcc-crew"><span>Chassis</span></th>
                 <th>Reliability</th>
-                <th>Engine</th>
+                <th class="tcc-chassis"><span>Engine</span></th>
                 <th></th>
                 <th></th>
             </tr>
@@ -162,11 +162,11 @@
                         <td>@((pos + 1).ToString())</td>
                         <td>@team.Points</td>
                         <td>
-                            <span class="badge" style="background-color:@(team.Team.Colour);color:@(team.Team.Accent);font-size:1rem;">@team.Team.Name</span>
+                            <span class="badge" style="background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;">@team.Name</span>
                         </td>
                         <td>@team.Chassis</td>
                         <td>@team.Reliability</td>
-                        <td>@team.Engine.Name</td>
+                        <td>@team.Engine.Name<span class="badge alt-color nofullwidth">@team.Engine.Power</span></td>
                         <td>
                             <a asp-action="UpdateTeam" asp-route-id="@Model.Season.SeasonId" asp-route-teamId="@team.SeasonTeamId">
                                 <i class="fas fa-wrench fa-2x"></i>

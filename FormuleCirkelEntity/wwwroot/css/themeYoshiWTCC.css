@@ -81,3 +81,19 @@ i.fab, .link {
     background-color: #002766;
     color: white;
 }
+
+.tcc-chassis span {
+    display: none;
+}
+
+.tcc-chassis::after {
+    content: 'Chassis'
+}
+
+.tcc-crew span {
+    display: none;
+}
+
+.tcc-crew::after {
+    content: 'Crew'
+}

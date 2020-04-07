@@ -30,10 +30,10 @@
                 foreach (var team in Model)
                 {
                     <tr>
-                        <td>@team.Team.Name</td>
+                        <td>@team.Name</td>
                         <td>
-                            <span class="badge" style="background-color:@(team.Team.Colour);
-                            color:@(team.Team.Accent);font-size:1rem;">
+                            <span class="badge" style="background-color:@(team.Colour);
+                            color:@(team.Accent);font-size:1rem;">
                                 @team.Team.Abbreviation
                             </span>
                         </td>

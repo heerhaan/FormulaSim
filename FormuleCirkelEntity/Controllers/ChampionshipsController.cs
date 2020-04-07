@@ -22,8 +22,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Championships
-                .ToListAsync()
-                .ConfigureAwait(false));
+                .ToListAsync());
         }
 
         [HttpPost]
@@ -63,7 +62,7 @@ namespace FormuleCirkelEntity.Controllers
 
         //    var championship = await _context.Championships
         //        .FirstOrDefaultAsync(m => m.ChampionshipId == id)
-        //        .ConfigureAwait(false);
+        //        ;
         //    if (championship == null)
         //    {
         //        return NotFound();
@@ -91,7 +90,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 championship.ActiveChampionship = true;
                 _context.Add(championship);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index", "Home");
             }
@@ -106,8 +105,7 @@ namespace FormuleCirkelEntity.Controllers
             }
 
             var championship = await _context.Championships
-                .FirstOrDefaultAsync(m => m.ChampionshipId == id)
-                .ConfigureAwait(false);
+                .FirstOrDefaultAsync(m => m.ChampionshipId == id);
 
             if (championship == null)
             {
@@ -122,9 +120,9 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var championship = await _context.Championships.FindAsync(id).ConfigureAwait(false);
+            var championship = await _context.Championships.FindAsync(id);
             _context.Championships.Remove(championship);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

@@ -35,8 +35,8 @@
                         <td>X</td>
                     } else
                     {
-                        <td>@topDriver.Driver.Name</td>
-                        <td><span class="badge" style="background-color:@(topTeam.Team.Colour);color:@(topTeam.Team.Accent);font-size:1rem;">@topTeam.Team.Name</span></td>
+                        <td><span class="badge" style="background-color:@(topDriver.SeasonTeam.Colour);color:@(topDriver.SeasonTeam.Accent);font-size:1rem;">@topDriver.Driver.Name</span></td>
+                        <td><span class="badge" style="background-color:@(topTeam.Colour);color:@(topTeam.Accent);font-size:1rem;">@topTeam.Name</span></td>
                     }
                     <td>
                         <a asp-action="Detail" asp-route-id="@item.SeasonId">
