@@ -12,10 +12,12 @@ function tableComparer(index, isAscending) {
     }
 }
 
-function takeScreenshot(graphic, image) {
+function takeScreenshot(graphic, imgContainer) {
     html2canvas(document.querySelector(graphic)).then(function (canvas) {
-        $(image).empty();
-        document.querySelector(image).appendChild(canvas);
+        $(imgContainer).empty();
+        var image = new Image();
+        image.src = canvas.toDataURL("image/png");
+        document.querySelector(imgContainer).appendChild(image);
     });
 }
 

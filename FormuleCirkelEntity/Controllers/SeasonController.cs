@@ -60,6 +60,7 @@ namespace FormuleCirkelEntity.Controllers
             if (lastSeason != null)
             {
                 season.PointsPerPosition = lastSeason.PointsPerPosition;
+                season.PolePoints = lastSeason.PolePoints;
                 season.QualificationRemainingDriversQ2 = lastSeason.QualificationRemainingDriversQ2;
                 season.QualificationRemainingDriversQ3 = lastSeason.QualificationRemainingDriversQ3;
                 season.QualificationRNG = lastSeason.QualificationRNG;
