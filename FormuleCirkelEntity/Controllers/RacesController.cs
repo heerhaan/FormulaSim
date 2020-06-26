@@ -267,6 +267,9 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(d => d.Team)
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
+            ViewBag.year = race.Season.SeasonNumber;
+
             return View(race);
         }
 

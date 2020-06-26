@@ -48,7 +48,8 @@ namespace FormuleCirkelEntity.Controllers
 
             stats.StartCount = results.Count();
             stats.WinCount = results.Where(r => r.Position == 1).Count();
-            stats.PodiumCount = results.Where(r => r.Position == 2 || r.Position == 3).Count();
+            stats.SecondCount = results.Where(r => r.Position == 2).Count();
+            stats.ThirdCount = results.Where(r => r.Position == 3).Count();
             stats.PoleCount = results.Where(r => r.Grid == 1).Count();
             stats.DNFCount = results.Where(r => r.Status == Status.DNF).Count();
             stats.DSQCount = results.Where(r => r.Status == Status.DSQ).Count();
@@ -64,7 +65,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Apply point finishes and subtract others to form outside point finishes
             stats.PointFinishCount = pointCount;
-            stats.OutsideCount = (stats.StartCount - stats.WinCount - stats.PodiumCount - pointCount - stats.DNFCount - stats.DSQCount);
+            stats.OutsideCount = (stats.StartCount - stats.WinCount - stats.SecondCount - stats.ThirdCount - pointCount - stats.DNFCount - stats.DSQCount);
             // Count of the sort of non-finishes a driver had
             stats.AccidentCount = results.Where(r => r.DNFCause == DNFCause.Accident || r.DNFCause == DNFCause.Puncture).Count();
             stats.ContactCount = results.Where(r => r.DNFCause == DNFCause.Damage || r.DNFCause == DNFCause.Collision).Count();

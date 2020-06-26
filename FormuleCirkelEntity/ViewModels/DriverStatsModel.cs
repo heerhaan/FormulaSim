@@ -18,7 +18,8 @@ namespace FormuleCirkelEntity.ViewModels
         public int WDCCount { get; set; }
         public int PoleCount { get; set; }
         public int WinCount { get; set; }
-        public int PodiumCount { get; set; }
+        public int SecondCount { get; set; }
+        public int ThirdCount { get; set; }
         // Statistics about their DNFs
         public int DNFCount { get; set; }
         public int DSQCount { get; set; }

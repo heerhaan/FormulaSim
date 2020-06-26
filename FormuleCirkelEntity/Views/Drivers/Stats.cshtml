@@ -27,7 +27,7 @@
                     Podiums:
                 </dt>
                 <dd>
-                    @Model.PodiumCount
+                    @(Model.WinCount + Model.SecondCount + Model.ThirdCount)
                 </dd>
                 <dt>
                     Wins:
@@ -112,12 +112,13 @@
             type: 'pie',
         data: {
             datasets: [{
-                data: [@Model.WinCount, @Model.PodiumCount, @Model.PointFinishCount, @Model.OutsideCount, @Model.DNFCount, @Model.DSQCount],
-                backgroundColor: ['gold', 'silver', 'green', 'blue', 'red', 'black']
+                data: [@Model.WinCount, @Model.SecondCount, @Model.ThirdCount, @Model.PointFinishCount, @Model.OutsideCount, @Model.DNFCount, @Model.DSQCount],
+                backgroundColor: ['gold', 'silver', 'bronze', 'green', 'blue', 'red', 'black']
             }],
             labels: [
                 'Wins',
-                'Podiums',
+                'Second',
+                'Third',
                 'Points',
                 'Finished',
                 'DNF',
