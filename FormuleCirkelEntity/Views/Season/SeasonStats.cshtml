@@ -20,8 +20,8 @@
 <h3>Power rankings</h3>
 <div id="season-container">
     <div>
-        <table id="graphic" class="table table-sm">
-            <thead>
+        <table id="graphic" class="table fullborder">
+            <thead class="fullborder">
                 <tr>
                     <th>#</th>
                     <th>Driver</th>
@@ -32,10 +32,7 @@
                     <th class="tcc-chassis"><span>Engine</span></th>
                     <th>Power</th>
                     <th>Total</th>
-                    <th>TOP</th>
-                    <th>ACC</th>
-                    <th>STB</th>
-                    <th>HDL</th>
+                    <th>TOP-ACC-HDL</th>
                     <th>Team rel.</th>
                 </tr>
             </thead>
@@ -43,24 +40,26 @@
                 @foreach (var driver in Model)
                 {
                     <tr>
-                        <td>@(position++)</td>
-                        <td>
-                            <span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span>
-                            @if (driver.DriverStatus == DriverStatus.First) { <b>@driver.Driver.Name</b> }
-                            else if (driver.DriverStatus == DriverStatus.Second) { <i>@driver.Driver.Name</i> }
-                            else { @driver.Driver.Name }
+                        <td><b>@(position++)</b></td>
+                        <td class="text-left">
+                            <span class="driver-col">
+                                @if (driver.DriverStatus == DriverStatus.First) { <b>@driver.Driver.Name</b> }
+                                else if (driver.DriverStatus == DriverStatus.Second) { <i>@driver.Driver.Name</i> }
+                                else { @driver.Driver.Name }
+                            </span>
                         </td>
                         <td>@driver.Skill</td>
                         <td><span class="badge alt-color nofullwidth">@driver.Reliability</span></td>
-                        <td><span class="badge" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);font-size:1rem;">@driver.SeasonTeam.Name</span></td>
+                        <td><span class="badge fullwidth" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);font-size:1rem;">@driver.SeasonTeam.Name</span></td>
                         <td>@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
                         <td>@driver.SeasonTeam.Engine.Name</td>
                         <td>@driver.SeasonTeam.Engine.Power</td>
                         <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2))</td>
-                        <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Topspeed</span></td>
-                        <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Acceleration</span></td>
-                        <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Stability</span></td>
-                        <td><span class="badge badge-dark nofullwidth">@driver.SeasonTeam.Handling</span></td>
+                        <td>
+                            <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Topspeed</span>
+                            <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Acceleration</span>
+                            <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Handling</span>
+                        </td>
                         <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability)</span></td>
                     </tr>
                 }

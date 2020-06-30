@@ -29,6 +29,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Drivers)
                     .ThenInclude(dr => dr.Driver)
                 .Include(s => s.Teams)
+                .OrderByDescending(s => s.SeasonNumber)
                 .ToList();
 
             var championship = _context.Championships.FirstOrDefault(s => s.ActiveChampionship);

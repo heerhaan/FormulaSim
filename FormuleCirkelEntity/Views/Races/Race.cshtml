@@ -7,7 +7,7 @@
 
 @if (Model.Season.State == SeasonState.Progress)
 {
-    <div class="table-header-container">
+    <div class="row justify-content-between">
         @if (Model.RaceState == RaceState.Race)
         {
             <a class="btn btn-dark" onclick="advanceStint()">Next stint</a>
@@ -22,25 +22,25 @@
 <section id="graphic" class="row my-1">
     <h1>@Model.Track.Name</h1>
     <i id="weather" class="ml-auto fas"></i>
-    <table id="results" class="table table-sm">
+    <table id="results" class="table fullborder">
         <thead>
             <tr>
-                <th data-field="position">Pos.</th>
-                <th>Nr.</th>
-                <th>Name</th>
-                <th>Team</th>
-                <th>Grid</th>
+                <th class="fullborder" data-field="position">Pos.</th>
+                <th class="fullborder">Nr.</th>
+                <th class="fullborder">Name</th>
+                <th class="fullborder">Team</th>
+                <th class="fullborder">Grid</th>
                 @foreach (var stint in Model.Stints)
                 {
-                    <th data-field="stintResultHeader-@stint.Key">
+                    <th class="fullborder" data-field="stintResultHeader-@stint.Key">
                         @stint.Key
                     </th>
                 }
-                <th data-field="pointsTotal">Score</th>
-                <th>Gap</th>
-                <th>Pts.</th>
-                <th></th>
-                <th></th>
+                <th class="fullborder" data-field="pointsTotal">Score</th>
+                <th class="fullborder">Gap</th>
+                <th class="fullborder">Pts.</th>
+                <th style="display:none;"></th>
+                <th style="display:none;"></th>
             </tr>
         </thead>
         <tbody>
@@ -48,10 +48,10 @@
             {
                 int gridChange = (driverResult.Grid - driverResult.Position);
                 <tr data-obj-id="@driverResult.SeasonDriverId">
-                    <td data-field="position">@driverResult.Position</td>
-                    <td data-field="driverNumber"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
-                    <td data-field="driverName"><span class="result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
-                    <td data-field="teamName"><span class="badge" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
+                    <td data-field="position"><b>@driverResult.Position</b></td>
+                    <td data-field="driverNumber"><span class="badge fullwidth" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
+                    <td class="text-left" data-field="driverName"><span class="driver-col result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
+                    <td data-field="teamName"><span class="badge fullwidth" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
                     <td data-field="startGrid">
                         @if (gridChange > 0)
                         {
@@ -98,22 +98,22 @@
                     }
                     else
                     {
-                        <td data-field="points"><span class="badge">@Model.Season.PointsPerPosition[driverResult.Position]</span></td>
+                        <td data-field="points"><span class="badge font-size-default">@Model.Season.PointsPerPosition[driverResult.Position]</span></td>
                     }
-                    <td data-field="abbreviation"><span class="badge alt-color nofullwidth" style="display:none;">@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
-                    <td data-field="fullTeamName"><span class="badge alt-color nofullwidth" style="display:none;">@driverResult.SeasonDriver.SeasonTeam.Name</span></td>
+                    <td data-field="abbreviation" style="display:none;"><span>@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
+                    <td data-field="fullTeamName" style="display:none;"><span>@driverResult.SeasonDriver.SeasonTeam.Name</span></td>
                 </tr>
             }
         </tbody>
     </table>
 </section>
 
-<div class="row">
-    <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+<div class="row justify-content-between">
+    <button class="btn" onclick="takeScreenshot('#graphic', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
     <button class="btn" onclick="redrawChart()"><i class="fas fa-chart-bar fa-2x mt-auto"></i></button>
 </div>
 
-<div id="screenshot"></div>
+<div class="screenshot"></div>
 
 <div id="resultScreenshot"></div>
 
@@ -267,7 +267,8 @@
                 if (gap == "+0.00") {
                     gap = "-";
                 }
-                row.querySelector("td[data-field='dnfCause'").innerText = gap;
+                gap = "<i>" + gap + "</i>"
+                row.querySelector("td[data-field='dnfCause'").innerHTML = gap;
             }
         });
     }

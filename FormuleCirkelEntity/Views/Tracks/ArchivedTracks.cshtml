@@ -6,8 +6,8 @@
 
 <h1>Archived Tracks</h1>
 
-<table class="table">
-    <thead>
+<table class="table fullborder">
+    <thead class="fullborder">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -23,7 +23,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -45,6 +45,6 @@
                 </a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

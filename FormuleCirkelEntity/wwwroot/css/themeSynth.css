@@ -1,46 +1,41 @@
-﻿body.dark {
-    background-color: #1C0658;
-    color: #36CDC4;
-}
-
-    body.dark table {
+﻿#main table {
         background-color: #1C0658;
         color: #36CDC4;
     }
 
-        body.dark code[class*=language-],
-        body.dark table tbody > tr:nth-child(odd) > td,
-        body.dark table tbody > tr:nth-child(odd) > th {
-            background: #5C2686
-        }
+    #main code[class*=language-],
+    #main table tbody > tr:nth-child(odd) > td,
+    #main table tbody > tr:nth-child(odd) > th {
+        background: #5C2686
+    }
 
-        body.dark table thead th {
-            border-bottom-color: #FF1690
-        }
+.table-prev {
+    border: 1px solid #FF1690;
+}
 
-        body.dark table th {
-            border-top-color: #FF1690
-        }
+    .table-prev th {
+        border: 1px solid #FF1690;
+    }
 
-        body.dark table td {
-            border-top-color: #FF1690
-        }
+    .table-prev td {
+        border: 1px solid #FF1690;
+    }
 
 h1, h5, dt, .link {
     color: #36CDC4;
 }
 
-i.fas, i.fab {
-    color: #FF1690;
+.primary {
+    background-color: #1C0658;
+    color: #36CDC4;
 }
 
-.alt-color {
-    color: #FF1690 !important;
-}
-
-.btn {
+.secondary {
     background-color: #5C2686;
-    color: #FF1690;
+}
+
+.nav-link {
+    color: rgba(54, 205, 196, 0.75);
 }
 
 .page-link {
@@ -55,32 +50,35 @@ i.fas, i.fab {
     color: #5C2686;
 }
 
+.btn {
+    background-color: #5C2686;
+    color: #FF1690;
+}
+
 #graphic {
     background-color: #1C0658;
 }
 
-.badge {
-    color: #36CDC4;
-}
-
-.border-top {
-    border-top: 1px solid #FF1690 !important;
-}
-
-.border-bottom {
-    border-bottom: 1px solid #FF1690 !important;
-}
-
-.navbar {
-    background-color: #5C2686;
+i.fas, i.fab {
     color: #FF1690;
 }
 
-.nav-link {
-    color: rgba(54, 205, 196, 0.75);
+.fullborder {
+    border: 1px solid #36CDC4 !important;
 }
 
-.footer {
-    background-color: #5C2686;
-    color: #FF1690;
+.upperline {
+    border-top: 1px solid #36CDC4 !important;
+}
+
+.bottomline {
+    border-bottom: 1px solid #36CDC4 !important;
+}
+
+.leftline {
+    border-right: 1px solid #36CDC4 !important;
+}
+
+.rightline {
+    border-right: 1px solid #36CDC4 !important;
 }

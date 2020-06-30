@@ -6,87 +6,93 @@
     var drivers = ViewBag.drivers;
     int position = 1;
     var track = "";
+    int drivercount = 0;
 }
 
 <h1>Championship teams</h1>
 
 
-<table id="graphic" class="table table-sm">
+<table id="graphic" class="table standings-border fullborder">
     <thead>
         <tr>
-            <th>
+            <th class="fullborder">
                 #
             </th>
-            <th>
+            <th class="fullborder">
                 Principal
             </th>
-            <th>
+            <th class="fullborder">
                 Team
+            </th>
+            <th class="fullborder">
+                Pts.
             </th>
             @foreach (var round in rounds)
             {
-                <th>@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
+                <th class="fullborder">@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
             }
-            <th>
-                Pnt.
-            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @position
+                <td rowspan="@(item.SeasonDrivers.Count + 1)">
+                    <b>@position</b>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Principal)
+                <td class="text-left" rowspan="@(item.SeasonDrivers.Count + 1)">
+                    <span class="driver-col">@Html.DisplayFor(modelItem => item.Principal)</span>
                 </td>
-                <td>
-                    <span class="badge" style="background-color:@(item.Colour);color:@(item.Accent);font-size:1rem;">@item.Name</span>
+                <td rowspan="@(item.SeasonDrivers.Count + 1)" style="background-color:@(item.Colour);color:@(item.Accent);">
+                    @item.Name
                 </td>
-                @foreach (var round in rounds)
+                <td rowspan="@(item.SeasonDrivers.Count + 1)">
+                    <b>@Html.DisplayFor(modelItem => item.Points)</b>
+                </td>
+                @foreach (var driver in item.SeasonDrivers)
                 {
-                    <td>
-                        @foreach (var driver in item.SeasonDrivers)
+                    <tr>
+                    @foreach (var round in rounds)
+                    {
+                        DriverResult result = driver.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
+                        if (result == null || result.Position == 0)
                         {
-                            DriverResult result = driver.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
-                            if (result == null || result.Position == 0)
+                            <td>-</td>
+                        }
+                        else
+                        {
+                            if (result.Status == Status.DNF)
                             {
-                                <span>-</span>
+                                <td class="result-dnf">DNF</td>
+                            } 
+                            else if(result.Status == Status.DSQ)
+                            {
+                                <td class="badge-dsq">DSQ</td>
+                            } 
+                            else if(result.Position == 1)
+                            {
+                                <td class="badge-first">@result.Position</td>
+                            } 
+                            else if(result.Position == 2)
+                            {
+                                <td class="badge-second">@result.Position</td>
+                            } 
+                            else if(result.Position == 3)
+                            {
+                                <td class="badge-third">@result.Position</td>
+                            } 
+                            else if(result.Position <= ViewBag.lastpointpos)
+                            {
+                                <td class="result-points">@result.Position</td>
                             }
                             else
                             {
-                                if (result.Status == Status.DNF)
-                                {
-                                    <span class="badge badge-danger">DNF</span>
-                                } else if(result.Status == Status.DSQ)
-                                {
-                                    <span class="badge badge-dsq">DSQ</span>
-                                } else if(result.Position == 1)
-                                {
-                                    <span class="badge badge-first">@result.Position</span>
-                                } else if(result.Position == 2)
-                                {
-                                    <span class="badge badge-second">@result.Position</span>
-                                } else if(result.Position == 3)
-                                {
-                                    <span class="badge badge-third">@result.Position</span>
-                                } else if(result.Position <= ViewBag.lastpointpos)
-                                {
-                                    <span class="badge badge-success">@result.Position</span>
-                                }
-                                else
-                                {
-                                    <span class="badge badge-primary">@result.Position</span>
-                                }
+                                <td class="result-none">@result.Position</td>
                             }
                         }
-                    </td>
+                    }
+                    </tr>
                 }
-                <td>
-                    <span class="badge">@Html.DisplayFor(modelItem => item.Points)</span>
-                </td>
             </tr>
             position++;
         }

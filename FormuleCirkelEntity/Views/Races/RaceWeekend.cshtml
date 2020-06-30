@@ -8,12 +8,12 @@
     <div>
         <div id="graphic">
             <h1>@ViewBag.year @Model.Name Grand Prix</h1>
-            <table class="table table-sm">
-                <thead>
+            <table class="table fullborder">
+                <thead class="fullborder">
                     <tr>
                         <td>#</td>
-                        <td>Driver</td>
                         <td>Nr.</td>
+                        <td>Driver</td>
                         <td>Team</td>
                         <td>Penalty</td>
                         <td>Driver traits</td>
@@ -24,17 +24,19 @@
                     @foreach (var driver in Model.DriverResults.OrderBy(dr => dr.Grid).Select(dr => dr.SeasonDriver))
                     {
                         <tr>
-                            <td>@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</td>
+                            <td><b>@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</b></td>
+                            <td><span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
+                                @driver.Driver.DriverNumber</span></td>
                             <td>@driver.Driver.Name</td>
-                            <td><span class="badge alt-color">@driver.Driver.DriverNumber</span></td>
-                            <td><span class="badge" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);font-size:1rem;">@driver.SeasonTeam.Name</span></td>
+                            <td><span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
+                                @driver.SeasonTeam.Name</span></td>
                             @if (Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason == null)
                             {
                                 <td></td> 
                                 }
                             else
                             {
-                                <td><span class="badge badge-dsq">@(Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason)</span></td>
+                                <td><span class="badge badge-dsq fullwidth">@(Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason)</span></td>
                             }
                             <td>
                                 @if (driver.Traits.Any())

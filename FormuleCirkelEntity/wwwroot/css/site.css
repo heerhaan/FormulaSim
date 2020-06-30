@@ -1,4 +1,31 @@
-﻿a.navbar-brand {
+﻿/* General styling */
+
+html {
+    position: relative;
+    min-height: 100%;
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin-bottom: 60px;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1 {
+    font-family: 'Formula1 Display';
+}
+
+.container {
+    padding: 0;
+}
+
+a.navbar-brand {
     white-space: normal;
     text-align: center;
     word-break: break-all;
@@ -9,6 +36,72 @@
     padding-right: 5px;
 }
 
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+.theme-button {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+
+.theme-buttons {
+    float: right;
+}
+
+.cursor-pointer:hover {
+    cursor: pointer;
+}
+
+.table {
+    text-align: center;
+}
+
+    .table th {
+        padding: 1px;
+        border: none;
+    }
+
+    .table thead th {
+        border:none;
+    }
+
+    .table td {
+        padding: 1px;
+        min-width: 50px;
+        min-height: 32px;
+        border: none;
+    }
+
+.standings-border th {
+    border: 1px solid rgba(192,192,192,0.4);
+}
+
+.standings-border td {
+    border: 1px solid rgba(192,192,192,0.4);
+}
+
+td {
+    vertical-align: middle !important;
+}
+
+.driver-col {
+    margin-left: 5px;
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Home page styling */
 .hero-text {
     text-align: center;
     position: center;
@@ -16,15 +109,12 @@
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
-body {
-    font-family: 'Source Sans Pro', sans-serif;
+/* Styling for the qualification / race week */
+.nav-tabs {
+    border-bottom: none;
 }
 
-h1 {
-    font-family: 'Formula1 Display';
-}
-
-/* Fixes the placing of items in the Biography view by using flexboxes */
+/* Styling in relation to statistics page */
 .biocontainer {
     display: flex;
 }
@@ -58,125 +148,14 @@ dl.inline-flex {
         flex: 0 0 50%
     }
 
-/* Used to place Add-button and Search bar in Driver Index on the same row */
-
-.table-header-container {
-    width: auto;
-    display: flex;
-    justify-content: space-between;
-}
-
-.table-header-1 {
-    width: 26%;
-}
-
-.table-header-2 {
-    width: 26%;
-}
-
-.table {
-    vertical-align: middle;
-    text-align: center;
-}
-
-td {
-    vertical-align: middle !important;
-}
-
-td .badge {
-    width: 100%;
-}
-
-.badge-first {
-    background-color: #DAA520;
-    color: white !important;
-}
-
-.badge-second {
-    background-color: #C0C0C0;
-    color: white !important;
-}
-
-.badge-third {
-    background-color: #CD7F32;
-    color: white !important;
-}
-
-.badge-danger {
-    color: white !important;
-}
-
-.badge-dsq {
-    background-color: black;
-    color: white !important;
-}
-
-.badge-success {
-    color: white !important;
-}
-
-.badge-primary {
-    color: white !important;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
+/* Utility classes */
 .box-shadow {
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
-button.accept-policy {
-    font-size: 1rem;
-    line-height: inherit;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-    position: relative;
-    min-height: 100%;
-}
-
-body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
-}
-
-.footer {
-    position: absolute;
-    bottom: 0;
+.fullwidth {
     width: 100%;
-    white-space: nowrap;
-    /* Set the fixed height of the footer here */
-    height: 60px;
-    line-height: 60px; /* Vertically center the text there */
 }
-
-.theme-button {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-}
-
-.theme-buttons {
-    float: right;
-}
-
-.cursor-pointer:hover {
-    cursor: pointer;
-}
-
-/* Generic classes for functionality */
 
 .nofullwidth {
     width: auto !important;
@@ -188,4 +167,56 @@ body {
 
 .input-width {
     width: 100px;
+}
+
+/* Modifications for the Bootstrap badges */
+.badge-first {
+    background-color: #DAA520 !important;
+    color: white !important;
+}
+
+.badge-second {
+    background-color: #C0C0C0 !important;
+    color: white !important;
+}
+
+.badge-third {
+    background-color: #CD7F32 !important;
+    color: white !important;
+}
+
+.result-dnf {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.badge-dsq {
+    background-color: black !important;
+    color: white !important;
+}
+
+.result-points {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.result-none {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.pole {
+    font-size: 0.5rem;
+}
+
+.badge-danger {
+    color: white !important;
+}
+
+.badge-success {
+    color: white !important;
+}
+
+.badge-primary {
+    color: white !important;
 }

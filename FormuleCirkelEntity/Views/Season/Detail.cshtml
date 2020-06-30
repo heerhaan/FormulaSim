@@ -30,15 +30,16 @@
     }
 </section>
 
-<section class="row my-1">
+<section class="my-1">
     <header>
         <h3>Drivers</h3>
     </header>
-    <table class="table table-sm">
-        <thead>
+    <table class="table fullborder">
+        <thead class="fullborder">
             <tr>
                 <th>#</th>
                 <th>Points</th>
+                <th style="width: 30px;">Nr.</th>
                 <th>Driver</th>
                 <th>Skill</th>
                 <th>Reliability</th>
@@ -55,11 +56,12 @@
                     SeasonDriver @driver = orderedDrivers[pos];
                     SeasonTeam @team = Model.SeasonTeams.Single(st => st.SeasonTeamId == driver.SeasonTeamId);
                     <tr>
-                        <td>@((pos + 1).ToString())</td>
+                        <td><b>@((pos + 1).ToString())</b></td>
                         <td>@driver.Points</td>
-                        <td><span class="badge alt-color nofullwidth">@driver.Driver.DriverNumber</span>
-                            <span class="badge nofullwidth" style="background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;">@driver.Driver.Name</span>
-                            </td>
+                        <td style="width: 30px;"><span class="badge" style="width:25px;background-color:@(team.Colour);color:@(team.Accent);">@driver.Driver.DriverNumber</span></td>
+                        <td>
+                            <span class="badge fullwidth text-left font-size-default" style="background-color:@(team.Colour);color:@(team.Accent);">@driver.Driver.Name</span>
+                        </td>
                         <td>@driver.Skill</td>
                         <td>@driver.Reliability</td>
                         <td>@driver.Tires</td>
@@ -80,17 +82,19 @@
     </table>
     @if (Model.Season.State == SeasonState.Progress)
     {
-        <a asp-action="DriverDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Driver development</a>
-        <a asp-action="DriverReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Reliability</a>
+        <div class="row justify-content-between">
+            <a asp-action="DriverDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Driver development</a>
+            <a asp-action="DriverReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Reliability</a>
+        </div>
     }
 </section>
 
-<section class="row my-1">
+<section class="my-1">
     <header>
         <h3>Races</h3>
     </header>
-    <table id="races" class="table table-sm">
-        <thead>
+    <table id="races" class="table fullborder">
+        <thead class="fullborder">
             <tr>
                 <th data-field="name">Name</th>
                 <th data-field="location">Location</th>
@@ -135,12 +139,12 @@
     </table>
 </section>
 
-<section class="row my-1">
+<section class="my-1">
     <header>
         <h3>Teams</h3>
     </header>
-    <table class="table table-sm">
-        <thead>
+    <table class="table fullborder">
+        <thead class="fullborder">
             <tr>
                 <th>#</th>
                 <th>Points</th>
@@ -148,6 +152,7 @@
                 <th class="tcc-crew"><span>Chassis</span></th>
                 <th>Reliability</th>
                 <th class="tcc-chassis"><span>Engine</span></th>
+                <th>Power</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -159,14 +164,15 @@
                 {
                     SeasonTeam team = orderedTeams[pos];
                     <tr>
-                        <td>@((pos + 1).ToString())</td>
+                        <td><b>@((pos + 1).ToString())</b></td>
                         <td>@team.Points</td>
                         <td>
-                            <span class="badge" style="background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;">@team.Name</span>
+                            <span class="badge fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;">@team.Name</span>
                         </td>
                         <td>@team.Chassis</td>
                         <td>@team.Reliability</td>
-                        <td>@team.Engine.Name<span class="badge alt-color nofullwidth">@team.Engine.Power</span></td>
+                        <td>@team.Engine.Name</td>
+                        <td>@team.Engine.Power</td>
                         <td>
                             <a asp-action="UpdateTeam" asp-route-id="@Model.Season.SeasonId" asp-route-teamId="@team.SeasonTeamId">
                                 <i class="fas fa-wrench fa-2x"></i>
@@ -184,7 +190,7 @@
     </table>
     @if (Model.Season.State == SeasonState.Progress)
     {
-        <div class="row btn-group my-1">
+        <div class="row justify-content-between">
             <a asp-action="TeamDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Chassis development</a>
             <a asp-action="EngineDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Engine development</a>
             <a asp-action="TeamReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Reliability</a>

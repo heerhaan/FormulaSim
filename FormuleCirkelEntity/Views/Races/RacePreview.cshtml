@@ -49,7 +49,7 @@
             <ul>
                 @foreach (var trait in Model.Track.Traits.Values)
                 {
-                    <li><strong>@trait.Name:</strong>  @trait.TraitDescription</li>
+                    <li><b>@trait.Name:</b>  @trait.TraitDescription</li>
                     if (trait.MinimumRNG.HasValue) { minRNGMod += trait.MinimumRNG.Value; }
                     if (trait.MaximumRNG.HasValue) { maxRNGMod += trait.MaximumRNG.Value; }
                 }
@@ -58,7 +58,7 @@
     </div>
     
     <hr />
-    <table class="table table-bordered table-dark table-sm">
+    <table class="table table-sm table-prev">
         <thead>
             <tr>
                 <th>#</th>
@@ -78,74 +78,67 @@
             {
                 <tr>
                     <td>@stint.Key</td>
-                    <td>
-                        @if (stint.Value.ApplyChassisLevel)
-                        {<span class="badge badge-success nofullwidth">✓</span>}
-                    </td>
-                    <td>
-                        @if (stint.Value.ApplyEngineLevel)
-                        {<span class="badge badge-success nofullwidth">✓</span>}
-                    </td>
-                    <td>
-                        @if (stint.Value.ApplyDriverLevel)
-                        {<span class="badge badge-success nofullwidth">✓</span>}
-                    </td>
-                    <td>
-                        @if (stint.Value.ApplyQualifyingBonus)
-                        {<span class="badge badge-success nofullwidth">✓</span>}
-                    </td>
-                    <td>
-                        @if (stint.Value.ApplyTireLevel)
-                        {<span class="badge badge-success nofullwidth">✓</span>}
-                    </td>
-                    <td>
-                        @if (stint.Value.ApplyTireWear)
-                        {<span class="badge badge-success nofullwidth">✓</span>}
-                    </td>
-                    <td>
-                        @if (stint.Value.ApplyReliability)
-                        {<span class="badge badge-success nofullwidth">✓</span>}
-                    </td>
+                    @if (stint.Value.ApplyChassisLevel)
+                        {<td class="result-points">✓</td>}
+                     else { <td></td> }
+                    @if (stint.Value.ApplyEngineLevel)
+                        {<td class="result-points">✓</td>}
+                     else { <td></td> }
+                    @if (stint.Value.ApplyDriverLevel)
+                        {<td class="result-points">✓</td>}
+                     else { <td></td> }
+                    @if (stint.Value.ApplyQualifyingBonus)
+                        {<td class="result-points">✓</td>}
+                     else { <td></td> }
+                    @if (stint.Value.ApplyTireLevel)
+                        {<td class="result-points">✓</td>}
+                     else { <td></td> }
+                    @if (stint.Value.ApplyTireWear)
+                        {<td class="result-points">✓</td>}
+                     else { <td></td> }
+                    @if (stint.Value.ApplyReliability)
+                        {<td class="result-points">✓</td>}
+                     else { <td></td> }
                     @if (stint.Value.RNGMaximum > 0)
                     {
                         <td>@(stint.Value.RNGMinimum + minRNGMod)</td>
                         <td>@(stint.Value.RNGMaximum + maxRNGMod)</td>
-                    } else
+                    } 
+                    else
                     {
                         <td>@(stint.Value.RNGMinimum)</td>
                         <td>@(stint.Value.RNGMaximum)</td>
                     }
-
                 </tr>
             }
         </tbody>
     </table>
-    <table class="table table-sm">
+    <table class="table">
         <thead>
-            <tr>
+            <tr class="fullborder">
                 <th>Team Principal</th>
-                <th>Favourites</th>
+                <th>Most competive teams</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var team in ViewBag.favourites)
             {
                 <tr>
-                    <td>@(team.Principal)</td>
-                    <td><span class="badge" style="background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;">@(team.Name)</span></td>
+                    <td style="background-color:@(team.Colour);color:@(team.Accent);">@(team.Principal)</td>
+                    <td style="background-color:@(team.Colour);color:@(team.Accent);">@(team.Name)</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
-<div class="row">
+<div class="row justify-content-between">
     <form asp-action="RacePreview">
         <div class="form-group">
             <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn btn-dark" />
         </div>
     </form>
-    <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 </div>
 <br />
 

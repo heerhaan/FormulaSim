@@ -6,8 +6,8 @@
 
 <h1>Archived Teams</h1>
 
-<table class="table">
-    <thead>
+<table class="table fullborder">
+    <thead class="fullborder">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Abbreviation)
@@ -18,7 +18,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 <span>@item.Abbreviation</span>
@@ -39,6 +39,6 @@
                 </a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

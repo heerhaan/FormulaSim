@@ -22,47 +22,57 @@
                 </dt>
                 <dd>
                     @Model.PoleCount
+                    @if (Model.StartCount > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.PoleCount / Model.StartCount * 100).ToString("F"))%)</span>
+                    }
                 </dd>
                 <dt>
                     Podiums:
                 </dt>
                 <dd>
                     @(Model.WinCount + Model.SecondCount + Model.ThirdCount)
+                    @if (Model.StartCount > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@(((Model.WinCount + Model.SecondCount + Model.ThirdCount) / Model.StartCount * 100).ToString("F"))%)</span>
+                    }
                 </dd>
                 <dt>
                     Wins:
                 </dt>
                 <dd>
                     @Model.WinCount
+                    @if (Model.StartCount > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.WinCount / Model.StartCount * 100).ToString("F"))%)</span>
+                    }
                 </dd>
                 <dt>
-                    WDCs:
+                    Titles:
                 </dt>
                 <dd>
                     @Model.WDCCount
                 </dd>
                 <dt>
-                    DNFs:
+                    DNF/DSQ:
                 </dt>
                 <dd>
                     @Model.DNFCount
-                </dd>
-                <dt>
-                    DSQ:
-                </dt>
-                <dd>
-                    @Model.DSQCount
-                </dd>
-                <dt>
-                    Teams:
-                </dt>
-                <dd class="row">
-                    @foreach (var team in Model.Teams)
+                    @if (Model.StartCount > 0)
                     {
-                        <span class='badge' style='font-size:1rem;'>@(team.Abbreviation)</span>
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.DNFCount / Model.StartCount * 100).ToString("F"))%)</span>
                     }
                 </dd>
             </dl>
+            <div class="row">
+                <p><b>Teams: </b></p>
+                <div>
+                    @foreach (var team in Model.Teams)
+                    {
+                        <span class="badge" style="font-size:0.9rem;">@team.Abbreviation;</span>
+                    }
+                </div>
+            </div>
         </div>
         <div class="flex-item">
             <p id="biography" contenteditable="true">
@@ -81,6 +91,8 @@
     <div class="row">
         <canvas id="FinishPercentage" width="250" height="250"></canvas>
         <canvas id="NonFinishCauses" width="250" height="250"></canvas>
+        <p>Histogram with finish pos seasons</p>
+        <p>Histogram with finish pos races, remove finish perc circle</p>
     </div>
 </div>
 

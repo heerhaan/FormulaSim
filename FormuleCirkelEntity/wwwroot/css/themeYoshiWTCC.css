@@ -6,36 +6,39 @@ body {
     font-family: Bahnschrift;
 }
 
-body.dark {
-    background-color: #001D4D;
-    color: white;
-}
-
-    body.dark table {
+#main table {
         background-color: #001D4D;
         color: white;
     }
 
-        body.dark code[class*=language-],
-        body.dark table tbody > tr:nth-child(odd) > td,
-        body.dark table tbody > tr:nth-child(odd) > th {
-            background: #002766;
-        }
+    #main code[class*=language-],
+    #main table tbody > tr:nth-child(odd) > td,
+    #main table tbody > tr:nth-child(odd) > th {
+        background: #002766;
+    }
 
-        body.dark table thead th {
-            border-bottom-color: white
-        }
+.table-prev {
+    border: 1px solid white;
+}
 
-        body.dark table th {
-            border-top-color: white
-        }
+    .table-prev th {
+        border: 1px solid white;
+    }
 
-        body.dark table td {
-            border-top-color: white
-        }
+    .table-prev td {
+        border: 1px solid white;
+    }
 
-.btn {
+.primary {
+    background-color: #001D4D;
+    color: white;
+}
+
+.secondary {
     background-color: #002766;
+}
+
+.nav-link {
     color: white;
 }
 
@@ -51,35 +54,37 @@ body.dark {
     color: #002766;
 }
 
+.btn {
+    background-color: #002766;
+    color: white;
+}
+
 #graphic {
     background-color: #001D4D;
 }
 
-i.fas,
-i.fab, .link {
+i.fas, i.fab, .link {
     color: white;
 }
 
-.border-top {
+.fullborder {
+    border: 1px solid white !important;
+}
+
+.upperline {
     border-top: 1px solid white !important;
 }
 
-.border-bottom {
+.bottomline {
     border-bottom: 1px solid white !important;
 }
 
-.navbar {
-    background-color: #002766;
-    color: white;
+.leftline {
+    border-right: 1px solid white !important;
 }
 
-.nav-link {
-    color: white;
-}
-
-.footer {
-    background-color: #002766;
-    color: white;
+.rightline {
+    border-right: 1px solid white !important;
 }
 
 .tcc-chassis span {

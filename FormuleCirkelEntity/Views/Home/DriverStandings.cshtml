@@ -11,29 +11,29 @@
 <h1>Championship drivers</h1>
 
 
-<table id="graphic" class="table table-sm">
+<table id="graphic" class="table standings-border fullborder">
     <thead>
         <tr>
-            <th>
+            <th class="fullborder">
                 #
             </th>
-            <th>
-                Driver
-            </th>
-            <th>
+            <th class="fullborder">
                 Nr.
             </th>
-            <th>
+            <th class="fullborder">
+                Driver
+            </th>
+            <th class="fullborder">
                 Team
             </th>
             @foreach (var round in rounds)
             {
-                <th>@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
+                <th class="fullborder">@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
             }
-            <th>
+            <th class="fullborder">
                 Pnt.
             </th>
-            <th>
+            <th class="fullborder">
                 Avg.
             </th>
         </tr>
@@ -43,16 +43,16 @@
         {
         <tr>
             <td>
-                @position
+                <b>@position</b>
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Driver.Name)
+            <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
+                <b>@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</b>
             </td>
-            <td>
-                <span class="badge alt-color">@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</span>
+            <td class="text-left">
+                <span class="driver-col">@Html.DisplayFor(modelItem => item.Driver.Name)</span>
             </td>
-            <td>
-                <span class="badge" style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);font-size:1rem;">@item.SeasonTeam.Team.Abbreviation</span>
+            <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
+                @item.SeasonTeam.Team.Abbreviation
             </td>
             @foreach (var round in rounds)
             {
@@ -67,77 +67,77 @@
                     {
                         if (result.Grid == 1)
                         {
-                            <td><span class="badge badge-danger pole">DNF</span></td>
+                            <td class="result-dnf">DNF<b class="pole"> P</b></td>
                         }
                         else
                         {
-                            <td><span class="badge badge-danger">DNF</span></td>
+                            <td class="result-dnf">DNF</td>
                         }
                     }
                     else if (result.Status == Status.DSQ)
                     {
                         if (result.Grid == 1)
                         {
-                            <td><span class="badge badge-dsq pole">DSQ</span></td>
+                            <td class="badge-dsq">DSQ<b class="pole"> P</b></td>
                         }
                         else
                         {
-                            <td><span class="badge badge-dsq">DSQ</span></td>
+                            <td class="badge-dsq">DSQ</td>
                         }
                     }
                     else if (result.Position == 1)
                     {
                         if (result.Grid == 1)
                         {
-                            <td><span class="badge badge-first pole">@result.Position</span></td>
+                            <td class="badge-first">@result.Position<b class="pole"> P</b></td>
                         }
                         else
                         {
-                            <td><span class="badge badge-first">@result.Position</span></td>
+                            <td class="badge-first">@result.Position</td>
                         }
                     }
                     else if (result.Position == 2)
                     {
                         if (result.Grid == 1)
                         {
-                            <td><span class="badge badge-second pole">@result.Position</span></td>
+                            <td class="badge-second">@result.Position<b class="pole"> P</b></td>
                         }
                         else
                         {
-                            <td><span class="badge badge-second">@result.Position</span></td>
+                            <td class="badge-second">@result.Position</td>
                         }
                     }
                     else if (result.Position == 3)
                     {
                         if (result.Grid == 1)
                         {
-                            <td><span class="badge badge-third pole">@result.Position</span></td>
+                            <td class="badge-third">@result.Position<b class="pole"> P</b></td>
                         }
                         else
                         {
-                            <td><span class="badge badge-third">@result.Position</span></td>
+                            <td class="badge-third">@result.Position</td>
                         }
                     }
                     else if (result.Position <= ViewBag.lastpointpos)
                     {
                         if (result.Grid == 1)
                         {
-                            <td><span class="badge badge-success pole">@result.Position</span></td>
+                            <td class="result-points">@result.Position<b class="pole"> P</b></td>
                         }
                         else
                         {
-                            <td><span class="badge badge-success">@result.Position</span></td>
+                            <td class="result-points">@result.Position</td>
                         }
                     }
                     else
                     {
                         if (result.Grid == 1)
                         {
-                            <td><span class="badge badge-primary pole">@result.Position</span></td>
+                            <td class="result-none">@result.Position<b class="pole"> P</b></td>
                         }
                         else
                         {
-                            <td><span class="badge badge-primary">@result.Position</span></td>
+                            <td class="result-none">@result.Position</td>
                         }
                     }
                 }
@@ -160,7 +160,7 @@
     </tbody>
 </table>
 
-<div class="row">
+<div class="row justify-content-between">
     <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
     <button class="btn" onclick="getStandingsGraph()"><i class="fas fa-chart-bar fa-2x ml-auto"></i></button>
 </div>
@@ -297,17 +297,3 @@
             .then(result => drawStandingsChart(result));
     }
 </script>
-
-<style>
-    .badge {
-        font-size: 0.85rem;
-    }
-
-    table td{
-        height:60px;
-    }
-
-    .pole {
-        border: 1.5px solid white;
-    }
-</style>

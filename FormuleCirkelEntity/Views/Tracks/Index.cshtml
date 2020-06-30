@@ -10,15 +10,15 @@
 }
 
 <h1>Tracks</h1>
-<div>
+<div class="row justify-content-between">
     <a asp-action="Create">
         <i class="fas fa-plus-square fa-2x"></i>
     </a>
-    <a class="btn btn-dark float-right" asp-action="ArchivedTracks">Archive</a>
+    <a class="btn btn-dark" asp-action="ArchivedTracks">Archive</a>
 </div>
 
-<table class="table">
-    <thead>
+<table class="table fullborder">
+    <thead class="fullborder">
         <tr>
             <th>
                 Name

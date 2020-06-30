@@ -1,34 +1,37 @@
-﻿body.dark {
+﻿#main table {
+        background-color: #ebebeb;
+        color: black;
+   }
+
+    #main code[class*=language-],
+    #main table t#main > tr:nth-child(odd) > td,
+    #main table t#main > tr:nth-child(odd) > th {
+        background: #d5d5d5
+   }
+
+.table-prev {
+    border: 1px solid #35cdff;
+}
+
+    .table-prev th {
+        border: 1px solid #35cdff;
+    }
+
+    .table-prev td {
+        border: 1px solid #35cdff;
+    }
+
+.primary {
     background-color: #ebebeb;
     color: black;
 }
 
-    body.dark table {
-        background-color: #ebebeb;
-        color: black;
-    }
+.secondary {
+    background: #d5d5d5
+}
 
-        body.dark code[class*=language-],
-        body.dark table tbody > tr:nth-child(odd) > td,
-        body.dark table tbody > tr:nth-child(odd) > th {
-            background: #d5d5d5
-        }
-
-        body.dark table thead th {
-            border-bottom-color: #35cdff
-        }
-
-        body.dark table th {
-            border-top-color: #35cdff
-        }
-
-        body.dark table td {
-            border-top-color: #35cdff
-        }
-
-.btn {
-    background-color: #d5d5d5;
-    color: black;
+.nav-link {
+    color: rgba(0, 0, 0, 0.75);
 }
 
 .page-link {
@@ -43,33 +46,35 @@
     color: #d5d5d5;
 }
 
+.btn {
+    background-color: #d5d5d5;
+    color: black;
+}
+
 #graphic {
     background-color: #ebebeb;
 }
 
-i.fas,
-i.fab, .link {
+i.fas, i.fab, .link {
     color: black;
 }
 
-.border-top {
+.fullborder {
+    border: 1px solid #35cdff !important;
+}
+
+.upperline {
     border-top: 1px solid #35cdff !important;
 }
 
-.border-bottom {
+.bottomline {
     border-bottom: 1px solid #35cdff !important;
 }
 
-.navbar {
-    background-color: #d5d5d5;
-    color: black;
+.leftline {
+    border-right: 1px solid #35cdff !important;
 }
 
-.nav-link {
-    color: rgba(0, 0, 0, 0.75);
-}
-
-.footer {
-    background-color: #d5d5d5;
-    color: black;
+.rightline {
+    border-right: 1px solid #35cdff !important;
 }

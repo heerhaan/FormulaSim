@@ -16,7 +16,7 @@ function takeScreenshot(graphic, imgContainer) {
     html2canvas(document.querySelector(graphic)).then(function (canvas) {
         $(imgContainer).empty();
         var image = new Image();
-        image.src = canvas.toDataURL("image/png");
+        image.src = canvas.toDataURL("image/jpeg");
         document.querySelector(imgContainer).appendChild(image);
     });
 }

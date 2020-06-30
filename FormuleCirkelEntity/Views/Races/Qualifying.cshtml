@@ -21,49 +21,49 @@
 </nav>
 <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane fade show active" id="nav-q1" role="tabpanel" aria-labelledby="nav-q1-tab">
-        <table id="graphic1" class="table table-sm">
-            <thead>
+        <table id="graphic1" class="table fullborder">
+            <thead class="fullborder">
                 <tr>
                     <th>#</th>
-                    <th>Team</th>
                     <th>Driver</th>
+                    <th>Team</th>
                     <th>Q1</th>
                     <th>Gap</th>
                 </tr>
             </thead>
             <tbody id="q1table"></tbody>
         </table>
-        <button class="btn float-right" onclick="takeScreenshot('#graphic1')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn float-right" onclick="takeScreenshot('#graphic1', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
     </div>
     <div class="tab-pane fade table-sm" id="nav-q2" role="tabpanel" aria-labelledby="nav-q2-tab">
-        <table id="graphic2" class="table table-sm">
-            <thead>
+        <table id="graphic2" class="table fullborder">
+            <thead class="fullborder">
                 <tr>
                     <th>#</th>
-                    <th>Team</th>
                     <th>Driver</th>
+                    <th>Team</th>
                     <th>Q2</th>
                     <th>Gap</th>
                 </tr>
             </thead>
             <tbody id="q2table"></tbody>
         </table>
-        <button class="btn float-right" onclick="takeScreenshot('#graphic2')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn float-right" onclick="takeScreenshot('#graphic2', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
     </div>
     <div class="tab-pane fade" id="nav-q3" role="tabpanel" aria-labelledby="nav-q3-tab">
-        <table id="graphic3" class="table table-sm">
-            <thead>
+        <table id="graphic3" class="table fullborder">
+            <thead class="fullborder">
                 <tr>
                     <th>#</th>
-                    <th>Team</th>
                     <th>Driver</th>
+                    <th>Team</th>
                     <th>Q3</th>
                     <th>Gap</th>
                 </tr>
             </thead>
             <tbody id="q3table"></tbody>
         </table>
-        <button class="btn float-right" onclick="takeScreenshot('#graphic3')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn float-right" onclick="takeScreenshot('#graphic3', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
     </div>
 </div>
 
@@ -77,7 +77,7 @@
     </div>
 </form>
 
-<div id="screenshot"></div>
+<div class="screenshot"></div>
 
 <script>
     $(document).ready(function () {
@@ -188,16 +188,16 @@
 
     function rowString(position, colour, accent, team, driver, score, gap, dangerzone) {
         if (dangerzone) {
-            var retString = "<tr><td><span class='badge badge-danger' style='font-size:1rem;'>" + position +
-                                "</span></td><td><span class='badge' style='background-color:" + colour + ";color:" + accent + ";font-size:1rem;'>"
-                + team + "</span></td><td>" + driver + "</td><td>" + score + "</td><td>" + gap + "</td></tr>";
+            var retString = "<tr><td><span class='badge result-dnf fullwidth font-size-default'>" + position
+                + "</span></td><td class='text-left'><span class='driver-col'>" + driver + "</span></td><td><span class='badge fullwidth font-size-default' style='background-color:"
+                + colour + ";color:" + accent + ";'>" + team + "</span></td><td>" + score + "</td><td>" + gap + "</td></tr>";
 
             return retString;
         }
         else {
-            var retString = "<tr><td>" + position +
-                                "</td><td><span class='badge' style='background-color:" + colour + ";color:" + accent + ";font-size:1rem;'>"
-                + team + "</span></td><td>" + driver + "</td><td>" + score + "</td><td>" + gap + "</td></tr>";
+            var retString = "<tr><td>" + position + "</td><td class='text-left'><span class='driver-col'>" + driver
+                + "</span></td><td><span class='badge fullwidth font-size-default' style='background-color:"
+                + colour + ";color:" + accent + ";'>" + team + "</span></td><td>" + score + "</td><td>" + gap + "</td></tr>";
 
             return retString;
         }
@@ -213,12 +213,5 @@
             gap = "-"
         }
         return gap;
-    }
-
-    function takeScreenshot(graphicid) {
-        html2canvas(document.querySelector(graphicid)).then(function (canvas) {
-            $('#screenshot').empty();
-            document.querySelector('#screenshot').appendChild(canvas);
-        });
     }
 </script>

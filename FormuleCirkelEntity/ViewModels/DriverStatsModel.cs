@@ -12,20 +12,20 @@ namespace FormuleCirkelEntity.ViewModels
         public string DriverBio { get; set; }
         public IEnumerable<Team> Teams { get; set; }
         // Statistics about their races
-        public int StartCount { get; set; }
-        public int PointFinishCount { get; set; }
-        public int OutsideCount { get; set; }
-        public int WDCCount { get; set; }
-        public int PoleCount { get; set; }
-        public int WinCount { get; set; }
-        public int SecondCount { get; set; }
-        public int ThirdCount { get; set; }
+        public decimal StartCount { get; set; }
+        public decimal PointFinishCount { get; set; }
+        public decimal OutsideCount { get; set; }
+        public decimal WDCCount { get; set; }
+        public decimal PoleCount { get; set; }
+        public decimal WinCount { get; set; }
+        public decimal SecondCount { get; set; }
+        public decimal ThirdCount { get; set; }
         // Statistics about their DNFs
-        public int DNFCount { get; set; }
-        public int DSQCount { get; set; }
-        public int AccidentCount { get; set; }
-        public int ContactCount { get; set; }
-        public int EngineCount { get; set; }
-        public int MechanicalCount { get; set; }
+        public decimal DNFCount { get; set; }
+        public decimal DSQCount { get; set; }
+        public decimal AccidentCount { get; set; }
+        public decimal ContactCount { get; set; }
+        public decimal EngineCount { get; set; }
+        public decimal MechanicalCount { get; set; }
     }
 }
