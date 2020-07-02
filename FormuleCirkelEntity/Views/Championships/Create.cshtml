@@ -4,27 +4,26 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>New racing championship</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="d-inline-block">
+    <h1>New racing championship</h1>
+    <hr />
+    <div class="fullwidth">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ChampionshipName" class="control-label">Championship name</label>
+                <label asp-for="ChampionshipName" class="control-label float-left">Championship name</label>
                 <input asp-for="ChampionshipName" class="form-control" />
                 <span asp-validation-for="ChampionshipName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn fullwidth" />
             </div>
         </form>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">
-        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-    </a>
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
 </div>
-

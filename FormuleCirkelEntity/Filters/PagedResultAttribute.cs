@@ -23,7 +23,7 @@ namespace FormuleCirkelEntity.Filters
         MethodInfo _takeMethod;
 
         public PagedResultAttribute()
-            : this(10)
+            : this(15)
         { }
 
         public PagedResultAttribute(int defaultPageSize)

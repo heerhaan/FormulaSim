@@ -4,24 +4,16 @@
     ViewData["Title"] = "Championships";
 }
 
-<section class="row my-1">
-    <header>
-        <h1>Racing championships</h1>
-    </header>
-</section>
+<div class="d-inline-block w-60">
+    <h1>Racing championships</h1>
+    <a class="btn float-left mb-1" asp-action="Create">New championship</a>
 
-<section class="row btn-group my-1">
-    <a class="btn btn-dark" asp-action="Create">New championship</a>
-</section>
-
-<section class="row my-1">
-    <table class="table fullborder">
+    <table class="ctable fullborder fullwidth">
         <thead class="fullborder">
             <tr>
                 <th>
                     Championships
                 </th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -41,4 +33,4 @@
             }
         </tbody>
     </table>
-</section>
+</div>

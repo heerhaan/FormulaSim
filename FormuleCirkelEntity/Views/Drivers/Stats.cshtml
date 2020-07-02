@@ -4,77 +4,74 @@
         ViewData["Title"] = "Driver bio";
     }
 
-<div id="graphic">
+<div id="graphic" class="d-inline-block m-sides">
     <h1>Biography</h1>
-    <h4>@Model.DriverName</h4>
-    <hr />
-    <div class="biocontainer">
-        <div class="fixed">
-            <div class="row m-0">
-                <p><b>Teams: </b></p>
-                <div class="ml-1">
-                    @foreach (var team in Model.Teams)
-                    {
-                        <span class="badge teritary" style="font-size:0.9rem;">@team.Abbreviation</span>
-                    }
-                </div>
+    <h4>#[0] - @Model.DriverName</h4>
+    <div class="row">
+            <p><b>Teams: </b></p>
+            <div class="ml-1">
+                @foreach (var team in Model.Teams)
+                {
+                    <span class="badge teritary" style="font-size:0.9rem;">@team.Abbreviation</span>
+                }
             </div>
-            <dl class="inline-flex">
-                <dt>
-                    Starts:
-                </dt>
-                <dd>
-                    @Model.StartCount
-                </dd>
-                <dt>
-                    Poles:
-                </dt>
-                <dd>
-                    @Model.PoleCount
-                    @if (Model.StartCount > 0)
-                    {
-                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.PoleCount / Model.StartCount * 100).ToString("F"))%)</span>
-                    }
-                </dd>
-                <dt>
-                    Podiums:
-                </dt>
-                <dd>
-                    @(Model.WinCount + Model.SecondCount + Model.ThirdCount)
-                    @if (Model.StartCount > 0)
-                    {
-                        <span class="text-muted" style="font-size:0.8rem;">  (@(((Model.WinCount + Model.SecondCount + Model.ThirdCount) / Model.StartCount * 100).ToString("F"))%)</span>
-                    }
-                </dd>
-                <dt>
-                    Wins:
-                </dt>
-                <dd>
-                    @Model.WinCount
-                    @if (Model.StartCount > 0)
-                    {
-                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.WinCount / Model.StartCount * 100).ToString("F"))%)</span>
-                    }
-                </dd>
-                <dt>
-                    Titles:
-                </dt>
-                <dd>
-                    @Model.WDCCount
-                </dd>
-                <dt>
-                    DNF/DSQ:
-                </dt>
-                <dd>
-                    @Model.DNFCount
-                    @if (Model.StartCount > 0)
-                    {
-                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.DNFCount / Model.StartCount * 100).ToString("F"))%)</span>
-                    }
-                </dd>
-            </dl>
         </div>
-        <div class="flex-item">
+    <div class="row">
+        <dl class="row text-left w-50">
+            <dt class="col-md-6">
+                Starts:
+            </dt>
+            <dd class="col-md-6">
+                @Model.StartCount
+            </dd>
+            <dt class="col-md-6">
+                Poles:
+            </dt>
+            <dd class="col-md-6">
+                @Model.PoleCount
+                @if (Model.StartCount > 0)
+                {
+                    <span class="text-muted" style="font-size:0.8rem;">  (@((Model.PoleCount / Model.StartCount * 100).ToString("F"))%)</span>
+                }
+            </dd>
+            <dt class="col-md-6">
+                Podiums:
+            </dt>
+            <dd class="col-md-6">
+                @(Model.WinCount + Model.SecondCount + Model.ThirdCount)
+                @if (Model.StartCount > 0)
+                {
+                    <span class="text-muted" style="font-size:0.8rem;">  (@(((Model.WinCount + Model.SecondCount + Model.ThirdCount) / Model.StartCount * 100).ToString("F"))%)</span>
+                }
+            </dd>
+            <dt class="col-md-6">
+                Wins:
+            </dt>
+            <dd class="col-md-6">
+                @Model.WinCount
+                @if (Model.StartCount > 0)
+                {
+                    <span class="text-muted" style="font-size:0.8rem;">  (@((Model.WinCount / Model.StartCount * 100).ToString("F"))%)</span>
+                }
+            </dd>
+            <dt class="col-md-6">
+                Titles:
+            </dt>
+            <dd class="col-md-6">
+                @Model.WDCCount
+            </dd>
+            <dt class="col-md-6">
+                DNF/DSQ:
+            </dt>
+            <dd class="col-md-6">
+                @Model.DNFCount
+                @if (Model.StartCount > 0)
+                {
+                    <span class="text-muted" style="font-size:0.8rem;">  (@((Model.DNFCount / Model.StartCount * 100).ToString("F"))%)</span>
+                }
+            </dd>
+        </dl>
+        <div class="w-50" style="max-width: 500px;">
             <p id="biography" contenteditable="true">
                 @if (Model.DriverBio == null)
                 {
@@ -85,27 +82,28 @@
                     @Model.DriverBio
                 }
             </p>
-            <button id="savebio" class="btn"><i class="far fa-save"></i></button>
+            <button id="savebio" class="btn float-right"><i class="far fa-save"></i></button>
         </div>
     </div>
-    <div class="row justify-content-between m-0">
+
+    <div class="row justify-content-between">
         <div>
-            <canvas id="PosBarChart" width="400" height="250"></canvas>
+            <canvas id="PosBarChart" width="500" height="250"></canvas>
         </div>
         <div>
             <canvas id="NonFinishCauses" width="250" height="250"></canvas>
         </div>
     </div>
-</div>
 
-<div class="row justify-content-between">
-    <a asp-action="Index">
-        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-    </a>
-    <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-</div>
+    <div class="row justify-content-between">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    </div>
 
-<div id="screenshot"></div>
+    <div id="screenshot"></div>
+</div>
 
 <script>
     $('#savebio').click(function () {

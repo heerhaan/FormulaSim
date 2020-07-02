@@ -4,53 +4,62 @@
     ViewData["Title"] = "Archived Drivers";
 }
 
-<h1>Archived Drivers</h1>
+<div class="d-inline-block w-60">
+    <h1>Archived Drivers</h1>
 
-<table class="table fullborder">
-    <thead class="fullborder">
-        <tr>
-            <th>
-                Number
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Abbreviation)
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DriverNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Abbreviation)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">
-                    <i class="fas fa-edit fa-2x"></i>
-                </a>
-            </td>
-            <td>
-                <a asp-action="Stats" asp-route-id="@item.Id">
-                    <i class="fas fa-id-card fa-2x"></i>
-                </a>
-            </td>
-            <td>
-                <a asp-action="Delete" asp-route-id="@item.Id">
-                    <i class="fas fa-undo fa-2x"></i>
-                </a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <table class="ctable fullborder fullwidth">
+        <thead class="fullborder">
+            <tr>
+                <th>
+                    Number
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Abbreviation)
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DriverNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Abbreviation)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-edit fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Stats" asp-route-id="@item.Id">
+                            <i class="fas fa-id-card fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fas fa-undo fa-2x"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
+</div>

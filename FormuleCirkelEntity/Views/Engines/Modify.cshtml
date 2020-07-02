@@ -4,30 +4,31 @@
     ViewData["Title"] = "Engine - edit";
 }
 
-<section>
-    <header class="row">
-        <h1>Engine @Model.Name</h1>
-    </header>
-    <div class="row">
+<div class="d-inline-block">
+    <h1>Engine @Model.Name</h1>
+
+    <div class="fullwidth">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <section class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label float-left"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
-            </section>
-            <section class="form-group">
-                <label asp-for="Power" class="control-label"></label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Power" class="control-label float-left"></label>
                 <input asp-for="Power" class="form-control" />
                 <span asp-validation-for="Power" class="text-danger"></span>
-            </section>
-            <section class="form-group">
-                <input type="submit" value="Save" class="btn btn-dark" />
-            </section>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn fullwidth" />
+            </div>
         </form>
     </div>
 
-    <a asp-action="Index">
-        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-    </a>
-</section>
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
+</div>

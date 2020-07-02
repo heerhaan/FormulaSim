@@ -140,14 +140,6 @@ button.accept-policy {
 }
 
 /* Styling in relation to statistics page */
-.biocontainer {
-    display: flex;
-}
-
-.fixed {
-    width: 50%;
-}
-
 .flex-item {
     flex-grow: 1;
     height: auto;

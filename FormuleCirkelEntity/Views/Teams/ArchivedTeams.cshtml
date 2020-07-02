@@ -4,41 +4,50 @@
     ViewData["Title"] = "ArchivedTeams";
 }
 
-<h1>Archived Teams</h1>
+<div class="d-inline-block w-60">
+    <h1>Archived Teams</h1>
 
-<table class="table fullborder">
-    <thead class="fullborder">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Abbreviation)
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                <span>@item.Abbreviation</span>
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">
-                    <i class="fas fa-tools fa-2x"></i>
-                </a>
-            </td>
-            <td>
-                <a asp-action="Stats" asp-route-id="@item.Id">
-                    <i class="fas fa-signal fa-2x"></i>
-                </a>
-            </td>
-            <td>
-                <a asp-action="Delete" asp-route-id="@item.Id">
-                    <i class="fas fa-undo fa-2x"></i>
-                </a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+    <table class="ctable fullborder fullwidth">
+        <thead class="fullborder">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Abbreviation)
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <span>@item.Abbreviation</span>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-tools fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Stats" asp-route-id="@item.Id">
+                            <i class="fas fa-signal fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fas fa-undo fa-2x"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
+</div>

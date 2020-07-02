@@ -9,75 +9,78 @@
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
 }
 
-<h1>Drivers</h1>
+<div class="d-inline-block w-60">
+    <h1>Drivers</h1>
 
-<div class="row justify-content-between index-btns">
-    <a asp-action="Create">
-        <i class="fas fa-plus-square fa-2x fa-2x"></i>
-    </a>
-    <a class="btn" asp-action="ArchivedDrivers">Archive</a>
-</div>
-<table class="table fullborder">
-    <thead class="fullborder">
-        <tr>
-            <th>
-                Number
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Abbreviation
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <div class="row justify-content-between index-btns">
+        <a asp-action="Create">
+            <i class="fas fa-plus-square fa-2x fa-2x"></i>
+        </a>
+        <a class="btn" asp-action="ArchivedDrivers">Archive</a>
+    </div>
+
+    <table class="ctable fullborder fullwidth">
+        <thead class="fullborder">
             <tr>
-                <td>
-                    @item.DriverNumber
-                </td>
-                <td class="text-left">
-                    <span class="ml-cel">@item.Name</span>
-                </td>
-                <td>
-                    @item.Abbreviation
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">
-                        <i class="fas fa-edit fa-2x"></i>
-                    </a>
-                </td>
-                <td>
-                    <a asp-action="Stats" asp-route-id="@item.Id">
-                        <i class="fas fa-id-card fa-2x"></i>
-                    </a>
-                </td>
-                <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id">
-                        <i class="fas fa-trash-alt fa-2x"></i>
-                    </a>
-                </td>
+                <th>
+                    Number
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Abbreviation
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.DriverNumber
+                    </td>
+                    <td class="text-left">
+                        <span class="ml-cel">@item.Name</span>
+                    </td>
+                    <td>
+                        @item.Abbreviation
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-edit fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Stats" asp-route-id="@item.Id">
+                            <i class="fas fa-id-card fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fas fa-trash-alt fa-2x"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<nav>
-    <ul class="pagination">
-        <li class="page-item">
-            <a class="page-link" asp-route-ps="@pageSize" asp-route-p="@backPage"><span>&laquo;</span></a>
-        </li>
-        @for (int i = 1; i <= pageCount; i++)
-        {
-            <li class="page-item"><a class="page-link" asp-route-ps="@pageSize" asp-route-p="@i">@i</a></li>
-        }
-        <li class="page-item">
-            <a class="page-link" asp-route-ps="@pageSize" asp-route-p="@nextPage"><span>&raquo;</span></a>
-        </li>
-    </ul>
-</nav>
+    <nav>
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" asp-route-ps="@pageSize" asp-route-p="@backPage"><span>&laquo;</span></a>
+            </li>
+            @for (int i = 1; i <= pageCount; i++)
+            {
+                <li class="page-item"><a class="page-link" asp-route-ps="@pageSize" asp-route-p="@i">@i</a></li>
+            }
+            <li class="page-item">
+                <a class="page-link" asp-route-ps="@pageSize" asp-route-p="@nextPage"><span>&raquo;</span></a>
+            </li>
+        </ul>
+    </nav>
+</div>
