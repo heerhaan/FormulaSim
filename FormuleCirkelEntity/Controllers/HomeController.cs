@@ -1,11 +1,13 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -184,31 +186,45 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult TeamStandings()
         {
+            // Selects seasons from the currently activated championship
             var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship);
 
+            // Checks if there is any season is in progress, else return to season list
             if (seasons.Any(s => s.State == SeasonState.Progress))
             {
+                var viewModel = new TeamStandingsModel() {
+                    Locations = new List<string>()
+                };
+
                 var currentSeason = seasons
                 .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
                 .OrderBy(s => s.SeasonStart)
                 .FirstOrDefault();
 
-                ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
+                // Assigns the lowest position that scores points
+                viewModel.LastPointPos = currentSeason.PointsPerPosition.Keys.Max();
 
-                var standings = _context.SeasonTeams
-                    .Include(t => t.SeasonDrivers)
-                        .ThenInclude(s => s.DriverResults)
-                    .Where(s => s.SeasonId == currentSeason.SeasonId)
-                    .OrderByDescending(t => t.Points)
-                    .ToList();
+                viewModel.SeasonTeams = _context.SeasonTeams
+                    .Include(st => st.SeasonDrivers)
+                    .Where(st => st.SeasonId == currentSeason.SeasonId)
+                    .OrderByDescending(st => st.Points);
 
-                ViewBag.rounds = _context.Races
+                var rounds = _context.Races
                     .Where(r => r.SeasonId == currentSeason.SeasonId)
                     .Include(r => r.Track)
-                    .OrderBy(r => r.Round).ToList();
-                ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
+                    .OrderBy(r => r.Round);
 
-                return View(standings);
+                foreach (var round in rounds)
+                {
+                    viewModel.Locations.Add(round.Track.Location.Substring(0,3).ToUpper(CultureInfo.CurrentCulture));
+                }
+
+                viewModel.Rounds = rounds.Select(r => r.RaceId);
+
+                viewModel.DriverResults = _context.DriverResults
+                    .Where(dr => dr.Race.SeasonId == currentSeason.SeasonId);
+
+                return View(viewModel);
             }
             else
             {
@@ -220,34 +236,35 @@ namespace FormuleCirkelEntity.Controllers
         [ActionName("PastTeamStandings")]
         public IActionResult TeamStandings(int seasonId)
         {
-            var currentSeason = _context.Seasons
-                .Where(s => s.SeasonId == seasonId)
-                .FirstOrDefault();
-
-            int lastpoint = 10;
-            if (currentSeason.PointsPerPosition.Count != 0)
+            var viewModel = new TeamStandingsModel()
             {
-                lastpoint = currentSeason.PointsPerPosition.Keys.Max();
+                Locations = new List<string>()
+            };
+
+            // Assigns the lowest position that scores points
+            viewModel.LastPointPos = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId).PointsPerPosition.Keys.Max();
+
+            viewModel.SeasonTeams = _context.SeasonTeams
+                .Include(st => st.SeasonDrivers)
+                .Where(st => st.SeasonId == seasonId)
+                .OrderByDescending(st => st.Points);
+
+            var rounds = _context.Races
+                .Where(r => r.SeasonId == seasonId)
+                .Include(r => r.Track)
+                .OrderBy(r => r.Round);
+
+            foreach (var round in rounds)
+            {
+                viewModel.Locations.Add(round.Track.Location.Substring(0, 3).ToUpper(CultureInfo.CurrentCulture));
             }
 
-            ViewBag.lastpointpos = lastpoint;
+            viewModel.Rounds = rounds.Select(r => r.RaceId);
 
-            var standings = _context.SeasonTeams
-                .IgnoreQueryFilters()
-                .Include(t => t.SeasonDrivers)
-                    .ThenInclude(s => s.DriverResults)
-                .Where(s => s.SeasonId == currentSeason.SeasonId)
-                .OrderByDescending(t => t.Points)
-                .ToList();
+            viewModel.DriverResults = _context.DriverResults
+                .Where(dr => dr.Race.SeasonId == seasonId);
 
-            ViewBag.rounds = _context.Races
-                .IgnoreQueryFilters()
-                .Where(r => r.SeasonId == currentSeason.SeasonId)
-                .Include(r => r.Track)
-                .OrderBy(r => r.Round).ToList();
-            ViewBag.drivers = _context.SeasonDrivers.Where(s => s.SeasonId == currentSeason.SeasonId);
-
-            return View("TeamStandings", standings);
+            return View("TeamStandings", viewModel);
         }
 
         public IActionResult NextRace()

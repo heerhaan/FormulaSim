@@ -14,14 +14,14 @@
     <table class="table fullborder">
         <thead class="fullborder">
             <tr>
-                <th>
+                <th class="w-20">
                     Trait
                 </th>
-                <th>
+                <th class="w-60">
                     Description
                 </th>
-                <th></th>
-                <th></th>
+                <th class="w-10">Info</th>
+                <th class="w-10">Edit</th>
             </tr>
         </thead>
         <tbody>
@@ -31,8 +31,8 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TraitDescription)
+                    <td class="text-left">
+                        <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
                     </td>
                     <td>
                         <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
@@ -49,14 +49,14 @@
     <table class="table fullborder">
         <thead class="fullborder">
             <tr>
-                <th>
+                <th class="w-20">
                     Trait
                 </th>
-                <th>
+                <th class="w-60">
                     Description
                 </th>
-                <th></th>
-                <th></th>
+                <th class="w-10">Info</th>
+                <th class="w-10">Edit</th>
             </tr>
         </thead>
         <tbody>
@@ -66,8 +66,8 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TraitDescription)
+                    <td class="text-left">
+                        <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
                     </td>
                     <td>
                         <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
@@ -84,14 +84,14 @@
     <table class="table fullborder">
         <thead class="fullborder">
             <tr>
-                <th>
+                <th class="w-20">
                     Trait
                 </th>
-                <th>
+                <th class="w-60">
                     Description
                 </th>
-                <th></th>
-                <th></th>
+                <th class="w-10">Info</th>
+                <th class="w-10">Edit</th>
             </tr>
         </thead>
         <tbody>
@@ -101,8 +101,8 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TraitDescription)
+                    <td class="text-left">
+                        <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
                     </td>
                     <td>
                         <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>

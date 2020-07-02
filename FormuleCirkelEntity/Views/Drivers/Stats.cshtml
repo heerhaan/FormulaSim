@@ -10,6 +10,15 @@
     <hr />
     <div class="biocontainer">
         <div class="fixed">
+            <div class="row m-0">
+                <p><b>Teams: </b></p>
+                <div class="ml-1">
+                    @foreach (var team in Model.Teams)
+                    {
+                        <span class="badge teritary" style="font-size:0.9rem;">@team.Abbreviation</span>
+                    }
+                </div>
+            </div>
             <dl class="inline-flex">
                 <dt>
                     Starts:
@@ -64,15 +73,6 @@
                     }
                 </dd>
             </dl>
-            <div class="row">
-                <p><b>Teams: </b></p>
-                <div>
-                    @foreach (var team in Model.Teams)
-                    {
-                        <span class="badge" style="font-size:0.9rem;">@team.Abbreviation;</span>
-                    }
-                </div>
-            </div>
         </div>
         <div class="flex-item">
             <p id="biography" contenteditable="true">
@@ -85,22 +85,24 @@
                     @Model.DriverBio
                 }
             </p>
-            <button id="savebio" class="btn btn-dark"><i class="far fa-save"></i></button>
+            <button id="savebio" class="btn"><i class="far fa-save"></i></button>
         </div>
     </div>
-    <div class="row">
-        <canvas id="FinishPercentage" width="250" height="250"></canvas>
-        <canvas id="NonFinishCauses" width="250" height="250"></canvas>
-        <p>Histogram with finish pos seasons</p>
-        <p>Histogram with finish pos races, remove finish perc circle</p>
+    <div class="row justify-content-between m-0">
+        <div>
+            <canvas id="PosBarChart" width="400" height="250"></canvas>
+        </div>
+        <div>
+            <canvas id="NonFinishCauses" width="250" height="250"></canvas>
+        </div>
     </div>
 </div>
 
-<div class="row">
+<div class="row justify-content-between">
     <a asp-action="Index">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
     </a>
-    <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
 </div>
 
 <div id="screenshot"></div>
@@ -118,52 +120,53 @@
     });
 
     $(function () {
-        // Piechart for the sort of finishing results
-        var ctx1 = document.getElementById('FinishPercentage').getContext('2d');
-        var config1 = {
-            type: 'pie',
-        data: {
-            datasets: [{
-                data: [@Model.WinCount, @Model.SecondCount, @Model.ThirdCount, @Model.PointFinishCount, @Model.OutsideCount, @Model.DNFCount, @Model.DSQCount],
-                backgroundColor: ['gold', 'silver', 'bronze', 'green', 'blue', 'red', 'black']
-            }],
-            labels: [
-                'Wins',
-                'Second',
-                'Third',
-                'Points',
-                'Finished',
-                'DNF',
-                'DSQ'
-            ]
+        // Barchart for the kind of positions a driver has finished
+        var ctxPosBar = document.getElementById('PosBarChart').getContext('2d');
+        var posBarLabels = ['P1', 'P2', 'P3', 'Points', 'Outside', 'DNF' ];
+        var posBarValues = [@Model.WinCount, @Model.SecondCount, @Model.ThirdCount, @Model.PointFinishCount, @Model.OutsideCount, @(Model.DNFCount + Model.DSQCount)];
+        var posBarColours = ['gold', 'silver', '#cd7f32', 'green', 'blue', 'red'];
+
+        var posBarChart = new Chart(ctxPosBar, {
+            type: 'bar',
+            data: {
+                labels: posBarLabels,
+                datasets: [{
+                    data: posBarValues,
+                    backgroundColor: posBarColours,
+                }],
             },
             options: {
-                responsive: false
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 1.0,
+                        barPercentage: 1.0
+                    }]
+                },
+                legend: {
+                    display: false,
+                }
             }
-        }
-        var chart1 = new Chart(ctx1, config1);
+        });
 
         // Piechart to look into the sorts of DNFs / DSQs a driver has
-        var ctx3 = document.getElementById('NonFinishCauses').getContext('2d');
-        var config3 = {
+        var ctxDnfPie = document.getElementById('NonFinishCauses').getContext('2d');
+        var dnfPieLabels = ['Accident', 'Contact', 'Engine', 'Mechanical', 'DSQ'];
+        var dnfPieValues = [@Model.AccidentCount, @Model.ContactCount, @Model.EngineCount, @Model.MechanicalCount, @Model.DSQCount];
+        var dnfPieColours = ['purple', 'red', 'darkblue', 'grey', 'black'];
+
+        var dnfPieChart = new Chart(ctxDnfPie, {
             type: 'pie',
-        data: {
-            datasets: [{
-                data: [@Model.AccidentCount, @Model.ContactCount, @Model.EngineCount, @Model.MechanicalCount, @Model.DSQCount],
-                backgroundColor: ['purple', 'red', 'darkblue', 'grey', 'black']
-            }],
-            labels: [
-                'Accident',
-                'Contact',
-                'Engine',
-                'Mechanical',
-                'DSQ'
-            ]
+            data: {
+                labels: dnfPieLabels,
+                datasets: [{
+                    data: dnfPieValues,
+                    backgroundColor: dnfPieColours,
+                }],
             },
             options: {
                 responsive: false
             }
-        }
-        var chart3 = new Chart(ctx3, config3);
+        });
+
     });
 </script>

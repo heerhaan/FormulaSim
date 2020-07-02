@@ -8,165 +8,166 @@
     var seasonId = ViewBag.seasonId;
 }
 
-<h1>Championship drivers</h1>
+<div class="d-inline-block">
+    <h1>Championship drivers</h1>
 
-
-<table id="graphic" class="table standings-border fullborder">
-    <thead>
-        <tr>
-            <th class="fullborder">
-                #
-            </th>
-            <th class="fullborder">
-                Nr.
-            </th>
-            <th class="fullborder">
-                Driver
-            </th>
-            <th class="fullborder">
-                Team
-            </th>
-            @foreach (var round in rounds)
+    <table id="graphic" class="ctable standings-border fullborder">
+        <thead>
+            <tr>
+                <th class="fullborder">
+                    #
+                </th>
+                <th class="fullborder">
+                    Nr.
+                </th>
+                <th class="fullborder">
+                    Driver
+                </th>
+                <th class="fullborder">
+                    Team
+                </th>
+                @foreach (var round in rounds)
+                {
+                    <th class="fullborder">@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
+                }
+                <th class="fullborder">
+                    Pnt.
+                </th>
+                <th class="fullborder">
+                    Avg.
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
             {
-                <th class="fullborder">@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
+                <tr>
+                    <td>
+                        <b>@position</b>
+                    </td>
+                    <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
+                        <b>@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</b>
+                    </td>
+                    <td class="text-left pr-2">
+                        <span class="ml-cel">@Html.DisplayFor(modelItem => item.Driver.Name)</span>
+                    </td>
+                    <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
+                        <span class="pl-1 pr-1">@item.SeasonTeam.Team.Abbreviation</span>
+                    </td>
+                    @foreach (var round in rounds)
+                    {
+                        DriverResult result = item.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
+                        if (result == null || result.Position == 0)
+                        {
+                            <td><span>-</span></td>
+                        }
+                        else
+                        {
+                            if (result.Status == Status.DNF)
+                            {
+                                if (result.Grid == 1)
+                                {
+                                    <td class="result-dnf">DNF<b class="pole"> P</b></td>
+                                }
+                                else
+                                {
+                                    <td class="result-dnf">DNF</td>
+                                }
+                            }
+                            else if (result.Status == Status.DSQ)
+                            {
+                                if (result.Grid == 1)
+                                {
+                                    <td class="badge-dsq">DSQ<b class="pole"> P</b></td>
+                                }
+                                else
+                                {
+                                    <td class="badge-dsq">DSQ</td>
+                                }
+                            }
+                            else if (result.Position == 1)
+                            {
+                                if (result.Grid == 1)
+                                {
+                                    <td class="badge-first">@result.Position<b class="pole"> P</b></td>
+                                }
+                                else
+                                {
+                                    <td class="badge-first">@result.Position</td>
+                                }
+                            }
+                            else if (result.Position == 2)
+                            {
+                                if (result.Grid == 1)
+                                {
+                                    <td class="badge-second">@result.Position<b class="pole"> P</b></td>
+                                }
+                                else
+                                {
+                                    <td class="badge-second">@result.Position</td>
+                                }
+                            }
+                            else if (result.Position == 3)
+                            {
+                                if (result.Grid == 1)
+                                {
+                                    <td class="badge-third">@result.Position<b class="pole"> P</b></td>
+                                }
+                                else
+                                {
+                                    <td class="badge-third">@result.Position</td>
+                                }
+                            }
+                            else if (result.Position <= ViewBag.lastpointpos)
+                            {
+                                if (result.Grid == 1)
+                                {
+                                    <td class="result-points">@result.Position<b class="pole"> P</b></td>
+                                }
+                                else
+                                {
+                                    <td class="result-points">@result.Position</td>
+                                }
+                            }
+                            else
+                            {
+                                if (result.Grid == 1)
+                                {
+                                    <td class="result-none">@result.Position<b class="pole"> P</b></td>
+                                }
+                                else
+                                {
+                                    <td class="result-none">@result.Position</td>
+                                }
+                            }
+                        }
+                    }
+                    <td>
+                        <span>@Html.DisplayFor(modelItem => item.Points)</span>
+                    </td>
+                    <td>
+                        @foreach (var avg in ViewBag.averages)
+                        {
+                            if (avg.Driver == item)
+                            {
+                                <span class="badge">@avg.Averagepos</span>
+                            }
+                        }
+                    </td>
+                </tr>
+                position++;
             }
-            <th class="fullborder">
-                Pnt.
-            </th>
-            <th class="fullborder">
-                Avg.
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>
-                <b>@position</b>
-            </td>
-            <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
-                <b>@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</b>
-            </td>
-            <td class="text-left">
-                <span class="driver-col">@Html.DisplayFor(modelItem => item.Driver.Name)</span>
-            </td>
-            <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
-                @item.SeasonTeam.Team.Abbreviation
-            </td>
-            @foreach (var round in rounds)
-            {
-                DriverResult result = item.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
-                if (result == null || result.Position == 0)
-                {
-                    <td><span>-</span></td>
-                }
-                else
-                {
-                    if (result.Status == Status.DNF)
-                    {
-                        if (result.Grid == 1)
-                        {
-                            <td class="result-dnf">DNF<b class="pole"> P</b></td>
-                        }
-                        else
-                        {
-                            <td class="result-dnf">DNF</td>
-                        }
-                    }
-                    else if (result.Status == Status.DSQ)
-                    {
-                        if (result.Grid == 1)
-                        {
-                            <td class="badge-dsq">DSQ<b class="pole"> P</b></td>
-                        }
-                        else
-                        {
-                            <td class="badge-dsq">DSQ</td>
-                        }
-                    }
-                    else if (result.Position == 1)
-                    {
-                        if (result.Grid == 1)
-                        {
-                            <td class="badge-first">@result.Position<b class="pole"> P</b></td>
-                        }
-                        else
-                        {
-                            <td class="badge-first">@result.Position</td>
-                        }
-                    }
-                    else if (result.Position == 2)
-                    {
-                        if (result.Grid == 1)
-                        {
-                            <td class="badge-second">@result.Position<b class="pole"> P</b></td>
-                        }
-                        else
-                        {
-                            <td class="badge-second">@result.Position</td>
-                        }
-                    }
-                    else if (result.Position == 3)
-                    {
-                        if (result.Grid == 1)
-                        {
-                            <td class="badge-third">@result.Position<b class="pole"> P</b></td>
-                        }
-                        else
-                        {
-                            <td class="badge-third">@result.Position</td>
-                        }
-                    }
-                    else if (result.Position <= ViewBag.lastpointpos)
-                    {
-                        if (result.Grid == 1)
-                        {
-                            <td class="result-points">@result.Position<b class="pole"> P</b></td>
-                        }
-                        else
-                        {
-                            <td class="result-points">@result.Position</td>
-                        }
-                    }
-                    else
-                    {
-                        if (result.Grid == 1)
-                        {
-                            <td class="result-none">@result.Position<b class="pole"> P</b></td>
-                        }
-                        else
-                        {
-                            <td class="result-none">@result.Position</td>
-                        }
-                    }
-                }
-            }
-            <td>
-                <span>@Html.DisplayFor(modelItem => item.Points)</span>
-            </td>
-            <td>
-                @foreach (var avg in ViewBag.averages)
-                {
-                    if (avg.Driver == item)
-                    {
-                        <span class="badge alt-color">@avg.Averagepos</span>
-                    }
-                }
-            </td>
-        </tr>
-            position++;
-        }
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-<div class="row justify-content-between">
-    <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-    <button class="btn" onclick="getStandingsGraph()"><i class="fas fa-chart-bar fa-2x ml-auto"></i></button>
+    <div class="row justify-content-between">
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn" onclick="getStandingsGraph()"><i class="fas fa-chart-bar fa-2x ml-auto"></i></button>
+    </div>
+
+    <div id="screenshot"></div>
+    <canvas id="standingsChart" width="0" height="0"></canvas>
 </div>
-<div id="screenshot"></div>
-
-<canvas id="standingsChart"></canvas>
 
 <script>
     var polepoint = @ViewBag.polepoint;

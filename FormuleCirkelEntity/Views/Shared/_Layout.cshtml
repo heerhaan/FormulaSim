@@ -22,7 +22,7 @@
     
 </head>
 
-<body id="main" class="primary">
+<body class="primary">
     <environment exclude="Development">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
@@ -59,15 +59,13 @@
         <partial name="_MenuPartial" />
     </header>
 
-    <div class="container">
-        <partial name="_CookieConsentPartial" />
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <partial name="_CookieConsentPartial" />
+    <main role="main" class="m-sides">
+        @RenderBody()
+    </main>
 
     <footer class="secondary upperline">
-        <div class="container text-muted">
+        <div class="m-sides text-muted">
             &copy; 2020 - Haan#0420
             <div class="theme-buttons">
                 <a id="lighttheme" class="theme-button">☀️</a>

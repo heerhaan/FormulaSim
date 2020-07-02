@@ -189,13 +189,13 @@
     function rowString(position, colour, accent, team, driver, score, gap, dangerzone) {
         if (dangerzone) {
             var retString = "<tr><td><span class='badge result-dnf fullwidth font-size-default'>" + position
-                + "</span></td><td class='text-left'><span class='driver-col'>" + driver + "</span></td><td><span class='badge fullwidth font-size-default' style='background-color:"
+                + "</span></td><td class='text-left'><span class='ml-cel'>" + driver + "</span></td><td><span class='badge fullwidth font-size-default' style='background-color:"
                 + colour + ";color:" + accent + ";'>" + team + "</span></td><td>" + score + "</td><td>" + gap + "</td></tr>";
 
             return retString;
         }
         else {
-            var retString = "<tr><td>" + position + "</td><td class='text-left'><span class='driver-col'>" + driver
+            var retString = "<tr><td>" + position + "</td><td class='text-left'><span class='ml-cel'>" + driver
                 + "</span></td><td><span class='badge fullwidth font-size-default' style='background-color:"
                 + colour + ";color:" + accent + ";'>" + team + "</span></td><td>" + score + "</td><td>" + gap + "</td></tr>";
 

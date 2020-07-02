@@ -1,11 +1,11 @@
-﻿#main table {
-        background-color: #1C0658;
-        color: #36CDC4;
-    }
+﻿body table {
+    background-color: #1C0658;
+    color: #36CDC4;
+}
 
-    #main code[class*=language-],
-    #main table tbody > tr:nth-child(odd) > td,
-    #main table tbody > tr:nth-child(odd) > th {
+    body code[class*=language-],
+    body table tbody > tr:nth-child(odd) > td,
+    body table tbody > tr:nth-child(odd) > th {
         background: #5C2686
     }
 
@@ -53,6 +53,7 @@ h1, h5, dt, .link {
 .btn {
     background-color: #5C2686;
     color: #FF1690;
+    border-color: #36CDC4;
 }
 
 #graphic {

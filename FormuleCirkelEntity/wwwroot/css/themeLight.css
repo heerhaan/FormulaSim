@@ -1,13 +1,13 @@
-﻿#main table {
-        background-color: #ebebeb;
-        color: black;
-   }
+﻿body table {
+    background-color: #ebebeb;
+    color: black;
+}
 
-    #main code[class*=language-],
-    #main table t#main > tr:nth-child(odd) > td,
-    #main table t#main > tr:nth-child(odd) > th {
+    body code[class*=language-],
+    body table tbody > tr:nth-child(odd) > td,
+    body table tbody > tr:nth-child(odd) > th {
         background: #d5d5d5
-   }
+    }
 
 .table-prev {
     border: 1px solid #35cdff;
@@ -49,6 +49,7 @@
 .btn {
     background-color: #d5d5d5;
     color: black;
+    border-color: #35cdff;
 }
 
 #graphic {

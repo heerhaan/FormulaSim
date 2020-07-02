@@ -1,12 +1,12 @@
-﻿#main table {
+﻿body table {
     background-color: rgb(30,34,39);
     color: white;
 }
-    #main code[class*=language-],
-    #main table tbody > tr:nth-child(odd) > td,
-    #main table tbody > tr:nth-child(odd) > th {
+    body code[class*=language-],
+    body table tbody > tr:nth-child(odd) > td,
+    body table tbody > tr:nth-child(odd) > th {
         background: #282c34
-   }
+    }
 
 .table-prev {
     border: 1px solid #bd2130;
@@ -25,6 +25,11 @@
 
 .secondary {
     background-color: #343a40;
+}
+
+.teritary {
+    background-color: #bd2130;
+    color: white;
 }
 
 .nav-link {
@@ -46,7 +51,13 @@
 .btn {
     background-color: #282c34;
     color: white;
+    border-color: #bd2130;
 }
+
+    .btn:hover {
+        background-color: black;
+        color: white;
+    }
 
 #graphic {
     background-color: rgb(30,34,39);

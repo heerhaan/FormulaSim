@@ -50,20 +50,20 @@
                 <tr data-obj-id="@driverResult.SeasonDriverId">
                     <td data-field="position"><b>@driverResult.Position</b></td>
                     <td data-field="driverNumber"><span class="badge fullwidth" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
-                    <td class="text-left" data-field="driverName"><span class="driver-col result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
+                    <td class="text-left" data-field="driverName"><span class="ml-cel result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
                     <td data-field="teamName"><span class="badge fullwidth" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
                     <td data-field="startGrid">
                         @if (gridChange > 0)
                         {
-                            <i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth'>@gridChange</span>
+                            <i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth' style="color:white;">@gridChange</span>
                         }
                         else if (gridChange < 0)
                         {
-                            <i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth'>@(gridChange * -1)</span>
+                            <i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth' style="color:white;">@(gridChange * -1)</span>
                         }
                         else
                         {
-                            <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth'>@gridChange</span>
+                            <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth' style="color:white;">@gridChange</span>
                         }
                     </td>
                     @foreach (var stint in Model.Stints)
@@ -98,7 +98,7 @@
                     }
                     else
                     {
-                        <td data-field="points"><span class="badge font-size-default">@Model.Season.PointsPerPosition[driverResult.Position]</span></td>
+                        <td data-field="points"><b>@Model.Season.PointsPerPosition[driverResult.Position]</b></td>
                     }
                     <td data-field="abbreviation" style="display:none;"><span>@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
                     <td data-field="fullTeamName" style="display:none;"><span>@driverResult.SeasonDriver.SeasonTeam.Name</span></td>

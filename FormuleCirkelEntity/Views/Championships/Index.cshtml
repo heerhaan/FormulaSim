@@ -6,17 +6,17 @@
 
 <section class="row my-1">
     <header>
-        <h1>Racing series</h1>
+        <h1>Racing championships</h1>
     </header>
 </section>
 
 <section class="row btn-group my-1">
-    <a class="btn btn-dark" asp-action="Create">New serie</a>
+    <a class="btn btn-dark" asp-action="Create">New championship</a>
 </section>
 
 <section class="row my-1">
-    <table class="table">
-        <thead>
+    <table class="table fullborder">
+        <thead class="fullborder">
             <tr>
                 <th>
                     Championships
@@ -34,7 +34,7 @@
                     <td>
                         <form method="POST">
                             <input type="hidden" name="championshipId" value="@item.ChampionshipId" />
-                            <input type="submit" class="btn btn-outline-primary btn-sm" value="Activate" />
+                            <input type="submit" class="btn fullwidth mt-1 mb-1" value="Activate" />
                         </form>
                     </td>
                 </tr>

@@ -11,14 +11,14 @@
 
 <h1>Drivers</h1>
 
-<div>
+<div class="row justify-content-between index-btns">
     <a asp-action="Create">
         <i class="fas fa-plus-square fa-2x fa-2x"></i>
     </a>
-    <a class="btn btn-dark float-right" asp-action="ArchivedDrivers">Archive</a>
+    <a class="btn" asp-action="ArchivedDrivers">Archive</a>
 </div>
-<table class="table">
-    <thead>
+<table class="table fullborder">
+    <thead class="fullborder">
         <tr>
             <th>
                 Number
@@ -41,8 +41,8 @@
                 <td>
                     @item.DriverNumber
                 </td>
-                <td>
-                    @item.Name
+                <td class="text-left">
+                    <span class="ml-cel">@item.Name</span>
                 </td>
                 <td>
                     @item.Abbreviation
