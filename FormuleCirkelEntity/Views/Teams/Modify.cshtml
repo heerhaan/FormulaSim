@@ -4,35 +4,29 @@
     ViewData["Title"] = "Team";
 }
 
-<section>
+<div class="d-inline-block">
     <h1>Modify team</h1>
     @if (!string.IsNullOrWhiteSpace(Model.Abbreviation))
     {
-        <h4>@Model.Abbreviation</h4>
+        <h2>@Model.Abbreviation</h2>
     }
-    <form method="POST">
-        <fieldset class="row">
-            <div class="col-md-4">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Abbreviation" class="control-label"></label>
-                    <input asp-for="Abbreviation" class="form-control" />
-                    <span asp-validation-for="Abbreviation" class="text-danger"></span>
-                </div>
+    <div class="fullwidth">
+        <form method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Abbreviation" class="control-label float-left"></label>
+                <input asp-for="Abbreviation" class="form-control" />
+                <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
-        </fieldset>
-        <fieldset class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-dark" />
-                </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn fullwidth" />
             </div>
-        </fieldset>
-    </form>
+        </form>
+    </div>
 
-    <div>
+    <div class="float-left">
         <a asp-action="Index">
             <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
         </a>
     </div>
-</section>
+</div>

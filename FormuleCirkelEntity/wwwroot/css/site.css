@@ -174,12 +174,18 @@ dl.inline-flex {
     font-size: 1rem;
 }
 
+.fullheight {
+    height: 100% !important;
+}
+
 .fullwidth {
     width: 100%;
 }
 
-.input-width {
+.input-style {
+    min-height: 25px;
     width: 100px;
+    border-radius: 5px;
 }
 
 .nofullwidth {
@@ -220,6 +226,11 @@ dl.inline-flex {
 .result-points {
     background-color: #28a745 !important;
     color: white !important;
+}
+
+.result-warning {
+    background-color: #ffc107 !important;
+    color: black !important;
 }
 
 .result-none {

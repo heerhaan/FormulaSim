@@ -4,47 +4,56 @@
     ViewData["Title"] = "ArchivedTracks";
 }
 
-<h1>Archived Tracks</h1>
+<div class="d-inline-block w-60">
+    <h1>Archived Tracks</h1>
 
-<table class="table fullborder">
-    <thead class="fullborder">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Specification)
-            </th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Specification)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">
-                    <i class="fas fa-edit fa-2x"></i>
-                </a>
-            </td>
-            <td>
-                <a asp-action="Delete" asp-route-id="@item.Id">
-                    <i class="fas fa-trash-alt fa-2x"></i>
-                </a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+    <table class="ctable fullborder fullwidth">
+        <thead class="fullborder">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Location)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Specification)
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Location)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Specification)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-edit fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fas fa-trash-alt fa-2x"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
+</div>

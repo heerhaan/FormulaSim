@@ -5,92 +5,82 @@
     int count = 0;
 }
 
-<div id="graphic">
-    <h1>Penaltylist</h1>
-    <br />
-    <table class="table fullborder">
-        <thead class="fullborder">
-            <tr>
-                <th>Driver</th>
-                <th>Engines</th>
-                <th>Electrics</th>
-                <th>Accidents</th>
-                <th>Collisions</th>
-                <th>DSQs</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var driver in Model)
-            {
+<div class="d-inline-block w-60 mb-1">
+    <div id="graphic">
+        <h1>Penaltylist</h1>
+        <table class="ctable fullborder fullwidth">
+            <thead class="fullborder">
                 <tr>
-                    <td><span class="badge" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);font-size:1rem;">@driver.Driver.Name</span></td>
-                    <td>
-                        @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count();}
-                        @if (count == 2)
-                        {
-                            <span class="badge badge-warning font-size-default nofullwidth">@count</span>
-                        }
-                        else if (count > 2)
-                        {
-                            <span class="badge badge-danger font-size-default nofullwidth">@count</span>
-                        }
-                        else
-                        {
-                            <span class="badge font-size-default">@count</span>
-                        }
-                    </td>
-                    <td>
-                        @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count();}
-                        @if (count == 1)
-                        {
-                            <span class="badge badge-warning font-size-default nofullwidth">@count</span>
-                        }
-                        else if (count > 1)
-                        {
-                            <span class="badge badge-danger font-size-default nofullwidth">@count</span>
-                        }
-                        else
-                        {
-                            <span class="badge font-size-default">@count</span>
-                        }
-                    </td>
-                    <td>
-                        @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Accident).Count();}
-                        @if (count == 2)
-                        {
-                            <span class="badge badge-warning font-size-default nofullwidth">@count</span>
-                        }
-                        else if (count > 2)
-                        {
-                            <span class="badge badge-danger font-size-default nofullwidth">@count</span>
-                        }
-                        else
-                        {
-                            <span class="badge font-size-default">@count</span>
-                        }
-                    </td>
-                    <td>
-                        @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Collision).Count();}
-                        <span class="badge font-size-default">@count</span>
-                    </td>
-                    <td>
-                        @{count = driver.DriverResults.Where(d => d.DSQCause != DSQCause.None).Count();}
-                        <span class="badge badge-dsq font-size-default nofullwidth">@count</span>
-                    </td>
+                    <th>Driver</th>
+                    <th>Engines</th>
+                    <th>Electrics</th>
+                    <th>Accidents</th>
+                    <th>Collisions</th>
+                    <th>DSQs</th>
                 </tr>
-            }
-            <tr>
-                <th style="background-color:black;">LIMITS</th>
-                <th style="background-color:black;">2</th>
-                <th style="background-color:black;">1</th>
-                <th style="background-color:black;">2</th>
-                <th style="background-color:black;"><i class="fas fa-dice"></i></th>
-                <th style="background-color:black;">PIT</th>
-            </tr>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var driver in Model)
+                {
+                <tr>
+                    <td class="text-left"><span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">@driver.Driver.Name</span></td>
+                    @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count();}
+                    @if (count == 2)
+                    {
+                        <td class="result-warning">@count</td>
+                    }
+                    else if (count > 2)
+                    {
+                        <td class="result-dnf">@count</td>
+                    }
+                    else
+                    {
+                        <td>@count</td>
+                    }
+                    @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Electrics).Count();}
+                    @if (count == 1)
+                    {
+                        <td class="result-warning">@count</td>
+                    }
+                    else if (count > 1)
+                    {
+                        <td class="result-dnf">@count</td>
+                    }
+                    else
+                    {
+                        <td>@count</td>
+                    }
+                    @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Accident).Count();}
+                    @if (count == 2)
+                    {
+                        <td class="result-warning">@count</td>
+                    }
+                    else if (count > 2)
+                    {
+                        <td class="result-dnf">@count</td>
+                    }
+                    else
+                    {
+                        <td>@count</td>
+                    }
+                    @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Collision).Count();}
+                    <td>@count</td>
+                    @{count = driver.DriverResults.Where(d => d.DSQCause != DSQCause.None).Count();}
+                    <td>@count</td>
+                </tr>
+                }
+                <tr>
+                    <th style="background-color:black;">LIMITS</th>
+                    <th style="background-color:black;">2</th>
+                    <th style="background-color:black;">1</th>
+                    <th style="background-color:black;">2</th>
+                    <th style="background-color:black;"><i class="fas fa-dice"></i></th>
+                    <th style="background-color:black;">PIT</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <button class="btn float-left" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+
+    <div id="screenshot"></div>
 </div>
-
-<button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-
-<div id="screenshot"></div>

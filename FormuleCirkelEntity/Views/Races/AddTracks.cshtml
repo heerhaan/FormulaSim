@@ -3,11 +3,11 @@
 @{
     ViewData["Title"] = "Add races";
 }
-<section>
-    <header>
-        <h3>Season @ViewBag.seasonId - Add races</h3>
-    </header>
-    <table class="table table-sm">
+
+<div class="d-inline-block w-60">
+    <h3>Season @ViewBag.seasonId - Add races</h3>
+
+    <table class="ctable fullborder fullwidth">
         <thead>
             <tr>
                 <th>Name</th>
@@ -27,7 +27,7 @@
                     <td>
                         <form method="POST">
                             <input type="hidden" name="trackId" value="@item.Id" />
-                            <input type="submit" class="btn btn-outline-primary btn-sm" style="width:69px;" value="Add" />
+                            <input type="submit" class="btn fullwidth" value="Add" />
                         </form>
                     </td>
                     <td>
@@ -39,7 +39,9 @@
             }
         </tbody>
     </table>
-    <a asp-controller="Season" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+
+    <a class="float-left" asp-controller="Season" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
     </a>
-</section>
+</div>
+

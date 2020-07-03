@@ -6,15 +6,16 @@
     int year = ViewBag.year;
 }
 
-<h1>Driver reliability</h1>
+<div class="d-inline-block w-60">
+    <h1>Driver reliability</h1>
 
-<section>
+    <div class="float-left mb-1">
+        <button id="develop" class="btn mr-1">Develop</button>
+        <input id="min" class="input-style fullheight mr-1" type="number" placeholder="Min. RNG" />
+        <input id="max" class="input-style fullheight mr-1" type="number" placeholder="Max. RNG" />
+    </div>
 
-    <input id="min" type="number" placeholder="Min. RNG" />
-    <input id="max" type="number" placeholder="Max. RNG" />
-    <button id="develop" class="btn btn-dark">Develop</button>
-
-    <table id="graphic" class="table fullborder">
+    <table id="graphic" class="ctable fullborder fullwidth">
         <thead class="fullborder">
             <tr>
                 <th>Name</th>
@@ -31,11 +32,11 @@
                 foreach (var driver in Model)
                 {
                     <tr>
-                        <td><span class="badge nofullwidth">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
+                        <td class="text-left"><span class="ml-cel">@driver.Driver.Name</span></td>
                         <td>@(year - driver.Driver.DateOfBirth.Year)</td>
                         <td>
-                            <span class="badge" style="background-color:@(driver.SeasonTeam.Colour);
-                            color:@(driver.SeasonTeam.Accent);font-size:1rem;">
+                            <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);
+                                    color:@(driver.SeasonTeam.Accent);">
                                 @driver.SeasonTeam.Name
                             </span>
                         </td>
@@ -48,16 +49,17 @@
             }
         </tbody>
     </table>
-    <button id="save" class="btn btn-dark">Save</button>
-</section>
+    <button id="save" class="btn fullwidth">Save</button>
 
-<a asp-action="Detail" asp-route-id="@seasonId">
-    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-</a>
+    <div class="row justify-content-between">
+        <a asp-action="Detail" asp-route-id="@seasonId">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    </div>
 
-<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-
-<div id="screenshot"></div>
+    <div id="screenshot"></div>
+</div>
 
 <script>
     $(document).ready(function () {

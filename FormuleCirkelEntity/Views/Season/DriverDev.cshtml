@@ -6,16 +6,19 @@
     int year = ViewBag.year;
 }
 
-<h1>Driver development</h1>
+<div class="d-inline-block w-60">
+    <h1>Driver development</h1>
 
-<section>
+    <div class="row justify-content-between mb-1">
+        <div>
+            <button id="develop" class="btn">Develop</button>
+            <input id="min" class="input-style fullheight" type="number" placeholder="Min. RNG"/>
+            <input id="max" class="input-style fullheight" type="number" placeholder="Max. RNG" />
+        </div>
+        <button id="custom" class="btn">Custom</button>
+    </div>
 
-    <input id="min" type="number" placeholder="Min. RNG" />
-    <input id="max" type="number" placeholder="Max. RNG" />
-    <button id="develop" class="btn btn-dark">Develop</button>
-    <button id="custom" class="btn btn-dark float-right">Custom</button>
-
-    <table id="graphic" class="table fullborder">
+    <table id="graphic" class="ctable fullborder fullwidth">
         <thead class="fullborder">
             <tr>
                 <th>Name</th>
@@ -24,42 +27,47 @@
                 <th>Old</th>
                 <th>Change</th>
                 <th>New</th>
-                <th>Custom</th>
+                <th class="w-25">Custom</th>
             </tr>
         </thead>
         <tbody id="devtable">
             @{
-                    int number = 1;
-                    foreach (var driver in Model)
-                    {
+                int number = 1;
+                foreach (var driver in Model)
+                {
                     <tr>
-                        <td><span class="badge nofullwidth">@driver.Driver.DriverNumber</span> @driver.Driver.Name</td>
+                        <td class="text-left"><span class="ml-cel">@driver.Driver.Name</span></td>
                         <td>@(year - driver.Driver.DateOfBirth.Year)</td>
-                        <td><span class="badge" style="background-color:@(driver.SeasonTeam.Colour);
-                            color:@(driver.SeasonTeam.Accent);font-size:1rem;">
-                            @driver.SeasonTeam.Name
-                        </span></td>
+                        <td>
+                            <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);
+                                    color:@(driver.SeasonTeam.Accent);">
+                                @driver.SeasonTeam.Name
+                            </span>
+                        </td>
                         <td id="old-value-@number">@driver.Skill</td>
                         <td id="custom-change-@number">?</td>
                         <td id="custom-new-@number">-</td>
-                        <td><input id="custom-min-@number" class="input-width" type="number" placeholder="Min. RNG" />
-                        <input id="custom-max-@number" class="input-width" type="number" placeholder="Max. RNG" /></td>
-                        <td  id="driver-id-@(number++)" style="display:none;">@(driver.SeasonDriverId)</td>
+                        <td>
+                            <input id="custom-min-@number" class="input-style" type="number" placeholder="Min. RNG" />
+                            <input id="custom-max-@number" class="input-style" type="number" placeholder="Max. RNG" />
+                        </td>
+                        <td id="driver-id-@(number++)" style="display:none;">@(driver.SeasonDriverId)</td>
                     </tr>
                 }
             }
         </tbody>
     </table>
-    <button id="save" class="btn btn-dark">Save</button>
-</section>
+    <button id="save" class="btn fullwidth">Save</button>
 
-<a asp-action="Detail" asp-route-id="@seasonId">
-    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-</a>
+    <div class="row justify-content-between mb-1">
+        <a asp-action="Detail" asp-route-id="@seasonId">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    </div>
 
-<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-
-<div id="screenshot"></div>
+    <div id="screenshot"></div>
+</div>
 
 <script>
     $(document).ready(function () {

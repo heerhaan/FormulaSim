@@ -4,68 +4,60 @@
     ViewData["Title"] = "Traits for track";
 }
 
-<div>
+<div class="d-inline-block w-60">
     <h1>Traits for @Model.Track.Name</h1>
-</div>
 
-<br />
-
-<div>
     <h3>Applied traits</h3>
-    @if (Model.Track.Traits != null)
-    {
-        <table class="table fullborder">
-            <thead class="fullborder">
-                <tr>
-                    <th>Trait</th>
-                    <th>Description</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var trait in Model.Track.Traits.Values)
-                {
+        @if (Model.Track.Traits != null)
+        {
+            <table class="ctable fullborder fullwidth">
+                <thead class="fullborder">
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => trait.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => trait.TraitDescription)
-                        </td>
-                        <td>
-                            <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
-                        </td>
-                        <td>
-                            <a asp-controller="Tracks" asp-action="RemoveTrait" asp-route-trackId="@Model.Track.Id" asp-route-traitId="@trait.TraitId"><i class="fas fa-trash-alt fa-2x"></i></a>
-                        </td>
+                        <th class="w-20">Trait</th>
+                        <th class="w-20">Description</th>
+                        <th class="w-10">Info</th>
+                        <th class="w-10"></th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <h4>This track doesn't have any traits applied yet!</h4>
-    }
-</div>
+                </thead>
+                <tbody>
+                    @foreach (var trait in Model.Track.Traits.Values)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => trait.Name)
+                            </td>
+                            <td class="text-left">
+                                <span class="ml-cel">@Html.DisplayFor(modelItem => trait.TraitDescription)</span>
+                            </td>
+                            <td>
+                                <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                            </td>
+                            <td>
+                                <a asp-controller="Tracks" asp-action="RemoveTrait" asp-route-trackId="@Model.Track.Id" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <h4>This track doesn't have any traits applied yet!</h4>
+        }
 
-<br />
-
-<section>
-    <div class="row">
+    <div class="row justify-content-between mb-1">
         <h3>Add traits</h3>
-        <a asp-controller="Traits" asp-action="Create" class="btn btn-dark ml-auto">New trait</a>
+        <a asp-controller="Traits" asp-action="Create" class="btn">New trait</a>
     </div>
     @if (Model.Traits.Any())
     {
-        <table class="table table-sm">
-            <thead>
+        <table class="ctable fullborder fullwidth">
+            <thead class="fullborder">
                 <tr>
-                    <th>Trait</th>
-                    <th>Description</th>
-                    <th></th>
-                    <th></th>
+                    <th class="w-20">Trait</th>
+                    <th class="w-20">Description</th>
+                    <th class="w-10">Info</th>
+                    <th class="w-10"></th>
                 </tr>
             </thead>
             <tbody>
@@ -75,17 +67,17 @@
                         <td>
                             @Html.DisplayFor(modelItem => trait.Name)
                         </td>
+                        <td class="text-left">
+                            <span class="ml-cel">@Html.DisplayFor(modelItem => trait.TraitDescription)</span>
+                        </td>
                         <td>
-                            @Html.DisplayFor(modelItem => trait.TraitDescription)
+                            <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                         <td>
                             <form method="POST">
                                 <input type="hidden" name="traitId" value="@trait.TraitId" />
-                                <input type="submit" class="btn btn-outline-primary btn-sm" style="width:69px;" value="Add" />
+                                <input type="submit" class="btn fullwidth" value="Add" />
                             </form>
-                        </td>
-                        <td>
-                            <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                     </tr>
                 }
@@ -96,10 +88,10 @@
     {
         <h4>There are no traits available for this track!</h4>
     }
-</section>
 
-<div>
-    <a asp-action="Index">
-        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-    </a>
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
 </div>

@@ -4,84 +4,80 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>New trait</h1>
-<hr />
-<div>
-    <div>
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="row">
-                <div class="col-md-3">
-                    <div>
-                        <div class="form-group">
-                            <label asp-for="Name" class="control-label">Name of trait</label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="TraitGroup" class="control-label">Group</label>
-                            @Html.DropDownListFor(model => model.TraitGroup, new SelectList(Enum.GetValues(typeof(TraitGroup))), new { @class = "form-control" })
-                            <span asp-validation-for="TraitGroup" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="QualyPace" class="control-label">Qualification pace</label>
-                            <input asp-for="QualyPace" class="form-control" />
-                            <span asp-validation-for="QualyPace" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="DriverRacePace" class="control-label">Racepace Driver</label>
-                            <input asp-for="DriverRacePace" class="form-control" />
-                            <span asp-validation-for="DriverRacePace" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="ChassisRacePace" class="control-label">Racepace Chassis</label>
-                            <input asp-for="ChassisRacePace" class="form-control" />
-                            <span asp-validation-for="ChassisRacePace" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="EngineRacePace" class="control-label">Racepace Engine</label>
-                            <input asp-for="EngineRacePace" class="form-control" />
-                            <span asp-validation-for="EngineRacePace" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Create" class="btn btn-primary" />
-                        </div>
-                    </div>
+<div class="d-inline-block">
+    <h1>New trait</h1>
+
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="w-50">
+                <div class="form-group w-75 ml-auto mr-auto">
+                    <label asp-for="Name" class="control-label float-left">Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                <div class="col-md-3">
-                    <div class="float-right">
-                        <div class="form-group">
-                            <label asp-for="TraitDescription" class="control-label">Description</label>
-                            <input asp-for="TraitDescription" class="form-control" />
-                            <span asp-validation-for="TraitDescription" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="MaximumRNG" class="control-label">Maximum RNG per stint</label>
-                            <input asp-for="MaximumRNG" class="form-control" />
-                            <span asp-validation-for="MaximumRNG" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="MinimumRNG" class="control-label">Minimum RNG per stint</label>
-                            <input asp-for="MinimumRNG" class="form-control" />
-                            <span asp-validation-for="MinimumRNG" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="ChassisReliability" class="control-label">Reliability of Chassis</label>
-                            <input asp-for="ChassisReliability" class="form-control" />
-                            <span asp-validation-for="ChassisReliability" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="DriverReliability" class="control-label">Reliability of Driver</label>
-                            <input asp-for="DriverReliability" class="form-control" />
-                            <span asp-validation-for="DriverReliability" class="text-danger"></span>
-                        </div>
+                <div class="form-group w-75 ml-auto mr-auto">
+                    <label asp-for="TraitGroup" class="control-label float-left">Group</label>
+                    @Html.DropDownListFor(model => model.TraitGroup, new SelectList(Enum.GetValues(typeof(TraitGroup))), new { @class = "form-control" })
+                    <span asp-validation-for="TraitGroup" class="text-danger"></span>
+                </div>
+                <div class="form-group w-75 ml-auto mr-auto">
+                    <label asp-for="QualyPace" class="control-label float-left">Qualification pace</label>
+                    <input asp-for="QualyPace" class="form-control" />
+                    <span asp-validation-for="QualyPace" class="text-danger"></span>
+                </div>
+                <div class="form-group w-75 ml-auto mr-auto">
+                    <label asp-for="DriverRacePace" class="control-label float-left">Racepace Driver</label>
+                    <input asp-for="DriverRacePace" class="form-control" />
+                    <span asp-validation-for="DriverRacePace" class="text-danger"></span>
+                </div>
+                <div class="form-group w-75 ml-auto mr-auto">
+                    <label asp-for="ChassisRacePace" class="control-label float-left">Racepace Chassis</label>
+                    <input asp-for="ChassisRacePace" class="form-control" />
+                    <span asp-validation-for="ChassisRacePace" class="text-danger"></span>
+                </div>
+                <div class="form-group w-75 ml-auto mr-auto">
+                    <label asp-for="EngineRacePace" class="control-label float-left">Racepace Engine</label>
+                    <input asp-for="EngineRacePace" class="form-control" />
+                    <span asp-validation-for="EngineRacePace" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="w-50">
+                <div class="float-right">
+                    <div class="form-group w-75 ml-auto mr-auto">
+                        <label asp-for="TraitDescription" class="control-label float-left">Description</label>
+                        <input asp-for="TraitDescription" class="form-control" />
+                        <span asp-validation-for="TraitDescription" class="text-danger"></span>
+                    </div>
+                    <div class="form-group w-75 ml-auto mr-auto">
+                        <label asp-for="MaximumRNG" class="control-label float-left">Maximum RNG modifier</label>
+                        <input asp-for="MaximumRNG" class="form-control" />
+                        <span asp-validation-for="MaximumRNG" class="text-danger"></span>
+                    </div>
+                    <div class="form-group w-75 ml-auto mr-auto">
+                        <label asp-for="MinimumRNG" class="control-label float-left">Minimum RNG modifier</label>
+                        <input asp-for="MinimumRNG" class="form-control" />
+                        <span asp-validation-for="MinimumRNG" class="text-danger"></span>
+                    </div>
+                    <div class="form-group w-75 ml-auto mr-auto">
+                        <label asp-for="ChassisReliability" class="control-label float-left">Chassis reliability modifier</label>
+                        <input asp-for="ChassisReliability" class="form-control" />
+                        <span asp-validation-for="ChassisReliability" class="text-danger"></span>
+                    </div>
+                    <div class="form-group w-75 ml-auto mr-auto">
+                        <label asp-for="DriverReliability" class="control-label float-left">Driver reliability modifier</label>
+                        <input asp-for="DriverReliability" class="form-control" />
+                        <span asp-validation-for="DriverReliability" class="text-danger"></span>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
-</div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn fullwidth" />
+        </div>
+    </form>
 
-<div>
-    <a asp-action="Index"><i class="fas fa-arrow-alt-circle-left fa-2x"></i></a>
+    <div class="float-left">
+        <a asp-action="Index"><i class="fas fa-arrow-alt-circle-left fa-2x"></i></a>
+    </div>
 </div>

@@ -5,79 +5,82 @@
     var race = ViewBag.race;
 }
 
+<div class="d-inline-block w-75 mb-1">
+    <h1>Qualifying in @(race.Name)</h1>
 
-<h1>Qualifying in @(race.Name)</h1>
-<hr />
-<div class="float-right">
-    <input id="two-run-check" type="checkbox" name="tworun" style="margin-right:5px; transform:scale(2);" />
-    <label for="two-run-check">2-run</label>
+    <div class="float-right">
+        <input id="two-run-check" type="checkbox" name="tworun" style="margin-right:5px; transform:scale(2);" />
+        <label for="two-run-check">2-run</label>
+    </div>
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-q1-tab" data-toggle="tab" href="#nav-q1" role="tab" aria-controls="nav-q1" aria-selected="true">Q1</a>
+            <a class="nav-item nav-link" id="nav-q2-tab" data-toggle="tab" href="#nav-q2" role="tab" aria-controls="nav-q2" aria-selected="true">Q2</a>
+            <a class="nav-item nav-link" id="nav-q3-tab" data-toggle="tab" href="#nav-q3" role="tab" aria-controls="nav-q3" aria-selected="true">Q3</a>
+        </div>
+    </nav>
+
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-q1" role="tabpanel" aria-labelledby="nav-q1-tab">
+            <table id="graphic1" class="ctable fullborder fullwidth">
+                <thead class="fullborder">
+                    <tr>
+                        <th>#</th>
+                        <th>Driver</th>
+                        <th>Team</th>
+                        <th>Q1</th>
+                        <th>Gap</th>
+                    </tr>
+                </thead>
+                <tbody id="q1table"></tbody>
+            </table>
+            <button class="btn float-right" onclick="takeScreenshot('#graphic1', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        </div>
+        <div class="tab-pane fade table-sm" id="nav-q2" role="tabpanel" aria-labelledby="nav-q2-tab">
+            <table id="graphic2" class="ctable fullborder fullwidth">
+                <thead class="fullborder">
+                    <tr>
+                        <th>#</th>
+                        <th>Driver</th>
+                        <th>Team</th>
+                        <th>Q2</th>
+                        <th>Gap</th>
+                    </tr>
+                </thead>
+                <tbody id="q2table"></tbody>
+            </table>
+            <button class="btn float-right" onclick="takeScreenshot('#graphic2', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        </div>
+        <div class="tab-pane fade" id="nav-q3" role="tabpanel" aria-labelledby="nav-q3-tab">
+            <table id="graphic3" class="ctable fullborder fullwidth">
+                <thead class="fullborder">
+                    <tr>
+                        <th>#</th>
+                        <th>Driver</th>
+                        <th>Team</th>
+                        <th>Q3</th>
+                        <th>Gap</th>
+                    </tr>
+                </thead>
+                <tbody id="q3table"></tbody>
+            </table>
+            <button class="btn float-right" onclick="takeScreenshot('#graphic3', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        </div>
+    </div>
+
+    <button id="generateq1" class="btn float-left w-25">Start Q1!</button>
+    <button id="generateq2" class="btn float-left w-25">Start Q2!</button>
+    <button id="generateq3" class="btn float-left w-25">Start Q3!</button>
+
+    <form asp-action="Return" asp-route-id="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
+        <div class="form-group">
+            <input type="submit" value="Finish!" class="btn float-left w-25" />
+        </div>
+    </form>
+
+    <div class="screenshot"></div>
 </div>
-<nav>
-    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-        <a class="nav-item nav-link active" id="nav-q1-tab" data-toggle="tab" href="#nav-q1" role="tab" aria-controls="nav-q1" aria-selected="true">Q1</a>
-        <a class="nav-item nav-link" id="nav-q2-tab" data-toggle="tab" href="#nav-q2" role="tab" aria-controls="nav-q2" aria-selected="true">Q2</a>
-        <a class="nav-item nav-link" id="nav-q3-tab" data-toggle="tab" href="#nav-q3" role="tab" aria-controls="nav-q3" aria-selected="true">Q3</a>
-    </div>
-</nav>
-<div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active" id="nav-q1" role="tabpanel" aria-labelledby="nav-q1-tab">
-        <table id="graphic1" class="table fullborder">
-            <thead class="fullborder">
-                <tr>
-                    <th>#</th>
-                    <th>Driver</th>
-                    <th>Team</th>
-                    <th>Q1</th>
-                    <th>Gap</th>
-                </tr>
-            </thead>
-            <tbody id="q1table"></tbody>
-        </table>
-        <button class="btn float-right" onclick="takeScreenshot('#graphic1', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
-    </div>
-    <div class="tab-pane fade table-sm" id="nav-q2" role="tabpanel" aria-labelledby="nav-q2-tab">
-        <table id="graphic2" class="table fullborder">
-            <thead class="fullborder">
-                <tr>
-                    <th>#</th>
-                    <th>Driver</th>
-                    <th>Team</th>
-                    <th>Q2</th>
-                    <th>Gap</th>
-                </tr>
-            </thead>
-            <tbody id="q2table"></tbody>
-        </table>
-        <button class="btn float-right" onclick="takeScreenshot('#graphic2', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
-    </div>
-    <div class="tab-pane fade" id="nav-q3" role="tabpanel" aria-labelledby="nav-q3-tab">
-        <table id="graphic3" class="table fullborder">
-            <thead class="fullborder">
-                <tr>
-                    <th>#</th>
-                    <th>Driver</th>
-                    <th>Team</th>
-                    <th>Q3</th>
-                    <th>Gap</th>
-                </tr>
-            </thead>
-            <tbody id="q3table"></tbody>
-        </table>
-        <button class="btn float-right" onclick="takeScreenshot('#graphic3', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
-    </div>
-</div>
-
-<button id="generateq1" class="btn btn-dark">Start Q1!</button>
-<button id="generateq2" class="btn btn-dark">Start Q2!</button>
-<button id="generateq3" class="btn btn-dark">Start Q3!</button>
-
-<form asp-action="Return" asp-route-id="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
-    <div class="form-group">
-        <input type="submit" value="Finish!" class="btn btn-dark" />
-    </div>
-</form>
-
-<div class="screenshot"></div>
 
 <script>
     $(document).ready(function () {

@@ -4,73 +4,73 @@
     ViewData["Title"] = "Biography team";
 }
 
-<div id="graphic">
+<div id="graphic" class="d-inline-block m-sides">
     <h1>Biography</h1>
     <h4>@Model.Team.Abbreviation</h4>
-    <hr />
-    <div class="biocontainer">
-        <div class="fixed">
-            <dl class="inline-flex">
-                <dt>
-                    Starts:
-                </dt>
-                <dd>
-                    @(Model.DriverResults.Count() / 2)
-                </dd>
-                <dt>
-                    Poles:
-                </dt>
-                <dd>
-                    @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
-                </dd>
-                <dt>
-                    Podiums:
-                </dt>
-                <dd>
-                    @(Model.DriverResults.Where(dr => dr.Position <= 3).Count())
-                </dd>
-                <dt>
-                    Wins:
-                </dt>
-                <dd>
-                    @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
-                </dd>
-                <dt>
-                    WDCs:
-                </dt>
-                <dd>
-                    @ViewBag.driverchampionships
-                </dd>
-                <dt>
-                    WCCs:
-                </dt>
-                <dd>
-                    @ViewBag.teamchampionships
-                </dd>
-                <dt>
-                    DNFs:
-                </dt>
-                <dd>
-                    @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
-                </dd>
-                <dt>
-                    DSQs::
-                </dt>
-                <dd>
-                    @(Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count())
-                </dd>
-                <dt>
-                    Drivers:
-                </dt>
-                <dd class="row">
-                    @foreach (var driver in Model.SeasonDriver.Select(s => s.Driver).Distinct())
-                    {
-                        <span class="badge badge-light">@(driver.Name)</span>
-                    }
-                </dd>
-            </dl>
+
+    <div class="col mb-1 ml-auto mr-auto" style="max-width: 800px;">
+        <h5 class="mb-1"><b>Drivers: </b></h5>
+        <div>
+            @foreach (var driver in Model.SeasonDriver.Select(s => s.Driver).Distinct())
+            {
+                <span class="badge teritary mb-1" style="font-size:0.9rem;">@(driver.Name)</span>
+            }
         </div>
-        <div class="flex-item">
+    </div>
+
+    <div class="row">
+        <dl class="row text-left w-50">
+            <dt class="col-md-6">
+                Starts:
+            </dt>
+            <dd class="col-md-6">
+                @(Model.DriverResults.Count() / 2)
+            </dd>
+            <dt class="col-md-6">
+                Poles:
+            </dt>
+            <dd class="col-md-6">
+                @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
+            </dd>
+            <dt class="col-md-6">
+                Podiums:
+            </dt>
+            <dd class="col-md-6">
+                @(Model.DriverResults.Where(dr => dr.Position <= 3).Count())
+            </dd>
+            <dt class="col-md-6">
+                Wins:
+            </dt>
+            <dd class="col-md-6">
+                @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
+            </dd>
+            <dt class="col-md-6">
+                WDCs:
+            </dt>
+            <dd class="col-md-6">
+                @ViewBag.driverchampionships
+            </dd>
+            <dt class="col-md-6">
+                WCCs:
+            </dt>
+            <dd class="col-md-6">
+                @ViewBag.teamchampionships
+            </dd>
+            <dt class="col-md-6">
+                DNFs:
+            </dt>
+            <dd class="col-md-6">
+                @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
+            </dd>
+            <dt class="col-md-6">
+                DSQs:
+            </dt>
+            <dd class="col-md-6">
+                @(Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count())
+            </dd>
+        </dl>
+
+        <div class="w-50" style="max-width: 500px;">
             <p id="biography" contenteditable="true">
                 @if (Model.Team.Biography == null)
                 {
@@ -81,19 +81,19 @@
                     @Model.Team.Biography
                 }
             </p>
-            <button id="savebio" class="btn btn-dark"><i class="far fa-save"></i></button>
+            <button id="savebio" class="btn float-right"><i class="far fa-save"></i></button>
         </div>
     </div>
-</div>
 
-<div class="row">
-    <a asp-action="Index">
-        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-    </a>
-    <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-</div>
+    <div class="row justify-content-between">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    </div>
 
-<div id="screenshot"></div>
+    <div id="screenshot"></div>
+</div>
 
 <script>
     $('#savebio').click(function () {

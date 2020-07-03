@@ -1,11 +1,9 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Driver>
 @{ViewData["Title"] = "Coureurs toevoegen";}
 
-<section>
-    <header>
-        <h3>Season @ViewBag.seasonId - Add drivers</h3>
-    </header>
-    <table class="table fullborder">
+<div class="d-inline-block w-50">
+    <h3>Season @ViewBag.seasonId - Add drivers</h3>
+    <table class="ctable fullborder fullwidthr">
         <thead class="fullborder">
             <tr>
                 <th>Number</th>
@@ -26,7 +24,8 @@
             }
         </tbody>
     </table>
-    <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+
+    <a class="float-left" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
         <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
     </a>
-</section>
+</div>

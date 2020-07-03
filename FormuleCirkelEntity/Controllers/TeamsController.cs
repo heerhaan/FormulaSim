@@ -33,10 +33,12 @@ namespace FormuleCirkelEntity.Controllers
             var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
 
             var seasondrivers = DataContext.SeasonDrivers
+                .IgnoreQueryFilters()
                 .Where(sd => sd.SeasonTeam.TeamId == id)
                 .Include(sd => sd.Driver);
 
             var driverresults = DataContext.DriverResults
+                .IgnoreQueryFilters()
                 .Where(dr => dr.SeasonDriver.SeasonTeam.TeamId == id);
 
             // Calculates the amount of championships a team has won.
@@ -45,11 +47,13 @@ namespace FormuleCirkelEntity.Controllers
             foreach (var season in DataContext.Seasons)
             {
                 var driverwinner = DataContext.SeasonDrivers
+                    .IgnoreQueryFilters()
                     .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
                     .OrderByDescending(dr => dr.Points)
                     .FirstOrDefault();
 
                 var teamwinner = DataContext.SeasonTeams
+                    .IgnoreQueryFilters()
                     .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
                     .OrderByDescending(dr => dr.Points)
                     .FirstOrDefault();

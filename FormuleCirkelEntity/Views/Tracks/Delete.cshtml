@@ -6,42 +6,40 @@
     if (Model.Archived) { archive = "Unarchive"; }
 }
 
-<h1>@archive</h1>
+<div class="d-inline-block">
+    <h1>@archive</h1>
+    <div>
+        <h3>Are you sure you want to move @Model.Name?</h3>
+        <dl class="row mt-3 text-left">
+            <dt class="col-md-4">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-md-8">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-md-4">
+                @Html.DisplayNameFor(model => model.Location)
+            </dt>
+            <dd class="col-md-8">
+                @Html.DisplayFor(model => model.Location)
+            </dd>
+            <dt class="col-md-4">
+                @Html.DisplayNameFor(model => model.Specification)
+            </dt>
+            <dd class="col-md-8">
+                @Html.DisplayFor(model => model.Specification)
+            </dd>
+        </dl>
 
-<h3>Are you sure you want to move @Model.Name?</h3>
-<div>
-    <h4>Track</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Specification)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Specification)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="@archive" class="btn btn-danger" />
-    </form>
-</div>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="@archive" class="btn fullwidth" />
+        </form>
+    </div>
 
-<br />
-<div>
-    <a asp-action="Index">
-        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-    </a>
+    <div class="float-left mt-2">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
 </div>

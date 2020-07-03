@@ -4,95 +4,87 @@
     ViewData["Title"] = "RaceWeekend";
 }
 
-<section class="row my-1">
-    <div>
-        <div id="graphic">
-            <h1>@ViewBag.year @Model.Name Grand Prix</h1>
-            <table class="table fullborder">
-                <thead class="fullborder">
+<div class="d-inline-block">
+    <div id="graphic">
+        <h1>@ViewBag.year @Model.Name Grand Prix</h1>
+        <table class="ctable fullborder fullwidth">
+            <thead class="fullborder">
+                <tr>
+                    <td>#</td>
+                    <td>Nr.</td>
+                    <td>Driver</td>
+                    <td>Team</td>
+                    <td>Penalty</td>
+                    <td>Driver traits</td>
+                    <td>Team traits</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var driver in Model.DriverResults.OrderBy(dr => dr.Grid).Select(dr => dr.SeasonDriver))
+                {
                     <tr>
-                        <td>#</td>
-                        <td>Nr.</td>
-                        <td>Driver</td>
-                        <td>Team</td>
-                        <td>Penalty</td>
-                        <td>Driver traits</td>
-                        <td>Team traits</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var driver in Model.DriverResults.OrderBy(dr => dr.Grid).Select(dr => dr.SeasonDriver))
-                    {
-                        <tr>
-                            <td><b>@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</b></td>
-                            <td><span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
-                                @driver.Driver.DriverNumber</span></td>
-                            <td class="text-left"><span class="ml-cel">@driver.Driver.Name</span></td>
-                            <td><span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
-                                @driver.SeasonTeam.Name</span></td>
-                            @if (Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason == null)
+                        <td><b>@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</b></td>
+                        <td>
+                            <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
+                                @driver.Driver.DriverNumber
+                            </span>
+                        </td>
+                        <td class="text-left"><span class="ml-cel">@driver.Driver.Name</span></td>
+                        <td>
+                            <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
+                                @driver.SeasonTeam.Name
+                            </span>
+                        </td>
+                        @if (Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason == null)
+                        {
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-dsq fullwidth">@(Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason)</span></td>
+                        }
+                        <td>
+                            @if (driver.Traits.Any())
                             {
-                                <td></td>
+                                foreach (var trait in driver.Traits.Values)
+                                {
+                                    <span class="badge alt-color nofullwidth" style="font-size:1rem;">[@trait.Name]</span>
                                 }
+                            }
                             else
                             {
-                                <td><span class="badge badge-dsq fullwidth">@(Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason)</span></td>
+                                <span>-</span>
                             }
-                            <td>
-                                @if (driver.Traits.Any())
+                        </td>
+                        <td>
+                            @if (driver.SeasonTeam.Traits.Any())
+                            {
+                                foreach (var trait in driver.SeasonTeam.Traits.Values)
                                 {
-                                    foreach (var trait in driver.Traits.Values)
-                                    {
-                                        <span class="badge alt-color nofullwidth" style="font-size:1rem;">[@trait.Name]</span>
-                                    }
+                                    <span class="badge alt-color nofullwidth" style="font-size:1rem;">[@trait.Name]</span>
                                 }
-                                else
-                                {
-                                    <span>-</span>
-                                }
-                            </td>
-                            <td>
-                                @if (driver.SeasonTeam.Traits.Any())
-                                {
-                                    foreach (var trait in driver.SeasonTeam.Traits.Values)
-                                    {
-                                        <span class="badge alt-color nofullwidth" style="font-size:1rem;">[@trait.Name]</span>
-                                    }
-                                }
-                                else
-                                {
-                                    <span>-</span>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div>
-                <h5>Track info</h5>
-                <dl>
-                    <dt>Length</dt>
-                    <dd>@Model.Track.LengthKM KM</dd>
-                    <dt>Weather</dt>
-                    <dd>@Model.Weather</dd>
-                </dl>
-            </div>
-        </div>
-        <div class="row">
-            @if (Model.RaceState == RaceState.Race || Model.RaceState == RaceState.Finished)
-            {
-                <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Race</a>
-            }
-            @if (Model.RaceState == RaceState.Concept || Model.RaceState == RaceState.Qualifying)
-            {
-                <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Qualifying</a>
-            }
-            <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-        </div>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-</section>
+    <div class="row mb-1">
+        @if (Model.RaceState == RaceState.Race || Model.RaceState == RaceState.Finished)
+        {
+            <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn w-25">Race</a>
+        }
+        @if (Model.RaceState == RaceState.Concept || Model.RaceState == RaceState.Qualifying)
+        {
+            <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn w-25">Qualifying</a>
+        }
+        <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    </div>
 
-<hr />
-<section class="row my-1">
     <div id="screenshot"></div>
-</section>
+</div>

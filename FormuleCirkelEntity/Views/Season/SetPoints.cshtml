@@ -4,37 +4,44 @@
     ViewData["Title"] = "Set Points";
 }
 
-<h1>Set awarded points for season @Model.SeasonNumber</h1>
+<div class="d-inline-block w-50">
+    <h1>Set awarded points for season @Model.SeasonNumber</h1>
 
-@using (Html.BeginForm())
-{
-    <div class="form-group">
-        @Html.TextBoxFor(p => p.SeasonId, new { style = "display: none;" })
-    </div>
+    @using (Html.BeginForm())
+    {
+        <div class="form-group">
+            @Html.TextBoxFor(p => p.SeasonId, new { style = "display: none;" })
+        </div>
 
-    <div class="btn-container">
-        <button type="button" id="add" class="btn">Add</button>
-        <button type="submit" class="btn btn-success float-right submit">Save</button>
-    </div>
+        <div class="row justify-content-between mb-1">
+            <button type="button" id="add" class="btn w-10">Add</button>
+            <button type="submit" class="btn submit w-10">Save</button>
+        </div>
 
-    <table class="fullborder">
-        <thead class="fullborder">
-            <tr>
-                <th>Position</th>
-                <th>Points</th>
-            </tr>
-        </thead>
-        <tbody id="pointPositions"></tbody>
+        <table class="ctable fullborder fullwidth">
+            <thead class="fullborder">
+                <tr>
+                    <th class="w-20">Position</th>
+                    <th class="w-50">Points</th>
+                    <th class="w-auto"></th>
+                </tr>
+            </thead>
+            <tbody id="pointPositions"></tbody>
+        </table>
+    }
+
+    <a asp-action="Settings" asp-route-id="@Model.SeasonId" class="float-left">
+        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+    </a>
+
+    <table id="newpoint" style="display:none;">
+        <tr>
+            <td><label>%</label></td>
+            <td><input name="Points" type="number"></td>
+            <td><button type="button" class="btn fullwidth delete">Delete</button></td>
+        </tr>
     </table>
-}
-
-<table id="newpoint" style="display:none;">
-    <tr>
-        <td><label>%</label></td>
-        <td><input name="Points" type="number"></td>
-        <td><button type="button" class="btn delete">Delete</button></td>
-    </tr>
-</table>
+</div>
 
 <script type="text/javascript">
     var form = $('form');
@@ -53,19 +60,3 @@
         $(this).closest('tr').remove();
     });
 </script>
-
-<style>
-    td, th {
-        width: 180px;
-        text-align: center;
-    }
-
-    .btn-container {
-        width: 360px;
-    }
-</style>
-
-<br />
-<a asp-action="Settings" asp-route-id="@Model.SeasonId">
-    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-</a>

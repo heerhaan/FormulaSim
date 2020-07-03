@@ -1,71 +1,61 @@
 ﻿@model FormuleCirkelEntity.Models.SeasonDriver
 @{ViewData["Title"] = "Edit driver";}
 
-<section>
-    <header>
-        <h1 class="row">Season @Model.Season.SeasonNumber</h1>
-        <h4 class="row">Driver: @Model.Driver.DriverNumber - @Model.Driver.Name</h4>
-    </header>
-    <section>
+<div class="d-inline-block">
+    <h1>Season @Model.Season.SeasonNumber</h1>
+    <h4>#@Model.Driver.DriverNumber - @Model.Driver.Name</h4>
+
+    <div>
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="row">
-                <div class="col-md-3">
-                    <div>
-                        <div class="form-group">
-                            <label asp-for="Skill" class="control-label"></label>
-                            <input asp-for="Skill" class="form-control" />
-                            <span asp-validation-for="Skill" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Reliability" class="control-label"></label>
-                            <input asp-for="Reliability" id="relbox" class="form-control" />
-                            <button type="button" class="btn btn-dark float-right" onclick="reldev()">
-                                <i class="fas fa-dice" data-toggle="tooltip" data-placement="right"
-                                   title="RNG for this roll is between 95 and 100"></i>
-                            </button>
-                            <span asp-validation-for="Reliability" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Tires" class="control-label"></label>
-                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="Soft tires get +10 when tyre bonus applies in stint but will get [-20 to 0] RNG when tyre wear applies."></i>
-                            @Html.DropDownListFor(model => model.Tires, new SelectList(Enum.GetValues(typeof(Tires))), new { @class = "form-control" })
-                            <span asp-validation-for="Tires" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="SeasonTeamId" class="control-label">Team</label>
-                            <select asp-for="SeasonTeamId" class="form-control" asp-items="ViewBag.teams"></select>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="DriverStatus" class="control-label">Status in team</label>
-                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="First drivers swaps positions with their second driver if one position behind. Also gives +2/-2 to chassis."></i>
-                            @Html.DropDownListFor(model => model.DriverStatus, new SelectList(Enum.GetValues(typeof(DriverStatus))), new { @class = "form-control" })
-                            <span asp-validation-for="DriverStatus" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Save" class="btn btn-dark" />
-                        </div>
-                    </div>
+            <div class="form-group">
+                <label asp-for="Skill" class="control-label float-left"></label>
+                <input asp-for="Skill" class="form-control" />
+                <span asp-validation-for="Skill" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <div class="col-10">
+                    <label asp-for="Reliability" class="control-label float-left"></label>
+                    <input asp-for="Reliability" id="relbox" class="form-control" />
+                    <span asp-validation-for="Reliability" class="text-danger"></span>
                 </div>
-                <div class="col-md-3">
-                    <div class="float-right">
-                        <div class="form-group">
-                        </div>
-                        <div class="form-group">
-                        </div>
-                        <div class="form-group">
-                        </div>
-                    </div>
+                <div class="col-2">
+                    <button type="button" class="btn" onclick="reldev()"
+                            data-toggle="tooltip" data-placement="right" title="RNG for this roll is between 95 and 100">
+                        <i class="fas fa-dice"></i>
+                    </button>
                 </div>
             </div>
+            <div class="form-group">
+                <label asp-for="Tires" class="control-label float-left"></label>
+                <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
+                   title="Soft tires get +10 when tyre bonus applies in stint but will get [-20 to 0] RNG when tyre wear applies."></i>
+                @Html.DropDownListFor(model => model.Tires, new SelectList(Enum.GetValues(typeof(Tires))), new { @class = "form-control" })
+                <span asp-validation-for="Tires" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SeasonTeamId" class="control-label float-left">Team</label>
+                <select asp-for="SeasonTeamId" class="form-control" asp-items="ViewBag.teams"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DriverStatus" class="control-label float-left">Status in team</label>
+                <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
+                   title="First drivers swaps positions with their second driver if one position behind. Also gives +2/-2 to chassis."></i>
+                @Html.DropDownListFor(model => model.DriverStatus, new SelectList(Enum.GetValues(typeof(DriverStatus))), new { @class = "form-control" })
+                <span asp-validation-for="DriverStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn fullwidth" />
+            </div>
         </form>
-    </section>
-</section>
-<a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
-    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-</a>
+
+        <div class="float-left">
+            <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+                <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+            </a>
+        </div>
+    </div>
+</div>
 
 <script>
     function reldev() {

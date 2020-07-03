@@ -4,23 +4,26 @@
     ViewData["Title"] = "Engine development";
 }
 
-<h1>Engine development</h1>
+<div class="d-inline-block w-60">
+    <h1>Engine development</h1>
 
-<section>
+    <div class="row justify-content-between mb-1">
+        <div>
+            <button id="develop" class="btn">Develop</button>
+            <input id="min" class="input-style fullheight" type="number" placeholder="Min. RNG" />
+            <input id="max" class="input-style fullheight" type="number" placeholder="Max. RNG" />
+        </div>
+        <button id="custom" class="btn">Custom</button>
+    </div>
 
-    <input id="min" type="number" placeholder="Min. RNG" />
-    <input id="max" type="number" placeholder="Max. RNG" />
-    <button id="develop" class="btn btn-dark">Develop</button>
-    <button id="custom" class="btn btn-dark float-right">Custom</button>
-
-    <table id="graphic" class="table fullborder">
+    <table id="graphic" class="ctable fullborder fullwidth">
         <thead class="fullborder">
             <tr>
                 <th>Name</th>
                 <th>Old</th>
                 <th>Change</th>
                 <th>New</th>
-                <th>Custom</th>
+                <th class="w-25">Custom</th>
             </tr>
         </thead>
         <tbody id="devtable">
@@ -33,24 +36,27 @@
                         <td id="old-value-@number">@engine.Power</td>
                         <td id="custom-change-@number">?</td>
                         <td id="custom-new-@number">-</td>
-                        <td><input id="custom-min-@number" class="input-width" type="number" placeholder="Min. RNG" />
-                        <input id="custom-max-@number" class="input-width" type="number" placeholder="Max. RNG" /></td>
+                        <td>
+                            <input id="custom-min-@number" class="input-style" type="number" placeholder="Min. RNG" />
+                            <input id="custom-max-@number" class="input-style" type="number" placeholder="Max. RNG" />
+                        </td>
                         <td id="engine-id-@(number++)" style="display:none;">@(engine.Id)</td>
                     </tr>
                 }
             }
         </tbody>
     </table>
-    <button id="save" class="btn btn-dark">Save</button>
-</section>
+    <button id="save" class="btn fullwidth">Save</button>
 
-<a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
-    <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
-</a>
+    <div class="row justify-content-between">
+        <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    </div>
 
-<button class="btn float-right" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-
-<div id="screenshot"></div>
+    <div id="screenshot"></div>
+</div>
 
 <script>
     $(document).ready(function () {

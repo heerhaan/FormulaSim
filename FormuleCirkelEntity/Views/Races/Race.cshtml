@@ -5,137 +5,139 @@
     int countdrivers = Model.Season.Drivers.Count;
 }
 
-@if (Model.Season.State == SeasonState.Progress)
-{
-    <div class="row justify-content-between">
-        @if (Model.RaceState == RaceState.Race)
-        {
-            <a class="btn btn-dark" onclick="advanceStint()">Next stint</a>
-
-            <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish">
-                <input type="submit" value="Finish" class="btn btn-dark" />
-            </form>
-        }
-    </div>
-}
-
-<section id="graphic" class="row my-1">
-    <h1>@Model.Track.Name</h1>
-    <i id="weather" class="ml-auto fas"></i>
-    <table id="results" class="table fullborder">
-        <thead>
-            <tr>
-                <th class="fullborder" data-field="position">Pos.</th>
-                <th class="fullborder">Nr.</th>
-                <th class="fullborder">Name</th>
-                <th class="fullborder">Team</th>
-                <th class="fullborder">Grid</th>
-                @foreach (var stint in Model.Stints)
-                {
-                    <th class="fullborder" data-field="stintResultHeader-@stint.Key">
-                        @stint.Key
-                    </th>
-                }
-                <th class="fullborder" data-field="pointsTotal">Score</th>
-                <th class="fullborder">Gap</th>
-                <th class="fullborder">Pts.</th>
-                <th style="display:none;"></th>
-                <th style="display:none;"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var driverResult in Model.DriverResults.OrderBy(d => d.Position))
+<div class="d-inline-block">
+    @if (Model.Season.State == SeasonState.Progress)
+    {
+        <div class="row justify-content-between">
+            @if (Model.RaceState == RaceState.Race)
             {
-                int gridChange = (driverResult.Grid - driverResult.Position);
-                <tr data-obj-id="@driverResult.SeasonDriverId">
-                    <td data-field="position"><b>@driverResult.Position</b></td>
-                    <td data-field="driverNumber"><span class="badge fullwidth" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
-                    <td class="text-left" data-field="driverName"><span class="ml-cel result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
-                    <td data-field="teamName"><span class="badge fullwidth" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);font-size:1rem;">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
-                    <td data-field="startGrid">
-                        @if (gridChange > 0)
+                <a class="btn w-25" onclick="advanceStint()">Next stint</a>
+
+                <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish" class="w-25">
+                    <input type="submit" value="Finish" class="btn fullwidth" />
+                </form>
+            }
+        </div>
+    }
+
+    <div id="graphic" class="row">
+        <h1>@Model.Track.Name</h1>
+        <i id="weather" class="ml-auto fas"></i>
+        <table id="results" class="ctable fullborder fullwidth">
+            <thead>
+                <tr>
+                    <th class="fullborder" data-field="position">Pos.</th>
+                    <th class="fullborder">Nr.</th>
+                    <th class="fullborder">Name</th>
+                    <th class="fullborder">Team</th>
+                    <th class="fullborder">Grid</th>
+                    @foreach (var stint in Model.Stints)
+                    {
+                        <th class="fullborder" data-field="stintResultHeader-@stint.Key">
+                            @stint.Key
+                        </th>
+                    }
+                    <th class="fullborder" data-field="pointsTotal">Score</th>
+                    <th class="fullborder">Gap</th>
+                    <th class="fullborder">Pts.</th>
+                    <th style="display:none;"></th>
+                    <th style="display:none;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var driverResult in Model.DriverResults.OrderBy(d => d.Position))
+                {
+                    int gridChange = (driverResult.Grid - driverResult.Position);
+                    <tr data-obj-id="@driverResult.SeasonDriverId">
+                        <td data-field="position"><b>@driverResult.Position</b></td>
+                        <td data-field="driverNumber"><span class="badge fullwidth font-size-default" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
+                        <td class="text-left" data-field="driverName"><span class="ml-cel result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
+                        <td data-field="teamName"><span class="badge fullwidth font-size-default" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
+                        <td data-field="startGrid">
+                            @if (gridChange > 0)
+                            {
+                                <i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth' style="color:white;">@gridChange</span>
+                            }
+                            else if (gridChange < 0)
+                            {
+                                <i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth' style="color:white;">@(gridChange * -1)</span>
+                            }
+                            else
+                            {
+                                <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth' style="color:white;">@gridChange</span>
+                            }
+                        </td>
+                        @foreach (var stint in Model.Stints)
                         {
-                            <i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth' style="color:white;">@gridChange</span>
+                            var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
+                            if (stintResult.Equals(default(KeyValuePair<int, int?>)))
+                            {
+                                stintResult = new KeyValuePair<int, int?>(stint.Key, null);
+                            }
+                            <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
                         }
-                        else if (gridChange < 0)
+                        @if (driverResult.Status == Status.DNF)
                         {
-                            <i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth' style="color:white;">@(gridChange * -1)</span>
+                            <td data-field="pointsTotal"><span class="badge result-dnf nofullwidth">DNF</span></td>
+                            <td data-field="dnfCause"><i>@driverResult.DNFCause</i></td>
+
+                        }
+                        else if (driverResult.Status == Status.DSQ)
+                        {
+                            <td data-field="pointsTotal"><span class="badge badge-dsq nofullwidth">DSQ</span></td>
+                            <td data-field="dnfCause"><b>@driverResult.DSQCause</b></td>
                         }
                         else
                         {
-                            <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth' style="color:white;">@gridChange</span>
+                            <td data-field="pointsTotal">@driverResult.Points</td>
+                            <td data-field="dnfCause">-</td>
                         }
-                    </td>
-                    @foreach (var stint in Model.Stints)
-                    {
-                        var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
-                        if (stintResult.Equals(default(KeyValuePair<int, int?>)))
+
+                        @if (driverResult.Position > maxPos)
                         {
-                            stintResult = new KeyValuePair<int, int?>(stint.Key, null);
+                            <td data-field="points"></td>
                         }
-                        <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
-                    }
-                    @if (driverResult.Status == Status.DNF)
-                    {
-                        <td data-field="pointsTotal"><span class="badge badge-danger nofullwidth">DNF</span></td>
-                        <td data-field="dnfCause"><i>@driverResult.DNFCause</i></td>
+                        else
+                        {
+                            <td data-field="points"><b>@Model.Season.PointsPerPosition[driverResult.Position]</b></td>
+                        }
+                        <td data-field="abbreviation" style="display:none;"><span>@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
+                        <td data-field="fullTeamName" style="display:none;"><span>@driverResult.SeasonDriver.SeasonTeam.Name</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-                    }
-                    else if (driverResult.Status == Status.DSQ)
-                    {
-                        <td data-field="pointsTotal"><span class="badge badge-dsq nofullwidth">DSQ</span></td>
-                        <td data-field="dnfCause"><b>@driverResult.DSQCause</b></td>
-                    }
-                    else
-                    {
-                        <td data-field="pointsTotal">@driverResult.Points</td>
-                        <td data-field="dnfCause">-</td>
-                    }
+    <div class="row justify-content-between">
+        <button class="btn" onclick="takeScreenshot('#graphic', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn" onclick="redrawChart()"><i class="fas fa-chart-bar fa-2x mt-auto"></i></button>
+    </div>
 
-                    @if (driverResult.Position > maxPos)
-                    {
-                        <td data-field="points"></td>
-                    }
-                    else
-                    {
-                        <td data-field="points"><b>@Model.Season.PointsPerPosition[driverResult.Position]</b></td>
-                    }
-                    <td data-field="abbreviation" style="display:none;"><span>@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
-                    <td data-field="fullTeamName" style="display:none;"><span>@driverResult.SeasonDriver.SeasonTeam.Name</span></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</section>
+    <div class="screenshot"></div>
 
-<div class="row justify-content-between">
-    <button class="btn" onclick="takeScreenshot('#graphic', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
-    <button class="btn" onclick="redrawChart()"><i class="fas fa-chart-bar fa-2x mt-auto"></i></button>
-</div>
+    <div id="resultScreenshot"></div>
 
-<div class="screenshot"></div>
+    <div style="overflow: hidden; height: 0;">
+        <div id="formulaGraphic">
+            <div id="position">0</div>
+            <div id="divider"></div>
 
-<div id="resultScreenshot"></div>
+            <div id="details">
+                <div id="name">Firstname Lastname</div>
+                <div id="team">Racing Team</div>
+            </div>
 
-<div style="overflow: hidden; height: 0;">
-    <div id="formulaGraphic">
-        <div id="position">0</div>
-        <div id="divider"></div>
-
-        <div id="details">
-            <div id="name">Firstname Lastname</div>
-            <div id="team">Racing Team</div>
-        </div>
-
-        <div id="extra">
-            <div id="number">0</div>
-            <div id="tla">LAS</div>
+            <div id="extra">
+                <div id="number">0</div>
+                <div id="tla">LAS</div>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="raceChartWrap">
-    <canvas id="raceChart"></canvas>
+    <div id="raceChartWrap">
+        <canvas id="raceChart"></canvas>
+    </div>
 </div>
 
 <script>
@@ -200,7 +202,7 @@
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
 
             if (driverResult.Status == 1) {
-                row.querySelector("td[data-field='pointsTotal']").innerHTML = "<span class='badge badge-danger nofullwidth'>DNF</span>";
+                row.querySelector("td[data-field='pointsTotal']").innerHTML = "<span class='badge result-dnf nofullwidth'>DNF</span>";
                 row.querySelector("td[data-field='dnfCause']").innerHTML = "<i>" + DNFCauses[driverResult.DNFCause] + "</i>";
             }
             else if (driverResult.Status == 2) {
@@ -215,13 +217,13 @@
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
             let gridChange = (driverResult.Grid - driverResult.Position);
             if (gridChange > 0) {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth'> " + gridChange + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth' style='color: white;'> " + gridChange + " </span>";
             }
             else if (gridChange < 0) {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth'> " + (gridChange * -1) + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth' style='color: white;'> " + (gridChange * -1) + " </span>";
             }
             else {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth'> " + gridChange + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth' style='color: white;'> " + gridChange + " </span>";
             }
             Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
                 let stintResult = driverResult.StintResults[stintKey];
@@ -485,6 +487,7 @@
         width: 890px;
         height: 105px;
         font-family: "Formula1 Display";
+        text-align: left;
     }
 
         #formulaGraphic #position {

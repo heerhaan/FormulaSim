@@ -166,7 +166,7 @@
     </div>
 
     <div id="screenshot"></div>
-    <canvas id="standingsChart" width="0" height="0"></canvas>
+    <canvas id="standingsChart"></canvas>
 </div>
 
 <script>
@@ -179,7 +179,6 @@
         ctx.getContext('2d');
         var driversets = [];
         var points = @(Html.Raw(ViewBag.points));
-        console.log(res);
 
         $(res).each(function (driverKey, driverValue) {
             var raceresults = [];
@@ -194,6 +193,7 @@
                 }
                 raceresults.push(total);
             });
+
             var driverDataset = {
                 label: driverValue.Driver.Name,
                 backgroundColor: driverValue.SeasonTeam.Accent,
@@ -201,6 +201,7 @@
                 data: raceresults,
                 fill: false
             };
+
             if (driversets.some(d => d.backgroundColor === driverValue.SeasonTeam.Accent && d.borderColor === driverValue.SeasonTeam.Colour)) {
                 driverDataset.borderDash = [5, 5];
             }

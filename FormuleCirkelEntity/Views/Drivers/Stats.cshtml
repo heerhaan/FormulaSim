@@ -7,15 +7,17 @@
 <div id="graphic" class="d-inline-block m-sides">
     <h1>Biography</h1>
     <h4>#[0] - @Model.DriverName</h4>
+
     <div class="row">
-            <p><b>Teams: </b></p>
-            <div class="ml-1">
-                @foreach (var team in Model.Teams)
-                {
-                    <span class="badge teritary" style="font-size:0.9rem;">@team.Abbreviation</span>
-                }
-            </div>
+        <p><b>Teams: </b></p>
+        <div class="ml-1">
+            @foreach (var team in Model.Teams)
+            {
+                <span class="badge teritary" style="font-size:0.9rem;">@team.Abbreviation</span>
+            }
         </div>
+    </div>
+
     <div class="row">
         <dl class="row text-left w-50">
             <dt class="col-md-6">
