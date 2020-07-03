@@ -220,7 +220,6 @@ namespace FormuleCirkelEntity.Controllers
             {
                 { "Topspeed", team.Topspeed },
                 { "Acceleration", team.Acceleration },
-                { "Stability", team.Stability },
                 { "Handling", team.Handling }
             };
 

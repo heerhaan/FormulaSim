@@ -96,7 +96,147 @@
         </tbody>
     </table>
 
-    <button class="btn float-left" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    <div class="row justify-content-between">
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn" onclick="getStandingsGraph()"><i class="fas fa-chart-bar fa-2x"></i></button>
+    </div>
 
     <div id="screenshot"></div>
+    <canvas id="standingsChart" style="display: none;"></canvas>
 </div>
+
+<script>
+    function drawStandingsChart(res) {
+        var ctx = document.getElementById('standingsChart');
+        ctx.style.display = "block";
+        ctx.height = 300;
+        ctx.backgroundColor = 'rgba(30, 34, 39, 0.9)';
+        ctx.getContext('2d');
+        var datasets = [];
+        var polepoint = @ViewBag.polepoint;
+        var points = @(Html.Raw(ViewBag.points));
+
+        $(res).each(function (key, val) {
+            var raceresults = [];
+
+            val.SeasonDrivers.forEach(function (driver) {
+                let total = 0;
+                var driverresults = [];
+                driver.DriverResults.forEach(function (driverresult) {
+                    if (driverresult.Position <= @Model.LastPointPos) {
+                        total = total + points[driverresult.Position];
+                    }
+                    if (driverresult.Grid == 1) {
+                        total = total + polepoint;
+                    }
+                    driverresults.push(total);
+                });
+                raceresults.push(driverresults);
+            });
+
+            var teamresults = raceresults[0].map(function (num, idx) {
+                return num + raceresults[1][idx];
+            });
+
+            var teamDataset = {
+                label: val.Name,
+                backgroundColor: val.Accent,
+                borderColor: val.Colour,
+                data: teamresults,
+                fill: false
+            }
+
+            datasets.push(teamDataset);
+        });
+
+        let roundsDriven = datasets[0].data.length;
+        var roundlabels = [];
+        for (i = 1; i <= roundsDriven; i++) {
+            var roundlabel = i;
+            roundlabels.push(roundlabel);
+        }
+
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: roundlabels,
+                datasets: datasets
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'World Constructor Championship',
+                    fontColor: '#e6e6e6'
+                },
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Rounds',
+                            fontColor: '#e6e6e6'
+                        },
+                        ticks: {
+                            fontColor: '#e6e6e6'
+                        },
+                        gridLines: {
+                            color: "rgba(0, 0, 0, 1.0)",
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Points',
+                            fontColor: '#e6e6e6'
+                        },
+                        ticks: {
+                            fontColor: '#e6e6e6'
+                        },
+                        gridLines: {
+                            color: "rgba(0, 0, 0, 1.0)",
+                        },
+                        position: 'right'
+                    }]
+                },
+                elements: {
+                    line: {
+                        tension: 0
+                    }
+                },
+                legend: {
+                    labels: {
+                        boxWidth: 28,
+                        fontSize: 13,
+                        fontColor: '#e6e6e6'
+                    }
+                },
+                chartCanvas: {
+                    backgroundColor: 'rgba(67, 76, 86, 0.9)'
+                }
+            }
+        });
+
+        Chart.pluginService.register({
+            beforeDraw: function (chart, easing) {
+                // Makes it possible to give a backgroundcolor to the canvas
+            if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
+                var ctx = chart.chart.ctx;
+                ctx.save();
+                ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
+                ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+                ctx.restore();
+            }}
+        });
+
+        let legends = chart.legend.legendItems;
+            legends.forEach(function (e) {
+                [e.fillStyle, e.strokeStyle] = [e.strokeStyle, e.fillStyle];
+            });
+    }
+
+    function getStandingsGraph() {
+        fetch("/Home/@ViewBag.seasonId/GetTeamGraphData", { method: "POST" })
+            .then(response => response.json())
+            .then(result => drawStandingsChart(result));
+    }
+</script>

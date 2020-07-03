@@ -1,85 +1,111 @@
 ﻿body table {
-    background-color: #1C0658;
-    color: #36CDC4;
+    background-color: #191023;
+    color: #ee72f1;
 }
 
     body code[class*=language-],
     body table tbody > tr:nth-child(odd) > td,
     body table tbody > tr:nth-child(odd) > th {
-        background: #5C2686
+        background: #0a0e29
     }
 
+th {
+    background-color: #0a0e29;
+}
+
 .table-prev {
-    border: 1px solid #FF1690;
+    border: 1px solid #00f3ff;
 }
 
     .table-prev th {
-        border: 1px solid #FF1690;
+        border: 1px solid #00f3ff;
     }
 
     .table-prev td {
-        border: 1px solid #FF1690;
+        border: 1px solid #00f3ff;
     }
 
-h1, h5, dt, .link {
-    color: #36CDC4;
+.standings-border th, .standings-border td {
+    border: 1px solid rgba(0, 243, 255, 0.4);
+}
+
+h1, h2, h3, h4, h5, th, dt, .link {
+    color: #e8099a;
 }
 
 .primary {
-    background-color: #1C0658;
-    color: #36CDC4;
+    background-color: #191023;
+    color: #ee72f1;
 }
 
 .secondary {
-    background-color: #5C2686;
+    background-color: #0a0e29;
+}
+
+.teritary {
+    background-color: #e8099a;
+    color: #00f3ff;
+}
+
+.alt-font {
+    color: #00f3ff;
 }
 
 .nav-link {
-    color: rgba(54, 205, 196, 0.75);
+    color: rgba(238, 114, 241, 0.75);
 }
 
 .page-link {
-    background-color: #5C2686;
-    color: #FF1690;
-    border-color: #36CDC4;
+    background-color: #0a0e29;
+    color: #e8099a;
+    border-color: #00f3ff;
 }
 
 .page-item.active .page-link {
-    background-color: #FF1690;
-    border-color: #36CDC4;
-    color: #5C2686;
-}
-
-.btn {
-    background-color: #5C2686;
-    color: #FF1690;
-    border-color: #36CDC4;
-}
-
-#graphic {
-    background-color: #1C0658;
+    background-color: #e8099a;
+    border-color: #00f3ff;
+    color: #0a0e29;
 }
 
 i.fas, i.fab {
-    color: #FF1690;
+    color: #ee72f1;
+}
+
+.btn {
+    background-color: #0a0e29;
+    color: #e8099a;
+    border-color: #00f3ff;
+}
+
+    .btn:hover {
+        background-color: #ee72f1;
+        color: #0a0e29;
+    }
+
+.badge {
+    border: 1px solid #e8099a;
+}
+
+#graphic {
+    background-color: #191023;
 }
 
 .fullborder {
-    border: 1px solid #36CDC4 !important;
+    border: 1px solid #00f3ff !important;
 }
 
 .upperline {
-    border-top: 1px solid #36CDC4 !important;
+    border-top: 1px solid #00f3ff !important;
 }
 
 .bottomline {
-    border-bottom: 1px solid #36CDC4 !important;
+    border-bottom: 1px solid #00f3ff !important;
 }
 
 .leftline {
-    border-right: 1px solid #36CDC4 !important;
+    border-right: 1px solid #00f3ff !important;
 }
 
 .rightline {
-    border-right: 1px solid #36CDC4 !important;
+    border-right: 1px solid #00f3ff !important;
 }

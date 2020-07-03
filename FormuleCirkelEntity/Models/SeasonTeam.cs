@@ -26,7 +26,6 @@ namespace FormuleCirkelEntity.Models
         public int Points { get; set; }
         public int Topspeed { get; set; }
         public int Acceleration { get; set; }
-        public int Stability { get; set; }
         public int Handling { get; set; }
 
         public int SeasonId { get; set; }

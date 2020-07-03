@@ -88,14 +88,6 @@ footer {
         border: none;
     }
 
-.standings-border th {
-    border: 1px solid rgba(192,192,192,0.4);
-}
-
-.standings-border td {
-    border: 1px solid rgba(192,192,192,0.4);
-}
-
 td {
     vertical-align: middle !important;
 }

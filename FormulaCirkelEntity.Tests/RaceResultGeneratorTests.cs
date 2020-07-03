@@ -9,7 +9,7 @@ namespace FormulaCirkelEntity.Tests
     {
         [Theory]
         [InlineData(4, Specification.Topspeed)]
-        [InlineData(0, Specification.Stability)]
+        [InlineData(0, Specification.Handling)]
         public void ChassisTrackSpec_Calculation_Correct(int expected, Specification spec)
         {
             // Arrange

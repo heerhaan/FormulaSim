@@ -18,6 +18,10 @@
         border: 1px solid #bd2130;
     }
 
+.standings-border th, .standings-border td {
+    border: 1px solid rgba(192,192,192,0.4);
+}
+
 .primary {
     background-color: rgb(30,34,39);
     color: white;

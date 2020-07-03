@@ -4,96 +4,98 @@
         ViewData["Title"] = "Driver bio";
     }
 
-<div id="graphic" class="d-inline-block m-sides">
-    <h1>Biography</h1>
-    <h4>#[0] - @Model.DriverName</h4>
+<div class="d-inline-block m-sides">
+    <div id="graphic" style="padding-left: 15px;padding-right: 15px;">
+        <h1>Biography</h1>
+        <h4>#[0] - @Model.DriverName</h4>
 
-    <div class="row">
-        <p><b>Teams: </b></p>
-        <div class="ml-1">
-            @foreach (var team in Model.Teams)
-            {
-                <span class="badge teritary" style="font-size:0.9rem;">@team.Abbreviation</span>
-            }
+        <div class="row">
+            <p><b>Teams: </b></p>
+            <div class="ml-1">
+                @foreach (var team in Model.Teams)
+                {
+                    <span class="badge teritary" style="font-size:0.9rem;">@team.Abbreviation</span>
+                }
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <dl class="row text-left w-50">
-            <dt class="col-md-6">
-                Starts:
-            </dt>
-            <dd class="col-md-6">
-                @Model.StartCount
-            </dd>
-            <dt class="col-md-6">
-                Poles:
-            </dt>
-            <dd class="col-md-6">
-                @Model.PoleCount
-                @if (Model.StartCount > 0)
-                {
-                    <span class="text-muted" style="font-size:0.8rem;">  (@((Model.PoleCount / Model.StartCount * 100).ToString("F"))%)</span>
-                }
-            </dd>
-            <dt class="col-md-6">
-                Podiums:
-            </dt>
-            <dd class="col-md-6">
-                @(Model.WinCount + Model.SecondCount + Model.ThirdCount)
-                @if (Model.StartCount > 0)
-                {
-                    <span class="text-muted" style="font-size:0.8rem;">  (@(((Model.WinCount + Model.SecondCount + Model.ThirdCount) / Model.StartCount * 100).ToString("F"))%)</span>
-                }
-            </dd>
-            <dt class="col-md-6">
-                Wins:
-            </dt>
-            <dd class="col-md-6">
-                @Model.WinCount
-                @if (Model.StartCount > 0)
-                {
-                    <span class="text-muted" style="font-size:0.8rem;">  (@((Model.WinCount / Model.StartCount * 100).ToString("F"))%)</span>
-                }
-            </dd>
-            <dt class="col-md-6">
-                Titles:
-            </dt>
-            <dd class="col-md-6">
-                @Model.WDCCount
-            </dd>
-            <dt class="col-md-6">
-                DNF/DSQ:
-            </dt>
-            <dd class="col-md-6">
-                @Model.DNFCount
-                @if (Model.StartCount > 0)
-                {
-                    <span class="text-muted" style="font-size:0.8rem;">  (@((Model.DNFCount / Model.StartCount * 100).ToString("F"))%)</span>
-                }
-            </dd>
-        </dl>
-        <div class="w-50" style="max-width: 500px;">
-            <p id="biography" contenteditable="true">
-                @if (Model.DriverBio == null)
-                {
-                    <i>This driver has no bio yet!</i>
-                }
-                else
-                {
-                    @Model.DriverBio
-                }
-            </p>
-            <button id="savebio" class="btn float-right"><i class="far fa-save"></i></button>
+        <div class="row">
+            <dl class="row text-left w-50">
+                <dt class="col-md-6">
+                    Starts:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.StartCount
+                </dd>
+                <dt class="col-md-6">
+                    Poles:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.PoleCount
+                    @if (Model.StartCount > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.PoleCount / Model.StartCount * 100).ToString("F"))%)</span>
+                    }
+                </dd>
+                <dt class="col-md-6">
+                    Podiums:
+                </dt>
+                <dd class="col-md-6">
+                    @(Model.WinCount + Model.SecondCount + Model.ThirdCount)
+                    @if (Model.StartCount > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@(((Model.WinCount + Model.SecondCount + Model.ThirdCount) / Model.StartCount * 100).ToString("F"))%)</span>
+                    }
+                </dd>
+                <dt class="col-md-6">
+                    Wins:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.WinCount
+                    @if (Model.StartCount > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.WinCount / Model.StartCount * 100).ToString("F"))%)</span>
+                    }
+                </dd>
+                <dt class="col-md-6">
+                    Titles:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.WDCCount
+                </dd>
+                <dt class="col-md-6">
+                    DNF/DSQ:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.DNFCount
+                    @if (Model.StartCount > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.DNFCount / Model.StartCount * 100).ToString("F"))%)</span>
+                    }
+                </dd>
+            </dl>
+            <div class="w-50" style="max-width: 500px;">
+                <p id="biography" contenteditable="true">
+                    @if (Model.DriverBio == null)
+                    {
+                        <i>This driver has no bio yet!</i>
+                    }
+                    else
+                    {
+                        @Model.DriverBio
+                    }
+                </p>
+                <button id="savebio" class="btn float-right"><i class="far fa-save"></i></button>
+            </div>
         </div>
-    </div>
 
-    <div class="row justify-content-between">
-        <div>
-            <canvas id="PosBarChart" width="500" height="250"></canvas>
-        </div>
-        <div>
-            <canvas id="NonFinishCauses" width="250" height="250"></canvas>
+        <div class="row justify-content-between">
+            <div>
+                <canvas id="PosBarChart" width="500" height="250"></canvas>
+            </div>
+            <div>
+                <canvas id="NonFinishCauses" width="250" height="250"></canvas>
+            </div>
         </div>
     </div>
 

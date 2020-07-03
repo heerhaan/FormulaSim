@@ -56,15 +56,15 @@
                         <td data-field="startGrid">
                             @if (gridChange > 0)
                             {
-                                <i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth' style="color:white;">@gridChange</span>
+                                <i class='fas fa-caret-up' style='color:green;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@gridChange</span>
                             }
                             else if (gridChange < 0)
                             {
-                                <i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth' style="color:white;">@(gridChange * -1)</span>
+                                <i class='fas fa-caret-down' style='color:red;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@(gridChange * -1)</span>
                             }
                             else
                             {
-                                <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth' style="color:white;">@gridChange</span>
+                                <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@gridChange</span>
                             }
                         </td>
                         @foreach (var stint in Model.Stints)
@@ -99,7 +99,7 @@
                         }
                         else
                         {
-                            <td data-field="points"><b>@Model.Season.PointsPerPosition[driverResult.Position]</b></td>
+                            <td data-field="points"><b class="alt-font">@Model.Season.PointsPerPosition[driverResult.Position]</b></td>
                         }
                         <td data-field="abbreviation" style="display:none;"><span>@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
                         <td data-field="fullTeamName" style="display:none;"><span>@driverResult.SeasonDriver.SeasonTeam.Name</span></td>

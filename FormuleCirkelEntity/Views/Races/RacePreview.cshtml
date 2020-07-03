@@ -8,9 +8,9 @@
 
 <div class="d-inline-block">
     <div id="graphic">
-        <h1>Preview of @Model.Name</h1>
+        <h1>Preview of the @Model.Name GP</h1>
 
-        <div>
+        <div class="mt-4">
             <dl class="row text-left">
                 <dt class="col-sm-3">
                     Round:
@@ -53,8 +53,8 @@
 
             @if (Model.Track.Traits.Any())
             {
-                <h5>Traits</h5>
-                <ul>
+                <h4 class="text-left">Traits</h4>
+                <ul class="text-left" style="line-height: 150%;">
                     @foreach (var trait in Model.Track.Traits.Values)
                     {
                         <li><b>@trait.Name:</b>  @trait.TraitDescription</li>

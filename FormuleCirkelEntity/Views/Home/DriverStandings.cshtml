@@ -150,7 +150,7 @@
                         {
                             if (avg.Driver == item)
                             {
-                                <span class="badge">@avg.Averagepos</span>
+                                <span class='alt-font ml-1' style="font-size:0.7rem;">@avg.Averagepos</span>
                             }
                         }
                     </td>
@@ -162,11 +162,11 @@
 
     <div class="row justify-content-between">
         <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
-        <button class="btn" onclick="getStandingsGraph()"><i class="fas fa-chart-bar fa-2x ml-auto"></i></button>
+        <button class="btn" onclick="getStandingsGraph()"><i class="fas fa-chart-bar fa-2x"></i></button>
     </div>
 
     <div id="screenshot"></div>
-    <canvas id="standingsChart"></canvas>
+    <canvas id="standingsChart" style="display: none;"></canvas>
 </div>
 
 <script>
@@ -174,6 +174,7 @@
 
     function drawStandingsChart(res) {
         var ctx = document.getElementById('standingsChart');
+        ctx.style.display = "block";
         ctx.height = 300;
         ctx.backgroundColor = 'rgba(30, 34, 39, 0.9)';
         ctx.getContext('2d');
@@ -224,14 +225,8 @@
             options: {
                 title: {
                     display: true,
-                    text: 'WDC standings',
+                    text: 'World Driver Championship',
                     fontColor: '#e6e6e6'
-                },
-                tooltips: {
-                    //enabled: false
-                },
-                hover: {
-                    //mode: null
                 },
                 scales: {
                     xAxes: [{
@@ -242,6 +237,9 @@
                         },
                         ticks: {
                             fontColor: '#e6e6e6'
+                        },
+                        gridLines: {
+                            color: "rgba(0, 0, 0, 0.7)",
                         }
                     }],
                     yAxes: [{
@@ -253,6 +251,9 @@
                         },
                         ticks: {
                             fontColor: '#e6e6e6'
+                        },
+                        gridLines: {
+                            color: "rgba(0, 0, 0, 0.7)",
                         },
                         position: 'right'
                     }]
@@ -270,7 +271,7 @@
                     }
                 },
                 chartCanvas: {
-                    backgroundColor: 'rgba(30, 34, 39, 0.9)'
+                    backgroundColor: 'rgba(56, 64, 71, 0.9)'
                 }
             }
         });

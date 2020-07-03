@@ -366,7 +366,6 @@ namespace FormuleCirkelEntity.Controllers
                 seasonTeam.EngineId = lastTeam.EngineId;
                 seasonTeam.Topspeed = lastTeam.Topspeed;
                 seasonTeam.Acceleration = lastTeam.Acceleration;
-                seasonTeam.Stability = lastTeam.Stability;
                 seasonTeam.Handling = lastTeam.Handling;
             }
 
@@ -456,7 +455,6 @@ namespace FormuleCirkelEntity.Controllers
                 team.Chassis = updatedTeam.Chassis;
                 team.Topspeed = updatedTeam.Topspeed;
                 team.Acceleration = updatedTeam.Acceleration;
-                team.Stability = updatedTeam.Stability;
                 team.Handling = updatedTeam.Handling;
                 team.Reliability = updatedTeam.Reliability;
                 team.EngineId = updatedTeam.EngineId;

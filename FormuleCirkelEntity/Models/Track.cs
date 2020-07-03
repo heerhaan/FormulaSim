@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public enum Specification { Topspeed, Acceleration, Stability, Handling }
+    public enum Specification { Topspeed, Acceleration, Handling }
 
     public class Track : ModelBase, IArchivable
     {

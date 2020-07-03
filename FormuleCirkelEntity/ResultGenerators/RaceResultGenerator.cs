@@ -121,7 +121,6 @@ namespace FormuleCirkelEntity.ResultGenerators
             {
                 { "Topspeed", team.Topspeed },
                 { "Acceleration", team.Acceleration },
-                { "Stability", team.Stability },
                 { "Handling", team.Handling }
             };
 

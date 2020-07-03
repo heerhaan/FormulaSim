@@ -117,6 +117,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             ViewBag.lastpointpos = lastpoint;
             ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
+            ViewBag.polepoint = currentSeason.PolePoints;
             ViewBag.seasonId = seasonId;
 
             var standings = _context.SeasonDrivers
@@ -166,10 +167,6 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("[Controller]/{seasonId}/GetDriverGraphData")]
         public IActionResult GetDriverGraphData(int seasonId)
         {
-            var season = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId);
-            if (season == null)
-                return null;
-
             // Overweeg om dit te herschrijven dat hij de races pakt in plaats van de seizoenrijders, of vindt een manier om het zo te krijgen dat de racevolgorde klopt.
             var standings = _context.SeasonDrivers
                 .IgnoreQueryFilters()
@@ -224,6 +221,10 @@ namespace FormuleCirkelEntity.Controllers
                 viewModel.DriverResults = _context.DriverResults
                     .Where(dr => dr.Race.SeasonId == currentSeason.SeasonId);
 
+                ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
+                ViewBag.seasonId = currentSeason.SeasonId;
+                ViewBag.polepoint = currentSeason.PolePoints;
+
                 return View(viewModel);
             }
             else
@@ -265,6 +266,23 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(dr => dr.Race.SeasonId == seasonId);
 
             return View("TeamStandings", viewModel);
+        }
+
+        [HttpPost("[Controller]/{seasonId}/GetTeamGraphData")]
+        public IActionResult GetTeamGraphData(int seasonId)
+        {
+            var season = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId);
+            if (season == null)
+                return null;
+
+            var graphData = _context.SeasonTeams
+                .IgnoreQueryFilters()
+                .Where(st => st.SeasonId == seasonId)
+                .Include(st => st.SeasonDrivers)
+                    .ThenInclude(sd => sd.DriverResults)
+                .OrderBy(st => st.Name).ToList();
+
+            return new JsonResult(graphData, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
         public IActionResult NextRace()
