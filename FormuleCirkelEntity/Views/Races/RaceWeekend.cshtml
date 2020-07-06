@@ -23,7 +23,7 @@
                 @foreach (var driver in Model.DriverResults.OrderBy(dr => dr.Grid).Select(dr => dr.SeasonDriver))
                 {
                     <tr>
-                        <td><b>@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</b></td>
+                        <td><b class="alt-font">@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</b></td>
                         <td>
                             <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
                                 @driver.Driver.DriverNumber
@@ -48,7 +48,7 @@
                             {
                                 foreach (var trait in driver.Traits.Values)
                                 {
-                                    <span class="badge alt-color nofullwidth" style="font-size:1rem;">[@trait.Name]</span>
+                                    <b class="alt-font small">[@trait.Name]</b>
                                 }
                             }
                             else
@@ -61,7 +61,7 @@
                             {
                                 foreach (var trait in driver.SeasonTeam.Traits.Values)
                                 {
-                                    <span class="badge alt-color nofullwidth" style="font-size:1rem;">[@trait.Name]</span>
+                                    <b class="alt-font small">[@trait.Name]</b>
                                 }
                             }
                             else

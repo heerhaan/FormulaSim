@@ -40,6 +40,7 @@ namespace FormuleCirkelEntity.Controllers
             // Basic information about the driver
             stats.DriverId = driver.Id;
             stats.DriverName = driver.Name;
+            stats.DriverNumber = driver.DriverNumber;
             stats.DriverBio = driver.Biography;
 
             // Count of the types of race finishes the driver had

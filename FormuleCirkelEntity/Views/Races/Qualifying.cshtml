@@ -37,7 +37,7 @@
             </table>
             <button class="btn float-right" onclick="takeScreenshot('#graphic1', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
         </div>
-        <div class="tab-pane fade table-sm" id="nav-q2" role="tabpanel" aria-labelledby="nav-q2-tab">
+        <div class="tab-pane fade" id="nav-q2" role="tabpanel" aria-labelledby="nav-q2-tab">
             <table id="graphic2" class="ctable fullborder fullwidth">
                 <thead class="fullborder">
                     <tr>
@@ -198,7 +198,7 @@
             return retString;
         }
         else {
-            var retString = "<tr><td>" + position + "</td><td class='text-left'><span class='ml-cel'>" + driver
+            var retString = "<tr><td class='alt-font'>" + position + "</td><td class='text-left'><span class='ml-cel'>" + driver
                 + "</span></td><td><span class='badge fullwidth font-size-default' style='background-color:"
                 + colour + ";color:" + accent + ";'>" + team + "</span></td><td>" + score + "</td><td>" + gap + "</td></tr>";
 
@@ -213,7 +213,7 @@
     function calculateGap(leader, driver) {
         let gap = "+" + ((leader - driver) * 0.08).toFixed(2);
         if (gap === "+0.00") {
-            gap = "-"
+            gap = "Leader"
         }
         return gap;
     }
