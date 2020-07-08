@@ -16,8 +16,8 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Power)
                 </th>
-                <th></th>
-                <th></th>
+                <th>Edit</th>
+                <th>Revert</th>
             </tr>
         </thead>
         <tbody>
@@ -32,7 +32,7 @@
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">
-                            <i class="fas fa-edit fa-2x"></i>
+                            <i class="fas fa-wrench fa-2x"></i>
                         </a>
                     </td>
                     <td>

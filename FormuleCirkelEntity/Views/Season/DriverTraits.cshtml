@@ -10,49 +10,46 @@
 
     <div class="col">
         <h3>Applied traits</h3>
-        @if (Model.Driver.Traits != null)
-        {
-            <table class="ctable fullborder fullwidth">
-                <thead class="fullborder">
+        <table class="ctable fullborder fullwidth">
+            <thead class="fullborder">
+                <tr>
+                    <th class="w-20">
+                        Trait
+                    </th>
+                    <th class="w-60">
+                        Description
+                    </th>
+                    <th class="w-10">Info</th>
+                    <th class="w-10"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var trait in Model.Driver.Traits.Values)
+                {
                     <tr>
-                        <th class="w-20">
-                            Trait
-                        </th>
-                        <th class="w-60">
-                            Description
-                        </th>
-                        <th class="w-10">Info</th>
-                        <th class="w-10"></th>
+                        <td>
+                            @Html.DisplayFor(modelItem => trait.Name)
+                        </td>
+                        <td class="text-left">
+                            @Html.DisplayFor(modelItem => trait.TraitDescription)
+                        </td>
+                        <td>
+                            <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                        </td>
+                        <td>
+                            <a asp-action="RemoveDriverTrait" asp-route-driverId="@Model.Driver.SeasonDriverId" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var trait in Model.Driver.Traits.Values)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => trait.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => trait.TraitDescription)
-                            </td>
-                            <td>
-                                <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
-                            </td>
-                            <td>
-                                <a asp-action="RemoveDriverTrait" asp-route-driverId="@Model.Driver.SeasonDriverId" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <h4>This driver doesn't have any traits applied yet!</h4>
-        }
+                }
+            </tbody>
+        </table>
 
-        <div class="row">
-            <h3>Add traits</h3>
+        <h3>Add traits</h3>
+        <div class="row justify-content-between mb-1">
+            <form method="POST">
+                <input id="randomInput" type="hidden" name="traitId" />
+                <input id="randomSubmit" type="submit" class="btn fullwidth" value="Random" />
+            </form>
             <a asp-controller="Traits" asp-action="Create" class="btn ml-auto">New trait</a>
         </div>
         @if (Model.Traits.Any())
@@ -81,7 +78,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => trait.Name)
                             </td>
-                            <td>
+                            <td class="text-left">
                                 @Html.DisplayFor(modelItem => trait.TraitDescription)
                             </td>
                             <td>
@@ -110,3 +107,17 @@
         </a>
     </div>
 </div>
+
+<script>
+    window.onload = function () {
+        var traits = @(Json.Serialize(Model.Traits.Select(t => t.TraitId)));
+
+        if (traits.length == 0) {
+            document.getElementById("randomSubmit").style.display = "none";
+        }
+        else {
+            const randomId = traits[Math.floor(Math.random() * traits.length)];
+            document.getElementById("randomInput").value = randomId;
+        }
+    }
+</script>

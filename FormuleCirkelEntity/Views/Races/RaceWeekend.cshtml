@@ -14,6 +14,7 @@
                     <td>Nr.</td>
                     <td>Driver</td>
                     <td>Team</td>
+                    <td>Tire</td>
                     <td>Penalty</td>
                     <td>Driver traits</td>
                     <td>Team traits</td>
@@ -34,6 +35,9 @@
                             <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
                                 @driver.SeasonTeam.Name
                             </span>
+                        </td>
+                        <td>
+                            <span class="badge tire font-size-default">@(driver.Tires.ToString()[0])</span>
                         </td>
                         @if (Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason == null)
                         {
@@ -74,7 +78,7 @@
             </tbody>
         </table>
     </div>
-    <div class="row mb-1">
+    <div class="flex-row mb-1">
         @if (Model.RaceState == RaceState.Race || Model.RaceState == RaceState.Finished)
         {
             <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn w-25">Race</a>
@@ -88,3 +92,10 @@
 
     <div id="screenshot"></div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $(".tire:contains('H')").css("background-color", "darkorange");
+        $(".tire:contains('S')").css("background-color", "darkred");
+    });
+</script>

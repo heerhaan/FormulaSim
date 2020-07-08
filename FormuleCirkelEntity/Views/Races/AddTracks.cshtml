@@ -13,8 +13,8 @@
                 <th>Name</th>
                 <th>Location</th>
                 <th>Specification</th>
-                <th></th>
                 <th data-toggle="tooltip" data-placement="right" title="Press the cog wheel to modify the stints and what happens each stint.">Edit</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -25,15 +25,15 @@
                     <td>@Html.DisplayFor(modelItem => item.Location)</td>
                     <td>@Html.DisplayFor(modelItem => item.Specification)</td>
                     <td>
+                        <a asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.Id">
+                            <i class="fas fa-cog fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
                         <form method="POST">
                             <input type="hidden" name="trackId" value="@item.Id" />
                             <input type="submit" class="btn fullwidth" value="Add" />
                         </form>
-                    </td>
-                    <td>
-                        <a asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.Id">
-                            <i class="fas fa-cog fa-2x"></i>
-                        </a>
                     </td>
                 </tr>
             }

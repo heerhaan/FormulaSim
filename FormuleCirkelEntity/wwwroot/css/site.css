@@ -84,7 +84,7 @@ footer {
     .ctable td {
         padding: 1px;
         min-width: 50px;
-        min-height: 27px;
+        height: 28px;
         border: none;
     }
 
@@ -99,6 +99,10 @@ td {
 button.accept-policy {
     font-size: 1rem;
     line-height: inherit;
+}
+
+.tire {
+    border-radius: 40%;
 }
 
 /* Home page styling */
@@ -160,6 +164,11 @@ dl.inline-flex {
 /* Utility classes */
 .box-shadow {
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+.flex-row {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .font-size-default {

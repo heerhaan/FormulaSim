@@ -175,7 +175,6 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(sd => sd.SeasonTeam)
                     .ThenInclude(sd => sd.Team)
                 .Where(sd => sd.SeasonId == seasonId)
-                .OrderBy(sd => sd.SeasonTeam.Team.Abbreviation)
                 .ToList();
 
             return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });

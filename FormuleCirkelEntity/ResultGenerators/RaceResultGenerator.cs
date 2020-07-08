@@ -51,7 +51,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                         break;
                     case Weather.Storm:
                         weatherRNG += 20;
-                        weatherDNF += -4;
+                        weatherDNF += -5;
                         break;
                 }
 
@@ -71,13 +71,13 @@ namespace FormuleCirkelEntity.ResultGenerators
             if (stint.ApplyQualifyingBonus)
                 result += GetQualifyingBonus(driverResult.Grid, driverResult.SeasonDriver.Season.Drivers.Count, driverResult.SeasonDriver.Season.QualyBonus);
 
-            if (stint.ApplyTireLevel && driverResult.SeasonDriver.Tires == Tires.Softs)
+            if (stint.ApplyTireLevel && driverResult.SeasonDriver.Tires == Tire.Softs)
                 result += (10 + tireWeatherBonus);
 
             if (stint.ApplyEngineLevel)
                 result += (int)Math.Round((driverResult.SeasonDriver.SeasonTeam.Engine.Power + driverResult.EngineRacePace) * engineWeatherMultiplier);
 
-            if (stint.ApplyTireWear && driverResult.SeasonDriver.Tires == Tires.Softs)
+            if (stint.ApplyTireWear && driverResult.SeasonDriver.Tires == Tire.Softs)
             {
                 // Calculates the extra wear a tire may have due to weather circumstances.
                 int maxWear = -20;

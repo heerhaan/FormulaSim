@@ -7,7 +7,7 @@
 <div class="d-inline-block w-60">
     <h1>Team development</h1>
 
-    <div class="row justify-content-between mb-1">
+    <div class="flex-row justify-content-between mb-1">
         <div>
             <button id="develop" class="btn">Develop</button>
             <input id="min" class="input-style fullheight" type="number" placeholder="Min. RNG" />
@@ -21,9 +21,9 @@
             <tr>
                 <th>Team</th>
                 <th>Abbreviation</th>
-                <th>Old</th>
-                <th>Change</th>
-                <th>New</th>
+                <th onclick="hideElements()" style="cursor:pointer;">Old</th>
+                <th onclick="hideElements()" style="cursor:pointer;">Change</th>
+                <th onclick="hideElements()" style="cursor:pointer;">New</th>
                 <th class="w-25">Custom</th>
             </tr>
         </thead>
@@ -40,9 +40,9 @@
                                 @team.Team.Abbreviation
                             </span>
                         </td>
-                        <td id="old-value-@number">@team.Chassis</td>
+                        <td id="old-value-@number" class="onclick-hide">@team.Chassis</td>
                         <td id="custom-change-@number">?</td>
-                        <td id="custom-new-@number">-</td>
+                        <td id="custom-new-@number" class="onclick-hide">-</td>
                         <td>
                             <input id="custom-min-@number" class="input-style" type="number" placeholder="Min. RNG" />
                             <input id="custom-max-@number" class="input-style" type="number" placeholder="Max. RNG" />
@@ -55,7 +55,7 @@
     </table>
     <button id="save" class="btn fullwidth">Save</button>
 
-    <div class="row justify-content-between">
+    <div class="flex-row justify-content-between">
         <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
             <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
         </a>

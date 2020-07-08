@@ -4,99 +4,99 @@
     ViewData["Title"] = "Info";
 }
 
-<div class="d-inline-block">
+<div class="d-inline-block w-50">
     <h1>Info about trait</h1>
     <h2>@Html.DisplayFor(model => model.Name)</h2>
 
-    <div>
+    <div class="ml-auto mr-auto">
         <dl class="row mt-3 text-left">
-            <dt class="col-md-4">
+            <dt class="col-6">
                 @Html.DisplayNameFor(model => model.Name):
             </dt>
-            <dd class="col-md-8">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.Name)
             </dd>
-            <dt class="col-md-4">
+            <dt class="col-6">
                 Applies to:
             </dt>
-            <dd class="col-md-8">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.TraitGroup)
             </dd>
-            <dt class="col-md-4">
+            <dt class="col-6">
                 Description:
             </dt>
-            <dd class="col-md-8">
+            <dd class="col-6">
                 @Html.DisplayFor(model => model.TraitDescription)
             </dd>
             @if (Model.QualyPace.HasValue)
             {
-                <dt class="col-md-4">
+                <dt class="col-6">
                     Qualification pace modifier:
                 </dt>
-                <dd class="col-md-8">
+                <dd class="col-6">
                     @Html.DisplayFor(model => model.QualyPace)
                 </dd>
             }
             @if (Model.DriverRacePace.HasValue)
             {
-                <dt class="col-md-4">
+                <dt class="col-6">
                     Racepace driver modifier:
                 </dt>
-                <dd class="col-md-8">
+                <dd class="col-6">
                     @Html.DisplayFor(model => model.DriverRacePace)
                 </dd>
             }
             @if (Model.ChassisRacePace.HasValue)
             {
-                <dt class="col-md-4">
+                <dt class="col-6">
                     Racepace chassis modifier:
                 </dt>
-                <dd class="col-md-8">
+                <dd class="col-6">
                     @Html.DisplayFor(model => model.ChassisRacePace)
                 </dd>
             }
             @if (Model.EngineRacePace.HasValue)
             {
-                <dt class="col-md-4">
+                <dt class="col-6">
                     Racepace engine modifier:
                 </dt>
-                <dd class="col-md-8">
+                <dd class="col-6">
                     @Html.DisplayFor(model => model.EngineRacePace)
                 </dd>
             }
             @if (Model.ChassisReliability.HasValue)
             {
-                <dt class="col-md-4">
+                <dt class="col-6">
                     Chassis reliability modifier:
                 </dt>
-                <dd class="col-md-8">
+                <dd class="col-6">
                     @Html.DisplayFor(model => model.ChassisReliability)
                 </dd>
             }
             @if (Model.DriverReliability.HasValue)
             {
-                <dt class="col-md-4">
+                <dt class="col-6">
                     Driver reliability modifier:
                 </dt>
-                <dd class="col-md-8">
+                <dd class="col-6">
                     @Html.DisplayFor(model => model.DriverReliability)
                 </dd>
             }
             @if (Model.MaximumRNG.HasValue)
             {
-                <dt class="col-md-4">
+                <dt class="col-6">
                     Maximum RNG modifier:
                 </dt>
-                <dd class="col-md-8">
+                <dd class="col-6">
                     @Html.DisplayFor(model => model.MaximumRNG)
                 </dd>
             }
             @if (Model.MinimumRNG.HasValue)
             {
-                <dt class="col-md-4">
+                <dt class="col-6">
                     Minimum RNG modifier:
                 </dt>
-                <dd class="col-md-8">
+                <dd class="col-6">
                     @Html.DisplayFor(model => model.MinimumRNG)
                 </dd>
             }
