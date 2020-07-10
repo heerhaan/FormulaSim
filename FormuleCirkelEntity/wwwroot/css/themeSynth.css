@@ -82,10 +82,6 @@ i.fas, i.fab {
         color: #0a0e29 !important;
     }
 
-    .btn i.fas, .btn i.fab {
-        color: #e8099a;
-    }
-
     .btn:hover i.fas, .btn:hover i.fab {
         color: #0a0e29;
     }

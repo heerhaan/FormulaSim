@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Traits for team";
-    int position = 1;
 }
 
 <div class="d-inline-block w-60">
@@ -60,8 +59,7 @@
             <table class="ctable fullborder fullwidth">
                 <thead>
                     <tr>
-                        <th class="w-10"></th>
-                        <th class="w-10">Trait</th>
+                        <th class="w-20">Trait</th>
                         <th class="w-60">Description</th>
                         <th class="w-10"></th>
                         <th class="w-10"></th>
@@ -71,9 +69,6 @@
                     @foreach (var trait in Model.Traits)
                     {
                         <tr>
-                            <td>
-                                #@(position++)
-                            </td>
                             <td>
                                 @Html.DisplayFor(modelItem => trait.Name)
                             </td>
