@@ -29,12 +29,14 @@
                     else
                     {
                         <td>
-                            <span class="badge fullwidth font-size-default text-left mr-2" style="background-color:@(topDriver.SeasonTeam.Colour);color:@(topDriver.SeasonTeam.Accent);">
+                            <span class="badge badge-team fullwidth font-size-default text-left mr-2"
+                                  style="background-color:@(topDriver.SeasonTeam.Colour);color:@(topDriver.SeasonTeam.Accent);border-color:@(topDriver.SeasonTeam.Accent);">
                                 @topDriver.Driver.Name
                             </span>
                         </td>
                         <td>
-                            <span class="badge fullwidth font-size-default text-left ml-1" style="background-color:@(topTeam.Colour);color:@(topTeam.Accent);">
+                            <span class="badge badge-team fullwidth font-size-default text-left ml-1"
+                                  style="background-color:@(topTeam.Colour);color:@(topTeam.Accent);border-color:@(topTeam.Accent);">
                                 @topTeam.Name
                             </span>
                         </td>

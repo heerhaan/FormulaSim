@@ -4,23 +4,23 @@
         ViewData["Title"] = "Driver bio";
     }
 
-<div class="d-inline-block m-sides">
-    <div id="graphic" style="padding-left: 15px;padding-right: 15px;">
+<div class="d-inline-block">
+    <div id="graphic">
         <h1>Biography</h1>
-        <h4>#[0] - @Model.DriverName</h4>
+        <h4>#@Model.DriverNumber - @Model.DriverName</h4>
 
-        <div class="row">
-            <p><b>Teams: </b></p>
-            <div class="ml-1">
+        <div class="col mb-1 ml-auto mr-auto" style="max-width: 800px;">
+            <h5 class="mb-1"><b>Teams: </b></h5>
+            <div>
                 @foreach (var team in Model.Teams)
                 {
-                    <span class="badge teritary" style="font-size:0.9rem;">@team.Abbreviation</span>
+                    <span class="badge" style="background-color: white;color: black;font-size:0.9rem;">@team.Abbreviation</span>
                 }
             </div>
         </div>
 
-        <div class="row">
-            <dl class="row text-left w-50">
+        <div class="flex-row">
+            <dl class="flex-row text-left w-50">
                 <dt class="col-md-6">
                     Starts:
                 </dt>
@@ -28,13 +28,19 @@
                     @Model.StartCount
                 </dd>
                 <dt class="col-md-6">
-                    Poles:
+                    Championships:
                 </dt>
                 <dd class="col-md-6">
-                    @Model.PoleCount
+                    @Model.WDCCount
+                </dd>
+                <dt class="col-md-6">
+                    Wins:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.WinCount
                     @if (Model.StartCount > 0)
                     {
-                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.PoleCount / Model.StartCount * 100).ToString("F"))%)</span>
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.WinCount / Model.StartCount * 100).ToString("F"))%)</span>
                     }
                 </dd>
                 <dt class="col-md-6">
@@ -48,20 +54,14 @@
                     }
                 </dd>
                 <dt class="col-md-6">
-                    Wins:
+                    Poles:
                 </dt>
                 <dd class="col-md-6">
-                    @Model.WinCount
+                    @Model.PoleCount
                     @if (Model.StartCount > 0)
                     {
-                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.WinCount / Model.StartCount * 100).ToString("F"))%)</span>
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.PoleCount / Model.StartCount * 100).ToString("F"))%)</span>
                     }
-                </dd>
-                <dt class="col-md-6">
-                    Titles:
-                </dt>
-                <dd class="col-md-6">
-                    @Model.WDCCount
                 </dd>
                 <dt class="col-md-6">
                     DNF/DSQ:
@@ -89,12 +89,12 @@
             </div>
         </div>
 
-        <div class="row justify-content-between">
+        <div class="flex-row justify-content-between">
             <div>
-                <canvas id="PosBarChart" width="500" height="250"></canvas>
+                <canvas id="PosBarChart" width="500" height="300"></canvas>
             </div>
             <div>
-                <canvas id="NonFinishCauses" width="250" height="250"></canvas>
+                <canvas id="NonFinishCauses" width="250" height="300"></canvas>
             </div>
         </div>
     </div>
@@ -142,6 +142,11 @@
                     xAxes: [{
                         categoryPercentage: 1.0,
                         barPercentage: 1.0
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
                     }]
                 },
                 legend: {

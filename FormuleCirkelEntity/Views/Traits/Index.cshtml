@@ -5,9 +5,9 @@
 }
 
 <div class="d-inline-block w-60">
-    <h1>Index of traits</h1>
-    <div class="row">
-        <a asp-action="Create" class="mr-auto"><i class="fas fa-plus-square fa-2x"></i></a>
+    <h1>Traits</h1>
+    <div class="flex-row mb-1">
+        <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
     </div>
 
     <div class="col">
@@ -39,7 +39,7 @@
                             <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                         <td>
-                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-edit fa-2x"></i></a>
+                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
                         </td>
                     </tr>
                 }
@@ -74,7 +74,7 @@
                             <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                         <td>
-                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-edit fa-2x"></i></a>
+                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
                         </td>
                     </tr>
                 }
@@ -109,7 +109,7 @@
                             <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                         <td>
-                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-edit fa-2x"></i></a>
+                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
                         </td>
                     </tr>
                 }

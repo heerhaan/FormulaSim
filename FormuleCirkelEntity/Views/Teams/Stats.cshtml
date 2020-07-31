@@ -4,88 +4,115 @@
     ViewData["Title"] = "Biography team";
 }
 
-<div id="graphic" class="d-inline-block m-sides">
-    <h1>Biography</h1>
-    <h4>@Model.Team.Abbreviation</h4>
+<div class="d-inline-block">
+    <div id="graphic">
+        <h1>Biography</h1>
+        @if (Model.TeamLong.Any())
+        {
+            <h3 class="badge" style="background-color:@(Model.TeamColour);color:@(Model.TeamAccent);font-size:2rem;">
+                @Model.TeamLong - @Model.TeamShort
+            </h3>
+        }
+        else
+        {
+            <h3 class="badge" style="background-color:white;color:black;font-size:2rem;">
+                @Model.TeamShort
+            </h3>
+        }
 
-    <div class="col mb-1 ml-auto mr-auto" style="max-width: 800px;">
-        <h5 class="mb-1"><b>Drivers: </b></h5>
-        <div>
-            @foreach (var driver in Model.SeasonDriver.Select(s => s.Driver).Distinct())
-            {
-                <span class="badge teritary mb-1" style="font-size:0.9rem;">@(driver.Name)</span>
-            }
+        <div class="col mb-2 ml-auto mr-auto" style="max-width: 800px;">
+            <h5 class="mb-1"><b>Drivers: </b></h5>
+            <div>
+                @foreach (var driver in Model.Drivers)
+                {
+                    <span class="badge mb-1" style="background-color: white; color: black; font-size: 0.9rem;">@(driver)</span>
+                }
+            </div>
+        </div>
+
+        <div class="flex-row">
+            <dl class="flex-row text-left w-50">
+                <dt class="col-6">
+                    Races entries:
+                </dt>
+                <dd class="col-6">
+                    @(Model.RaceEntries)
+                </dd>
+                <dt class="col-6">
+                    Total car entries:
+                </dt>
+                <dd class="col-6">
+                    @(Model.TotalCarEntries)
+                </dd>
+                <dt class="col-md-6">
+                    Constructor titles:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.ConstructorTitles
+                </dd>
+                <dt class="col-md-6">
+                    Wins:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.RaceWins
+                    @if (Model.RaceEntries > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.RaceWins / Model.RaceEntries * 100).ToString("F"))%)</span>
+                    }
+                </dd>
+                <dt class="col-md-6">
+                    Podiums:
+                </dt>
+                <dd class="col-md-6">
+                    @(Model.RaceWins + Model.SecondFinishes + Model.ThirdFinishes)
+                    @if (Model.RaceEntries > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@(((Model.RaceWins + Model.SecondFinishes + Model.ThirdFinishes) / Model.TotalCarEntries * 100).ToString("F"))%)</span>
+                    }
+                </dd>
+                <dt class="col-md-6">
+                    Poles:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.Poles
+                    @if (Model.RaceEntries > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.Poles / Model.RaceEntries * 100).ToString("F"))%)</span>
+                    }
+                </dd>
+                <dt class="col-md-6">
+                    DNF/DSQ:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.DidNotFinish
+                    @if (Model.RaceEntries > 0)
+                    {
+                        <span class="text-muted" style="font-size:0.8rem;">  (@((Model.DidNotFinish / Model.TotalCarEntries * 100).ToString("F"))%)</span>
+                    }
+                </dd>
+            </dl>
+
+            <div class="w-50" style="max-width: 500px;">
+                <p id="biography" contenteditable="true">
+                    @if (Model.TeamBio == null)
+                    {
+                        <i>This team has no bio yet!</i>
+                    }
+                    else
+                    {
+                        @Model.TeamBio
+                    }
+                </p>
+                <button id="savebio" class="btn float-right"><i class="far fa-save"></i></button>
+            </div>
+        </div>
+
+        <div style="margin-left:auto;margin-right:auto;width:600px;">
+            <canvas id="PosBarChart"></canvas>
         </div>
     </div>
 
-    <div class="row">
-        <dl class="row text-left w-50">
-            <dt class="col-md-6">
-                Starts:
-            </dt>
-            <dd class="col-md-6">
-                @(Model.DriverResults.Count() / 2)
-            </dd>
-            <dt class="col-md-6">
-                Poles:
-            </dt>
-            <dd class="col-md-6">
-                @(Model.DriverResults.Where(dr => dr.Grid == 1).Count())
-            </dd>
-            <dt class="col-md-6">
-                Podiums:
-            </dt>
-            <dd class="col-md-6">
-                @(Model.DriverResults.Where(dr => dr.Position <= 3).Count())
-            </dd>
-            <dt class="col-md-6">
-                Wins:
-            </dt>
-            <dd class="col-md-6">
-                @(Model.DriverResults.Where(dr => dr.Position == 1).Count())
-            </dd>
-            <dt class="col-md-6">
-                WDCs:
-            </dt>
-            <dd class="col-md-6">
-                @ViewBag.driverchampionships
-            </dd>
-            <dt class="col-md-6">
-                WCCs:
-            </dt>
-            <dd class="col-md-6">
-                @ViewBag.teamchampionships
-            </dd>
-            <dt class="col-md-6">
-                DNFs:
-            </dt>
-            <dd class="col-md-6">
-                @(Model.DriverResults.Where(dr => dr.Status == Status.DNF).Count())
-            </dd>
-            <dt class="col-md-6">
-                DSQs:
-            </dt>
-            <dd class="col-md-6">
-                @(Model.DriverResults.Where(dr => dr.Status == Status.DSQ).Count())
-            </dd>
-        </dl>
-
-        <div class="w-50" style="max-width: 500px;">
-            <p id="biography" contenteditable="true">
-                @if (Model.Team.Biography == null)
-                {
-                    <i>This team has no bio yet!</i>
-                }
-                else
-                {
-                    @Model.Team.Biography
-                }
-            </p>
-            <button id="savebio" class="btn float-right"><i class="far fa-save"></i></button>
-        </div>
-    </div>
-
-    <div class="row justify-content-between">
+    <div class="flex-row justify-content-between">
         <a asp-action="Index">
             <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
         </a>
@@ -100,10 +127,45 @@
         $.ajax({
             type: "POST",
             url: "/Teams/SaveBiography",
-            data: { id: @Model.Team.Id, biography: $("#biography").text() },
+            data: { id: @Model.TeamId, biography: $("#biography").text() },
             dataType: "html",
             success: function () { alert("Biography saved."); },
             error: function () { alert("Saving biography failed."); }
+        });
+    });
+
+    $(function () {
+        // Barchart for the kind of positions a driver has finished
+        var ctxPosBar = document.getElementById('PosBarChart').getContext('2d');
+        var posBarLabels = ['P1', 'P2', 'P3', 'Points', 'Outside', 'DNF' ];
+        var posBarValues = [@Model.RaceWins, @Model.SecondFinishes, @Model.ThirdFinishes, @Model.PointFinishes, @Model.NoPointFinishes, @(Model.DidNotFinish)];
+        var posBarColours = ['gold', 'silver', '#cd7f32', 'green', 'blue', 'red'];
+
+        var posBarChart = new Chart(ctxPosBar, {
+            type: 'bar',
+            data: {
+                labels: posBarLabels,
+                datasets: [{
+                    data: posBarValues,
+                    backgroundColor: posBarColours,
+                }],
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        categoryPercentage: 1.0,
+                        barPercentage: 1.0
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                },
+                legend: {
+                    display: false,
+                }
+            }
         });
     });
 </script>

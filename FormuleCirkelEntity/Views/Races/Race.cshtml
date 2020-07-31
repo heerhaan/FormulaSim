@@ -8,7 +8,7 @@
 <div class="d-inline-block">
     @if (Model.Season.State == SeasonState.Progress)
     {
-        <div class="row justify-content-between">
+        <div class="flex-row justify-content-between">
             @if (Model.RaceState == RaceState.Race)
             {
                 <a class="btn w-25" onclick="advanceStint()">Next stint</a>
@@ -20,7 +20,7 @@
         </div>
     }
 
-    <div id="graphic" class="row">
+    <div id="graphic" class="flex-row">
         <h1>@Model.Track.Name</h1>
         <i id="weather" class="ml-auto fas"></i>
         <table id="results" class="ctable fullborder fullwidth">
@@ -49,10 +49,14 @@
                 {
                     int gridChange = (driverResult.Grid - driverResult.Position);
                     <tr data-obj-id="@driverResult.SeasonDriverId">
-                        <td data-field="position"><b>@driverResult.Position</b></td>
-                        <td data-field="driverNumber"><span class="badge fullwidth font-size-default" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
+                        <td data-field="position"><b class="alt-font">@driverResult.Position</b></td>
+                        <td data-field="driverNumber"><span class="badge badge-team fullwidth font-size-default" 
+                                                            style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
+                            @driverResult.SeasonDriver.Driver.DriverNumber</span></td>
                         <td class="text-left" data-field="driverName"><span class="ml-cel result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
-                        <td data-field="teamName"><span class="badge fullwidth font-size-default" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">@driverResult.SeasonDriver.SeasonTeam.Team.Abbreviation</span></td>
+                        <td data-field="teamName"><span class="badge badge-team fullwidth font-size-default" 
+                                                        style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
+                            @driverResult.SeasonDriver.SeasonTeam.Name</span></td>
                         <td data-field="startGrid">
                             @if (gridChange > 0)
                             {
@@ -109,7 +113,7 @@
         </table>
     </div>
 
-    <div class="row justify-content-between">
+    <div class="flex-row justify-content-between">
         <button class="btn" onclick="takeScreenshot('#graphic', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
         <button class="btn" onclick="redrawChart()"><i class="fas fa-chart-bar fa-2x mt-auto"></i></button>
     </div>
@@ -217,13 +221,13 @@
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
             let gridChange = (driverResult.Grid - driverResult.Position);
             if (gridChange > 0) {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-up' style='color:green;'></i><span class='badge nofullwidth' style='color: white;'> " + gridChange + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-up' style='color:green;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + gridChange + " </span>";
             }
             else if (gridChange < 0) {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-down' style='color:red;'></i><span class='badge nofullwidth' style='color: white;'> " + (gridChange * -1) + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-down' style='color:red;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + (gridChange * -1) + " </span>";
             }
             else {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='badge nofullwidth' style='color: white;'> " + gridChange + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + gridChange + " </span>";
             }
             Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
                 let stintResult = driverResult.StintResults[stintKey];
@@ -232,7 +236,7 @@
             if (driverResult.Position > @maxPos) {
                 row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'></td>";
             } else {
-                row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'><span class='badge'>" + pointsPosition[driverResult.Position] + "</span></td>";
+                row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'><b class='alt-font'>" + pointsPosition[driverResult.Position] + "</b></td>";
             }
         });
 
@@ -267,10 +271,10 @@
             if (score != "DNF" && score != "DSQ") {
                 let gap = "+" + ((leaderscore - score) * 0.27).toFixed(2);
                 if (gap == "+0.00") {
-                    gap = "-";
+                    gap = "Leader";
                 }
                 gap = "<i>" + gap + "</i>"
-                row.querySelector("td[data-field='dnfCause'").innerHTML = gap;
+                row.querySelector("td[data-field='dnfCause']").innerHTML = gap;
             }
         });
     }
@@ -488,6 +492,7 @@
         height: 105px;
         font-family: "Formula1 Display";
         text-align: left;
+        line-height: 1.5;
     }
 
         #formulaGraphic #position {

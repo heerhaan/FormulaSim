@@ -35,3 +35,11 @@ function getDev(number) {
     document.getElementById("custom-new-" + number).innerText = newdev;
 }
 
+// Makes all elements completely black which contain the correspending class
+function hideElements() {
+    var elementsToHide = document.getElementsByClassName('onclick-hide');
+    for (var i = 0; i < elementsToHide.length; i++) {
+        elementsToHide[i].style.backgroundColor = "black";
+        elementsToHide[i].style.color = "black";
+    }
+}

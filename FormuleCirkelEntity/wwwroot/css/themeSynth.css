@@ -73,12 +73,16 @@ i.fas, i.fab {
 
 .btn {
     background-color: #0a0e29;
-    color: #e8099a;
+    color: #e8099a !important;
     border-color: #00f3ff;
 }
 
     .btn:hover {
         background-color: #ee72f1;
+        color: #0a0e29 !important;
+    }
+
+    .btn:hover i.fas, .btn:hover i.fab {
         color: #0a0e29;
     }
 

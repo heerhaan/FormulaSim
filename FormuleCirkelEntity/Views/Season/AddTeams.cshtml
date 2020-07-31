@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Team>
-@{ViewData["Title"] = "Teams toevoegen";}
+@{ViewData["Title"] = "Add teams";}
 
 <div class="d-inline-block w-50">
-    <h3>Season @ViewBag.seasonId - Add teams</h3>
+    <h3>Unregistered teams</h3>
 
     <table class="ctable fullborder fullwidth">
         <thead class="fullborder">
@@ -16,7 +16,7 @@
             {
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.Abbreviation)</td>
-                    <td><a asp-action="AddTeam" asp-route-id="@ViewBag.seasonId" asp-route-globalTeamId="@item.Id" class="btn btn-outline-primary btn-sm">Add</a></td>
+                    <td><a asp-action="AddTeam" asp-route-id="@ViewBag.seasonId" asp-route-globalTeamId="@item.Id" class="btn fullwidth">Add</a></td>
                 </tr>
             }
         </tbody>

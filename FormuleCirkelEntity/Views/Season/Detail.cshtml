@@ -7,26 +7,32 @@
 <div class="d-inline-block w-75">
     <h1>Season: @Model.Season.SeasonNumber</h1>
 
-    <div class="row justify-content-between mb-2">
+    <div class="flex-row justify-content-between mb-2">
         @if (Model.Season.State == SeasonState.Draft)
         {
-            <a asp-action="Start" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark btn-info">Start season!</a>
-            <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Add races</a>
-            <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Add drivers</a>
-            <a asp-action="AddTeams" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark">Add teams</a>
-            <a asp-action="Settings" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark"><i class="fas fa-cog"></i> Settings</a>
-            <a asp-action="AddDefault" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark" data-toggle="tooltip" data-placement="top"
-               title="Default returns the same season setup and races as the previous season.">
-                <i class="fas fa-recycle"></i> Default
-            </a>
+            <div class="btn-group">
+                <a asp-action="Start" asp-route-id="@Model.Season.SeasonId" class="btn">Start season!</a>
+                <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.Season.SeasonId" class="btn">Add races</a>
+                <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn">Add drivers</a>
+                <a asp-action="AddTeams" asp-route-id="@Model.Season.SeasonId" class="btn">Add teams</a>
+                <a asp-action="Settings" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-cog"></i> Settings</a>
+                <a asp-action="AddDefault" asp-route-id="@Model.Season.SeasonId" class="btn" data-toggle="tooltip" data-placement="top"
+                   title="Default returns the same season setup and races as the previous season.">
+                    <i class="fas fa-recycle"></i> Default
+                </a>
+            </div>
         }
         else
         {
-            <a asp-action="PenaltyList" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark"><i class="fas fa-wrench"></i> Parts list</a>
+            <div class="btn-group">
+                <a asp-action="PenaltyList" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-wrench"></i> Parts list</a>
+                <button class="btn" onclick="randomDriver()"><i class="fas fa-dice"></i> Driver trait</button>
+                <button class="btn" onclick="randomTeam()"><i class="fas fa-dice"></i> Team trait</button>
+            </div>
         }
         @if (Model.Season.State == SeasonState.Progress)
         {
-            <a asp-action="Finish" asp-route-id="@Model.Season.SeasonId" class="btn btn-dark btn-info">End season!</a>
+            <a asp-action="Finish" asp-route-id="@Model.Season.SeasonId" class="btn">End season</a>
         }
     </div>
 
@@ -42,8 +48,8 @@
                     <th>Skill</th>
                     <th>Reliability</th>
                     <th>Tire</th>
-                    <th></th>
-                    <th></th>
+                    <th>Edit</th>
+                    <th>Traits</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,13 +62,15 @@
                         <tr>
                             <td><b>@((pos + 1).ToString())</b></td>
                             <td>@driver.Points</td>
-                            <td style="width: 30px;"><span class="badge" style="width:25px;background-color:@(team.Colour);color:@(team.Accent);">@driver.Driver.DriverNumber</span></td>
+                            <td style="width: 30px;"><span class="badge badge-team" style="width:25px;background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);">
+                                @driver.Driver.DriverNumber</span></td>
                             <td>
-                                <span class="badge fullwidth text-left font-size-default" style="background-color:@(team.Colour);color:@(team.Accent);">@driver.Driver.Name</span>
+                                <span class="badge badge-team fullwidth text-left font-size-default" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);">
+                                @driver.Driver.Name</span>
                             </td>
                             <td>@driver.Skill</td>
                             <td>@driver.Reliability</td>
-                            <td>@driver.Tires</td>
+                            <td><span class="badge tire font-size-default">@(driver.Tires.ToString()[0])</span></td>
                             <td>
                                 <a asp-action="UpdateDriver" asp-route-id="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
                                     <i class="fas fa-wrench fa-2x"></i>
@@ -80,7 +88,7 @@
         </table>
         @if (Model.Season.State == SeasonState.Progress)
         {
-            <div class="row">
+            <div class="flex-row">
                 <a asp-action="DriverDev" asp-route-id="@Model.Season.SeasonId" class="btn col-6">Driver development</a>
                 <a asp-action="DriverReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn col-6">Reliability</a>
             </div>
@@ -96,7 +104,7 @@
                     <th data-field="location">Location</th>
                     <th data-field="round">Round</th>
                     <th data-field="specification">Spec</th>
-                    <th></th>
+                    <th>Race</th>
                     @if (Model.Season.State == SeasonState.Draft)
                     {
                         <th></th>
@@ -147,8 +155,8 @@
                     <th>Reliability</th>
                     <th class="tcc-chassis"><span>Engine</span></th>
                     <th>Power</th>
-                    <th></th>
-                    <th></th>
+                    <th>Edit</th>
+                    <th>Trait</th>
                 </tr>
             </thead>
             <tbody>
@@ -161,7 +169,8 @@
                             <td><b>@((pos + 1).ToString())</b></td>
                             <td>@team.Points</td>
                             <td>
-                                <span class="badge fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;">@team.Name</span>
+                                <span class="badge badge-team fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);font-size:1rem;">
+                                @team.Name</span>
                             </td>
                             <td>@team.Chassis</td>
                             <td>@team.Reliability</td>
@@ -184,7 +193,7 @@
         </table>
         @if (Model.Season.State == SeasonState.Progress)
         {
-            <div class="row">
+            <div class="flex-row">
                 <a asp-action="TeamDev" asp-route-id="@Model.Season.SeasonId" class="btn col-4">Chassis development</a>
                 <a asp-action="EngineDev" asp-route-id="@Model.Season.SeasonId" class="btn col-4">Engine development</a>
                 <a asp-action="TeamReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn col-4">Reliability</a>
@@ -194,6 +203,25 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $(".tire:contains('H')").css("background-color", "darkorange");
+        $(".tire:contains('S')").css("background-color", "darkred");
+    });
+
+    function randomDriver() {
+        var drivers = @(Json.Serialize(Model.SeasonDrivers.Select(sd => sd.SeasonDriverId)));
+        const randomId = drivers[Math.floor(Math.random() * drivers.length)];
+
+        window.location.href = '/Driver/Traits/' + randomId;
+    }
+
+    function randomTeam() {
+        var teams = @(Json.Serialize(Model.SeasonTeams.Select(st => st.SeasonTeamId)));
+        const randomId = teams[Math.floor(Math.random() * teams.length)];
+
+        window.location.href = '/Team/Traits/' + randomId;
+    }
+
     function updateRaces(races) {
         const table = document.querySelector('#races');
         const tableBody = table.querySelector("tbody");

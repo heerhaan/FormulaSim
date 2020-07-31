@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Traits for team";
-    int position = 1;
 }
 
 <div class="d-inline-block w-60">
@@ -28,7 +27,7 @@
                             <td>
                                 @Html.DisplayFor(modelItem => trait.Name)
                             </td>
-                            <td>
+                            <td class="text-left">
                                 @Html.DisplayFor(modelItem => trait.TraitDescription)
                             </td>
                             <td>
@@ -47,8 +46,12 @@
             <h4>This team doesn't have any traits applied yet!</h4>
         }
 
-        <div class="row">
-            <h3>Add traits</h3>
+        <h3>Add traits</h3>
+        <div class="flex-row justify-content-between mb-1">
+            <form method="POST">
+                <input id="randomInput" type="hidden" name="traitId" />
+                <input id="randomSubmit" type="submit" class="btn fullwidth" value="Random" />
+            </form>
             <a asp-controller="Traits" asp-action="Create" class="btn ml-auto">New trait</a>
         </div>
         @if (Model.Traits.Any())
@@ -56,8 +59,7 @@
             <table class="ctable fullborder fullwidth">
                 <thead>
                     <tr>
-                        <th class="w-10"></th>
-                        <th class="w-10">Trait</th>
+                        <th class="w-20">Trait</th>
                         <th class="w-60">Description</th>
                         <th class="w-10"></th>
                         <th class="w-10"></th>
@@ -68,12 +70,9 @@
                     {
                         <tr>
                             <td>
-                                #@(position++)
-                            </td>
-                            <td>
                                 @Html.DisplayFor(modelItem => trait.Name)
                             </td>
-                            <td>
+                            <td class="text-left">
                                 @Html.DisplayFor(modelItem => trait.TraitDescription)
                             </td>
                             <td>
@@ -102,3 +101,17 @@
         </a>
     </div>
 </div>
+
+<script>
+    window.onload = function () {
+        var traits = @(Json.Serialize(Model.Traits.Select(t => t.TraitId)));
+
+        if (traits.length == 0) {
+            document.getElementById("randomSubmit").style.display = "none";
+        }
+        else {
+            const randomId = traits[Math.floor(Math.random() * traits.length)];
+            document.getElementById("randomInput").value = randomId;
+        }
+    }
+</script>

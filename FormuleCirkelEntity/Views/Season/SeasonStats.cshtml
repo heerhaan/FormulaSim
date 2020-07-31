@@ -10,7 +10,7 @@
 <div class="d-inline-block">
     <h1>Season details for season @ViewBag.number</h1>
 
-    <div class="row justify-content-between">
+    <div class="flex-row justify-content-between">
         <h3>Power rankings</h3>
         <div>
             <a asp-controller="Home" asp-action="PastDriverStandings" asp-route-seasonId="@ViewBag.seasonId">
@@ -33,7 +33,7 @@
                 <th class="tcc-crew"><span>Chassis</span></th>
                 <th class="tcc-chassis"><span>Engine</span></th>
                 <th>Power</th>
-                <th>Total</th>
+                <th onclick="hideElements()" style="cursor:pointer;">Total</th>
                 <th>TOP-ACC-HDL</th>
                 <th>Team rel.</th>
             </tr>
@@ -53,13 +53,15 @@
                     { @driver.Driver.Name}
                         </span>
                     </td>
-                    <td>@driver.Skill</td>
+                    <td class="onclick-hide">@driver.Skill</td>
                     <td><span class="badge alt-color nofullwidth">@driver.Reliability</span></td>
-                    <td><span class="badge fullwidth" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);font-size:1rem;">@driver.SeasonTeam.Name</span></td>
-                    <td>@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
+                    <td><span class="badge badge-team fullwidth" 
+                              style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);font-size:1rem;">
+                        @driver.SeasonTeam.Name</span></td>
+                    <td class="onclick-hide">@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
                     <td>@driver.SeasonTeam.Engine.Name</td>
-                    <td>@driver.SeasonTeam.Engine.Power</td>
-                    <td>@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2))</td>
+                    <td class="onclick-hide">@driver.SeasonTeam.Engine.Power</td>
+                    <td class="onclick-hide">@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2))</td>
                     <td>
                         <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Topspeed</span>
                         <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Acceleration</span>
@@ -71,7 +73,7 @@
         </tbody>
     </table>
 
-    <div class="row justify-content-between mb-1">
+    <div class="flex-row justify-content-between mb-1">
         <a asp-action="Index">
             <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
         </a>

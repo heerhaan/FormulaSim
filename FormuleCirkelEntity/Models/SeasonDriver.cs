@@ -17,8 +17,8 @@ namespace FormuleCirkelEntity.Models
         public int SeasonDriverId { get; set; }
         public int Skill { get; set; }
         public int Reliability { get; set; }
-        [EnumDataType(typeof(Tires))]
-        public Tires Tires { get; set; }
+        [EnumDataType(typeof(Tire))]
+        public Tire Tires { get; set; }
         [EnumDataType(typeof(DriverStatus))]
         public DriverStatus DriverStatus { get; set; }
 
@@ -37,8 +37,7 @@ namespace FormuleCirkelEntity.Models
         public virtual ICollection<DriverResult> DriverResults { get; set; }
     }
 
-    // How tires work should be expanded
-    public enum Tires { Hards, Softs }
+    public enum Tire { Hards, Softs }
 
     public enum DriverStatus { First, None, Second }
 }
