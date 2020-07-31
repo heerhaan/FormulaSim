@@ -55,7 +55,9 @@
                     </td>
                     <td class="onclick-hide">@driver.Skill</td>
                     <td><span class="badge alt-color nofullwidth">@driver.Reliability</span></td>
-                    <td><span class="badge fullwidth" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);font-size:1rem;">@driver.SeasonTeam.Name</span></td>
+                    <td><span class="badge badge-team fullwidth" 
+                              style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);font-size:1rem;">
+                        @driver.SeasonTeam.Name</span></td>
                     <td class="onclick-hide">@(driver.SeasonTeam.Chassis + (((int)driver.DriverStatus) * -2) + 2)</td>
                     <td>@driver.SeasonTeam.Engine.Name</td>
                     <td class="onclick-hide">@driver.SeasonTeam.Engine.Power</td>

@@ -50,9 +50,13 @@
                     int gridChange = (driverResult.Grid - driverResult.Position);
                     <tr data-obj-id="@driverResult.SeasonDriverId">
                         <td data-field="position"><b class="alt-font">@driverResult.Position</b></td>
-                        <td data-field="driverNumber"><span class="badge fullwidth font-size-default" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">@driverResult.SeasonDriver.Driver.DriverNumber</span></td>
+                        <td data-field="driverNumber"><span class="badge badge-team fullwidth font-size-default" 
+                                                            style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
+                            @driverResult.SeasonDriver.Driver.DriverNumber</span></td>
                         <td class="text-left" data-field="driverName"><span class="ml-cel result-click" style="cursor:pointer;">@driverResult.SeasonDriver.Driver.Name</span></td>
-                        <td data-field="teamName"><span class="badge fullwidth font-size-default" style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">@driverResult.SeasonDriver.SeasonTeam.Name</span></td>
+                        <td data-field="teamName"><span class="badge badge-team fullwidth font-size-default" 
+                                                        style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
+                            @driverResult.SeasonDriver.SeasonTeam.Name</span></td>
                         <td data-field="startGrid">
                             @if (gridChange > 0)
                             {

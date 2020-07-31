@@ -106,6 +106,10 @@ button.accept-policy {
     color: white;
 }
 
+ul li {
+    list-style-position: inside;
+}
+
 /* Home page styling */
 .hero-text {
     text-align: center;
@@ -200,6 +204,10 @@ dl.inline-flex {
 }
 
 /* Modifications for the Bootstrap badges */
+.badge-team {
+    border: 1px solid white;
+}
+
 .badge-first {
     background-color: #DAA520 !important;
     color: white !important;

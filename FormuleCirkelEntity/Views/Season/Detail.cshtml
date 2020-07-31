@@ -62,9 +62,11 @@
                         <tr>
                             <td><b>@((pos + 1).ToString())</b></td>
                             <td>@driver.Points</td>
-                            <td style="width: 30px;"><span class="badge" style="width:25px;background-color:@(team.Colour);color:@(team.Accent);">@driver.Driver.DriverNumber</span></td>
+                            <td style="width: 30px;"><span class="badge badge-team" style="width:25px;background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);">
+                                @driver.Driver.DriverNumber</span></td>
                             <td>
-                                <span class="badge fullwidth text-left font-size-default" style="background-color:@(team.Colour);color:@(team.Accent);">@driver.Driver.Name</span>
+                                <span class="badge badge-team fullwidth text-left font-size-default" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);">
+                                @driver.Driver.Name</span>
                             </td>
                             <td>@driver.Skill</td>
                             <td>@driver.Reliability</td>
@@ -167,7 +169,8 @@
                             <td><b>@((pos + 1).ToString())</b></td>
                             <td>@team.Points</td>
                             <td>
-                                <span class="badge fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);font-size:1rem;">@team.Name</span>
+                                <span class="badge badge-team fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);font-size:1rem;">
+                                @team.Name</span>
                             </td>
                             <td>@team.Chassis</td>
                             <td>@team.Reliability</td>

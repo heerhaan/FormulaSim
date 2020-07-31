@@ -26,13 +26,15 @@
                     <tr>
                         <td><b class="alt-font">@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</b></td>
                         <td>
-                            <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
+                            <span class="badge badge-team fullwidth font-size-default"
+                                  style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
                                 @driver.Driver.DriverNumber
                             </span>
                         </td>
                         <td class="text-left"><span class="ml-cel">@driver.Driver.Name</span></td>
                         <td>
-                            <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">
+                            <span class="badge badge-team fullwidth font-size-default"
+                                  style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
                                 @driver.SeasonTeam.Name
                             </span>
                         </td>
