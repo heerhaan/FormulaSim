@@ -1,29 +1,16 @@
 # FormulaSim
-Project to practice C# skill, purpose is to have a nice formula 1 simulator.
+Project to practice C# skill, purpose is to have a nice Formula motorsport simulator.
 
 # Current progress
-
-Currently at the "Race" part of the simulator. The idea is that you see one table when opening the Race view which is sorted according to
-the qualifying that is connected with that race. There are supposed to be buttons to progress the race. It goes from
-View with startgrid order -> stint 1, table gets updated according to the calls that have been made -> pitstops, the current progress
-is caught and pitstops are added and the result is shown again in the table -> stint 2, also gets the current progress and then does
-the same as stint 1 -> Finish race, returns to the RaceWeekend overview and then shows all the current results from that weekend, so
-the qualifying results and race results -> Finish RaceWeekend, raceresults will be saved to the standings and such.
-
-# Ideas
-
-- The current way where the races will be setup is just the base of how it used to work in Excel, since it is now an application changes could be made to make it work a bit more "logically", like chassis and driver skill have an impact each stint instead of only once.
-- Also very neat would be that graphs about the season can be shown, say how drivers progress over the season according to their points, maybe also the ability to filter it to an inputted amount of drivers.
-- More?
+Right now the project is pretty much done in terms of functionality. The main goal of the application is fully working, complete motorsport seasons can be done and one database can hold multiple motorsport series. There are also a lot of smaller additions that make the app more interesting to look at, for example a graph that displays the position of each driver in each stint. What still needs to be done is optimalization of existing elements, more graphs for the statistics and more QoL-additions can be made.
 
 # Finished parts
-
-- Lists with Drivers, Teams, Tracks and Engines in the current F1 database. New items can be added there.
+- Lists with Drivers, Teams, Tracks, Engines and Traits in the current F1 database. New items can be added there.
 - Creating a season, here you can add everything that is going to be part of the season. Which tracks are going to be driven on, which
-drivers are going to participate for which teams who use which engines. And so on.
-- Qualifying functionality works now, going from Q1 to Q3 works as it should and the results of that are for now saved in a table without
-relations; Qualifications.
-- A whole lot more! Inquire for the me if you want to have an insight in our Trello board!
+drivers are going to participate for which teams who use which engines, and so on.
+- Race weekend functionality is fully done. Qualifying determines the starting grid and after that a race can be done where participants can score points
+current season.
+- And there is a whole lot more!
 
 # User stories (in Dutch)
 Als gebruiker wil ik coureurs, teams, motoren en circuits kunnen toevoegen zodat ze gebruikt kunnen worden voor een raceseizoen.
