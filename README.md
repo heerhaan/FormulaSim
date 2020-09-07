@@ -1,18 +1,12 @@
-# FormulaSim
-Project to practice C# skill, purpose is to have a nice Formula motorsport simulator.
+# Formula Sim
+Formula Sim is een webapplicatie gemaakt met de Microsoft .NET Core framework. Het doel van de applicatie is om motorsport kampioenschappen te pretenderen. Door een combinatie van zowel willekeurige als vaste variabelen toe te kennen aan verschillende aspecten van motorsport kan er een race nagedaan worden waar er wel een onderscheid is tussen sterke en zwakke coureurs/teams maar er ook een zekere mate van onvoorspelbaarheid is voor het resultaat.
 
-# Current progress
-Right now the project is pretty much done in terms of functionality. The main goal of the application is fully working, complete motorsport seasons can be done and one database can hold multiple motorsport series. There are also a lot of smaller additions that make the app more interesting to look at, for example a graph that displays the position of each driver in each stint. What still needs to be done is optimalization of existing elements, more graphs for the statistics and more QoL-additions can be made.
+# Huidige voortgang
+Op dit moment zijn alle basisfunctionaliteiten van het project afgerond. Volledige motorsport seizoenen kunnen uitgevoerd worden en meerdere kampioenschappen zijn ook aan te maken. Ook bevat het alle geplande onderdelen, van bandenkeuzes tot en met unieke coureur/team/circuit vaardigheden. De visualisaties zijn eveneens in orde, op meerdere plekken zijn er grafieken te weergeven die statistieken laten zien over de resultaten van een coureur en ook is er bij elke race een grafiek te creeëren die de positieverloop weergeeft. Als laatste bevat de webapplicatie ook enkele verschillende thema's die elk zijn eigen kleuren aan het project geven.
 
-# Finished parts
-- Lists with Drivers, Teams, Tracks, Engines and Traits in the current F1 database. New items can be added there.
-- Creating a season, here you can add everything that is going to be part of the season. Which tracks are going to be driven on, which
-drivers are going to participate for which teams who use which engines, and so on.
-- Race weekend functionality is fully done. Qualifying determines the starting grid and after that a race can be done where participants can score points
-current season.
-- And there is a whole lot more!
+Voor een handleiding naar de werking van het project verwijs ik door naar de [Wiki](https://github.com/heerhaan/FormulaSim/wiki).
 
-# User stories (in Dutch)
+# User stories
 Als gebruiker wil ik coureurs, teams, motoren en circuits kunnen toevoegen zodat ze gebruikt kunnen worden voor een raceseizoen.
 - Coureur bezit naam, nummer en of hij actief is.
 - Team bezit naam en of deze voor seizoen actief is.
