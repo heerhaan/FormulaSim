@@ -170,11 +170,13 @@ namespace FormuleCirkelEntity.Controllers
             // Overweeg om dit te herschrijven dat hij de races pakt in plaats van de seizoenrijders, of vindt een manier om het zo te krijgen dat de racevolgorde klopt.
             var standings = _context.SeasonDrivers
                 .IgnoreQueryFilters()
+                .Where(sd => sd.SeasonId == seasonId)
+                .OrderByDescending(sd => sd.Points)
+                .Take(10)
                 .Include(sd => sd.Driver)
                 .Include(sd => sd.DriverResults)
                 .Include(sd => sd.SeasonTeam)
                     .ThenInclude(sd => sd.Team)
-                .Where(sd => sd.SeasonId == seasonId)
                 .ToList();
 
             return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });

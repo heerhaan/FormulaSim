@@ -89,13 +89,11 @@ namespace FormuleCirkelEntity.ResultGenerators
             if (stint.ApplyReliability)
             {
                 // Check for the reliability of the chassis.
-                var reliabilityResult = GetChassisReliabilityResult(driverResult.SeasonDriver.SeasonTeam, driverResult.ChassisRelMod);
-                if (reliabilityResult == -1)
+                if (GetChassisReliabilityResult(driverResult.SeasonDriver.SeasonTeam, driverResult.ChassisRelMod) == -1)
                     return null;
 
                 // Check for the reliability of the driver.
-                reliabilityResult = GetDriverReliabilityResult(driverResult.SeasonDriver, weatherDNF + driverResult.DriverRelMod);
-                if (reliabilityResult == -1)
+                if (GetDriverReliabilityResult(driverResult.SeasonDriver, weatherDNF + driverResult.DriverRelMod) == -1)
                     return -1000;
             }
 
