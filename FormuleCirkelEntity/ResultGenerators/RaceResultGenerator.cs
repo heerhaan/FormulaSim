@@ -32,17 +32,20 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             int result = 0;
 
+            var driver = driverResult.SeasonDriver;
+            var team = driverResult.SeasonDriver.SeasonTeam;
+
             // If the stint is not a pitstop then it applies the RNG modifiers and the weather effects.
             if (stint.RNGMaximum > 0)
             {
                 switch (race.Weather)
                 {
                     case Weather.Sunny:
-                        tireWeatherWear += 5;
+                        tireWeatherWear += 4;
                         engineWeatherMultiplier = 0.9;
                         break;
                     case Weather.Overcast:
-                        tireWeatherBonus += 3;
+                        tireWeatherBonus += 2;
                         engineWeatherMultiplier = 1.1;
                         break;
                     case Weather.Rain:
@@ -65,19 +68,26 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             if (stint.ApplyDriverLevel)
             {
-                result += driverResult.SeasonDriver.Skill + driverResult.DriverRacePace;
+                result += driver.Skill + driverResult.DriverRacePace;
             }
 
             if (stint.ApplyQualifyingBonus)
-                result += GetQualifyingBonus(driverResult.Grid, driverResult.SeasonDriver.Season.Drivers.Count, driverResult.SeasonDriver.Season.QualyBonus);
+            {
+                result += GetQualifyingBonus(driverResult.Grid, driver.Season.Drivers.Count, driver.Season.QualyBonus);
+            }
 
-            if (stint.ApplyTireLevel && driverResult.SeasonDriver.Tires == Tire.Softs)
+            if (stint.ApplyTireLevel && driver.Tires == Tire.Softs)
+            {
                 result += (10 + tireWeatherBonus);
+            }
 
+            // Applies the power of the engine plus external factors when it is relevant for the current stint
             if (stint.ApplyEngineLevel)
-                result += (int)Math.Round((driverResult.SeasonDriver.SeasonTeam.Engine.Power + driverResult.EngineRacePace) * engineWeatherMultiplier);
+            {
+                result += (int)Math.Round((team.Engine.Power + driverResult.EngineRacePace) * engineWeatherMultiplier);
+            }
 
-            if (stint.ApplyTireWear && driverResult.SeasonDriver.Tires == Tire.Softs)
+            if (stint.ApplyTireWear && driver.Tires == Tire.Softs)
             {
                 // Calculates the extra wear a tire may have due to weather circumstances.
                 int maxWear = -20;
@@ -89,19 +99,26 @@ namespace FormuleCirkelEntity.ResultGenerators
             if (stint.ApplyReliability)
             {
                 // Check for the reliability of the chassis.
-                if (GetChassisReliabilityResult(driverResult.SeasonDriver.SeasonTeam, driverResult.ChassisRelMod) == -1)
+                if (GetChassisReliabilityResult(team.Reliability, driverResult.ChassisRelMod) == -1)
                     return null;
 
                 // Check for the reliability of the driver.
-                if (GetDriverReliabilityResult(driverResult.SeasonDriver, weatherDNF + driverResult.DriverRelMod) == -1)
+                if (GetDriverReliabilityResult(driver.Reliability, weatherDNF + driverResult.DriverRelMod) == -1)
                     return -1000;
             }
 
             if (stint.ApplyChassisLevel)
             {
-                int bonus = GetChassisBonus(driverResult.SeasonDriver.SeasonTeam, track);
-                int statusBonus = (((int)driverResult.SeasonDriver.DriverStatus) * -2) + 2;
-                result += (driverResult.SeasonDriver.SeasonTeam.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
+                Dictionary<string, int> teamSpecs = new Dictionary<string, int>
+                {
+                    { "Topspeed", team.Topspeed },
+                    { "Acceleration", team.Acceleration },
+                    { "Handling", team.Handling }
+                };
+
+                int bonus = GetChassisBonus(teamSpecs, track.Specification.ToString());
+                int statusBonus = (((int)driver.DriverStatus) * -2) + 2;
+                result += (team.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
             }
 
             return result;
@@ -112,25 +129,17 @@ namespace FormuleCirkelEntity.ResultGenerators
             return (totalDriverCount * qualyBonus) - (qualifyingPosition * qualyBonus);
         }
 
-        public int GetChassisBonus(SeasonTeam team, Track track)
+        // Kan nog getest worden wat je gaat doen
+        public int GetChassisBonus(Dictionary<string, int> teamSpecs, string trackSpec)
         {
             int bonus = 0;
-            Dictionary<string, int> specs = new Dictionary<string, int>
-            {
-                { "Topspeed", team.Topspeed },
-                { "Acceleration", team.Acceleration },
-                { "Handling", team.Handling }
-            };
-
-            var spec = (specs.SingleOrDefault(k => k.Key == track.Specification.ToString()));
-            bonus = spec.Value;
-
+            bonus = (teamSpecs.SingleOrDefault(k => k.Key == trackSpec)).Value;
             return bonus;
         }
 
-        public int GetChassisReliabilityResult(SeasonTeam team, int additionalDNF)
+        public int GetChassisReliabilityResult(int reliability, int additionalDNF)
         {
-            var reliabilityScore = team.Reliability + additionalDNF;
+            var reliabilityScore = reliability + additionalDNF;
             var reliabilityCheckValue = _rng.Next(1, 101);
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
@@ -140,21 +149,28 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// </summary>
         /// <param name="driver">The <see cref="SeasonDriver"/> to perform the reliability check on.</param>
         /// <returns>-1 if the reliability check fails, 1 if it succeeds, and 0 if it's neutral.</returns>
-        public int GetDriverReliabilityResult(SeasonDriver driver, int additionalDNF)
+        public int GetDriverReliabilityResult(int reliability, int additionalDNF)
         {
-            var reliabilityScore = driver.Reliability + additionalDNF;
+            var reliabilityScore = reliability + additionalDNF;
             var reliabilityCheckValue = _rng.Next(1, 101); 
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
 
         public int GetQualifyingResult(SeasonDriver driver, int qualyRNG, Track track, int qualypace)
         {
+            Dictionary<string, int> teamSpecs = new Dictionary<string, int>
+            {
+                { "Topspeed", driver.SeasonTeam.Topspeed },
+                { "Acceleration", driver.SeasonTeam.Acceleration },
+                { "Handling", driver.SeasonTeam.Handling }
+            };
+
             var result = 0;
             result += driver.Skill;
             result += qualypace;
             result += driver.SeasonTeam.Chassis;
             result += driver.SeasonTeam.Engine.Power;
-            result += GetChassisBonus(driver.SeasonTeam, track);
+            result += GetChassisBonus(teamSpecs, track.Specification.ToString());
             result += _rng.Next(0, (qualyRNG + 1));
             return result;
         }

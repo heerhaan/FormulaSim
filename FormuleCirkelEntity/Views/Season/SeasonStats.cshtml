@@ -54,7 +54,7 @@
                         </span>
                     </td>
                     <td class="onclick-hide">@driver.Skill</td>
-                    <td><span class="badge alt-color nofullwidth">@driver.Reliability</span></td>
+                    <td><span class="alt-color small">@driver.Reliability</span></td>
                     <td><span class="badge badge-team fullwidth" 
                               style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);font-size:1rem;">
                         @driver.SeasonTeam.Name</span></td>
@@ -67,7 +67,7 @@
                         <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Acceleration</span>
                         <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Handling</span>
                     </td>
-                    <td><span class="badge alt-color nofullwidth">@(driver.SeasonTeam.Reliability)</span></td>
+                    <td><span class="alt-color small">@(driver.SeasonTeam.Reliability)</span></td>
                 </tr>
             }
         </tbody>

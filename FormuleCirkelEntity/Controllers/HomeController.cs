@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -176,7 +177,6 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(sd => sd.Driver)
                 .Include(sd => sd.DriverResults)
                 .Include(sd => sd.SeasonTeam)
-                    .ThenInclude(sd => sd.Team)
                 .ToList();
 
             return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
@@ -223,8 +223,8 @@ namespace FormuleCirkelEntity.Controllers
                     .Where(dr => dr.Race.SeasonId == currentSeason.SeasonId);
 
                 ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
-                ViewBag.seasonId = currentSeason.SeasonId;
-                ViewBag.polepoint = currentSeason.PolePoints;
+                viewModel.SeasonId = currentSeason.SeasonId;
+                viewModel.PolePoints = currentSeason.PolePoints;
 
                 return View(viewModel);
             }

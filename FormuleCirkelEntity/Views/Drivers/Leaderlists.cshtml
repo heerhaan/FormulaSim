@@ -1,0 +1,129 @@
+﻿@model LeaderlistsModel
+
+@{
+    ViewData["Title"] = "Leaderlists";
+}
+
+<div class="d-inline-block w-100">
+
+    <div id="graphic" class="m-sides">
+        <h1>Leaderlist</h1>
+
+        <div class="fullwidth flex-row justify-content-between">
+
+            <div style="width:30%;">
+                <h3 class="text-center">Wins</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Driver</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LeaderlistWins)
+                        {
+                            <tr>
+                                <td>@item.Driver.Name</td>
+                                <td>@item.WinCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
+                <h3 class="text-center">Podiums</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Driver</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LeaderlistPodiums)
+                        {
+                            <tr>
+                                <td>@item.Driver.Name</td>
+                                <td>@item.PodiumCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
+                <h3 class="text-center">Starts</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Driver</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LeaderlistStarts)
+                        {
+                            <tr>
+                                <td>@item.Driver.Name</td>
+                                <td>@item.StartCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="w-25">
+                <h3 class="text-center">Did Not Finish</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Driver</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LeaderlistNonFinishes)
+                        {
+                            <tr>
+                                <td>@item.Driver.Name</td>
+                                <td>@item.NonFinishCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
+                <h3 class="text-center">Poles</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Driver</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LeaderlistPoles)
+                        {
+                            <tr>
+                                <td>@item.Driver.Name</td>
+                                <td>@item.PoleCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-row justify-content-between">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    </div>
+
+    <div id="screenshot"></div>
+</div>

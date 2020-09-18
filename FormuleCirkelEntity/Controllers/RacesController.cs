@@ -401,9 +401,8 @@ namespace FormuleCirkelEntity.Controllers
 
         DSQCause RandomDSQCause(bool driverDNF)
         {
-            
-            DSQCause cause = DSQCause.None;
 
+            DSQCause cause;
             if (driverDNF)
             {
                 int random = rng.Next(1, 11);
@@ -748,5 +747,32 @@ namespace FormuleCirkelEntity.Controllers
             raceToSwitch.Stints = null;
             return new JsonResult(new[] { race, raceToSwitch });
         }
+    }
+
+    // StintResult is passed along as a parameter for the RaceResultGenerator
+    public class StintResult
+    {
+        public Weather RaceWeather { get; set; }
+        public Specification TrackSpecification { get; set; }
+        public int SeasonDriverCount { get; set; }
+        public int SeasonQualyBonus { get; set; }
+        public int GridPosition { get; set; }
+        public int ModMinRNG { get; set; }
+        public int ModMaxRNG { get; set; }
+        public int ModDriverRacePace { get; set; }
+        public int ModChassisRacePace { get; set; }
+        public int ModEngineRacePace { get; set; }
+        public int ModDriverRel { get; set; }
+        public int ModTeamRel { get; set; }
+        public int DriverSkill { get; set; }
+        public int DriverReliability { get; set; }
+        public Tire DriverTire { get; set; }
+        public DriverStatus DriverStatus { get; set; }
+        public int TeamChassis { get; set; }
+        public int TeamReliability { get; set; }
+        public int TeamTopspeed { get; set; }
+        public int TeamAcceleration { get; set; }
+        public int TeamHandling { get; set; }
+        public int TeamEnginePower { get; set; }
     }
 }

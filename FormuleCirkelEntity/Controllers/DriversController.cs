@@ -107,6 +107,69 @@ namespace FormuleCirkelEntity.Controllers
             return View(stats);
         }
 
+        [Route("Leaderlists")]
+        public async Task<IActionResult> Leaderlists()
+        {
+            LeaderlistsModel leaderlistsModel = new LeaderlistsModel();
+
+            var drivers = DataContext.DriverResults
+                .IgnoreQueryFilters()
+                .Where(dr => dr.Race.Season.Championship.ActiveChampionship)
+                .GroupBy(sd => sd.SeasonDriver.Driver);
+
+            leaderlistsModel.LeaderlistWins = drivers
+                .Select(dr => new LeaderlistWin
+                {
+                    Driver = dr.Key,
+                    WinCount = dr.Sum(s => s.Position == 1 ? 1 : 0),
+                })
+                .ToList()
+                .OrderByDescending(dr => dr.WinCount)
+                .Take(10);
+
+            leaderlistsModel.LeaderlistPodiums = drivers
+                .Select(dr => new LeaderlistPodium
+                {
+                    Driver = dr.Key,
+                    PodiumCount = dr.Sum(s => s.Position <= 3 ? 1 : 0),
+                })
+                .ToList()
+                .OrderByDescending(dr => dr.PodiumCount)
+                .Take(10);
+
+            leaderlistsModel.LeaderlistStarts = drivers
+                .Select(dr => new LeaderlistStart
+                {
+                    Driver = dr.Key,
+                    StartCount = dr.Count(),
+                })
+                .ToList()
+                .OrderByDescending(dr => dr.StartCount)
+                .Take(10);
+
+            leaderlistsModel.LeaderlistNonFinishes = drivers
+                .Select(dr => new LeaderlistNonFinish
+                {
+                    Driver = dr.Key,
+                    NonFinishCount = dr.Sum(s => s.Status == Status.DNF || s.Status == Status.DSQ ? 1 : 0),
+                })
+                .ToList()
+                .OrderByDescending(dr => dr.NonFinishCount)
+                .Take(10);
+
+            leaderlistsModel.LeaderlistPoles = drivers
+                .Select(dr => new LeaderlistPole
+                {
+                    Driver = dr.Key,
+                    PoleCount = dr.Sum(s => s.Grid == 1 ? 1 : 0),
+                })
+                .ToList()
+                .OrderByDescending(dr => dr.PoleCount)
+                .Take(10);
+
+            return View(leaderlistsModel);
+        }
+
         [Route("Archived")]
         public IActionResult ArchivedDrivers()
         {

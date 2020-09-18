@@ -1,6 +1,7 @@
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace FormulaCirkelEntity.Tests
@@ -14,9 +15,12 @@ namespace FormulaCirkelEntity.Tests
         {
             // Arrange
             RaceResultGenerator generator = new RaceResultGenerator(new Random(1));
-            SeasonTeam team = new SeasonTeam
+
+            Dictionary<string, int> teamSpecs = new Dictionary<string, int>
             {
-                Topspeed = 4
+                { "Topspeed", 4 },
+                { "Acceleration", 0 },
+                { "Handling", 0 }
             };
             Track track = new Track
             {
@@ -24,7 +28,7 @@ namespace FormulaCirkelEntity.Tests
             };
 
             // Act
-            int chassisBonus = generator.GetChassisBonus(team, track);
+            int chassisBonus = generator.GetChassisBonus(teamSpecs, track.Specification.ToString());
 
             // Assert
             Assert.Equal(expected, chassisBonus);

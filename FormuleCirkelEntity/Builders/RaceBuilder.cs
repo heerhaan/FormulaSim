@@ -70,8 +70,8 @@ namespace FormuleCirkelEntity.Builders
         {
             Stint stint = new Stint()
             {
-                RNGMinimum = -10,
-                RNGMaximum = -3
+                RNGMinimum = -12,
+                RNGMaximum = -5
             };
 
             _race.Stints.Add(_race.Stints.Count + 1, stint);

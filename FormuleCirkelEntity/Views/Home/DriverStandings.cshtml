@@ -176,6 +176,7 @@
     var polepoint = @ViewBag.polepoint;
 
     function drawStandingsChart(res) {
+        console.log(res);
         var ctx = document.getElementById('standingsChart');
         ctx.style.display = "block";
         ctx.height = 300;
@@ -197,8 +198,6 @@
                 }
                 raceresults.push(total);
             });
-            console.log(driverValue.Driver.Name);
-            console.log(driverValue.DriverResults);
 
             var driverDataset = {
                 label: driverValue.Driver.Name,
