@@ -205,6 +205,8 @@ namespace FormuleCirkelEntity.Controllers
                 .IgnoreQueryFilters()
                 .Where(st => st.SeasonId == race.SeasonId)
                 .Include(st => st.Team)
+                .Include(st => st.Engine)
+                .AsEnumerable()
                 .OrderByDescending(st => (st.Chassis + st.Engine.Power + GetChassisBonus(st, race.Track)))
                 .Take(3)
                 .ToList();

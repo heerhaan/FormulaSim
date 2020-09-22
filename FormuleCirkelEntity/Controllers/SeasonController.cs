@@ -870,6 +870,7 @@ namespace FormuleCirkelEntity.Controllers
                 .SingleOrDefaultAsync(t => t.SeasonDriverId == id);
 
             var traits = _context.Traits
+                .AsEnumerable()
                 .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Values.Contains(tr))
                 .OrderBy(t => t.Name)
                 .ToList();
@@ -930,6 +931,7 @@ namespace FormuleCirkelEntity.Controllers
                 .SingleOrDefaultAsync(st => st.SeasonTeamId == id);
 
             var traits = _context.Traits
+                .AsEnumerable()
                 .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Values.Contains(tr))
                 .OrderBy(t => t.Name)
                 .ToList();

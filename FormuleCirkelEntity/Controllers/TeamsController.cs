@@ -45,6 +45,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Acquire team colours
             var lastSeasonTeam = DataContext.SeasonTeams
+                .ToList()
                 .Where(st => st.TeamId == id)
                 .LastOrDefault();
 
@@ -94,7 +95,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Calculates the amount of championships a team has won.
             int teamchamps = 0;
-            foreach (var season in DataContext.Seasons.ToList())
+            foreach (var season in seasons)
             {
                 var teamwinner = DataContext.SeasonTeams
                     .IgnoreQueryFilters()

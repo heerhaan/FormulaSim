@@ -4,116 +4,122 @@
     ViewData["Title"] = "Index";
 }
 
-<div class="d-inline-block w-60">
+<div class="d-inline-block w-75">
     <h1>Traits</h1>
     <div class="flex-row mb-1">
-        <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+        <a asp-action="Create" class="btn"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
     </div>
 
-    <div class="col">
-        <h3 class="float-left">Driver</h3>
-        <table class="ctable fullborder fullwidth">
-            <thead class="fullborder">
-                <tr>
-                    <th class="w-20">
-                        Trait
-                    </th>
-                    <th class="w-60">
-                        Description
-                    </th>
-                    <th class="w-10">Info</th>
-                    <th class="w-10">Edit</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.DriverTraits)
-                {
+    <div class="flex-col">
+        <div class="flex-col">
+            <h2 class="mr-auto">Driver</h2>
+            <table class="ctable fullborder fullwidth min-width-index-table">
+                <thead class="fullborder">
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td class="text-left">
-                            <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
-                        </td>
-                        <td>
-                            <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
-                        </td>
-                        <td>
-                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
-                        </td>
+                        <th class="w-20">
+                            Trait
+                        </th>
+                        <th class="w-60">
+                            Description
+                        </th>
+                        <th class="w-10">Info</th>
+                        <th class="w-10">Edit</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.DriverTraits)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td class="text-left">
+                                <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
+                            </td>
+                            <td>
+                                <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                            </td>
+                            <td>
+                                <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-        <h3 class="float-left">Team</h3>
-        <table class="ctable fullborder fullwidth">
-            <thead class="fullborder">
-                <tr>
-                    <th class="w-20">
-                        Trait
-                    </th>
-                    <th class="w-60">
-                        Description
-                    </th>
-                    <th class="w-10">Info</th>
-                    <th class="w-10">Edit</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.TeamTraits)
-                {
+        <div class="flex-col">
+            <h2 class="mr-auto">Team</h2>
+            <table class="ctable fullborder fullwidth min-width-index-table">
+                <thead class="fullborder">
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td class="text-left">
-                            <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
-                        </td>
-                        <td>
-                            <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
-                        </td>
-                        <td>
-                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
-                        </td>
+                        <th class="w-20">
+                            Trait
+                        </th>
+                        <th class="w-60">
+                            Description
+                        </th>
+                        <th class="w-10">Info</th>
+                        <th class="w-10">Edit</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.TeamTraits)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td class="text-left">
+                                <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
+                            </td>
+                            <td>
+                                <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                            </td>
+                            <td>
+                                <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-        <h3 class="float-left">Track</h3>
-        <table class="ctable fullborder fullwidth">
-            <thead class="fullborder">
-                <tr>
-                    <th class="w-20">
-                        Trait
-                    </th>
-                    <th class="w-60">
-                        Description
-                    </th>
-                    <th class="w-10">Info</th>
-                    <th class="w-10">Edit</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.TrackTraits)
-                {
+        <div class="flex-col">
+            <h2 class="mr-auto">Track</h2>
+            <table class="ctable fullborder fullwidth min-width-index-table">
+                <thead class="fullborder">
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td class="text-left">
-                            <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
-                        </td>
-                        <td>
-                            <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
-                        </td>
-                        <td>
-                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
-                        </td>
+                        <th class="w-20">
+                            Trait
+                        </th>
+                        <th class="w-60">
+                            Description
+                        </th>
+                        <th class="w-10">Info</th>
+                        <th class="w-10">Edit</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.TrackTraits)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td class="text-left">
+                                <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
+                            </td>
+                            <td>
+                                <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                            </td>
+                            <td>
+                                <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

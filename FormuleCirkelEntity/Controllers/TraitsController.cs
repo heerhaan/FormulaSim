@@ -67,7 +67,6 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
-        // GET: Traits/Edit/5
         public async Task<IActionResult> Modify(int? id)
         {
             if (id == null)
@@ -84,7 +83,6 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
-        // POST: Traits/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modify(int id, [Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace")] Trait trait)

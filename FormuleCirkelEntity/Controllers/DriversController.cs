@@ -37,7 +37,8 @@ namespace FormuleCirkelEntity.Controllers
             // Prepares table items for ViewModel
             var driver = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
             var seasons = DataContext.Seasons
-                .Where(s => s.Championship.ActiveChampionship);
+                .Where(s => s.Championship.ActiveChampionship)
+                .ToList();
 
             // Basic information about the driver
             stats.DriverId = driver.Id;
@@ -47,9 +48,11 @@ namespace FormuleCirkelEntity.Controllers
 
             // Count of the types of race finishes the driver had
             var results = DataContext.DriverResults
-                .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship);
+                .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
+                .Include(dr => dr.SeasonDriver)
+                .ToList();
 
-            stats.StartCount = results.Count();
+            stats.StartCount = results.Count;
             stats.WinCount = results.Where(r => r.Position == 1).Count();
             stats.SecondCount = results.Where(r => r.Position == 2).Count();
             stats.ThirdCount = results.Where(r => r.Position == 3).Count();
@@ -89,7 +92,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Calculates the amount of WDCs a driver might have.
             int championships = 0;
-            foreach(var season in DataContext.Seasons)
+            foreach(var season in seasons)
             {
                 var winner = DataContext.SeasonDrivers
                     .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
@@ -118,6 +121,8 @@ namespace FormuleCirkelEntity.Controllers
             var drivers = DataContext.DriverResults
                 .IgnoreQueryFilters()
                 .Where(dr => dr.Race.Season.Championship.ActiveChampionship)
+                .Include(dr => dr.SeasonDriver.Driver)
+                .AsEnumerable()
                 .GroupBy(sd => sd.SeasonDriver.Driver)
                 .ToList();
 
@@ -128,7 +133,8 @@ namespace FormuleCirkelEntity.Controllers
                     WinCount = dr.Sum(s => s.Position == 1 ? 1 : 0),
                 })
                 .OrderByDescending(dr => dr.WinCount)
-                .Take(10);
+                .Take(10)
+                .ToList();
 
             leaderlistsModel.LeaderlistPodiums = drivers
                 .Select(dr => new LeaderlistPodium
@@ -137,7 +143,8 @@ namespace FormuleCirkelEntity.Controllers
                     PodiumCount = dr.Sum(s => s.Position <= 3 ? 1 : 0),
                 })
                 .OrderByDescending(dr => dr.PodiumCount)
-                .Take(10);
+                .Take(10)
+                .ToList();
 
             leaderlistsModel.LeaderlistStarts = drivers
                 .Select(dr => new LeaderlistStart
@@ -146,7 +153,8 @@ namespace FormuleCirkelEntity.Controllers
                     StartCount = dr.Count(),
                 })
                 .OrderByDescending(dr => dr.StartCount)
-                .Take(10);
+                .Take(10)
+                .ToList();
 
             leaderlistsModel.LeaderlistNonFinishes = drivers
                 .Select(dr => new LeaderlistNonFinish
@@ -155,7 +163,8 @@ namespace FormuleCirkelEntity.Controllers
                     NonFinishCount = dr.Sum(s => s.Status == Status.DNF || s.Status == Status.DSQ ? 1 : 0),
                 })
                 .OrderByDescending(dr => dr.NonFinishCount)
-                .Take(10);
+                .Take(10)
+                .ToList();
 
             leaderlistsModel.LeaderlistPoles = drivers
                 .Select(dr => new LeaderlistPole
@@ -164,7 +173,8 @@ namespace FormuleCirkelEntity.Controllers
                     PoleCount = dr.Sum(s => s.Grid == 1 ? 1 : 0),
                 })
                 .OrderByDescending(dr => dr.PoleCount)
-                .Take(10);
+                .Take(10)
+                .ToList();
 
             return View(leaderlistsModel);
         }

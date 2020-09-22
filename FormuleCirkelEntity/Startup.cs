@@ -12,13 +12,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using FormuleCirkelEntity.Validation;
 using FormuleCirkelEntity.Services;
-using FormuleCirkelEntity.Helpers;
+using Microsoft.Extensions.Hosting;
 
 namespace FormuleCirkelEntity
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment environment)
+        public Startup(IHostEnvironment environment)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(environment.ContentRootPath)
@@ -40,10 +40,11 @@ namespace FormuleCirkelEntity
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc()
+            services.AddMvc(options => { options.EnableEndpointRouting = false; })
                 .WithRazorPagesAtContentRoot()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
+            services.AddControllers()
+                .AddNewtonsoftJson();
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
             services.AddSingleton(new Random());
             services.AddTransient<RaceResultGenerator>();
@@ -53,7 +54,7 @@ namespace FormuleCirkelEntity
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

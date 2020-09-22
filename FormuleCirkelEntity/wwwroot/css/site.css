@@ -139,6 +139,10 @@ ul li {
     width: 60%;
 }
 
+.min-width-index-table {
+    min-width:800px;
+}
+
 /* Styling in relation to statistics page */
 .flex-item {
     flex-grow: 1;
@@ -168,6 +172,11 @@ dl.inline-flex {
 /* Utility classes */
 .box-shadow {
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
 }
 
 .flex-row {
