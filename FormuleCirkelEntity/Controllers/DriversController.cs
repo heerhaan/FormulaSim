@@ -6,6 +6,7 @@ using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,7 +82,8 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.SeasonTeam)
                     .Where(st => st.Season.Championship.ActiveChampionship)
                 .Include(s => s.SeasonTeam)
-                    .ThenInclude(t => t.Team);
+                    .ThenInclude(t => t.Team)
+                .ToList();
 
             stats.Teams = seasondriver.Select(s => s.SeasonTeam.Team).Distinct().ToList();
 
@@ -110,12 +112,14 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Leaderlists")]
         public async Task<IActionResult> Leaderlists()
         {
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             LeaderlistsModel leaderlistsModel = new LeaderlistsModel();
 
             var drivers = DataContext.DriverResults
                 .IgnoreQueryFilters()
                 .Where(dr => dr.Race.Season.Championship.ActiveChampionship)
-                .GroupBy(sd => sd.SeasonDriver.Driver);
+                .GroupBy(sd => sd.SeasonDriver.Driver)
+                .ToList();
 
             leaderlistsModel.LeaderlistWins = drivers
                 .Select(dr => new LeaderlistWin
@@ -123,7 +127,6 @@ namespace FormuleCirkelEntity.Controllers
                     Driver = dr.Key,
                     WinCount = dr.Sum(s => s.Position == 1 ? 1 : 0),
                 })
-                .ToList()
                 .OrderByDescending(dr => dr.WinCount)
                 .Take(10);
 
@@ -133,7 +136,6 @@ namespace FormuleCirkelEntity.Controllers
                     Driver = dr.Key,
                     PodiumCount = dr.Sum(s => s.Position <= 3 ? 1 : 0),
                 })
-                .ToList()
                 .OrderByDescending(dr => dr.PodiumCount)
                 .Take(10);
 
@@ -143,7 +145,6 @@ namespace FormuleCirkelEntity.Controllers
                     Driver = dr.Key,
                     StartCount = dr.Count(),
                 })
-                .ToList()
                 .OrderByDescending(dr => dr.StartCount)
                 .Take(10);
 
@@ -153,7 +154,6 @@ namespace FormuleCirkelEntity.Controllers
                     Driver = dr.Key,
                     NonFinishCount = dr.Sum(s => s.Status == Status.DNF || s.Status == Status.DSQ ? 1 : 0),
                 })
-                .ToList()
                 .OrderByDescending(dr => dr.NonFinishCount)
                 .Take(10);
 
@@ -163,7 +163,6 @@ namespace FormuleCirkelEntity.Controllers
                     Driver = dr.Key,
                     PoleCount = dr.Sum(s => s.Grid == 1 ? 1 : 0),
                 })
-                .ToList()
                 .OrderByDescending(dr => dr.PoleCount)
                 .Take(10);
 

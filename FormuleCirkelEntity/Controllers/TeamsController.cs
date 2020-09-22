@@ -35,7 +35,8 @@ namespace FormuleCirkelEntity.Controllers
             // Prepares table items for ViewModel
             var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
             var seasons = DataContext.Seasons
-                .Where(s => s.Championship.ActiveChampionship);
+                .Where(s => s.Championship.ActiveChampionship)
+                .ToList();
 
             // Basic information about team
             stats.TeamId = team.Id;
@@ -44,7 +45,8 @@ namespace FormuleCirkelEntity.Controllers
 
             // Acquire team colours
             var lastSeasonTeam = DataContext.SeasonTeams
-                .Where(st => st.TeamId == id).LastOrDefault();
+                .Where(st => st.TeamId == id)
+                .LastOrDefault();
 
             if (lastSeasonTeam != null)
             {
@@ -57,15 +59,20 @@ namespace FormuleCirkelEntity.Controllers
             var drivers = DataContext.SeasonDrivers
                 .IgnoreQueryFilters()
                 .Where(sd => sd.SeasonTeam.TeamId == id)
-                .Include(sd => sd.Driver);
+                .Include(sd => sd.Driver)
+                .ToList();
 
-            stats.Drivers = drivers.Select(d => d.Driver).Distinct().Select(d => d.Name);
+            stats.Drivers = drivers
+                .Select(d => d.Driver)
+                .Distinct()
+                .Select(d => d.Name);
 
             var results = DataContext.DriverResults
-                .Where(dr => dr.SeasonDriver.SeasonTeam.TeamId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship);
+                .Where(dr => dr.SeasonDriver.SeasonTeam.TeamId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
+                .ToList();
 
             stats.RaceEntries = results.GroupBy(r => r.RaceId).Count();
-            stats.TotalCarEntries = results.Count();
+            stats.TotalCarEntries = results.Count;
             stats.Poles = results.Where(r => r.Grid == 1).Count();
             stats.RaceWins = results.Where(r => r.Position == 1).Count();
             stats.SecondFinishes = results.Where(r => r.Position == 2).Count();
@@ -87,7 +94,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Calculates the amount of championships a team has won.
             int teamchamps = 0;
-            foreach (var season in DataContext.Seasons)
+            foreach (var season in DataContext.Seasons.ToList())
             {
                 var teamwinner = DataContext.SeasonTeams
                     .IgnoreQueryFilters()
@@ -111,7 +118,11 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Archived")]
         public IActionResult ArchivedTeams()
         {
-            var teams = Data.IgnoreQueryFilters().Where(t => t.Archived).OrderBy(t => t.Abbreviation).ToList();
+            var teams = Data.IgnoreQueryFilters()
+                .Where(t => t.Archived)
+                .OrderBy(t => t.Abbreviation)
+                .ToList();
+
             return View(teams);
         }
         

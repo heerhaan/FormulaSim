@@ -39,7 +39,7 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return NotFound();
 
-            var existingTrackIds = season.Races.Select(r => r.TrackId);
+            var existingTrackIds = season.Races.Select(r => r.TrackId).ToList();
             var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.Id)).OrderBy(t => t.Location).OrderBy(t => t.Location).ToList();
 
             ViewBag.seasonId = id;
@@ -427,7 +427,8 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(res => res.RaceId == raceId)
                 .Include(res => res.SeasonDriver.Driver)
                 .Include(res => res.SeasonDriver.SeasonTeam.Team)
-                .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Abbreviation).ToList();
+                .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Abbreviation)
+                .ToList();
 
             return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
@@ -507,8 +508,7 @@ namespace FormuleCirkelEntity.Controllers
                     .Include(r => r.DriverResults)
                         .ThenInclude(dr => dr.SeasonDriver)
                             .ThenInclude(sd => sd.Driver)
-                    .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id)
-                    ;
+                    .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id);
 
                 var drivers = race.DriverResults
                     .Select(dr => dr.SeasonDriver)
@@ -603,9 +603,18 @@ namespace FormuleCirkelEntity.Controllers
             }
             var resultcontext = _context.DriverResults;
 
-            IQueryable<Qualification> qualyresult = _context.Qualification.Where(q => q.RaceId == raceId);
-            List<DriverResult> driverResults = resultcontext.Where(d => d.RaceId == raceId).ToList();
-            var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id).Include(c => c.Race).ToList();
+            List<Qualification> qualyresult = _context.Qualification
+                .Where(q => q.RaceId == raceId)
+                .ToList();
+
+            List<DriverResult> driverResults = resultcontext
+                .Where(d => d.RaceId == raceId)
+                .ToList();
+
+            var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id)
+                .Include(c => c.Race)
+                .ToList();
+
             var race = _context.Races.Single(r => r.RaceId == raceId);
 
             List<Qualification> qualifications = new List<Qualification>();

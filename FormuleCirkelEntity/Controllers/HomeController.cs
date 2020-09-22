@@ -66,7 +66,8 @@ namespace FormuleCirkelEntity.Controllers
                 ViewBag.rounds = _context.Races
                     .Where(r => r.SeasonId == currentSeason.SeasonId)
                     .Include(r => r.Track)
-                    .OrderBy(r => r.Round).ToList();
+                    .OrderBy(r => r.Round)
+                    .ToList();
 
                 // Calculates the average finishing position
                 List<AverageFinish> averageFinishes = new List<AverageFinish>();
@@ -160,7 +161,8 @@ namespace FormuleCirkelEntity.Controllers
                 .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
                 .Include(r => r.Track)
-                .OrderBy(r => r.Round).ToList();
+                .OrderBy(r => r.Round)
+                .ToList();
 
             return View("DriverStandings", standings);
         }
@@ -185,7 +187,7 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult TeamStandings()
         {
             // Selects seasons from the currently activated championship
-            var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship);
+            var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship).ToList();
 
             // Checks if there is any season is in progress, else return to season list
             if (seasons.Any(s => s.State == SeasonState.Progress))
@@ -205,12 +207,14 @@ namespace FormuleCirkelEntity.Controllers
                 viewModel.SeasonTeams = _context.SeasonTeams
                     .Include(st => st.SeasonDrivers)
                     .Where(st => st.SeasonId == currentSeason.SeasonId)
-                    .OrderByDescending(st => st.Points);
+                    .OrderByDescending(st => st.Points)
+                    .ToList();
 
                 var rounds = _context.Races
                     .Where(r => r.SeasonId == currentSeason.SeasonId)
                     .Include(r => r.Track)
-                    .OrderBy(r => r.Round);
+                    .OrderBy(r => r.Round)
+                    .ToList();
 
                 foreach (var round in rounds)
                 {
@@ -220,7 +224,8 @@ namespace FormuleCirkelEntity.Controllers
                 viewModel.Rounds = rounds.Select(r => r.RaceId);
 
                 viewModel.DriverResults = _context.DriverResults
-                    .Where(dr => dr.Race.SeasonId == currentSeason.SeasonId);
+                    .Where(dr => dr.Race.SeasonId == currentSeason.SeasonId)
+                    .ToList();
 
                 ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
                 viewModel.SeasonId = currentSeason.SeasonId;
@@ -249,12 +254,14 @@ namespace FormuleCirkelEntity.Controllers
             viewModel.SeasonTeams = _context.SeasonTeams
                 .Include(st => st.SeasonDrivers)
                 .Where(st => st.SeasonId == seasonId)
-                .OrderByDescending(st => st.Points);
+                .OrderByDescending(st => st.Points)
+                .ToList();
 
             var rounds = _context.Races
                 .Where(r => r.SeasonId == seasonId)
                 .Include(r => r.Track)
-                .OrderBy(r => r.Round);
+                .OrderBy(r => r.Round)
+                .ToList();
 
             foreach (var round in rounds)
             {
@@ -264,7 +271,7 @@ namespace FormuleCirkelEntity.Controllers
             viewModel.Rounds = rounds.Select(r => r.RaceId);
 
             viewModel.DriverResults = _context.DriverResults
-                .Where(dr => dr.Race.SeasonId == seasonId);
+                .Where(dr => dr.Race.SeasonId == seasonId).ToList();
 
             return View("TeamStandings", viewModel);
         }
@@ -281,7 +288,8 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(st => st.SeasonId == seasonId)
                 .Include(st => st.SeasonDrivers)
                     .ThenInclude(sd => sd.DriverResults)
-                .OrderBy(st => st.Name).ToList();
+                .OrderBy(st => st.Name)
+                .ToList();
 
             return new JsonResult(graphData, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
