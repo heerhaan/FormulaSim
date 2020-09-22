@@ -39,7 +39,7 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return NotFound();
 
-            var existingTrackIds = season.Races.Select(r => r.TrackId);
+            var existingTrackIds = season.Races.Select(r => r.TrackId).ToList();
             var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.Id)).OrderBy(t => t.Location).OrderBy(t => t.Location).ToList();
 
             ViewBag.seasonId = id;
@@ -401,9 +401,8 @@ namespace FormuleCirkelEntity.Controllers
 
         DSQCause RandomDSQCause(bool driverDNF)
         {
-            
-            DSQCause cause = DSQCause.None;
 
+            DSQCause cause;
             if (driverDNF)
             {
                 int random = rng.Next(1, 11);
@@ -428,7 +427,8 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(res => res.RaceId == raceId)
                 .Include(res => res.SeasonDriver.Driver)
                 .Include(res => res.SeasonDriver.SeasonTeam.Team)
-                .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Abbreviation).ToList();
+                .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Abbreviation)
+                .ToList();
 
             return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
@@ -508,8 +508,7 @@ namespace FormuleCirkelEntity.Controllers
                     .Include(r => r.DriverResults)
                         .ThenInclude(dr => dr.SeasonDriver)
                             .ThenInclude(sd => sd.Driver)
-                    .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id)
-                    ;
+                    .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id);
 
                 var drivers = race.DriverResults
                     .Select(dr => dr.SeasonDriver)
@@ -604,9 +603,18 @@ namespace FormuleCirkelEntity.Controllers
             }
             var resultcontext = _context.DriverResults;
 
-            IQueryable<Qualification> qualyresult = _context.Qualification.Where(q => q.RaceId == raceId);
-            List<DriverResult> driverResults = resultcontext.Where(d => d.RaceId == raceId).ToList();
-            var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id).Include(c => c.Race).ToList();
+            List<Qualification> qualyresult = _context.Qualification
+                .Where(q => q.RaceId == raceId)
+                .ToList();
+
+            List<DriverResult> driverResults = resultcontext
+                .Where(d => d.RaceId == raceId)
+                .ToList();
+
+            var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id)
+                .Include(c => c.Race)
+                .ToList();
+
             var race = _context.Races.Single(r => r.RaceId == raceId);
 
             List<Qualification> qualifications = new List<Qualification>();
@@ -748,5 +756,32 @@ namespace FormuleCirkelEntity.Controllers
             raceToSwitch.Stints = null;
             return new JsonResult(new[] { race, raceToSwitch });
         }
+    }
+
+    // StintResult is passed along as a parameter for the RaceResultGenerator
+    public class StintResult
+    {
+        public Weather RaceWeather { get; set; }
+        public Specification TrackSpecification { get; set; }
+        public int SeasonDriverCount { get; set; }
+        public int SeasonQualyBonus { get; set; }
+        public int GridPosition { get; set; }
+        public int ModMinRNG { get; set; }
+        public int ModMaxRNG { get; set; }
+        public int ModDriverRacePace { get; set; }
+        public int ModChassisRacePace { get; set; }
+        public int ModEngineRacePace { get; set; }
+        public int ModDriverRel { get; set; }
+        public int ModTeamRel { get; set; }
+        public int DriverSkill { get; set; }
+        public int DriverReliability { get; set; }
+        public Tire DriverTire { get; set; }
+        public DriverStatus DriverStatus { get; set; }
+        public int TeamChassis { get; set; }
+        public int TeamReliability { get; set; }
+        public int TeamTopspeed { get; set; }
+        public int TeamAcceleration { get; set; }
+        public int TeamHandling { get; set; }
+        public int TeamEnginePower { get; set; }
     }
 }

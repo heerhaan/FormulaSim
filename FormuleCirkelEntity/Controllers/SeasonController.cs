@@ -144,13 +144,15 @@ namespace FormuleCirkelEntity.Controllers
             var drivers = _context.SeasonDrivers
                 .IgnoreQueryFilters()
                 .Include(sd => sd.Driver)
-                .Where(sd => sd.SeasonId == id);
+                .Where(sd => sd.SeasonId == id)
+                .ToList();
 
             var teams = _context.SeasonTeams
                 .IgnoreQueryFilters()
                 .Include(t => t.Team)
                 .Include(t => t.Engine)
-                .Where(st => st.SeasonId == id);
+                .Where(st => st.SeasonId == id)
+                .ToList();
 
             if (season == null)
                 return NotFound();
@@ -315,7 +317,8 @@ namespace FormuleCirkelEntity.Controllers
         {
             var seasons = _context.Seasons
                 .Where(s => s.State == SeasonState.Draft || s.State == SeasonState.Progress)
-                .Include(s => s.Teams);
+                .Include(s => s.Teams)
+                .ToList();
 
             if (seasons == null)
                 return NotFound();
@@ -327,7 +330,8 @@ namespace FormuleCirkelEntity.Controllers
             }
             var unregisteredTeams = _context.Teams
                 .Where(t => t.Archived == false)
-                .Where(t => !existingTeamIds.Contains(t.Id)).ToList();
+                .Where(t => !existingTeamIds.Contains(t.Id))
+                .ToList();
 
             ViewBag.seasonId = id;
             return View(unregisteredTeams);
@@ -343,7 +347,11 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null || globalTeam == null)
                 return NotFound();
 
-            var engines = _context.Engines.Where(e => e.Archived == false).Select(t => new { t.Id, t.Name });
+            var engines = _context.Engines
+                .Where(e => e.Archived == false)
+                .Select(t => new { t.Id, t.Name })
+                .ToList();
+
             ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
             ViewBag.seasonId = id;
 
@@ -408,7 +416,11 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var engines = _context.Engines.Where(e => e.Archived == false).Select(t => new { t.Id, t.Name });
+                var engines = _context.Engines
+                    .Where(e => e.Archived == false)
+                    .Select(t => new { t.Id, t.Name })
+                    .ToList();
+
                 ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
                 return View("AddOrUpdateTeam", seasonTeam);
             }
@@ -427,7 +439,11 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null || team == null)
                 return NotFound();
 
-            var engines = _context.Engines.Where(e => e.Archived == false).Select(t => new { t.Id, t.Name });
+            var engines = _context.Engines
+                .Where(e => e.Archived == false)
+                .Select(t => new { t.Id, t.Name })
+                .ToList();
+
             ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
             ViewBag.seasonId = id;
             return View("AddOrUpdateTeam", team);
@@ -464,7 +480,11 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var engines = _context.Engines.Where(e => e.Archived == false).Select(t => new { t.Id, t.Name });
+                var engines = _context.Engines
+                    .Where(e => e.Archived == false)
+                    .Select(t => new { t.Id, t.Name })
+                    .ToList();
+
                 ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
                 return View("AddOrUpdateDriver", team);
             }
@@ -475,7 +495,8 @@ namespace FormuleCirkelEntity.Controllers
         {
             var seasons = _context.Seasons
                 .Where(s => s.State == SeasonState.Draft || s.State == SeasonState.Progress)
-                .Include(s => s.Drivers);
+                .Include(s => s.Drivers)
+                .ToList();
 
             if (seasons == null)
                 return NotFound();
@@ -488,7 +509,8 @@ namespace FormuleCirkelEntity.Controllers
             var unregisteredDrivers = _context.Drivers
                 .Where(d => d.Archived == false)
                 .Where(d => !existingDriverIds.Contains(d.Id))
-                .OrderBy(d => d.Name).ToList();
+                .OrderBy(d => d.Name)
+                .ToList();
 
             ViewBag.seasonId = id;
             ViewBag.year = _context.Seasons.SingleOrDefault(s => s.SeasonId == id).SeasonNumber;
@@ -508,7 +530,9 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var teams = season.Teams
-                .Select(t => new { t.SeasonTeamId, t.Name });
+                .Select(t => new { t.SeasonTeamId, t.Name })
+                .ToList();
+
             ViewBag.teams = new SelectList(teams, nameof(SeasonTeam.SeasonTeamId), nameof(SeasonTeam.Name));
             ViewBag.seasonId = id;
 
@@ -521,6 +545,7 @@ namespace FormuleCirkelEntity.Controllers
             // Adds last previous used values from driver as default
             var lastDriver = _context.SeasonDrivers
                 .LastOrDefault(s => s.Driver.Id == globalDriverId);
+
             if (lastDriver != null)
             {
                 seasonDriver.Skill = lastDriver.Skill;
@@ -572,7 +597,10 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Name });
+                var teams = season.Teams
+                    .Select(t => new { t.SeasonTeamId, t.Name })
+                    .ToList();
+
                 ViewBag.teams = new SelectList(teams, nameof(SeasonTeam.SeasonTeamId), nameof(SeasonTeam.Name));
                 return View("AddOrUpdateDriver", seasonDriver);
             }
@@ -592,7 +620,9 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null || driver == null)
                 return NotFound();
 
-            var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Name });
+            var teams = season.Teams
+                .Select(t => new { t.SeasonTeamId, t.Name })
+                .ToList();
             ViewBag.teams = new SelectList(teams, nameof(SeasonTeam.SeasonTeamId), nameof(SeasonTeam.Name));
             ViewBag.seasonId = id;
             return View("AddOrUpdateDriver", driver);
@@ -625,7 +655,10 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var teams = season.Teams.Select(t => new { t.SeasonTeamId, t.Name });
+                var teams = season.Teams
+                    .Select(t => new { t.SeasonTeamId, t.Name })
+                    .ToList();
+
                 ViewBag.teams = new SelectList(teams, nameof(SeasonTeam.SeasonTeamId), nameof(SeasonTeam.Name));
                 return View("AddOrUpdateDriver", driver);
             }
@@ -641,6 +674,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == id)
                 .OrderBy(s => s.SeasonTeam.Name)
                 .ToList();
+
             return View(drivers);
         }
 
@@ -653,7 +687,8 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == id)
                 .Include(t => t.SeasonTeam)
                 .Include(d => d.Driver)
-                .OrderBy(s => s.SeasonTeam.Name).ToList());
+                .OrderBy(s => s.SeasonTeam.Name)
+                .ToList());
         }
 
         public int GetCurrentYear(int seasonId)
@@ -662,7 +697,6 @@ namespace FormuleCirkelEntity.Controllers
             return season.SeasonNumber;
         }
 
-        //Receives development values and saves them in the DB
         [HttpPost]
         public IActionResult SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
         {
@@ -671,7 +705,8 @@ namespace FormuleCirkelEntity.Controllers
                 .FirstOrDefault();
 
             var drivers = _context.SeasonDrivers
-                .Where(s => s.SeasonId == seasonId.SeasonId);
+                .Where(s => s.SeasonId == seasonId.SeasonId)
+                .ToList();
 
             foreach (var driverdev in dev)
             {
@@ -691,7 +726,8 @@ namespace FormuleCirkelEntity.Controllers
             return View(_context.SeasonTeams
                 .Where(s => s.SeasonId == id)
                 .Include(t => t.Team)
-                .OrderBy(t => t.Team.Abbreviation).ToList());
+                .OrderBy(t => t.Team.Abbreviation)
+                .ToList());
         }
 
         //Receives development values and saves them in the DB
@@ -704,7 +740,8 @@ namespace FormuleCirkelEntity.Controllers
 
             var teams = _context.SeasonTeams
                 .Where(s => s.SeasonId == seasonId.SeasonId)
-                .OrderBy(t => t.Team.Abbreviation);
+                .OrderBy(t => t.Team.Abbreviation)
+                .ToList();
 
             foreach (var teamdev in dev)
             {
@@ -734,7 +771,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var engines = _context.Engines;
+            var engines = _context.Engines.ToList();
             foreach (var enginedev in dev)
             {
                 var engine = engines.First(e => e.Id == enginedev.Id);
@@ -757,10 +794,10 @@ namespace FormuleCirkelEntity.Controllers
             return View(_context.SeasonTeams
                 .Where(s => s.SeasonId == id)
                 .Include(t => t.Team)
-                .OrderBy(t => t.Team.Abbreviation).ToList());
+                .OrderBy(t => t.Team.Abbreviation)
+                .ToList());
         }
 
-        //Receives development values and saves them in the DB
         [HttpPost]
         public IActionResult SaveTeamReliabilityDev([FromBody]IEnumerable<GetDev> dev)
         {
@@ -770,7 +807,8 @@ namespace FormuleCirkelEntity.Controllers
 
             var teams = _context.SeasonTeams
                 .Where(s => s.SeasonId == seasonId.SeasonId)
-                .OrderBy(t => t.Team.Abbreviation);
+                .OrderBy(t => t.Team.Abbreviation)
+                .ToList();
 
             foreach (var teamdev in dev)
             {
@@ -792,10 +830,10 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == id)
                 .Include(t => t.SeasonTeam)
                 .Include(d => d.Driver)
-                .OrderBy(s => s.SeasonTeam.Team.Abbreviation).ToList());
+                .OrderBy(s => s.SeasonTeam.Team.Abbreviation)
+                .ToList());
         }
 
-        //Receives development values and saves them in the DB
         [HttpPost]
         public IActionResult SaveDriverReliabilityDev([FromBody]IEnumerable<GetDev> dev)
         {
@@ -804,7 +842,8 @@ namespace FormuleCirkelEntity.Controllers
                 .FirstOrDefault();
 
             var drivers = _context.SeasonDrivers
-                .Where(s => s.SeasonId == seasonId.SeasonId);
+                .Where(s => s.SeasonId == seasonId.SeasonId)
+                .ToList();
 
             foreach (var driverdev in dev)
             {
@@ -829,9 +868,11 @@ namespace FormuleCirkelEntity.Controllers
             var seasondriver = await _context.SeasonDrivers
                 .Include(sd => sd.Driver)
                 .SingleOrDefaultAsync(t => t.SeasonDriverId == id);
+
             var traits = _context.Traits
                 .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Values.Contains(tr))
-                .OrderBy(t => t.Name);
+                .OrderBy(t => t.Name)
+                .ToList();
 
             if (seasondriver == null)
                 return NotFound();
@@ -850,8 +891,8 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
         {
             var seasondriver = await _context.SeasonDrivers
-                .SingleOrDefaultAsync(t => t.SeasonDriverId == id)
-                ;
+                .SingleOrDefaultAsync(t => t.SeasonDriverId == id);
+
             var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
             if (seasondriver == null || trait == null)
@@ -886,11 +927,12 @@ namespace FormuleCirkelEntity.Controllers
         {
             var seasonteam = await _context.SeasonTeams
                 .Include(st => st.Team)
-                .SingleOrDefaultAsync(st => st.SeasonTeamId == id)
-                ;
+                .SingleOrDefaultAsync(st => st.SeasonTeamId == id);
+
             var traits = _context.Traits
                 .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Values.Contains(tr))
-                .OrderBy(t => t.Name);
+                .OrderBy(t => t.Name)
+                .ToList();
 
             if (seasonteam == null)
                 return NotFound();

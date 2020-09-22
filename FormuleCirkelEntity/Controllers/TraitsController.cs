@@ -29,6 +29,7 @@ namespace FormuleCirkelEntity.Controllers
                 TeamTraits = traits.Where(t => t.TraitGroup == TraitGroup.Team).OrderBy(t => t.Name),
                 TrackTraits = traits.Where(t => t.TraitGroup == TraitGroup.Track).OrderBy(t => t.Name)
             };
+
             return View(indexmodel);
         }
 
@@ -43,6 +44,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 return NotFound();
             }
+
             return View(trait);
         }
 
@@ -61,6 +63,7 @@ namespace FormuleCirkelEntity.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(trait);
         }
 
@@ -77,6 +80,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 return NotFound();
             }
+
             return View(trait);
         }
 
@@ -110,6 +114,7 @@ namespace FormuleCirkelEntity.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(trait);
         }
 

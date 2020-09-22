@@ -11,5 +11,7 @@ namespace FormuleCirkelEntity.ViewModels
         public IEnumerable<int> Rounds { get; set; }
         public IEnumerable<DriverResult> DriverResults { get; set; }
         public int LastPointPos { get; set; }
+        public int SeasonId { get; set; }
+        public int PolePoints { get; set; }
     }
 }

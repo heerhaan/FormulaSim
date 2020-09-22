@@ -115,7 +115,7 @@
         ctx.backgroundColor = 'rgba(30, 34, 39, 0.9)';
         ctx.getContext('2d');
         var datasets = [];
-        var polepoint = @ViewBag.polepoint;
+        var polepoint = @Model.PolePoints;
         var points = @(Html.Raw(ViewBag.points));
 
         $(res).each(function (key, val) {
@@ -237,7 +237,7 @@
     }
 
     function getStandingsGraph() {
-        fetch("/Home/@ViewBag.seasonId/GetTeamGraphData", { method: "POST" })
+        fetch("/Home/@(Model.SeasonId)/GetTeamGraphData", { method: "POST" })
             .then(response => response.json())
             .then(result => drawStandingsChart(result));
     }

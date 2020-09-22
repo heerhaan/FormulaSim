@@ -25,7 +25,10 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Archived")]
         public IActionResult ArchivedEngines()
         {
-            List<Engine> engines = Data.IgnoreQueryFilters().Where(e => e.Archived).ToList();
+            List<Engine> engines = Data.IgnoreQueryFilters()
+                .Where(e => e.Archived)
+                .ToList();
+
             return View(engines);
         }
     }

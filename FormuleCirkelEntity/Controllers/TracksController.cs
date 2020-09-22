@@ -28,11 +28,12 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> TrackTraits(int id)
         {
             var track = await Data.IgnoreQueryFilters()
-                .SingleOrDefaultAsync(t => t.Id == id)
-                ;
+                .SingleOrDefaultAsync(t => t.Id == id);
+
             var traits = DataContext.Traits
                 .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Values.Contains(tr))
-                .OrderBy(t => t.Name);
+                .OrderBy(t => t.Name)
+                .ToList();
 
             if (track == null)
                 return NotFound();
@@ -83,7 +84,11 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Archived")]
         public IActionResult ArchivedTracks()
         {
-            List<Track> tracks = Data.IgnoreQueryFilters().Where(t => t.Archived).OrderBy(t => t.Location).ToList();
+            List<Track> tracks = Data.IgnoreQueryFilters()
+                .Where(t => t.Archived)
+                .OrderBy(t => t.Location)
+                .ToList();
+
             return View(tracks);
         }
     }
