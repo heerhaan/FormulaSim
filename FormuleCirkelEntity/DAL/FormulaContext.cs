@@ -1,9 +1,9 @@
 ﻿using FormuleCirkelEntity.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
-using Remotion.Linq.Parsing.ExpressionVisitors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,8 +44,7 @@ namespace FormuleCirkelEntity.DAL
                 .HasIndex(e => e.Name)
                 .IsUnique();
             builder.Entity<Track>()
-                .Property(t => t.LengthKM)
-                .HasColumnType("decimal(18,2)");
+                .Property(t => t.LengthKM);
             builder.Entity<Race>()
                 .Property(r => r.Stints)
                 .HasConversion(
