@@ -55,8 +55,8 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult AddDefault(int? id)
         {
             // gets the current and previous season in this championship
-            var season = _context.Seasons.Include(s => s.Races).SingleOrDefault(s => s.SeasonId == id);
-            var lastSeason = _context.Seasons.Include(s => s.Races).LastOrDefault(s => s.State == SeasonState.Finished && s.ChampionshipId == season.ChampionshipId);
+            var season = _context.Seasons.Include(s => s.Races).ToList().SingleOrDefault(s => s.SeasonId == id);
+            var lastSeason = _context.Seasons.Include(s => s.Races).ToList().LastOrDefault(s => s.State == SeasonState.Finished && s.ChampionshipId == season.ChampionshipId);
 
             if (lastSeason != null)
             {
@@ -362,7 +362,11 @@ namespace FormuleCirkelEntity.Controllers
             };
 
             // Adds last previous used values from team as default
-            var lastTeam = _context.SeasonTeams.LastOrDefault(s => s.Team.Id == globalTeamId);
+            var lastTeam = _context.SeasonTeams
+                .Include(st => st.Team)
+                .ToList()
+                .LastOrDefault(s => s.Team.Id == globalTeamId);
+
             if (lastTeam != null)
             {
                 seasonTeam.Name = lastTeam.Name;
@@ -403,7 +407,11 @@ namespace FormuleCirkelEntity.Controllers
                 seasonTeam.TeamId = globalTeamId ?? throw new ArgumentNullException(nameof(globalTeamId));
 
                 // Adds last previous used traits from team as default
-                var lastTeam = _context.SeasonTeams.LastOrDefault(s => s.Team.Id == globalTeamId);
+                var lastTeam = _context.SeasonTeams
+                    .Include(st => st.Team)
+                    .ToList()
+                    .LastOrDefault(s => s.Team.Id == globalTeamId);
+
                 if (lastTeam != null)
                 {
                     seasonTeam.Traits = lastTeam.Traits;
@@ -544,6 +552,8 @@ namespace FormuleCirkelEntity.Controllers
 
             // Adds last previous used values from driver as default
             var lastDriver = _context.SeasonDrivers
+                .Include(sd => sd.Driver)
+                .ToList()
                 .LastOrDefault(s => s.Driver.Id == globalDriverId);
 
             if (lastDriver != null)
@@ -583,6 +593,8 @@ namespace FormuleCirkelEntity.Controllers
 
                 // Adds last previous used traits from driver as default
                 var lastDriver = _context.SeasonDrivers
+                    .Include(sd => sd.Driver)
+                    .ToList()
                     .LastOrDefault(s => s.Driver.Id == globalDriverId);
 
                 if (lastDriver != null)
@@ -757,7 +769,12 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult EngineDev(int id)
         {
             ViewBag.seasonId = id;
-            var teams = _context.SeasonTeams.Where(s => s.SeasonId == id);
+
+            var teams = _context.SeasonTeams
+                .Where(s => s.SeasonId == id)
+                .Include(st => st.Engine)
+                .ToList();
+
             var engines = teams
                 .GroupBy(e => e.Engine)
                 .Select(e => e.First())
