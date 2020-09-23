@@ -28,7 +28,7 @@
                     Track:
                 </dt>
                 <dd class="col-3">
-                    @Html.DisplayFor(model => model.Track.Name)
+                    <span class="flag flag-@(Model.Track.Country) flag-margin"></span>@Html.DisplayFor(model => model.Track.Name)
                 </dd>
                 <dt class="col-3">
                     Length:

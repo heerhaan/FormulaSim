@@ -34,8 +34,9 @@
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label float-left">Country of origin (not implemented yet)</label>
-                <select name="country"></select>
+                <label asp-for="Country" class="control-label float-left">Country of origin</label>
+                <select asp-for="Country" name="country"></select>
+                <span asp-validation-for="Country" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn fullwidth" />
@@ -55,7 +56,7 @@
         function formatCountry(country) {
             if (!country.id) { return country.text; }
             var $country = $(
-                '<span class="flag flag-' + country.id.toLowerCase() + '"></span>' +
+                '<span class="flag flag-' + country.id + '"></span>' +
                 '<span class="flag-text">' + country.text + "</span>"
             );
             return $country;
@@ -70,12 +71,8 @@
 </script>
 
 <style>
-    .flag-text {
-        margin-left: 10px;
-    }
-
-    .select2-container { 
-        width: 100% !important; 
+    .select2-container {
+        width: 100% !important;
         text-align: left;
         color: black;
     }

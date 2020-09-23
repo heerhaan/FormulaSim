@@ -19,6 +19,11 @@
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Country" class="control-label float-left">Country of origin</label>
+                <select asp-for="Country" name="country"></select>
+                <span asp-validation-for="Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn fullwidth" />
             </div>
         </form>
@@ -30,3 +35,31 @@
         </a>
     </div>
 </div>
+
+<script>
+
+    $(function () {
+        function formatCountry(country) {
+            if (!country.id) { return country.text; }
+            var $country = $(
+                '<span class="flag flag-' + country.id + '"></span>' +
+                '<span class="flag-text">' + country.text + "</span>"
+            );
+            return $country;
+        };
+
+        $("[name='country']").select2({
+            placeholder: "Select a country",
+            templateResult: formatCountry,
+            data: isoCountries
+        });
+    });
+</script>
+
+<style>
+    .select2-container {
+        width: 100% !important;
+        text-align: left;
+        color: black;
+    }
+</style>

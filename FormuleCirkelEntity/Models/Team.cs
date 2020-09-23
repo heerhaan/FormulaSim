@@ -9,6 +9,7 @@ namespace FormuleCirkelEntity.Models
     public class Team : ModelBase, IArchivable
     {
         public string Abbreviation { get; set; }
+        public string Country { get; set; }
         public string Biography { get; set; }
         public bool Archived { get; set; }
 

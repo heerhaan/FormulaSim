@@ -18,6 +18,7 @@ namespace FormuleCirkelEntity.Models
         public string Name { get; set; }
         public string Location { get; set; }
         public decimal LengthKM { get; set; }
+        public string Country { get; set; }
 
         [EnumDataType(typeof(Specification))]
         public Specification Specification { get; set; }

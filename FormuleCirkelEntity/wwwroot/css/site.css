@@ -143,6 +143,14 @@ ul li {
     min-width:800px;
 }
 
+.flag-text {
+    margin-left: 10px;
+}
+
+.flag-margin {
+    margin-right: 10px;
+}
+
 /* Styling in relation to statistics page */
 .flex-item {
     flex-grow: 1;
