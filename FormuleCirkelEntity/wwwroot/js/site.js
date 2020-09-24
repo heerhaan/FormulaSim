@@ -203,7 +203,7 @@ var isoCountries = [
     { id: 'ug', text: 'Uganda' },
     { id: 'ua', text: 'Ukraine' },
     { id: 'ae', text: 'United Arab Emirates' },
-    { id: 'uk', text: 'United Kingdom' },
+    { id: 'gb', text: 'United Kingdom' },
     { id: 'us', text: 'United States' },
     { id: 'uy', text: 'Uruguay' },
     { id: 'uz', text: 'Uzbekistan' },
@@ -213,10 +213,3 @@ var isoCountries = [
     { id: 'zm', text: 'Zambia' },
     { id: 'zw', text: 'Zimbabwe' }
 ];
-
-function formatCountry(country) {
-    if (!country.id) { return country.text; }
-    var $country = $('<span class="flag flag-' + country.id.toLowerCase() + '></span>' +
-        '<span class="flag-text">' + country.text + '</span>');
-    return $country;
-}

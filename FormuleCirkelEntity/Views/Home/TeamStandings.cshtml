@@ -41,7 +41,8 @@
                             <span class="ml-cel">@Html.DisplayFor(modelItem => item.Principal)</span>
                         </td>
                         <td rowspan="@(item.SeasonDrivers.Count + 1)" style="background-color:@(item.Colour);color:@(item.Accent);">
-                            <span class="pl-1 pr-1">@item.Name</span>
+                            <span class="pl-1 pr-1"><span class="flag flag-@(item.Team.Country)"></span>
+                            @item.Name</span>
                         </td>
                         <td rowspan="@(item.SeasonDrivers.Count + 1)">
                             <b>@Html.DisplayFor(modelItem => item.Points)</b>

@@ -205,6 +205,7 @@ namespace FormuleCirkelEntity.Controllers
                 viewModel.LastPointPos = currentSeason.PointsPerPosition.Keys.Max();
 
                 viewModel.SeasonTeams = _context.SeasonTeams
+                    .Include(st => st.Team)
                     .Include(st => st.SeasonDrivers)
                     .Where(st => st.SeasonId == currentSeason.SeasonId)
                     .OrderByDescending(st => st.Points)

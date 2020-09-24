@@ -31,11 +31,11 @@
                                 @driver.Driver.DriverNumber
                             </span>
                         </td>
-                        <td class="text-left"><span class="ml-cel">@driver.Driver.Name</span></td>
+                        <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.Driver.Country) flag-margin"></span>@driver.Driver.Name</span></td>
                         <td>
-                            <span class="badge badge-team fullwidth font-size-default"
+                            <span class="badge badge-team text-left fullwidth font-size-default"
                                   style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
-                                @driver.SeasonTeam.Name
+                                <span class="flag flag-@(driver.SeasonTeam.Team.Country) flag-margin"></span>@driver.SeasonTeam.Name
                             </span>
                         </td>
                         <td>

@@ -365,6 +365,7 @@ namespace FormuleCirkelEntity.Controllers
             var lastTeam = _context.SeasonTeams
                 .Include(st => st.Team)
                 .ToList()
+                .OrderBy(st => st.SeasonTeamId)
                 .LastOrDefault(s => s.Team.Id == globalTeamId);
 
             if (lastTeam != null)
@@ -410,6 +411,7 @@ namespace FormuleCirkelEntity.Controllers
                 var lastTeam = _context.SeasonTeams
                     .Include(st => st.Team)
                     .ToList()
+                    .OrderBy(st => st.SeasonTeamId)
                     .LastOrDefault(s => s.Team.Id == globalTeamId);
 
                 if (lastTeam != null)
@@ -482,6 +484,7 @@ namespace FormuleCirkelEntity.Controllers
                 team.Handling = updatedTeam.Handling;
                 team.Reliability = updatedTeam.Reliability;
                 team.EngineId = updatedTeam.EngineId;
+                team.Traits = updatedTeam.Traits;
                 _context.Update(team);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
@@ -661,6 +664,7 @@ namespace FormuleCirkelEntity.Controllers
                 driver.Skill = updatedDriver.Skill;
                 driver.Tires = updatedDriver.Tires;
                 driver.DriverStatus = updatedDriver.DriverStatus;
+                driver.Traits = updatedDriver.Traits;
                 _context.Update(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });

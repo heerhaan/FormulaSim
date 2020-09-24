@@ -31,6 +31,7 @@ namespace FormuleCirkelEntity.Controllers
                 .SingleOrDefaultAsync(t => t.Id == id);
 
             var traits = DataContext.Traits
+                .AsEnumerable()
                 .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Values.Contains(tr))
                 .OrderBy(t => t.Name)
                 .ToList();

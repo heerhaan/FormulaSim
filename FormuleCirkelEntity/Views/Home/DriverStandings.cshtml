@@ -50,7 +50,8 @@
                             <b>@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</b>
                         </td>
                         <td class="text-left pr-2">
-                            <span class="ml-cel">@Html.DisplayFor(modelItem => item.Driver.Name)</span>
+                            <span class="ml-cel"><span class="flag flag-@(item.Driver.Country) flag-margin"></span>
+                            @Html.DisplayFor(modelItem => item.Driver.Name)</span>
                         </td>
                         <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
                             <span class="pl-1 pr-1">@item.SeasonTeam.Name</span>
