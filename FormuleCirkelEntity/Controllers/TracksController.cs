@@ -18,7 +18,7 @@ namespace FormuleCirkelEntity.Controllers
         {
         }
 
-        [SortResult(nameof(Track.Name)), PagedResult]
+        [SortResult(nameof(Track.Location)), PagedResult]
         public override Task<IActionResult> Index()
         {
             return base.Index();
