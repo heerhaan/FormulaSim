@@ -29,7 +29,8 @@
                     </th>
                     @foreach (var round in rounds)
                     {
-                        <th class="fullborder">@(track = round.Track.Location.Substring(0, 3).ToUpper())</th>
+                        <th class="fullborder">@(track = round.Track.Location.Substring(0, 3).ToUpper())
+                            <br /><span class="flag flag-@(round.Track.Country)"></span></th>
                     }
                     <th class="fullborder">
                         Pnt.

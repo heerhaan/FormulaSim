@@ -24,9 +24,10 @@
                     <th class="fullborder">
                         Pts.
                     </th>
-                    @foreach (var track in Model.Locations)
+                    @foreach (var track in Model.Tracks)
                     {
-                        <th class="fullborder">@track</th>
+                        <th class="fullborder">@(track.Location.Substring(0, 3).ToUpper())
+                            <br /><span class="flag flag-@(track.Country)"></span></th>
                     }
                 </tr>
             </thead>

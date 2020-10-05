@@ -101,8 +101,8 @@
         <table id="races" class="ctable fullborder fullwidth">
             <thead class="fullborder">
                 <tr>
-                    <th data-field="name">Name</th>
                     <th data-field="location">Location</th>
+                    <th data-field="name">Name</th>
                     <th data-field="round">Round</th>
                     <th data-field="specification">Spec</th>
                     <th>Race</th>
@@ -116,29 +116,31 @@
             <tbody>
                 @foreach (var race in Model.Season.Races.OrderBy(r => r.Round))
                 {
-                    <tr data-obj-id="@race.RaceId">
-                        <td data-field="name">@race.Name</td>
-                        <td data-field="location">@race.Track.Location</td>
-                        <td data-field="round">@race.Round</td>
-                        <td data-field="specification">@race.Track.Specification</td>
+                <tr data-obj-id="@race.RaceId">
+                    <td data-field="location" class="text-left">
+                        <span class="flag flag-@(race.Track.Country) flag-margin ml-cel"></span>@race.Track.Location
+                    </td>
+                    <td data-field="name">@race.Name</td>
+                    <td data-field="round">@race.Round</td>
+                    <td data-field="specification">@race.Track.Specification</td>
+                    <td>
+                        <a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.Season.SeasonId" asp-route-raceId="@race.RaceId">
+                            <i class="fas @(race.RaceState == RaceState.Finished ? "fa-search" : "fa-flag-checkered") fa-2x"></i>
+                        </a>
+                    </td>
+                    @if (Model.Season.State == SeasonState.Draft)
+                    {
                         <td>
-                            <a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.Season.SeasonId" asp-route-raceId="@race.RaceId">
-                                <i class="fas @(race.RaceState == RaceState.Finished ? "fa-search" : "fa-flag-checkered") fa-2x"></i>
+                            <a class="cursor-pointer" onclick="moveRound(@Model.Season.SeasonId, @race.RaceId, -1)"><i class="fas fa-chevron-up fa"></i></a>
+                            <a class="cursor-pointer" onclick="moveRound(@Model.Season.SeasonId, @race.RaceId, 1)"><i class="fas fa-chevron-down fa"></i></a>
+                        </td>
+                        <td>
+                            <a asp-action="RemoveRace" asp-route-id="@race.RaceId" asp-route-seasonId="@Model.Season.SeasonId">
+                                <i class="fas fa-trash-alt fa-2x"></i>
                             </a>
                         </td>
-                        @if (Model.Season.State == SeasonState.Draft)
-                        {
-                            <td>
-                                <a class="cursor-pointer" onclick="moveRound(@Model.Season.SeasonId, @race.RaceId, -1)"><i class="fas fa-chevron-up fa"></i></a>
-                                <a class="cursor-pointer" onclick="moveRound(@Model.Season.SeasonId, @race.RaceId, 1)"><i class="fas fa-chevron-down fa"></i></a>
-                            </td>
-                            <td>
-                                <a asp-action="RemoveRace" asp-route-id="@race.RaceId" asp-route-seasonId="@Model.Season.SeasonId">
-                                    <i class="fas fa-trash-alt fa-2x"></i>
-                                </a>
-                            </td>
-                        }
-                    </tr>
+                    }
+                </tr>
                 }
             </tbody>
         </table>
