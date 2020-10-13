@@ -122,6 +122,7 @@
 
         $(res).each(function (key, val) {
             var raceresults = [];
+            raceresults.push(0);
 
             val.SeasonDrivers.forEach(function (driver) {
                 let total = 0;
@@ -155,7 +156,7 @@
 
         let roundsDriven = datasets[0].data.length;
         var roundlabels = [];
-        for (i = 1; i <= roundsDriven; i++) {
+        for (i = 0; i < roundsDriven; i++) {
             var roundlabel = i;
             roundlabels.push(roundlabel);
         }
