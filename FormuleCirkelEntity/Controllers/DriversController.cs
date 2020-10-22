@@ -115,7 +115,6 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Leaderlists")]
         public async Task<IActionResult> Leaderlists()
         {
-            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             LeaderlistsModel leaderlistsModel = new LeaderlistsModel();
 
             var drivers = DataContext.DriverResults

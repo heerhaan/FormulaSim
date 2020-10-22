@@ -71,16 +71,13 @@ footer {
     text-align: center;
     line-height: normal;
 }
-
     .ctable th {
         padding: 1px;
         border: none;
     }
-
     .ctable thead th {
         border:none;
     }
-
     .ctable td {
         padding: 1px;
         min-width: 50px;
@@ -164,18 +161,27 @@ dl.inline-flex {
     flex-wrap: wrap;
     overflow: visible;
 }
-
     dl.inline-flex dt {
         flex: 0 0 50%;
         text-overflow: ellipsis;
         overflow: hidden;
     }
-
     dl.inline-flex dd {
         text-overflow: ellipsis;
         overflow: hidden;
         flex: 0 0 50%
     }
+
+.table-counter {
+    counter-reset: rowNumber;
+}
+    .table-counter tr {
+        counter-increment: rowNumber;
+    }
+        .table-counter tr .table-count:first-child::before {
+            content: counter(rowNumber);
+            min-width: 1em;
+        }
 
 /* Utility classes */
 .box-shadow {

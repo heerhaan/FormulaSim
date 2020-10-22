@@ -242,7 +242,9 @@ namespace FormuleCirkelEntity.Controllers
         [ActionName("PastTeamStandings")]
         public IActionResult TeamStandings(int seasonId)
         {
+            var currentSeason = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId);
             var rounds = _context.Races
+                .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == seasonId)
                 .Include(r => r.Track)
                 .OrderBy(r => r.Round)
@@ -257,9 +259,11 @@ namespace FormuleCirkelEntity.Controllers
             var viewModel = new TeamStandingsModel
             {
                 // Assigns the lowest position that scores points
-                LastPointPos = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId).PointsPerPosition.Keys.Max(),
+                LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
 
                 SeasonTeams = _context.SeasonTeams
+                    .IgnoreQueryFilters()
+                    .Include(st => st.Team)
                     .Include(st => st.SeasonDrivers)
                     .Where(st => st.SeasonId == seasonId)
                     .OrderByDescending(st => st.Points)
@@ -270,8 +274,14 @@ namespace FormuleCirkelEntity.Controllers
                 Rounds = rounds.Select(r => r.RaceId),
 
                 DriverResults = _context.DriverResults
-                .Where(dr => dr.Race.SeasonId == seasonId).ToList()
+                    .Where(dr => dr.Race.SeasonId == seasonId)
+                    .ToList(),
+
+                SeasonId = currentSeason.SeasonId,
+                PolePoints = currentSeason.PolePoints
             };
+
+            ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
 
             return View("TeamStandings", viewModel);
         }

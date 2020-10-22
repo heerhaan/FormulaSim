@@ -8,12 +8,19 @@ namespace FormuleCirkelEntity.ViewModels
 {
     public class LeaderlistsModel
     {
+        //public IList<LeaderlistTitle> LeaderlistTitles { get; set; }
         public IEnumerable<LeaderlistWin> LeaderlistWins { get; set; }
         public IEnumerable<LeaderlistPodium> LeaderlistPodiums { get; set; }
         // public IEnumerable<LeaderlistPoint> LeaderlistPoints { get; set; }
         public IEnumerable<LeaderlistStart> LeaderlistStarts { get; set; }
         public IEnumerable<LeaderlistNonFinish> LeaderlistNonFinishes { get; set; }
         public IEnumerable<LeaderlistPole> LeaderlistPoles { get; set; }
+    }
+
+    public class LeaderlistTitle
+    {
+        public Driver Driver { get; set; }
+        public int TitleCount { get; set; }
     }
 
     public class LeaderlistWin

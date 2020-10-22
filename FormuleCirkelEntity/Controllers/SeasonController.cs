@@ -337,6 +337,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(unregisteredTeams);
         }
 
+        // Page underneath is slow
         [Route("[Controller]/{id}/Teams/Add/{globalTeamId}")]
         public async Task<IActionResult> AddTeam(int? id, int? globalTeamId)
         {
@@ -385,6 +386,7 @@ namespace FormuleCirkelEntity.Controllers
             return View("AddOrUpdateTeam", seasonTeam);
         }
 
+        // Page underneath is slow
         [HttpPost("[Controller]/{id}/Teams/Add/{globalTeamId}")]
         public async Task<IActionResult> AddTeam(int id, int? globalTeamId, [Bind] SeasonTeam seasonTeam)
         {
@@ -484,7 +486,6 @@ namespace FormuleCirkelEntity.Controllers
                 team.Handling = updatedTeam.Handling;
                 team.Reliability = updatedTeam.Reliability;
                 team.EngineId = updatedTeam.EngineId;
-                team.Traits = updatedTeam.Traits;
                 _context.Update(team);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
@@ -664,7 +665,6 @@ namespace FormuleCirkelEntity.Controllers
                 driver.Skill = updatedDriver.Skill;
                 driver.Tires = updatedDriver.Tires;
                 driver.DriverStatus = updatedDriver.DriverStatus;
-                driver.Traits = updatedDriver.Traits;
                 _context.Update(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
@@ -892,7 +892,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var traits = _context.Traits
                 .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Values.Contains(tr))
+                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Any(res => res.Value.TraitId == tr.TraitId))
                 .OrderBy(t => t.Name)
                 .ToList();
 
@@ -953,7 +953,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var traits = _context.Traits
                 .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Values.Contains(tr))
+                .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Any(res => res.Value.TraitId == tr.TraitId))
                 .OrderBy(t => t.Name)
                 .ToList();
 
