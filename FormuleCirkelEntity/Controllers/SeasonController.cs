@@ -862,15 +862,18 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveDriverReliabilityDev([FromBody]IEnumerable<GetDev> dev)
+        public async Task<IActionResult> SaveDriverReliabilityDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var seasonId = _context.Seasons
+            var seasonId = await _context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
-            var drivers = _context.SeasonDrivers
+            if (dev is null)
+                return RedirectToAction("DriverReliabilityDev", new { id = seasonId.SeasonId });
+
+            var drivers = await _context.SeasonDrivers
                 .Where(s => s.SeasonId == seasonId.SeasonId)
-                .ToList();
+                .ToListAsync();
 
             foreach (var driverdev in dev)
             {
@@ -878,7 +881,7 @@ namespace FormuleCirkelEntity.Controllers
                 driver.Reliability = driverdev.Newdev;
             }
             _context.UpdateRange(drivers);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("DriverReliabilityDev", new { id = seasonId.SeasonId });
         }
@@ -1006,6 +1009,8 @@ namespace FormuleCirkelEntity.Controllers
             _context.Update(team);
             await _context.SaveChangesAsync();
 
+            //object[] array = new object[] { team, trait };
+            //SeasonTeam steam = array[0] as SeasonTeam;
             return RedirectToAction(nameof(TeamTraits), new { id = teamId });
         }
     }
