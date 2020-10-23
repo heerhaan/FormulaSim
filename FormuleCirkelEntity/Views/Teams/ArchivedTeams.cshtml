@@ -4,7 +4,7 @@
     ViewData["Title"] = "ArchivedTeams";
 }
 
-<div class="d-inline-block w-60">
+<div class="d-inline-block">
     <h1>Archived Teams</h1>
 
     <table class="ctable fullborder fullwidth">
@@ -13,7 +13,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Abbreviation)
                 </th>
-                <th>Edit</th>
                 <th>Stats</th>
                 <th>Revert</th>
             </tr>
@@ -22,13 +21,8 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
-                        <span>@item.Abbreviation</span>
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">
-                            <i class="fas fa-wrench fa-2x"></i>
-                        </a>
+                    <td class="text-left">
+                        <span class="flag flag-@(item.Country) flag-margin ml-cel"></span>@item.Abbreviation
                     </td>
                     <td>
                         <a asp-action="Stats" asp-route-id="@item.Id">

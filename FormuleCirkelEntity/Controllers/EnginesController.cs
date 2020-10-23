@@ -27,6 +27,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             List<Engine> engines = Data.IgnoreQueryFilters()
                 .Where(e => e.Archived)
+                .OrderBy(e => e.Name)
                 .ToList();
 
             return View(engines);

@@ -80,7 +80,7 @@ footer {
     }
     .ctable td {
         padding: 1px;
-        min-width: 50px;
+        min-width: 40px;
         height: 28px;
         border: none;
     }
@@ -172,17 +172,6 @@ dl.inline-flex {
         flex: 0 0 50%
     }
 
-.table-counter {
-    counter-reset: rowNumber;
-}
-    .table-counter tr {
-        counter-increment: rowNumber;
-    }
-        .table-counter tr .table-count:first-child::before {
-            content: counter(rowNumber);
-            min-width: 1em;
-        }
-
 /* Utility classes */
 .box-shadow {
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
@@ -224,6 +213,17 @@ dl.inline-flex {
     margin-left: 2.5%;
     margin-right: 2.5%;
 }
+
+.table-counter {
+    counter-reset: rowNumber;
+}
+    .table-counter tr {
+        counter-increment: rowNumber;
+    }
+        .table-counter tr .table-count:first-child::before {
+            content: counter(rowNumber);
+            min-width: 1em;
+        }
 
 /* Modifications for the Bootstrap badges */
 .badge-team {

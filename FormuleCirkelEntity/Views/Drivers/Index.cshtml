@@ -9,7 +9,7 @@
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
 }
 
-<div class="d-inline-block w-75">
+<div class="d-inline-block">
     <h1>Drivers</h1>
 
     <div class="flex-row justify-content-between index-btns">
@@ -43,7 +43,7 @@
                         @item.DriverNumber
                     </td>
                     <td class="text-left">
-                        <span class="ml-cel">@item.Name</span>
+                        <span class="flag flag-@(item.Country) flag-margin ml-cel"></span>@item.Name
                     </td>
                     <td>
                         @item.Abbreviation

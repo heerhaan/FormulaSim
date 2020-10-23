@@ -4,7 +4,7 @@
     ViewData["Title"] = "ArchivedEngines";
 }
 
-<div class="d-inline-block w-60">
+<div class="d-inline-block">
     <h1>Archived Engines</h1>
 
     <table class="ctable fullborder fullwidth">
@@ -16,7 +16,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Power)
                 </th>
-                <th>Edit</th>
                 <th>Revert</th>
             </tr>
         </thead>
@@ -29,11 +28,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Power)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">
-                            <i class="fas fa-wrench fa-2x"></i>
-                        </a>
                     </td>
                     <td>
                         <a asp-action="Delete" asp-route-id="@item.Id">

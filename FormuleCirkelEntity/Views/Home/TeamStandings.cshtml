@@ -31,12 +31,12 @@
                     }
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="table-counter">
                 @foreach (var item in Model.SeasonTeams)
                 {
                     <tr>
                         <td rowspan="@(item.SeasonDrivers.Count + 1)">
-                            <b>@position</b>
+                            <b class="table-count"></b>
                         </td>
                         <td class="text-left pr-2" rowspan="@(item.SeasonDrivers.Count + 1)">
                             <span class="ml-cel">@Html.DisplayFor(modelItem => item.Principal)</span>
@@ -92,9 +92,8 @@
                                 }
                             }
                         </tr>
-                    }
-                        </tr>
-                        position++;
+                        }
+                    </tr>
                     }
             </tbody>
         </table>

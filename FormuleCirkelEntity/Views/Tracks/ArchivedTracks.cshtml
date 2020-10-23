@@ -4,49 +4,43 @@
     ViewData["Title"] = "ArchivedTracks";
 }
 
-<div class="d-inline-block w-60">
+<div class="d-inline-block">
     <h1>Archived Tracks</h1>
 
     <table class="ctable fullborder fullwidth">
         <thead class="fullborder">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.Location)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Location)
+                    @Html.DisplayNameFor(model => model.Name)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Specification)
                 </th>
-                <th>Edit</th>
                 <th>Revert</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Location)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Specification)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">
-                            <i class="fas fa-wrench fa-2x"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id">
-                            <i class="fas fa-undo fa-2x"></i>
-                        </a>
-                    </td>
-                </tr>
+            <tr>
+                <td class="text-left">
+                    <span class="flag flag-@(Html.DisplayFor(modelItem => item.Country)) flag-margin ml-cel"></span>@Html.DisplayFor(modelItem => item.Location)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Specification)
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id">
+                        <i class="fas fa-undo fa-2x"></i>
+                    </a>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

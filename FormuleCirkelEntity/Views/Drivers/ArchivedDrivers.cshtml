@@ -4,7 +4,7 @@
     ViewData["Title"] = "Archived Drivers";
 }
 
-<div class="d-inline-block w-60">
+<div class="d-inline-block">
     <h1>Archived Drivers</h1>
 
     <table class="ctable fullborder fullwidth">
@@ -19,7 +19,6 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Abbreviation)
                 </th>
-                <th>Edit</th>
                 <th>Stats</th>
                 <th>Revert</th>
             </tr>
@@ -31,16 +30,12 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.DriverNumber)
                     </td>
-                    <td>
+                    <td class="text-left">
+                        <span class="flag flag-@(Html.DisplayFor(modelItem => item.Country)) flag-margin ml-cel"></span>
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Abbreviation)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">
-                            <i class="fas fa-wrench fa-2x"></i>
-                        </a>
                     </td>
                     <td>
                         <a asp-action="Stats" asp-route-id="@item.Id">
