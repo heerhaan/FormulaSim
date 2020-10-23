@@ -37,14 +37,13 @@ namespace FormuleCirkelEntity.Filters
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var executedContext = await next();
-            var pagingHelper = context.HttpContext.RequestServices.GetService<PagingHelper>();
             if (executedContext.Result is ViewResult result && result.Model is IQueryable<ModelBase> model)
             {
                 var itemCount = await model.CountAsync();
                 var requestData = GetRequestPagingData(executedContext.HttpContext.Request);
-                var pageSize = pagingHelper.CheckPageSize(requestData.pageSize);
+                var pageSize = PagingHelper.CheckPageSize(requestData.pageSize);
                 var pageNumber = requestData.page > 0 ? requestData.page : 1;
-                var pageCount = pagingHelper.GetPageCount(pageSize, itemCount);
+                var pageCount = PagingHelper.GetPageCount(pageSize, itemCount);
 
                 result.ViewData.Model = SetPageQuery(model, pageNumber, pageSize);
                 result.ViewData.Add("pageCount", pageCount);
@@ -53,6 +52,7 @@ namespace FormuleCirkelEntity.Filters
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         object SetPageQuery(IQueryable queryable, int page, int pageSize)
         {
             try
@@ -68,6 +68,7 @@ namespace FormuleCirkelEntity.Filters
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>")]
         (int page, int pageSize) GetRequestPagingData(HttpRequest request)
         {
             var pageSize = int.Parse(GetQueryValue(request, PAGE_SIZE_KEY, _defaultPageSize.ToString()));
@@ -75,7 +76,8 @@ namespace FormuleCirkelEntity.Filters
             return (page, pageSize);
         }
 
-        string GetQueryValue(HttpRequest request, string queryKey, string defaultValue = null)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "<Pending>")]
+        static string GetQueryValue(HttpRequest request, string queryKey, string defaultValue = null)
         {
             KeyValuePair<string, StringValues> sortKey = request.Query
                 .LastOrDefault(q => q.Key.ToLowerInvariant() == queryKey);

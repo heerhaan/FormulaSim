@@ -22,6 +22,9 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <returns>A <see cref="int"/> points value, or <see cref="int.MinValue"/> if a DNF result occured.</returns>
         public int? GetStintResult(DriverResult driverResult, Stint stint, Track track, Race race)
         {
+            if (driverResult is null || stint is null || track is null || race is null)
+                throw new NullReferenceException();
+
             // Applies the increased or decreased odds for the specific track.
             double engineWeatherMultiplier = 1;
             int tireWeatherBonus = 0;
@@ -124,13 +127,13 @@ namespace FormuleCirkelEntity.ResultGenerators
             return result;
         }
 
-        public int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount, int qualyBonus)
+        public static int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount, int qualyBonus)
         {
             return (totalDriverCount * qualyBonus) - (qualifyingPosition * qualyBonus);
         }
 
         // Kan nog getest worden wat je gaat doen
-        public int GetChassisBonus(Dictionary<string, int> teamSpecs, string trackSpec)
+        public static int GetChassisBonus(Dictionary<string, int> teamSpecs, string trackSpec)
         {
             int bonus = 0;
             bonus = (teamSpecs.SingleOrDefault(k => k.Key == trackSpec)).Value;
@@ -158,6 +161,9 @@ namespace FormuleCirkelEntity.ResultGenerators
 
         public int GetQualifyingResult(SeasonDriver driver, int qualyRNG, Track track, int qualypace)
         {
+            if (driver is null || track is null)
+                throw new NullReferenceException();
+
             Dictionary<string, int> teamSpecs = new Dictionary<string, int>
             {
                 { "Topspeed", driver.SeasonTeam.Topspeed },
@@ -181,7 +187,7 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResults">The <see cref="DriverResult"/>s to determine the relative positions of.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of the driverResult ID's and the corresponding positions.</returns>
         /// <remarks>When two driver points totals are equal, their position is determined based on their original grid position.</remarks>
-        public DriverSwap GetPositionsBasedOnRelativePoints(IEnumerable<DriverResult> driverResults)
+        public static DriverSwap GetPositionsBasedOnRelativePoints(IEnumerable<DriverResult> driverResults)
         {
             var orderedResults = driverResults
                 .OrderByDescending(d => d.Points)

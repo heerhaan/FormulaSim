@@ -113,7 +113,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Leaderlists")]
-        public async Task<IActionResult> Leaderlists()
+        public IActionResult Leaderlists()
         {
             LeaderlistsModel leaderlistsModel = new LeaderlistsModel();
 

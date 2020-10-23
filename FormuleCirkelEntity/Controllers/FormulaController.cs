@@ -9,7 +9,7 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class FormulaController : Controller
     {
-        protected Task<IActionResult> AsTask(IActionResult result)
+        protected static Task<IActionResult> AsTask(IActionResult result)
         {
             return Task.FromResult(result);
         }

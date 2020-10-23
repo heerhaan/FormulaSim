@@ -27,9 +27,12 @@ namespace FormuleCirkelEntity.Filters
             Order = 10;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
+            if (context is null)
+                return;
             if(context.Result is ViewResult result && result.Model is IQueryable queryable)
             {
                 string sortName = GetSortProperty(context.HttpContext.Request);
@@ -50,6 +53,7 @@ namespace FormuleCirkelEntity.Filters
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "<Pending>")]
         string GetSortProperty(HttpRequest request)
         {
             KeyValuePair<string, StringValues> sortKey = request.Query

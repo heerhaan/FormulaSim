@@ -147,7 +147,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction("AddTracks", new { id = raceModel.SeasonId });
         }
 
-        public Weather RandomWeather()
+        public static Weather RandomWeather()
         {
             int random = rng.Next(1, 21);
             Weather weather = Weather.Sunny;
@@ -172,7 +172,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Season/{id}/[Controller]/{raceId}")]
-        public async Task<IActionResult> Race(int id, int raceId)
+        public async Task<IActionResult> Race(int raceId)
         {
             var race = await _context.Races
                 .IgnoreQueryFilters()
@@ -188,7 +188,7 @@ namespace FormuleCirkelEntity.Controllers
         }
         
         [Route("Season/{id}/[Controller]/{raceId}/Preview")]
-        public async Task<IActionResult> RacePreview(int id, int raceId)
+        public async Task<IActionResult> RacePreview(int raceId)
         {
             var race = await _context.Races
                 .IgnoreQueryFilters()
@@ -218,7 +218,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // To determine the bonus to a chassis a team gets to a specific track
-        private int GetChassisBonus(SeasonTeam team, Track track)
+        private static int GetChassisBonus(SeasonTeam team, Track track)
         {
             int bonus = 0;
             Dictionary<string, int> specs = new Dictionary<string, int>
@@ -260,7 +260,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Season/{id}/[Controller]/{raceId}/Weekend")]
-        public async Task<IActionResult> RaceWeekend(int id, int raceId)
+        public async Task<IActionResult> RaceWeekend(int raceId)
         {
             var race = await _context.Races
                 .IgnoreQueryFilters()
@@ -278,7 +278,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost("Season/{id}/[Controller]/{raceId}/Advance")]
-        public async Task<IActionResult> AdvanceStint(int id, int raceId)
+        public async Task<IActionResult> AdvanceStint(int raceId)
         {
             var race = await _context.Races
                 .Include(r => r.Season)
@@ -327,7 +327,7 @@ namespace FormuleCirkelEntity.Controllers
                     result.Points += -999;
             }
 
-            var positionsList = _resultGenerator.GetPositionsBasedOnRelativePoints(race.DriverResults);
+            var positionsList = RaceResultGenerator.GetPositionsBasedOnRelativePoints(race.DriverResults);
 
             foreach (var result in race.DriverResults)
             {
@@ -350,7 +350,7 @@ namespace FormuleCirkelEntity.Controllers
             return new JsonResult(race, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
-        DNFCause RandomDNFCause(bool driverDNF)
+        static DNFCause RandomDNFCause(bool driverDNF)
         {
             int random = rng.Next(1, 101);
             DNFCause cause = DNFCause.None;
@@ -404,7 +404,7 @@ namespace FormuleCirkelEntity.Controllers
             return cause;
         }
 
-        DSQCause RandomDSQCause(bool driverDNF)
+        static DSQCause RandomDSQCause(bool driverDNF)
         {
 
             DSQCause cause;
@@ -425,7 +425,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost("Season/{id}/[Controller]/{raceId}/getResults")]
-        public IActionResult GetResults(int id, int raceId)
+        public IActionResult GetResults(int raceId)
         {
             var driverResults = _context.DriverResults
                 .IgnoreQueryFilters()
@@ -492,6 +492,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying/Update")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public async Task<IActionResult> UpdateQualifying(int id, int raceId, string source, bool secondRun)
         {
             if (string.IsNullOrWhiteSpace(source))
@@ -571,7 +572,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers, int raceId)
+        static IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers, int raceId)
         {
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
@@ -590,7 +591,7 @@ namespace FormuleCirkelEntity.Controllers
             return result;
         }
 
-        int GetQualifyingDriverLimit(string qualifyingStage, Season season)
+        static int GetQualifyingDriverLimit(string qualifyingStage, Season season)
         {
             if (qualifyingStage == "Q2")
                 return season.QualificationRemainingDriversQ2;

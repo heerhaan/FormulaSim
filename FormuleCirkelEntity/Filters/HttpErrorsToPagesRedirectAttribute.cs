@@ -10,6 +10,8 @@ namespace FormuleCirkelEntity.Filters
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
+            if (context is null)
+                return;
             if(context.Result is NotFoundResult)
                 context.Result = new RedirectResult("/NotFound");
         }

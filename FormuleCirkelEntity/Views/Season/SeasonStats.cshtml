@@ -2,9 +2,6 @@
 
 @{
     ViewData["Title"] = "Season details";
-    int position = 1;
-    int driverRel = 0;
-    int teamRel = 0;
 }
 
 <div class="d-inline-block">
@@ -38,11 +35,11 @@
                 <th>Team rel.</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="table-counter">
             @foreach (var driver in Model)
             {
                 <tr>
-                    <td><b>@(position++)</b></td>
+                    <td><b class="table-count"></b></td>
                     <td class="text-left">
                         <span class="ml-cel">
                             @if (driver.DriverStatus == DriverStatus.First)

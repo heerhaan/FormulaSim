@@ -5,7 +5,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
 {
     public class EngineValidator : AbstractValidator<Engine>
     {
-        public EngineValidator(FormulaContext context)
+        public EngineValidator()
         {
             RuleFor(e => e.Name).NotEmpty().WithMessage("Name is required!");
             RuleFor(e => e.Power).NotEmpty().WithMessage("Engine power is required!");

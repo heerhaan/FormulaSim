@@ -68,6 +68,12 @@
             templateResult: formatCountry,
             data: isoCountries
         });
+
+        var track_country_id = "@(Model.Country)";
+        if (track_country_id) {
+            $("[name='country']").val(track_country_id);
+            $("[name='country']").trigger('change');
+        }
     });
 </script>
 

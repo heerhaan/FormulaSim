@@ -101,6 +101,10 @@ namespace FormuleCirkelEntity.Builders
 
         public RaceBuilder AddDrivers(IEnumerable<SeasonDriver> drivers, Track track)
         {
+            // Check if given parameters aren't null
+            if (drivers is null || track is null)
+                throw new NullReferenceException();
+
             foreach (var driver in drivers)
             {
                 DriverResult driverResult = new DriverResult
@@ -114,7 +118,7 @@ namespace FormuleCirkelEntity.Builders
             return this;
         }
 
-        private DriverResult SetTraitMods(DriverResult driver, Track track)
+        private static DriverResult SetTraitMods(DriverResult driver, Track track)
         {
             try
             {
@@ -150,7 +154,7 @@ namespace FormuleCirkelEntity.Builders
             }
         }
 
-        private void SetIndividualTraitMod(DriverResult driver, Trait trait)
+        private static void SetIndividualTraitMod(DriverResult driver, Trait trait)
         {
             if (trait.QualyPace.HasValue)
                 driver.QualyMod += trait.QualyPace.Value;

@@ -32,6 +32,8 @@ namespace FormuleCirkelEntity.DAL
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            if (builder is null)
+                return;
             EnableArchivable(builder);
             //Removes the Cascade Delete functionality related to relations between tables
             foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
@@ -118,13 +120,13 @@ namespace FormuleCirkelEntity.DAL
         /// Sets a query filter to hide soft-deleted objects on any entity in the EF Model which implements the <see cref="IArchivable"/> interface.
         /// Also, sets the IsDeleted property as Indexed on any entity in the EF Model which implements the <see cref="IArchivable"/> interface.
         /// </summary>
-        void EnableArchivable(ModelBuilder builder)
+        static void EnableArchivable(ModelBuilder builder)
         {
             SetSoftDeleteQueryFilters(builder);
             SetSoftDeleteIndexes(builder);
         }
 
-        void SetSoftDeleteIndexes(ModelBuilder builder)
+        static void SetSoftDeleteIndexes(ModelBuilder builder)
         {
             foreach (var entityType in GetSoftDeleteEntityTypes(builder))
             {
@@ -134,7 +136,7 @@ namespace FormuleCirkelEntity.DAL
         }
 
         // Code taken from: https://stackoverflow.com/questions/47673524/ef-core-soft-delete-with-shadow-properties-and-query-filters/
-        void SetSoftDeleteQueryFilters(ModelBuilder builder)
+        static void SetSoftDeleteQueryFilters(ModelBuilder builder)
         {
             foreach (var entityType in GetSoftDeleteEntityTypes(builder))
             {

@@ -67,6 +67,12 @@
             templateResult: formatCountry,
             data: isoCountries
         });
+
+        var driver_country_id = "@(Model.Country)";
+        if (driver_country_id) {
+            $("[name='country']").val(driver_country_id);
+            $("[name='country']").trigger('change');
+        }
     });
 </script>
 
