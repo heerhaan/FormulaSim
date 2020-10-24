@@ -93,6 +93,10 @@ td {
     margin-left: 5px;
 }
 
+.pl-25 {
+    padding-left: 25px !important;
+}
+
 button.accept-policy {
     font-size: 1rem;
     line-height: inherit;

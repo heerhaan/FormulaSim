@@ -8,7 +8,7 @@
 
 <div class="d-inline-block">
     <div id="graphic">
-        <h1>Championship drivers</h1>
+        <h1 class="text-left">Championship drivers</h1>
 
         <table class="ctable standings-border fullborder">
             <thead>
@@ -68,35 +68,35 @@
                                 {
                                     <td class="result-dnf">
                                         DNF
-                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                        @if (result.Grid == 1) { <b class="pole">P</b> }
                                     </td>
                                 }
                                 else if (result.Status == Status.DSQ)
                                 {
                                     <td class="badge-dsq">
                                         DSQ
-                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                        @if (result.Grid == 1) { <b class="pole">P</b> }
                                     </td>
                                 }
                                 else if (result.Position == 1)
                                 {
                                     <td class="badge-first">
                                         @result.Position
-                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                        @if (result.Grid == 1) { <b class="pole">P</b> }
                                     </td>
                                 }
                                 else if (result.Position == 2)
                                 {
                                     <td class="badge-second">
                                         @result.Position
-                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                        @if (result.Grid == 1) { <b class="pole">P</b> }
                                     </td>
                                 }
                                 else if (result.Position == 3)
                                 {
                                     <td class="badge-third">
                                         @result.Position
-                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                        @if (result.Grid == 1) { <b class="pole">P</b> }
                                     </td>
 
                                 }
@@ -104,14 +104,14 @@
                                 {
                                     <td class="result-points">
                                         @result.Position
-                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                        @if (result.Grid == 1) { <b class="pole">P</b> }
                                     </td>
                                 }
                                 else
                                 {
                                     <td class="result-none">
                                         @result.Position
-                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                        @if (result.Grid == 1) { <b class="pole">P</b> }
                                     </td>
                                 }
                             }
@@ -145,7 +145,8 @@
 </div>
 
 <script>
-    var polepoint = @ViewBag.polepoint;
+    const polepoint = @ViewBag.polepoint;
+    const points = @(Html.Raw(ViewBag.points));
     const bodyelem = document.querySelector('body');
     const bodystyle = getComputedStyle(bodyelem);
 
@@ -154,10 +155,8 @@
         var ctx = document.getElementById('standingsChart');
         ctx.style.display = "block";
         ctx.height = 300;
-        ctx.backgroundColor = 'rgba(30, 34, 39, 0.9)';
         ctx.getContext('2d');
         var driversets = [];
-        var points = @(Html.Raw(ViewBag.points));
 
         $(res).each(function (driverKey, driverValue) {
             var raceresults = [];

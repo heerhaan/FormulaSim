@@ -31,13 +31,13 @@
                         <td>
                             <span class="badge badge-team fullwidth font-size-default text-left mr-2"
                                   style="background-color:@(topDriver.SeasonTeam.Colour);color:@(topDriver.SeasonTeam.Accent);border-color:@(topDriver.SeasonTeam.Accent);">
-                                @topDriver.Driver.Name
+                                <span class="flag flag-@(topDriver.Driver.Country) flag-margin"></span>@topDriver.Driver.Name
                             </span>
                         </td>
                         <td>
                             <span class="badge badge-team fullwidth font-size-default text-left ml-1"
                                   style="background-color:@(topTeam.Colour);color:@(topTeam.Accent);border-color:@(topTeam.Accent);">
-                                @topTeam.Name
+                                <span class="flag flag-@(topTeam.Team.Country) flag-margin"></span>@topTeam.Name
                             </span>
                         </td>
                     }
@@ -51,14 +51,6 @@
                             <i class="fas fa-signal fa-2x"></i>
                         </a>
                     </td>
-                    @if (item.State == SeasonState.Draft)
-                    {
-                        <td>
-                            <a asp-action="Settings" asp-route-id="@item.SeasonId">
-                                <i class="fas fa-cog fa-2x"></i>
-                            </a>
-                        </td>
-                    }
                 </tr>
             }
         </tbody>

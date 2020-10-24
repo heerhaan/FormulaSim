@@ -29,6 +29,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Drivers)
                     .ThenInclude(dr => dr.Driver)
                 .Include(s => s.Teams)
+                    .ThenInclude(s => s.Team)
                 .OrderByDescending(s => s.SeasonNumber)
                 .ToListAsync();
 

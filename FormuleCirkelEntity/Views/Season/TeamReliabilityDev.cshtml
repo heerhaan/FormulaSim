@@ -18,7 +18,7 @@
     <table id="graphic" class="ctable fullborder fullwidth">
         <thead class="fullborder">
             <tr>
-                <th>Team</th>
+                <th class="text-left"><span class="ml-cel">Team</span></th>
                 <th>Abbreviation</th>
                 <th>Old</th>
                 <th>Change</th>
@@ -31,7 +31,7 @@
                 foreach (var team in Model)
                 {
                     <tr>
-                        <td>@team.Name</td>
+                        <td class="text-left"><span class="ml-cel">@team.Name</span></td>
                         <td>
                             <span class="badge fullwidth font-size-default" style="background-color:@(team.Colour);
                                     color:@(team.Accent);">
