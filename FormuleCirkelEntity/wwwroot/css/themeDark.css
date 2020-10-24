@@ -69,9 +69,6 @@
 i.fas, i.fab, i.far, .link {
     color: white;
 }
-    i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
-        opacity: 0.7;
-    }
 
 .fullborder {
     border: 1px solid #bd2130 !important;

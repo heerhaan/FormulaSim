@@ -106,6 +106,10 @@ ul li {
     list-style-position: inside;
 }
 
+i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
+    opacity: 0.7;
+}
+
 /* Home page styling */
 .hero-text {
     text-align: center;

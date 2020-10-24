@@ -146,6 +146,8 @@
 
 <script>
     var polepoint = @ViewBag.polepoint;
+    const bodyelem = document.querySelector('body');
+    const bodystyle = getComputedStyle(bodyelem);
 
     function drawStandingsChart(res) {
         console.log(res);
@@ -248,7 +250,7 @@
                     }
                 },
                 chartCanvas: {
-                    backgroundColor: 'rgba(30, 34, 39, 1.0)'
+                    backgroundColor: bodystyle.backgroundColor
                 }
             }
         });

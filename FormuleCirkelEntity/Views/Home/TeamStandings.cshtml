@@ -109,6 +109,9 @@
 </div>
 
 <script>
+    const bodyelem = document.querySelector('body');
+    const bodystyle = getComputedStyle(bodyelem);
+
     function drawStandingsChart(res) {
         var ctx = document.getElementById('standingsChart');
         ctx.style.display = "block";
@@ -215,7 +218,7 @@
                     }
                 },
                 chartCanvas: {
-                    backgroundColor: 'rgba(30, 34, 39, 0.9)'
+                    backgroundColor: bodystyle.backgroundColor
                 }
             }
         });

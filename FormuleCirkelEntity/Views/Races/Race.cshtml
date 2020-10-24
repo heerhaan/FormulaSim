@@ -148,6 +148,8 @@
 
 <script>
     var progress = @Model.StintProgress;
+    const bodyelem = document.querySelector('body');
+    const bodystyle = getComputedStyle(bodyelem);
 
     $(function () {
         // Appends the correct icon for the corresponding weather for the race
@@ -268,12 +270,14 @@
 
     function calculateGap() {
         let leaderscore = tableBody.querySelector("td[data-field='pointsTotal']").innerText;
+        let leaderapplied = false;
         $("#results tbody tr").each(function (index, row) {
             let score = row.querySelector("td[data-field='pointsTotal']").innerText;
             if (score != "DNF" && score != "DSQ") {
                 let gap = "+" + ((leaderscore - score) * 0.27).toFixed(2);
-                if (gap == "+0.00") {
+                if (gap == "+0.00" && leaderapplied == false) {
                     gap = "Leader";
+                    leaderapplied = true;
                 }
                 gap = "<i>" + gap + "</i>"
                 row.querySelector("td[data-field='dnfCause']").innerHTML = gap;
@@ -453,7 +457,7 @@
                     }
                 },
                 chartCanvas: {
-                    backgroundColor: 'rgba(38, 38, 38, 1)'
+                    backgroundColor: bodystyle.backgroundColor
                 }
             }
         });
