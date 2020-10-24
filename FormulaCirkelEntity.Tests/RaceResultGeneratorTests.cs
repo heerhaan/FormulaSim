@@ -14,8 +14,6 @@ namespace FormulaCirkelEntity.Tests
         public void ChassisTrackSpec_Calculation_Correct(int expected, Specification spec)
         {
             // Arrange
-            RaceResultGenerator generator = new RaceResultGenerator(new Random(1));
-
             Dictionary<string, int> teamSpecs = new Dictionary<string, int>
             {
                 { "Topspeed", 4 },
@@ -28,7 +26,7 @@ namespace FormulaCirkelEntity.Tests
             };
 
             // Act
-            int chassisBonus = generator.GetChassisBonus(teamSpecs, track.Specification.ToString());
+            int chassisBonus = RaceResultGenerator.GetChassisBonus(teamSpecs, track.Specification.ToString());
 
             // Assert
             Assert.Equal(expected, chassisBonus);
@@ -44,10 +42,8 @@ namespace FormulaCirkelEntity.Tests
         public void DriverQualifyingBonus_Calculation_Correct(int qualifyingPosition, int expected)
         {
             // Arrange
-            RaceResultGenerator generator = new RaceResultGenerator(new Random(1));
-
             // Act
-            var qualifyingBonus = generator.GetQualifyingBonus(qualifyingPosition, 26, 3);
+            var qualifyingBonus = RaceResultGenerator.GetQualifyingBonus(qualifyingPosition, 26, 3);
 
             // Assert
             Assert.Equal(expected, qualifyingBonus);

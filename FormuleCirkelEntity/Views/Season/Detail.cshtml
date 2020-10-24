@@ -12,9 +12,9 @@
         {
             <div class="btn-group">
                 <a asp-action="Start" asp-route-id="@Model.Season.SeasonId" class="btn">Start season!</a>
-                <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.Season.SeasonId" class="btn">Add races</a>
-                <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn">Add drivers</a>
-                <a asp-action="AddTeams" asp-route-id="@Model.Season.SeasonId" class="btn">Add teams</a>
+                <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.Season.SeasonId" class="btn">Add race</a>
+                <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn">Add driver</a>
+                <a asp-action="AddTeams" asp-route-id="@Model.Season.SeasonId" class="btn">Add team</a>
                 <a asp-action="Settings" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-cog"></i> Settings</a>
                 <a asp-action="AddDefault" asp-route-id="@Model.Season.SeasonId" class="btn" data-toggle="tooltip" data-placement="top"
                    title="Default returns the same season setup and races as the previous season.">
@@ -32,7 +32,10 @@
         }
         @if (Model.Season.State == SeasonState.Progress)
         {
-            <a asp-action="Finish" asp-route-id="@Model.Season.SeasonId" class="btn">End season</a>
+            <div class="btn-group">
+                <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn">Add driver</a>
+                <a asp-action="Finish" asp-route-id="@Model.Season.SeasonId" class="btn">End season</a>
+            </div>
         }
     </div>
 
@@ -48,30 +51,35 @@
                     <th>Skill</th>
                     <th>Reliability</th>
                     <th>Tire</th>
+                @if (Model.Season.State == SeasonState.Progress || Model.Season.State == SeasonState.Draft)
+                {
                     <th>Edit</th>
                     <th>Traits</th>
+                    <th>Drop driver</th>
+                }
                 </tr>
             </thead>
-            <tbody>
-                @{
-                    var orderedDrivers = Model.SeasonDrivers.OrderByDescending(d => d.Points).ToList();
-                    for (int pos = 0; pos < orderedDrivers.Count; pos++)
-                    {
-                        SeasonDriver @driver = orderedDrivers[pos];
-                        SeasonTeam @team = Model.SeasonTeams.Single(st => st.SeasonTeamId == driver.SeasonTeamId);
-                        <tr>
-                            <td><b>@((pos + 1).ToString())</b></td>
-                            <td>@driver.Points</td>
-                            <td style="width: 30px;"><span class="badge badge-team" style="width:25px;background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);">
-                                @driver.Driver.DriverNumber</span></td>
-                            <td>
-                                <span class="badge badge-team fullwidth text-left font-size-default" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);">
-                                    <span class="flag flag-@(driver.Driver.Country) flag-margin"></span>@driver.Driver.Name
-                                </span>
-                            </td>
-                            <td>@driver.Skill</td>
-                            <td>@driver.Reliability</td>
-                            <td><span class="badge tire font-size-default">@(driver.Tires.ToString()[0])</span></td>
+            <tbody class="table-counter">
+                @foreach (var driver in Model.SeasonDrivers.OrderByDescending(d => d.Points).ToList())
+                {
+                    <tr>
+                        <td><b class="table-count"></b></td>
+                        <td>@driver.Points</td>
+                        <td style="width: 30px;">
+                            <span class="badge badge-team" style="width:25px;background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
+                                @driver.Driver.DriverNumber
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge badge-team fullwidth text-left font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
+                                <span class="flag flag-@(driver.Driver.Country) flag-margin"></span>@driver.Driver.Name
+                            </span>
+                        </td>
+                        <td>@driver.Skill</td>
+                        <td>@driver.Reliability</td>
+                        <td><span class="badge tire font-size-default">@(driver.Tires.ToString()[0])</span></td>
+                        @if (Model.Season.State == SeasonState.Progress || Model.Season.State == SeasonState.Draft)
+                        {
                             <td>
                                 <a asp-action="UpdateDriver" asp-route-id="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
                                     <i class="fas fa-wrench fa-2x"></i>
@@ -82,8 +90,22 @@
                                     <i class="fas fa-yin-yang fa-2x"></i>
                                 </a>
                             </td>
-                        </tr>
-                    }
+                            @if (driver.Dropped)
+                            {
+                                <td><i class="fas fa-times fa-2x" data-toggle="tooltip" data-placement="top"
+                                    title="To add driver back to the season, just make any modification to them.">
+                                </i></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <a asp-action="DropDriverFromTeam" asp-route-seasonId="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
+                                        <i class="far fa-times-circle fa-2x"></i>
+                                    </a>
+                                </td>
+                            }
+                        }
+                    </tr>
                 }
             </tbody>
         </table>

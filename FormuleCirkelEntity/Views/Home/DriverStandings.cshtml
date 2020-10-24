@@ -58,7 +58,7 @@
                         @foreach (var round in rounds)
                         {
                             DriverResult result = item.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
-                            if (result == null || result.Position == 0)
+                            if (result is null || result.Position == 0)
                             {
                                 <td><span>-</span></td>
                             }
@@ -66,80 +66,53 @@
                             {
                                 if (result.Status == Status.DNF)
                                 {
-                                    if (result.Grid == 1)
-                                    {
-                                        <td class="result-dnf">DNF<b class="pole"> P</b></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="result-dnf">DNF</td>
-                                    }
+                                    <td class="result-dnf">
+                                        DNF
+                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                    </td>
                                 }
                                 else if (result.Status == Status.DSQ)
                                 {
-                                    if (result.Grid == 1)
-                                    {
-                                        <td class="badge-dsq">DSQ<b class="pole"> P</b></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="badge-dsq">DSQ</td>
-                                    }
+                                    <td class="badge-dsq">
+                                        DSQ
+                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                    </td>
                                 }
                                 else if (result.Position == 1)
                                 {
-                                    if (result.Grid == 1)
-                                    {
-                                        <td class="badge-first">@result.Position<b class="pole"> P</b></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="badge-first">@result.Position</td>
-                                    }
+                                    <td class="badge-first">
+                                        @result.Position
+                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                    </td>
                                 }
                                 else if (result.Position == 2)
                                 {
-                                    if (result.Grid == 1)
-                                    {
-                                        <td class="badge-second">@result.Position<b class="pole"> P</b></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="badge-second">@result.Position</td>
-                                    }
+                                    <td class="badge-second">
+                                        @result.Position
+                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                    </td>
                                 }
                                 else if (result.Position == 3)
                                 {
-                                    if (result.Grid == 1)
-                                    {
-                                        <td class="badge-third">@result.Position<b class="pole"> P</b></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="badge-third">@result.Position</td>
-                                    }
+                                    <td class="badge-third">
+                                        @result.Position
+                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                    </td>
+
                                 }
                                 else if (result.Position <= ViewBag.lastpointpos)
                                 {
-                                    if (result.Grid == 1)
-                                    {
-                                        <td class="result-points">@result.Position<b class="pole"> P</b></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="result-points">@result.Position</td>
-                                    }
+                                    <td class="result-points">
+                                        @result.Position
+                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                    </td>
                                 }
                                 else
                                 {
-                                    if (result.Grid == 1)
-                                    {
-                                        <td class="result-none">@result.Position<b class="pole"> P</b></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="result-none">@result.Position</td>
-                                    }
+                                    <td class="result-none">
+                                        @result.Position
+                                        @if (result.Grid == 1) { <b class="pole"> P</b> }
+                                    </td>
                                 }
                             }
                         }

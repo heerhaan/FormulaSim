@@ -12,6 +12,7 @@ namespace FormuleCirkelEntity.Models
         public SeasonDriver()
         {
             Traits = new Dictionary<int, Trait>();
+            Dropped = false;
         }
         [Key]
         public int SeasonDriverId { get; set; }
@@ -21,6 +22,7 @@ namespace FormuleCirkelEntity.Models
         public Tire Tires { get; set; }
         [EnumDataType(typeof(DriverStatus))]
         public DriverStatus DriverStatus { get; set; }
+        public bool Dropped { get; set; }
 
         public int Points { get; set; }
 

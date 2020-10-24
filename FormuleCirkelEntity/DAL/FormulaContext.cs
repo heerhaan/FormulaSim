@@ -32,9 +32,9 @@ namespace FormuleCirkelEntity.DAL
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            EnableArchivable(builder);
             if (builder is null)
                 return;
-            EnableArchivable(builder);
             //Removes the Cascade Delete functionality related to relations between tables
             foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {

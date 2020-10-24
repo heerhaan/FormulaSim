@@ -253,7 +253,7 @@ namespace FormuleCirkelEntity.Controllers
                     .GetResult();
 
                 _context.DriverResults.AddRange(race.DriverResults);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             
             return RedirectToAction("RaceWeekend", new { id, raceId });

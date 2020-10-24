@@ -107,6 +107,9 @@ namespace FormuleCirkelEntity.Builders
 
             foreach (var driver in drivers)
             {
+                if (driver.Dropped)
+                    continue;
+
                 DriverResult driverResult = new DriverResult
                 {
                     SeasonDriver = driver
