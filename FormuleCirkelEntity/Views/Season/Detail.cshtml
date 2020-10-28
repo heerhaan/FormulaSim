@@ -180,28 +180,30 @@
                     <th>Reliability</th>
                     <th class="tcc-chassis"><span>Engine</span></th>
                     <th>Power</th>
-                    <th>Edit</th>
-                    <th>Trait</th>
+                    @if (Model.Season.State == SeasonState.Progress || Model.Season.State == SeasonState.Draft)
+                    {
+                        <th>Edit</th>
+                        <th>Trait</th>
+                    }
                 </tr>
             </thead>
-            <tbody>
-                @{
-                    var orderedTeams = Model.SeasonTeams.OrderByDescending(t => t.Points).ToList();
-                    for (int pos = 0; pos < orderedTeams.Count; pos++)
-                    {
-                        SeasonTeam team = orderedTeams[pos];
-                        <tr>
-                            <td><b>@((pos + 1).ToString())</b></td>
-                            <td>@team.Points</td>
-                            <td>
-                                <span class="badge badge-team text-left fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);font-size:1rem;">
-                                    <span class="flag flag-@(team.Team.Country) flag-margin"></span>@team.Name
-                                </span>
-                            </td>
-                            <td>@team.Chassis</td>
-                            <td>@team.Reliability</td>
-                            <td>@team.Engine.Name</td>
-                            <td>@team.Engine.Power</td>
+            <tbody class="table-counter">
+                @foreach (var team in Model.SeasonTeams.OrderByDescending(t => t.Points).ToList())
+                {
+                    <tr>
+                        <td><b class="table-count"></b></td>
+                        <td>@team.Points</td>
+                        <td>
+                            <span class="badge badge-team text-left fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);font-size:1rem;">
+                                <span class="flag flag-@(team.Team.Country) flag-margin"></span>@team.Name
+                            </span>
+                        </td>
+                        <td>@team.Chassis</td>
+                        <td>@team.Reliability</td>
+                        <td>@team.Engine.Name</td>
+                        <td>@team.Engine.Power</td>
+                        @if (Model.Season.State == SeasonState.Progress || Model.Season.State == SeasonState.Draft)
+                        {
                             <td>
                                 <a asp-action="UpdateTeam" asp-route-id="@Model.Season.SeasonId" asp-route-teamId="@team.SeasonTeamId">
                                     <i class="fas fa-wrench fa-2x"></i>
@@ -212,8 +214,8 @@
                                     <i class="fas fa-yin-yang fa-2x"></i>
                                 </a>
                             </td>
-                        </tr>
-                    }
+                        }
+                    </tr>
                 }
             </tbody>
         </table>

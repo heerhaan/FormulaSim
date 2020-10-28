@@ -58,8 +58,15 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddDefault(int? id)
         {
             // gets the current and previous season in this championship
-            var season = await _context.Seasons.Include(s => s.Races).SingleOrDefaultAsync(s => s.SeasonId == id);
-            var lastSeason = await _context.Seasons.Include(s => s.Races).LastOrDefaultAsync(s => s.State == SeasonState.Finished && s.ChampionshipId == season.ChampionshipId);
+            var season = await _context.Seasons
+                .Include(s => s.Races)
+                .SingleOrDefaultAsync(s => s.SeasonId == id);
+
+            var lastSeason = _context.Seasons
+                .Include(s => s.Races)
+                .Include(s => s.Championship)
+                .ToList()
+                .LastOrDefault(s => s.State == SeasonState.Finished && s.ChampionshipId == season.ChampionshipId);
 
             if (lastSeason != null)
             {

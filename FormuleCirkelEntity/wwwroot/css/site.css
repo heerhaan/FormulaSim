@@ -225,10 +225,10 @@ dl.inline-flex {
 .table-counter {
     counter-reset: rowNumber;
 }
-    .table-counter tr {
+    .table-counter .table-count {
         counter-increment: rowNumber;
     }
-        .table-counter tr .table-count:first-child::before {
+        .table-counter .table-count:first-child::before {
             content: counter(rowNumber);
             min-width: 1em;
         }
