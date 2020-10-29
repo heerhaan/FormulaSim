@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
@@ -116,7 +114,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // POST: Championships/Delete/5
-        [HttpPost, ActionName("Delete")]
+        /*[HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -129,6 +127,6 @@ namespace FormuleCirkelEntity.Controllers
         private bool ChampionshipExists(int id)
         {
             return _context.Championships.Any(e => e.ChampionshipId == id);
-        }
+        }*/
     }
 }

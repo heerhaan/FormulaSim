@@ -340,6 +340,7 @@ namespace FormuleCirkelEntity.Controllers
             var unregisteredTeams = await _context.Teams
                 .Where(t => t.Archived == false)
                 .Where(t => !existingTeamIds.Contains(t.Id))
+                .OrderBy(t => t.Abbreviation)
                 .ToListAsync();
 
             ViewBag.seasonId = id;
@@ -804,7 +805,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(engines);
         }
 
-        //Receives development values and saves them in the DB
+        // Receives development values and saves them in the DB
         [HttpPost]
         public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
         {
