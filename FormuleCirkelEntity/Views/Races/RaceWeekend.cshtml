@@ -1,4 +1,4 @@
-﻿@model FormuleCirkelEntity.Models.Race
+﻿@model FormuleCirkelEntity.ViewModels.RaceWeekendModel
 
 @{
     ViewData["Title"] = "RaceWeekend";
@@ -6,7 +6,7 @@
 
 <div class="d-inline-block">
     <div id="graphic">
-        <h1>@ViewBag.year @Model.Name Grand Prix</h1>
+        <h1>@Model.Year @Model.Race.Name Grand Prix</h1>
         <table class="ctable fullborder fullwidth">
             <thead class="fullborder">
                 <tr>
@@ -21,38 +21,38 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var driver in Model.DriverResults.OrderBy(dr => dr.Grid).Select(dr => dr.SeasonDriver))
+                @foreach (var driver in Model.DriverResults.OrderBy(dr => dr.Grid).ToList())
                 {
                     <tr>
-                        <td><b class="alt-font">@Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).Grid</b></td>
+                        <td><b class="alt-font">@driver.Grid</b></td>
                         <td>
                             <span class="badge badge-team fullwidth font-size-default"
-                                  style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
-                                @driver.Driver.DriverNumber
+                                  style="background-color:@(driver.SeasonDriver.SeasonTeam.Colour);color:@(driver.SeasonDriver.SeasonTeam.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Accent);">
+                                @driver.SeasonDriver.Driver.DriverNumber
                             </span>
                         </td>
-                        <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.Driver.Country) flag-margin"></span>@driver.Driver.Name</span></td>
+                        <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.SeasonDriver.Driver.Country) flag-margin"></span>@driver.SeasonDriver.Driver.Name</span></td>
                         <td>
                             <span class="badge badge-team text-left fullwidth font-size-default"
-                                  style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
-                                <span class="flag flag-@(driver.SeasonTeam.Team.Country) flag-margin"></span>@driver.SeasonTeam.Name
+                                  style="background-color:@(driver.SeasonDriver.SeasonTeam.Colour);color:@(driver.SeasonDriver.SeasonTeam.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Accent);">
+                                <span class="flag flag-@(driver.SeasonDriver.SeasonTeam.Team.Country) flag-margin"></span>@driver.SeasonDriver.SeasonTeam.Name
                             </span>
                         </td>
                         <td>
-                            <span class="badge tire font-size-default">@(driver.Tires.ToString()[0])</span>
+                            <span class="badge tire font-size-default">@(driver.SeasonDriver.Tires.ToString()[0])</span>
                         </td>
-                        @if (Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason == null)
+                        @if (driver.PenaltyReason == null)
                         {
                             <td></td>
                         }
                         else
                         {
-                            <td><span class="badge badge-dsq fullwidth">@(Model.DriverResults.SingleOrDefault(dr => dr.SeasonDriver == driver).PenaltyReason)</span></td>
+                            <td><span class="badge badge-dsq fullwidth">@(driver.PenaltyReason)</span></td>
                         }
                         <td>
-                            @if (driver.Traits.Any())
+                            @if (driver.SeasonDriver.Traits.Any())
                             {
-                                foreach (var trait in driver.Traits.Values)
+                                foreach (var trait in driver.SeasonDriver.Traits.Values)
                                 {
                                     <b class="alt-font small">[@trait.Name]</b>
                                 }
@@ -63,9 +63,9 @@
                             }
                         </td>
                         <td>
-                            @if (driver.SeasonTeam.Traits.Any())
+                            @if (driver.SeasonDriver.SeasonTeam.Traits.Any())
                             {
-                                foreach (var trait in driver.SeasonTeam.Traits.Values)
+                                foreach (var trait in driver.SeasonDriver.SeasonTeam.Traits.Values)
                                 {
                                     <b class="alt-font small">[@trait.Name]</b>
                                 }
@@ -81,13 +81,13 @@
         </table>
     </div>
     <div class="flex-row mb-1">
-        @if (Model.RaceState == RaceState.Race || Model.RaceState == RaceState.Finished)
+        @if (Model.Race.RaceState == RaceState.Race || Model.Race.RaceState == RaceState.Finished)
         {
-            <a asp-action="Race" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn w-25">Race</a>
+            <a asp-action="Race" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" class="btn w-25">Race</a>
         }
-        @if (Model.RaceState == RaceState.Concept || Model.RaceState == RaceState.Qualifying)
+        @if (Model.Race.RaceState == RaceState.Concept || Model.Race.RaceState == RaceState.Qualifying)
         {
-            <a asp-action="Qualifying" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn w-25">Qualifying</a>
+            <a asp-action="Qualifying" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" class="btn w-25">Qualifying</a>
         }
         <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
     </div>

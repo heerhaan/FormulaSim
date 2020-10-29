@@ -264,18 +264,25 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RaceWeekend(int raceId)
         {
             var race = await _context.Races
-                .IgnoreQueryFilters()
-                .Include(r => r.DriverResults)
-                    .ThenInclude(dr => dr.SeasonDriver)
-                        .ThenInclude(sd => sd.Driver)
-                .Include(r => r.Season.Teams)
-                    .ThenInclude(d => d.Team)
-                .Include(r => r.Track)
+                .Include(r => r.Season)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
-            ViewBag.year = race.Season.SeasonNumber;
+            var drivers = await _context.DriverResults
+                .Where(dr => dr.RaceId == raceId)
+                .Include(dr => dr.SeasonDriver)
+                    .ThenInclude(sd => sd.Driver)
+                .Include(dr => dr.SeasonDriver.SeasonTeam)
+                    .ThenInclude(st => st.Team)
+                .ToListAsync();
 
-            return View(race);
+            RaceWeekendModel viewmodel = new RaceWeekendModel
+            {
+                Year = race.Season.SeasonNumber,
+                Race = race,
+                DriverResults = drivers
+            };
+
+            return View(viewmodel);
         }
 
         [HttpPost("Season/{id}/[Controller]/{raceId}/Advance")]
