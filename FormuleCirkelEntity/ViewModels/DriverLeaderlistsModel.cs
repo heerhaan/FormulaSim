@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.ViewModels
 {
-    public class LeaderlistsModel
+    public class DriverLeaderlistsModel
     {
         //public IList<LeaderlistTitle> LeaderlistTitles { get; set; }
         public IEnumerable<LeaderlistWin> LeaderlistWins { get; set; }

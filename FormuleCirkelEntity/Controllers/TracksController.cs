@@ -39,7 +39,7 @@ namespace FormuleCirkelEntity.Controllers
             if (track == null)
                 return NotFound();
 
-            var model = new TraitsTrackModel
+            var model = new TrackTraitsTrackModel
             {
                 Track = track,
                 Traits = traits

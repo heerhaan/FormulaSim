@@ -115,7 +115,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Leaderlists")]
         public IActionResult Leaderlists()
         {
-            LeaderlistsModel leaderlistsModel = new LeaderlistsModel();
+            DriverLeaderlistsModel leaderlistsModel = new DriverLeaderlistsModel();
 
             var drivers = DataContext.DriverResults
                 .IgnoreQueryFilters()

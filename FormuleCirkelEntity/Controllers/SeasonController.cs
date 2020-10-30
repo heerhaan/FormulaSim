@@ -292,7 +292,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> SetPoints(int id)
         {
             var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
-            var model = new SetPointsModel
+            var model = new SeasonSetPointsModel
             {
                 SeasonId = id,
                 SeasonNumber = season.SeasonNumber
@@ -302,7 +302,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetPoints(SetPointsModel model)
+        public async Task<IActionResult> SetPoints(SeasonSetPointsModel model)
         {
             if (model is null)
                 return NotFound();
@@ -565,9 +565,8 @@ namespace FormuleCirkelEntity.Controllers
 
             // Adds last previous used values from driver as default
             var lastDriver = _context.SeasonDrivers
-                .Include(sd => sd.Driver)
-                .ToList()
-                .LastOrDefault(s => s.Driver.Id == globalDriverId);
+                .AsEnumerable()
+                .LastOrDefault(s => s.DriverId == globalDriverId);
 
             if (lastDriver != null)
             {
@@ -606,14 +605,11 @@ namespace FormuleCirkelEntity.Controllers
 
                 // Adds last previous used traits from driver as default
                 var lastDriver = _context.SeasonDrivers
-                    .Include(sd => sd.Driver)
-                    .ToList()
-                    .LastOrDefault(s => s.Driver.Id == globalDriverId);
+                    .AsEnumerable()
+                    .LastOrDefault(s => s.DriverId == globalDriverId);
 
                 if (lastDriver != null)
-                {
                     seasonDriver.Traits = lastDriver.Traits;
-                }
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
                 await _context.AddAsync(seasonDriver);
@@ -919,7 +915,7 @@ namespace FormuleCirkelEntity.Controllers
             if (seasondriver == null)
                 return NotFound();
 
-            var model = new TraitsDriverModel
+            var model = new SeasonTraitsDriverModel
             {
                 Driver = seasondriver,
                 Traits = traits
@@ -980,7 +976,7 @@ namespace FormuleCirkelEntity.Controllers
             if (seasonteam == null)
                 return NotFound();
 
-            var model = new TraitsTeamModel
+            var model = new SeasonTraitsTeamModel
             {
                 Team = seasonteam,
                 Traits = traits

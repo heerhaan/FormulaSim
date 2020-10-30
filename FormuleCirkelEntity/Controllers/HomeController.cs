@@ -48,28 +48,29 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderBy(s => s.SeasonStart)
                 .FirstOrDefault();
 
-                ViewBag.lastpointpos = currentSeason.PointsPerPosition.Keys.Max();
-                ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
-                ViewBag.polepoint = currentSeason.PolePoints;
-                ViewBag.seasonId = currentSeason.SeasonId;
-
-                var standings = _context.SeasonDrivers
+                var drivers = _context.SeasonDrivers
+                    .Where(s => s.SeasonId == currentSeason.SeasonId)
                     .Include(s => s.DriverResults)
                     .Include(s => s.Driver)
-                    .Include(s => s.SeasonTeam.Team)
-                    .Where(s => s.SeasonId == currentSeason.SeasonId)
+                    .Include(s => s.SeasonTeam)
                     .OrderByDescending(s => s.Points)
                     .ToList();
 
-                ViewBag.rounds = _context.Races
+                var rounds = _context.Races
                     .Where(r => r.SeasonId == currentSeason.SeasonId)
                     .Include(r => r.Track)
                     .OrderBy(r => r.Round)
                     .ToList();
 
+                List<Track> tracks = new List<Track>();
+                foreach (var round in rounds)
+                {
+                    tracks.Add(round.Track);
+                }
+
                 // Calculates the average finishing position
-                List<AverageFinish> averageFinishes = new List<AverageFinish>();
-                foreach (var driver in standings)
+                IList<double> averages = new List<double>();
+                foreach (var driver in drivers)
                 {
                     List<double> positions = new List<double>();
                     double average = 0;
@@ -87,17 +88,25 @@ namespace FormuleCirkelEntity.Controllers
                             average = Math.Round((positions.Average()), 2);
                         }
                     }
-                    AverageFinish avg = new AverageFinish()
-                    {
-                        Driver = driver,
-                        Averagepos = average
-                    };
-                    averageFinishes.Add(avg);
+                    averages.Add(average);
                 }
-                ViewBag.averages = averageFinishes;
 
-                return View(standings);
-            } else
+                var viewmodel = new HomeDriverStandingsModel
+                {
+                    SeasonDrivers = drivers,
+                    Averages = averages,
+                    Tracks = tracks,
+                    Rounds = rounds.Select(r => r.RaceId),
+                    SeasonId = currentSeason.SeasonId,
+                    Year = currentSeason.SeasonNumber,
+                    LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
+                    Points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition),
+                    PolePoints = currentSeason.PolePoints
+                };
+
+                return View(viewmodel);
+            } 
+            else
             {
                 return RedirectToAction("Index", "Season");
             }
@@ -110,65 +119,68 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == seasonId)
                 .FirstOrDefault();
 
-            int lastpoint = 10;
-            if (currentSeason.PointsPerPosition.Count != 0)
-            {
-                lastpoint = currentSeason.PointsPerPosition.Keys.Max();
-            }
-            ViewBag.lastpointpos = lastpoint;
-            ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
-            ViewBag.polepoint = currentSeason.PolePoints;
-            ViewBag.seasonId = seasonId;
+            var drivers = _context.SeasonDrivers
+                    .Where(s => s.SeasonId == currentSeason.SeasonId)
+                    .Include(s => s.DriverResults)
+                    .Include(s => s.Driver)
+                    .Include(s => s.SeasonTeam)
+                    .OrderByDescending(s => s.Points)
+                    .ToList();
 
-            var standings = _context.SeasonDrivers
-                .IgnoreQueryFilters()
-                .Include(s => s.DriverResults)
-                .Include(s => s.Driver)
-                .Include(s => s.SeasonTeam.Team)
-                .Where(s => s.SeasonId == currentSeason.SeasonId)
-                .OrderByDescending(s => s.Points)
-                .ToList();
-
-            // Calculates the average finishing position
-            List<AverageFinish> averageFinishes = new List<AverageFinish>();
-            foreach (var driver in standings)
-            {
-                List<double> positions = new List<double>();
-                double average = 0;
-                foreach (var result in driver.DriverResults)
-                {
-                    if (result.Status == Status.Finished)
-                    {
-                        positions.Add(result.Position);
-                    }
-                }
-                if (positions.Any())
-                {
-                    average = Math.Round((positions.Average()), 2);
-                }
-                AverageFinish avg = new AverageFinish()
-                {
-                    Driver = driver,
-                    Averagepos = average
-                };
-                averageFinishes.Add(avg);
-            }
-            ViewBag.averages = averageFinishes;
-
-            ViewBag.rounds = _context.Races
-                .IgnoreQueryFilters()
+            var rounds = _context.Races
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
                 .Include(r => r.Track)
                 .OrderBy(r => r.Round)
                 .ToList();
 
-            return View("DriverStandings", standings);
+            List<Track> tracks = new List<Track>();
+            foreach (var round in rounds)
+            {
+                tracks.Add(round.Track);
+            }
+
+            // Calculates the average finishing position
+            IList<double> averages = new List<double>();
+            foreach (var driver in drivers)
+            {
+                List<double> positions = new List<double>();
+                double average = 0;
+                if (driver.DriverResults.Any())
+                {
+                    foreach (var result in driver.DriverResults)
+                    {
+                        if (result.Status == Status.Finished)
+                        {
+                            positions.Add(result.Position);
+                        }
+                    }
+                    if (positions.Any())
+                    {
+                        average = Math.Round((positions.Average()), 2);
+                    }
+                }
+                averages.Add(average);
+            }
+
+            var viewmodel = new HomeDriverStandingsModel
+            {
+                SeasonDrivers = drivers,
+                Averages = averages,
+                Tracks = tracks,
+                Rounds = rounds.Select(r => r.RaceId),
+                SeasonId = currentSeason.SeasonId,
+                Year = currentSeason.SeasonNumber,
+                LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
+                Points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition),
+                PolePoints = currentSeason.PolePoints
+            };
+
+            return View("DriverStandings", viewmodel);
         }
 
         [HttpPost("[Controller]/{seasonId}/GetDriverGraphData")]
         public IActionResult GetDriverGraphData(int seasonId)
         {
-            // Overweeg om dit te herschrijven dat hij de races pakt in plaats van de seizoenrijders, of vindt een manier om het zo te krijgen dat de racevolgorde klopt.
             var standings = _context.SeasonDrivers
                 .IgnoreQueryFilters()
                 .Where(sd => sd.SeasonId == seasonId)
@@ -207,7 +219,7 @@ namespace FormuleCirkelEntity.Controllers
                     tracks.Add(round.Track);
                 }
 
-                var viewModel = new TeamStandingsModel
+                var viewModel = new HomeTeamStandingsModel
                 {
                     // Assigns the lowest position that scores points
                     LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
@@ -223,10 +235,10 @@ namespace FormuleCirkelEntity.Controllers
                         .Where(dr => dr.Race.SeasonId == currentSeason.SeasonId)
                         .ToList(),
                     SeasonId = currentSeason.SeasonId,
+                    Year = currentSeason.SeasonNumber,
+                    Points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition),
                     PolePoints = currentSeason.PolePoints
                 };
-
-                ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
 
                 return View(viewModel);
             }
@@ -254,11 +266,10 @@ namespace FormuleCirkelEntity.Controllers
                 tracks.Add(round.Track);
             }
 
-            var viewModel = new TeamStandingsModel
+            var viewModel = new HomeTeamStandingsModel
             {
                 // Assigns the lowest position that scores points
                 LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
-
                 SeasonTeams = _context.SeasonTeams
                     .IgnoreQueryFilters()
                     .Include(st => st.Team)
@@ -266,20 +277,16 @@ namespace FormuleCirkelEntity.Controllers
                     .Where(st => st.SeasonId == seasonId)
                     .OrderByDescending(st => st.Points)
                     .ToList(),
-
                 Tracks = tracks,
-
                 Rounds = rounds.Select(r => r.RaceId),
-
                 DriverResults = _context.DriverResults
                     .Where(dr => dr.Race.SeasonId == seasonId)
                     .ToList(),
-
                 SeasonId = currentSeason.SeasonId,
+                Year = currentSeason.SeasonNumber,
+                Points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition),
                 PolePoints = currentSeason.PolePoints
             };
-
-            ViewBag.points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition);
 
             return View("TeamStandings", viewModel);
         }

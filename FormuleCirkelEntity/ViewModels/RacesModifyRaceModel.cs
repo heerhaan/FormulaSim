@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.ViewModels
 {
-    public class ModifyRaceModel
+    public class RacesModifyRaceModel
     {
-        public ModifyRaceModel()
+        public RacesModifyRaceModel()
         {
             RaceStints = new List<Stint>();
         }

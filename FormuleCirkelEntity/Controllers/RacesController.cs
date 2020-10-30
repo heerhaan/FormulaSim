@@ -95,7 +95,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public IActionResult ModifyRace(int id, int trackId)
         {
-            var model = new ModifyRaceModel
+            var model = new RacesModifyRaceModel
             {
                 SeasonId = id,
                 TrackId = trackId
@@ -123,7 +123,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ModifyRace(ModifyRaceModel raceModel)
+        public async Task<IActionResult> ModifyRace(RacesModifyRaceModel raceModel)
         {
             if (raceModel == null)
                 return NotFound();

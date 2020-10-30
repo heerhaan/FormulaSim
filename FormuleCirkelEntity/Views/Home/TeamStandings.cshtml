@@ -1,4 +1,4 @@
-﻿@model FormuleCirkelEntity.ViewModels.TeamStandingsModel
+﻿@model FormuleCirkelEntity.ViewModels.HomeTeamStandingsModel
 
 @{
     ViewData["Title"] = "Standings";
@@ -6,7 +6,7 @@
 
 <div class="d-inline-block">
     <div id="graphic">
-        <h1 class="text-left">Championship teams</h1>
+        <h1 class="text-left">World Constructors Championship - @Model.Year</h1>
 
         <table class="ctable standings-border fullborder">
             <thead>
@@ -109,7 +109,8 @@
 
 <script>
     const polepoint = @Model.PolePoints;
-    const points = @(Html.Raw(ViewBag.points));
+    const lastpointpos = @Model.LastPointPos;
+    const points = @(Html.Raw(Model.Points));
     const bodyelem = document.querySelector('body');
     const bodystyle = getComputedStyle(bodyelem);
 
@@ -127,7 +128,7 @@
                 let total = 0;
                 var driverresults = [];
                 driver.DriverResults.forEach(function (driverresult) {
-                    if (driverresult.Position <= @Model.LastPointPos) {
+                    if (driverresult.Position <= lastpointpos) {
                         total = total + points[driverresult.Position];
                     }
                     if (driverresult.Grid == 1) {
@@ -135,19 +136,22 @@
                     }
                     driverresults.push(total);
                 });
-                raceresults.push(driverresults);
+                if (raceresults.length > 0) {
+                    var sum = raceresults.map(function (num, idx) { return num + driverresults[idx] })
+                    raceresults = sum;
+                }
+                else {
+                    raceresults.push(driverresults);
+                }
             });
 
-            var teamresults = raceresults[0].map(function (num, idx) {
-                return num + raceresults[1][idx];
-            });
-            teamresults.unshift(0);
+            console.log(raceresults);
 
             var teamDataset = {
                 label: val.Name,
                 backgroundColor: val.Accent,
                 borderColor: val.Colour,
-                data: teamresults,
+                data: raceresults,
                 fill: false
             }
 

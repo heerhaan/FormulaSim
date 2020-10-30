@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.ViewModels
 {
-    public class SetPointsModel
+    public class SeasonSetPointsModel
     {
-        public SetPointsModel()
+        public SeasonSetPointsModel()
         {
             Points = new List<int>();
         }

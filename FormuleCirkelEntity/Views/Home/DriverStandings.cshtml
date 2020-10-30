@@ -1,14 +1,13 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+﻿@model FormuleCirkelEntity.ViewModels.HomeDriverStandingsModel
 
 @{
-    ViewData["Title"] = "Standings";
-    var rounds = ViewBag.rounds;
-    var seasonId = ViewBag.seasonId;
+    ViewData["Title"] = "WDC Standings";
+    int increment = 0;
 }
 
 <div class="d-inline-block">
     <div id="graphic">
-        <h1 class="text-left">Championship drivers</h1>
+        <h1 class="text-left">World Drivers' Championship - @Html.DisplayFor(model => model.Year)</h1>
 
         <table class="ctable standings-border fullborder">
             <thead>
@@ -25,10 +24,10 @@
                     <th class="fullborder">
                         Team
                     </th>
-                    @foreach (var round in rounds)
+                    @foreach (var track in Model.Tracks)
                     {
-                        <th class="fullborder">@(round.Track.Location.Substring(0, 3).ToUpper())
-                            <br /><span class="flag flag-@(round.Track.Country)"></span></th>
+                        <th class="fullborder">@(track.Location.Substring(0, 3).ToUpper())
+                            <br /><span class="flag flag-@(track.Country)"></span></th>
                     }
                     <th class="fullborder">
                         Pts.
@@ -39,7 +38,7 @@
                 </tr>
             </thead>
             <tbody class="table-counter">
-                @foreach (var item in Model)
+                @foreach (var item in Model.SeasonDrivers)
                 {
                     <tr>
                         <td>
@@ -55,9 +54,9 @@
                         <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
                             <span class="pl-1 pr-1">@item.SeasonTeam.Name</span>
                         </td>
-                        @foreach (var round in rounds)
+                        @foreach (var round in Model.Rounds)
                         {
-                            DriverResult result = item.DriverResults.FirstOrDefault(r => r.Race.Round == round.Round);
+                            DriverResult result = item.DriverResults.FirstOrDefault(r => r.RaceId == round);
                             if (result is null || result.Position == 0)
                             {
                                 <td><span>-</span></td>
@@ -100,7 +99,7 @@
                                     </td>
 
                                 }
-                                else if (result.Position <= ViewBag.lastpointpos)
+                                else if (result.Position <= Model.LastPointPos)
                                 {
                                     <td class="result-points">
                                         @result.Position
@@ -120,13 +119,7 @@
                             <span>@Html.DisplayFor(modelItem => item.Points)</span>
                         </td>
                         <td>
-                            @foreach (var avg in ViewBag.averages)
-                            {
-                                if (avg.Driver == item)
-                                {
-                                    <span class='alt-font ml-1' style="font-size:0.7rem;">@avg.Averagepos</span>
-                                }
-                            }
+                            <span class='alt-font ml-1' style="font-size:0.7rem;">@(Model.Averages[increment++])</span>
                         </td>
                     </tr>
                 }
@@ -145,8 +138,9 @@
 </div>
 
 <script>
-    const polepoint = @ViewBag.polepoint;
-    const points = @(Html.Raw(ViewBag.points));
+    const polepoint = @Model.PolePoints;
+    const lastpointpos = @Model.LastPointPos;
+    const points = @(Html.Raw(Model.Points));
     const bodyelem = document.querySelector('body');
     const bodystyle = getComputedStyle(bodyelem);
 
@@ -164,7 +158,7 @@
             raceresults.push(0);
 
             driverValue.DriverResults.forEach(function (result) {
-                if (result.Position <= @ViewBag.lastpointpos) {
+                if (result.Position <= lastpointpos) {
                     total = total + points[result.Position];
                 }
                 if (result.Grid == 1) {
@@ -273,7 +267,7 @@
     }
 
     function getStandingsGraph() {
-        fetch("/Home/@seasonId/GetDriverGraphData", { method: "POST" })
+        fetch("/Home/@Model.SeasonId/GetDriverGraphData", { method: "POST" })
             .then(response => response.json())
             .then(result => drawStandingsChart(result));
     }
