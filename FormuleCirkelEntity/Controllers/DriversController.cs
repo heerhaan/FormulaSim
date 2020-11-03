@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,6 +39,7 @@ namespace FormuleCirkelEntity.Controllers
             var driver = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
             var seasons = DataContext.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
+                .Include(s => s.Drivers)
                 .ToList();
 
             // Basic information about the driver
@@ -94,8 +96,7 @@ namespace FormuleCirkelEntity.Controllers
             int championships = 0;
             foreach(var season in seasons)
             {
-                var winner = DataContext.SeasonDrivers
-                    .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
+                var winner = season.Drivers
                     .OrderByDescending(dr => dr.Points)
                     .FirstOrDefault();
 
@@ -124,6 +125,38 @@ namespace FormuleCirkelEntity.Controllers
                 .AsEnumerable()
                 .GroupBy(sd => sd.SeasonDriver.Driver)
                 .ToList();
+
+            var seasons = DataContext.Seasons
+                .Where(s => s.Championship.ActiveChampionship && s.State == SeasonState.Finished)
+                .Include(s => s.Drivers)
+                    .ThenInclude(sd => sd.Driver)
+                .ToList();
+
+            foreach (var season in seasons)
+            {
+                var winner = season.Drivers
+                    .OrderByDescending(sd => sd.Points)
+                    .FirstOrDefault()
+                    .Driver;
+
+                var winnerInList = leaderlistsModel.LeaderlistTitles.FirstOrDefault(d => d.Driver == winner);
+                if (winnerInList is null)
+                {
+                    leaderlistsModel.LeaderlistTitles.Add(new LeaderlistTitle { Driver = winner, TitleCount = 1 });
+                }
+                else
+                {
+                    winnerInList.TitleCount += 1;
+                }
+            }
+
+            if (leaderlistsModel.LeaderlistTitles.Count > 10)
+            {
+                leaderlistsModel.LeaderlistTitles = leaderlistsModel.LeaderlistTitles
+                .OrderByDescending(res => res.TitleCount)
+                .Take(10)
+                .ToList();
+            }
 
             leaderlistsModel.LeaderlistWins = drivers
                 .Select(dr => new LeaderlistWin

@@ -35,6 +35,29 @@
             </div>
 
             <div style="width:30%;">
+                <h3 class="text-center">World championships</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Driver</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-counter">
+                        @foreach (var item in Model.LeaderlistTitles)
+                        {
+                        <tr>
+                            <td>#<span class="table-count"></span></td>
+                            <td class="text-left"><span class="flag flag-@(item.Driver.Country) flag-margin"></span>@item.Driver.Name</td>
+                            <td>@item.TitleCount</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
                 <h3 class="text-center">Podiums</h3>
                 <table class="ctable fullborder fullwidth">
                     <thead class="fullborder">
