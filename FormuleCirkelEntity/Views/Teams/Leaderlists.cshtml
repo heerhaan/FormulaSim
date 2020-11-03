@@ -1,0 +1,162 @@
+﻿@model TeamLeaderlistsModel
+
+@{
+    ViewData["Title"] = "Leaderlists";
+}
+
+<div class="d-inline-block w-100">
+
+    <div id="graphic" class="m-sides">
+        <h1>Leaderlist</h1>
+
+        <div class="fullwidth flex-row justify-content-between">
+
+            <div style="width:30%;">
+                <h3 class="text-center">Wins</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-counter">
+                        @foreach (var item in Model.LeaderlistWins)
+                        {
+                            <tr>
+                                <td>#<span class="table-count"></span></td>
+                                <td class="text-left"><span class="flag flag-@(item.Key.Country) flag-margin"></span>@item.Key.Abbreviation</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
+                <h3 class="text-center">World championships</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-counter">
+                        @foreach (var item in Model.LeaderlistTitles)
+                        {
+                            <tr>
+                                <td>#<span class="table-count"></span></td>
+                                <td class="text-left"><span class="flag flag-@(item.Key.Country) flag-margin"></span>@item.Key.Abbreviation</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
+                <h3 class="text-center">Podiums</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-counter">
+                        @foreach (var item in Model.LeaderlistPodiums)
+                        {
+                            <tr>
+                                <td>#<span class="table-count"></span></td>
+                                <td class="text-left"><span class="flag flag-@(item.Key.Country) flag-margin"></span>@item.Key.Abbreviation</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
+                <h3 class="text-center">Entries</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-counter">
+                        @foreach (var item in Model.LeaderlistStarts)
+                        {
+                            <tr>
+                                <td>#<span class="table-count"></span></td>
+                                <td class="text-left"><span class="flag flag-@(item.Key.Country) flag-margin"></span>@item.Key.Abbreviation</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
+                <h3 class="text-center">Did Not Finish</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-counter">
+                        @foreach (var item in Model.LeaderlistNonFinishes)
+                        {
+                            <tr>
+                                <td>#<span class="table-count"></span></td>
+                                <td class="text-left"><span class="flag flag-@(item.Key.Country) flag-margin"></span>@item.Key.Abbreviation</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="width:30%;">
+                <h3 class="text-center">Poles</h3>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-counter">
+                        @foreach (var item in Model.LeaderlistPoles)
+                        {
+                            <tr>
+                                <td>#<span class="table-count"></span></td>
+                                <td class="text-left"><span class="flag flag-@(item.Key.Country) flag-margin"></span>@item.Key.Abbreviation</td>
+                                <td>@item.Value</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-row justify-content-between">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+    </div>
+
+    <div id="screenshot"></div>
+</div>

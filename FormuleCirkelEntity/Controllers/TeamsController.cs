@@ -6,6 +6,7 @@ using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -114,6 +115,95 @@ namespace FormuleCirkelEntity.Controllers
 
             stats.ConstructorTitles = teamchamps;
             return View(stats);
+        }
+
+        [Route("Leaderlists")]
+        public IActionResult Leaderlists()
+        {
+            var teams = DataContext.DriverResults
+                .IgnoreQueryFilters()
+                .Where(dr => dr.Race.Season.Championship.ActiveChampionship)
+                .Include(dr => dr.SeasonDriver.SeasonTeam.Team)
+                .AsEnumerable()
+                .GroupBy(st => st.SeasonDriver.SeasonTeam.Team)
+                .ToList();
+
+            var seasons = DataContext.Seasons
+                .Where(s => s.Championship.ActiveChampionship && s.State == SeasonState.Finished)
+                .Include(s => s.Teams)
+                    .ThenInclude(sd => sd.Team)
+                .ToList();
+
+            Dictionary<Team, int> teamTitles = new Dictionary<Team, int>();
+            foreach (var season in seasons)
+            {
+                var winner = season.Teams
+                    .OrderByDescending(sd => sd.Points)
+                    .FirstOrDefault()
+                    .Team;
+
+                if (teamTitles.ContainsKey(winner))
+                {
+                    teamTitles[winner] += 1;
+                }
+                else
+                {
+                    teamTitles.Add(winner, 1);
+                }
+            }
+            teamTitles = teamTitles.OrderByDescending(res => res.Value).Take(10).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            Dictionary<Team, int> teamWins = teams
+                .Select(t => new { t.Key, Sum = t.Sum(s => s.Position == 1 ? 1 : 0) })
+                .AsEnumerable()
+                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
+                .OrderByDescending(res => res.Value)
+                .Take(10)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            Dictionary<Team, int> teamPodiums = teams
+                .Select(t => new { t.Key, Sum = t.Sum(s => s.Position <= 3 ? 1 : 0) })
+                .AsEnumerable()
+                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
+                .OrderByDescending(res => res.Value)
+                .Take(10)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            Dictionary<Team, int> teamStarts = teams
+                .Select(t => new { t.Key, Sum = t.GroupBy(r => r.RaceId).ToList().Count })
+                .AsEnumerable()
+                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
+                .OrderByDescending(res => res.Value)
+                .Take(10)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            Dictionary<Team, int> teamNonFinish = teams
+                .Select(t => new { t.Key, Sum = t.Sum(s => s.Status == Status.DNF || s.Status == Status.DSQ ? 1 : 0) })
+                .AsEnumerable()
+                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
+                .OrderByDescending(res => res.Value)
+                .Take(10)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            Dictionary<Team, int> teamPoles = teams
+                .Select(t => new { t.Key, Sum = t.Sum(s => s.Grid == 1 ? 1 : 0) })
+                .AsEnumerable()
+                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
+                .OrderByDescending(res => res.Value)
+                .Take(10)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            TeamLeaderlistsModel viewmodel = new TeamLeaderlistsModel
+            {
+                LeaderlistTitles = teamTitles,
+                LeaderlistWins = teamWins,
+                LeaderlistPodiums = teamPodiums,
+                LeaderlistStarts = teamStarts,
+                LeaderlistNonFinishes = teamNonFinish,
+                LeaderlistPoles = teamPoles
+            };
+
+            return View(viewmodel);
         }
 
         [Route("Archived")]
