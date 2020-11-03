@@ -175,17 +175,62 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Season/{id}/[Controller]/{raceId}")]
         public async Task<IActionResult> Race(int raceId)
         {
-            var race = await _context.Races
-                .IgnoreQueryFilters()
-                .Include(r => r.Season)
-                .Include(r => r.Track)
-                .Include(r => r.DriverResults)
-                    .ThenInclude(res => res.SeasonDriver.Driver)
-                .Include(r => r.DriverResults)
-                    .ThenInclude(res => res.SeasonDriver.SeasonTeam.Team)
+            Race race = await _context.Races
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
-            return View(race);
+            Season currentSeason = await _context.Seasons
+                .SingleOrDefaultAsync(s => s.SeasonId == race.SeasonId);
+
+            var drivers = await _context.DriverResults
+                .IgnoreQueryFilters()
+                .Where(dr => dr.RaceId == raceId)
+                .Include(dr => dr.SeasonDriver)
+                    .ThenInclude(sd => sd.Driver)
+                .Include(dr => dr.SeasonDriver.SeasonTeam)
+                    .ThenInclude(st => st.Engine)
+                .OrderBy(dr => dr.Position)
+                .ToListAsync();
+
+            Track track = _context.Tracks.SingleOrDefault(t => t.Id == race.TrackId);
+            IList<int> power = new List<int>();
+            foreach (var driver in drivers)
+            {
+                int modifiers = (driver.DriverRacePace + driver.ChassisRacePace + driver.EngineRacePace);
+                power.Add(GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
+            }
+
+            RacesRaceModel viewmodel = new RacesRaceModel
+            {
+                Race = race,
+                DriverResults = drivers,
+                Power = power,
+                SeasonId = currentSeason.SeasonId,
+                SeasonState = currentSeason.State,
+                PointsPerPosition = currentSeason.PointsPerPosition,
+                MaxPos = currentSeason.PointsPerPosition.Keys.Max(),
+                CountDrivers = drivers.Count
+            };
+
+            return View(viewmodel);
+        }
+
+        private static int GetPowerDriver(SeasonDriver driver, int modifiers, string trackspec)
+        {
+            Dictionary<string, int> teamSpecs = new Dictionary<string, int>
+                {
+                    { "Topspeed", driver.SeasonTeam.Topspeed },
+                    { "Acceleration", driver.SeasonTeam.Acceleration },
+                    { "Handling", driver.SeasonTeam.Handling }
+                };
+
+            int power = 0;
+            power += driver.Skill;
+            power += driver.SeasonTeam.Chassis;
+            power += driver.SeasonTeam.Engine.Power;
+            power += ((((int)driver.DriverStatus) * -2) + 2);
+            power += modifiers;
+            power += RaceResultGenerator.GetChassisBonus(teamSpecs, trackspec);
+            return power;
         }
         
         [Route("Season/{id}/[Controller]/{raceId}/Preview")]

@@ -1,19 +1,17 @@
-﻿@model Race
+﻿@model FormuleCirkelEntity.ViewModels.RacesRaceModel
 @{
     ViewData["Title"] = "Race";
-    int maxPos = Model.Season.PointsPerPosition.Keys.Max();
-    int countdrivers = Model.Season.Drivers.Count;
 }
 
 <div class="d-inline-block">
-    @if (Model.Season.State == SeasonState.Progress)
+    @if (Model.SeasonState == SeasonState.Progress)
     {
         <div class="flex-row justify-content-between">
-            @if (Model.RaceState == RaceState.Race)
+            @if (Model.Race.RaceState == RaceState.Race)
             {
                 <a class="btn w-25" onclick="advanceStint()">Next stint</a>
 
-                <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish" class="w-25">
+                <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.Race.RaceId)" id="finish" class="w-25">
                     <input type="submit" value="Finish" class="btn fullwidth" />
                 </form>
             }
@@ -21,7 +19,7 @@
     }
 
     <div id="graphic" class="flex-row">
-        <h1>@Model.Track.Name</h1>
+        <h1>@Model.Race.Name</h1>
         <i id="weather" class="ml-auto fas"></i>
         <table id="results" class="ctable fullborder fullwidth">
             <thead>
@@ -30,8 +28,9 @@
                     <th class="fullborder">Nr.</th>
                     <th class="fullborder">Name</th>
                     <th class="fullborder">Team</th>
+                    <th class="fullborder">PWR</th>
                     <th class="fullborder">Grid</th>
-                    @foreach (var stint in Model.Stints)
+                    @foreach (var stint in Model.Race.Stints)
                     {
                         <th class="fullborder" data-field="stintResultHeader-@stint.Key">
                             @stint.Key
@@ -45,7 +44,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var driverResult in Model.DriverResults.OrderBy(d => d.Position))
+                @foreach (var driverResult in Model.DriverResults)
                 {
                     int gridChange = (driverResult.Grid - driverResult.Position);
                     <tr data-obj-id="@driverResult.SeasonDriverId">
@@ -59,6 +58,7 @@
                         <td data-field="teamName"><span class="badge badge-team fullwidth font-size-default" 
                                                         style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
                             @driverResult.SeasonDriver.SeasonTeam.Name</span></td>
+                        <td data-field="pwr" class='alt-font' style="width:23px;font-size:0.7rem;">@(Model.Power[driverResult.Position - 1])</td>
                         <td data-field="startGrid">
                             @if (gridChange > 0)
                             {
@@ -73,7 +73,7 @@
                                 <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@gridChange</span>
                             }
                         </td>
-                        @foreach (var stint in Model.Stints)
+                        @foreach (var stint in Model.Race.Stints)
                         {
                             var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
                             if (stintResult.Equals(default(KeyValuePair<int, int?>)))
@@ -99,13 +99,13 @@
                             <td data-field="dnfCause">-</td>
                         }
 
-                        @if (driverResult.Position > maxPos)
+                        @if (driverResult.Position > Model.MaxPos)
                         {
                             <td data-field="points"></td>
                         }
                         else
                         {
-                            <td data-field="points"><b class="alt-font">@Model.Season.PointsPerPosition[driverResult.Position]</b></td>
+                            <td data-field="points"><b class="alt-font">@Model.PointsPerPosition[driverResult.Position]</b></td>
                         }
                         <td data-field="abbreviation" style="display:none;"><span>@driverResult.SeasonDriver.Driver.Abbreviation</span></td>
                         <td data-field="fullTeamName" style="display:none;"><span>@driverResult.SeasonDriver.SeasonTeam.Name</span></td>
@@ -147,14 +147,18 @@
 </div>
 
 <script>
-    var progress = @Model.StintProgress;
+    var progress = @Model.Race.StintProgress;
+    const pointsPosition = @(Json.Serialize(Model.PointsPerPosition));
+
+    const table = document.querySelector('#results');
+    const tableBody = table.querySelector("tbody");
     const bodyelem = document.querySelector('body');
     const bodystyle = getComputedStyle(bodyelem);
 
     $(function () {
         // Appends the correct icon for the corresponding weather for the race
         var weatherclass = "";
-        switch ("@Model.Weather") {
+        switch ("@Model.Race.Weather") {
             case "Sunny":
                 weatherclass = "fa-sun fa-2x";
                 break;
@@ -173,9 +177,6 @@
         // Also starts the function to calculate the gap between drivers.
         calculateGap();
     });
-
-    const table = document.querySelector('#results');
-    const tableBody = table.querySelector("tbody");
 
     function resultOrMissing(result) {
         return (result == null ? "-" : result);
@@ -205,7 +206,6 @@
 
     function processStintResponse(res) {
         progress = res.StintProgress;
-        let pointsPosition = @(Json.Serialize(Model.Season.PointsPerPosition))
         res.DriverResults.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
 
@@ -237,7 +237,7 @@
                 let stintResult = driverResult.StintResults[stintKey];
                 row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);
             });
-            if (driverResult.Position > @maxPos) {
+            if (driverResult.Position > @Model.MaxPos) {
                 row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'></td>";
             } else {
                 row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'><b class='alt-font'>" + pointsPosition[driverResult.Position] + "</b></td>";
@@ -254,7 +254,7 @@
     }
 
     function advanceStint() {
-        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/Advance", { method: "POST" })
+        fetch("/Season/@Model.SeasonId/Races/@Model.Race.RaceId/Advance", { method: "POST" })
             .then(response => response.json())
             .then(result => processStintResponse(result));
     }
@@ -394,7 +394,7 @@
             options: {
                 title: {
                     display: true,
-                    text: '@Model.Track.Name',
+                    text: '@Model.Race.Name',
                     fontColor: '#e6e6e6'
                 },
                 tooltips: {
@@ -424,7 +424,7 @@
                         ticks: {
                             reverse: true,
                             min: 1,
-                            max: @countdrivers,
+                            max: @Model.CountDrivers,
                             fontColor: '#e6e6e6'
                         },
                         position: 'left'
@@ -438,7 +438,7 @@
                         ticks: {
                             reverse: true,
                             min: 1,
-                            max: @countdrivers,
+                            max: @Model.CountDrivers,
                             fontColor: '#e6e6e6'
                         },
                         position: 'right'
@@ -469,7 +469,7 @@
     }
 
     function getCurrentResults() {
-        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/getResults", { method: "POST" })
+        fetch("/Season/@Model.SeasonId/Races/@Model.Race.RaceId/getResults", { method: "POST" })
             .then(response => response.json())
             .then(result => drawRaceChart(result));
     }
