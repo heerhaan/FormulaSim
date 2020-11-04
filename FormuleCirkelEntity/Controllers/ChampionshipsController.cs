@@ -19,8 +19,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Championships
-                .ToListAsync());
+            return View(await _context.Championships.ToListAsync());
         }
 
         [HttpPost]
@@ -112,21 +111,5 @@ namespace FormuleCirkelEntity.Controllers
 
             return View(championship);
         }
-
-        // POST: Championships/Delete/5
-        /*[HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var championship = await _context.Championships.FindAsync(id);
-            _context.Championships.Remove(championship);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ChampionshipExists(int id)
-        {
-            return _context.Championships.Any(e => e.ChampionshipId == id);
-        }*/
     }
 }
