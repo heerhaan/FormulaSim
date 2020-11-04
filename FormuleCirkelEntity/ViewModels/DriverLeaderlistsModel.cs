@@ -8,56 +8,13 @@ namespace FormuleCirkelEntity.ViewModels
 {
     public class DriverLeaderlistsModel
     {
-        public DriverLeaderlistsModel()
-        {
-            LeaderlistTitles = new List<LeaderlistTitle>();
-        }
-        public IList<LeaderlistTitle> LeaderlistTitles { get; set; }
-        public IEnumerable<LeaderlistWin> LeaderlistWins { get; set; }
-        public IEnumerable<LeaderlistPodium> LeaderlistPodiums { get; set; }
-        public IEnumerable<LeaderlistStart> LeaderlistStarts { get; set; }
-        public IEnumerable<LeaderlistNonFinish> LeaderlistNonFinishes { get; set; }
-        public IEnumerable<LeaderlistPole> LeaderlistPoles { get; set; }
-    }
-
-    public class LeaderlistTitle
-    {
-        public Driver Driver { get; set; }
-        public int TitleCount { get; set; }
-    }
-
-    public class LeaderlistWin
-    {
-        public Driver Driver { get; set; }
-        public int WinCount { get; set; }
-    }
-
-    public class LeaderlistPodium
-    {
-        public Driver Driver { get; set; }
-        public int PodiumCount { get; set; }
-    }
-    public class LeaderlistPoint
-    {
-        public Driver Driver { get; set; }
-        public int PointsCount { get; set; }
-    }
-
-    public class LeaderlistStart
-    {
-        public Driver Driver { get; set; }
-        public int StartCount { get; set; }
-    }
-
-    public class LeaderlistNonFinish
-    {
-        public Driver Driver { get; set; }
-        public int NonFinishCount { get; set; }
-    }
-
-    public class LeaderlistPole
-    {
-        public Driver Driver { get; set; }
-        public int PoleCount { get; set; }
+#pragma warning disable CA2227 // Collection properties should be read only
+        public IDictionary<Driver, int> LeaderlistTitles { get; set; }
+        public IDictionary<Driver, int> LeaderlistWins { get; set; }
+        public IDictionary<Driver, int> LeaderlistPodiums { get; set; }
+        public IDictionary<Driver, int> LeaderlistStarts { get; set; }
+        public IDictionary<Driver, int> LeaderlistNonFinishes { get; set; }
+        public IDictionary<Driver, int> LeaderlistPoles { get; set; }
+#pragma warning restore CA2227 // Collection properties should be read only
     }
 }

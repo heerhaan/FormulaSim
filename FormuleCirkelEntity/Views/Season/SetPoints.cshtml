@@ -26,7 +26,16 @@
                     <th class="w-auto"></th>
                 </tr>
             </thead>
-            <tbody id="pointPositions"></tbody>
+            <tbody id="pointPositions" class="table-counter">
+                @foreach (var point in Model.Points)
+                {
+                    <tr>
+                        <td><label class="table-count"></label></td>
+                        <td><input name="Points" type="number" value="@point"/></td>
+                        <td><button type="button" class="btn fullwidth delete">Delete</button></td>
+                    </tr>
+                }
+            </tbody>
         </table>
     }
 

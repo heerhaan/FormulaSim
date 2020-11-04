@@ -292,10 +292,15 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> SetPoints(int id)
         {
             var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
+            List<int> points = new List<int>();
+            foreach (var value in season.PointsPerPosition.Values)
+                points.Add(value.Value);
+
             var model = new SeasonSetPointsModel
             {
                 SeasonId = id,
-                SeasonNumber = season.SeasonNumber
+                SeasonNumber = season.SeasonNumber,
+                Points = points
             };
 
             return View(model);

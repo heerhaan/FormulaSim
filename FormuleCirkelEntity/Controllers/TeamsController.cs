@@ -6,6 +6,7 @@ using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -134,6 +135,7 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(sd => sd.Team)
                 .ToList();
 
+            // Puts ever leading team of every finished season in a dictionary and counts how often they had the most points in a season
             Dictionary<Team, int> teamTitles = new Dictionary<Team, int>();
             foreach (var season in seasons)
             {
@@ -143,67 +145,53 @@ namespace FormuleCirkelEntity.Controllers
                     .Team;
 
                 if (teamTitles.ContainsKey(winner))
-                {
                     teamTitles[winner] += 1;
-                }
                 else
-                {
                     teamTitles.Add(winner, 1);
-                }
             }
             teamTitles = teamTitles.OrderByDescending(res => res.Value).Take(10).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            Dictionary<Team, int> teamWins = teams
-                .Select(t => new { t.Key, Sum = t.Sum(s => s.Position == 1 ? 1 : 0) })
-                .AsEnumerable()
-                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
-                .OrderByDescending(res => res.Value)
-                .Take(10)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            Dictionary<Team, int> teamPodiums = teams
-                .Select(t => new { t.Key, Sum = t.Sum(s => s.Position <= 3 ? 1 : 0) })
-                .AsEnumerable()
-                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
-                .OrderByDescending(res => res.Value)
-                .Take(10)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
+            // Counts how many races a team has entered
             Dictionary<Team, int> teamStarts = teams
-                .Select(t => new { t.Key, Sum = t.GroupBy(r => r.RaceId).ToList().Count })
+                .Select(t => new { t.Key, Sum = t.GroupBy(r => r.RaceId).Count() })
                 .AsEnumerable()
                 .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
                 .OrderByDescending(res => res.Value)
                 .Take(10)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            Dictionary<Team, int> teamNonFinish = teams
-                .Select(t => new { t.Key, Sum = t.Sum(s => s.Status == Status.DNF || s.Status == Status.DSQ ? 1 : 0) })
-                .AsEnumerable()
-                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
-                .OrderByDescending(res => res.Value)
-                .Take(10)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            // Creates local functions to be given as a parameter to get the sum of the targeted value
+            static int winSelect(DriverResult a) => a.Position == 1 ? 1 : 0;
+            static int podiumSelect(DriverResult a) => a.Position <= 3 ? 1 : 0;
+            static int nonFinishSelect(DriverResult a) => a.Status == Status.DNF || a.Status == Status.DSQ ? 1 : 0;
+            static int poleSelect(DriverResult a) => a.Grid == 1 ? 1 : 0;
 
-            Dictionary<Team, int> teamPoles = teams
-                .Select(t => new { t.Key, Sum = t.Sum(s => s.Grid == 1 ? 1 : 0) })
-                .AsEnumerable()
-                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
-                .OrderByDescending(res => res.Value)
-                .Take(10)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
+            // All the gathered dictionaries are put in a viewmodel and sent over to the view to be put in leaderlists
             TeamLeaderlistsModel viewmodel = new TeamLeaderlistsModel
             {
                 LeaderlistTitles = teamTitles,
-                LeaderlistWins = teamWins,
-                LeaderlistPodiums = teamPodiums,
+                LeaderlistWins = GetTeamLeaderlistDict(teams, winSelect),
+                LeaderlistPodiums = GetTeamLeaderlistDict(teams, podiumSelect),
                 LeaderlistStarts = teamStarts,
-                LeaderlistNonFinishes = teamNonFinish,
-                LeaderlistPoles = teamPoles
+                LeaderlistNonFinishes = GetTeamLeaderlistDict(teams, nonFinishSelect),
+                LeaderlistPoles = GetTeamLeaderlistDict(teams, poleSelect)
             };
 
             return View(viewmodel);
+        }
+
+        // Generic helper method to get the right dictionary with the given selector
+        private static Dictionary<Team, int> GetTeamLeaderlistDict(List<IGrouping<Team, DriverResult>> teams, Func<DriverResult, int> selector)
+        {
+            Dictionary<Team, int> teamDict = teams
+                .Select(t => new { t.Key, Sum = t.Sum(selector) })
+                .AsEnumerable()
+                .Select(t => new KeyValuePair<Team, int>(t.Key, t.Sum))
+                .OrderByDescending(res => res.Value)
+                .Take(10)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            return teamDict;
         }
 
         [Route("Archived")]

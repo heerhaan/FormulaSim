@@ -132,6 +132,7 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(sd => sd.Driver)
                 .ToList();
 
+            Dictionary<Driver, int> driverTitles = new Dictionary<Driver, int>();
             foreach (var season in seasons)
             {
                 var winner = season.Drivers
@@ -139,76 +140,52 @@ namespace FormuleCirkelEntity.Controllers
                     .FirstOrDefault()
                     .Driver;
 
-                var winnerInList = leaderlistsModel.LeaderlistTitles.FirstOrDefault(d => d.Driver == winner);
-                if (winnerInList is null)
-                {
-                    leaderlistsModel.LeaderlistTitles.Add(new LeaderlistTitle { Driver = winner, TitleCount = 1 });
-                }
+                if (driverTitles.ContainsKey(winner))
+                    driverTitles[winner] += 1;
                 else
-                {
-                    winnerInList.TitleCount += 1;
-                }
+                    driverTitles.Add(winner, 1);
             }
+            driverTitles = driverTitles.OrderByDescending(res => res.Value).Take(10).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            if (leaderlistsModel.LeaderlistTitles.Count > 10)
+            // Counts how many races a driver has entered
+            Dictionary<Driver, int> driverStarts = drivers
+                .Select(t => new KeyValuePair<Driver, int>(t.Key, t.Count()))
+                .OrderByDescending(res => res.Value)
+                .Take(10)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            // Creates local functions to be given as a parameter to get the sum of the targeted value
+            static int winSelect(DriverResult a) => a.Position == 1 ? 1 : 0;
+            static int podiumSelect(DriverResult a) => a.Position <= 3 ? 1 : 0;
+            static int nonFinishSelect(DriverResult a) => a.Status == Status.DNF || a.Status == Status.DSQ ? 1 : 0;
+            static int poleSelect(DriverResult a) => a.Grid == 1 ? 1 : 0;
+
+            // All the gathered dictionaries are put in a viewmodel and sent over to the view to be put in leaderlists
+            DriverLeaderlistsModel viewmodel = new DriverLeaderlistsModel
             {
-                leaderlistsModel.LeaderlistTitles = leaderlistsModel.LeaderlistTitles
-                .OrderByDescending(res => res.TitleCount)
-                .Take(10)
-                .ToList();
-            }
+                LeaderlistTitles = driverTitles,
+                LeaderlistWins = GetDriverLeaderlistDict(drivers, winSelect),
+                LeaderlistPodiums = GetDriverLeaderlistDict(drivers, podiumSelect),
+                LeaderlistStarts = driverStarts,
+                LeaderlistNonFinishes = GetDriverLeaderlistDict(drivers, nonFinishSelect),
+                LeaderlistPoles = GetDriverLeaderlistDict(drivers, poleSelect)
+            };
 
-            leaderlistsModel.LeaderlistWins = drivers
-                .Select(dr => new LeaderlistWin
-                {
-                    Driver = dr.Key,
-                    WinCount = dr.Sum(s => s.Position == 1 ? 1 : 0),
-                })
-                .OrderByDescending(dr => dr.WinCount)
-                .Take(10)
-                .ToList();
+            return View(viewmodel);
+        }
 
-            leaderlistsModel.LeaderlistPodiums = drivers
-                .Select(dr => new LeaderlistPodium
-                {
-                    Driver = dr.Key,
-                    PodiumCount = dr.Sum(s => s.Position <= 3 ? 1 : 0),
-                })
-                .OrderByDescending(dr => dr.PodiumCount)
+        // Generic helper method to get the right dictionary with the given selector
+        private static Dictionary<Driver, int> GetDriverLeaderlistDict(List<IGrouping<Driver, DriverResult>> drivers, Func<DriverResult, int> selector)
+        {
+            Dictionary<Driver, int> driverDict = drivers
+                .Select(t => new { t.Key, Sum = t.Sum(selector) })
+                .AsEnumerable()
+                .Select(t => new KeyValuePair<Driver, int>(t.Key, t.Sum))
+                .OrderByDescending(res => res.Value)
                 .Take(10)
-                .ToList();
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            leaderlistsModel.LeaderlistStarts = drivers
-                .Select(dr => new LeaderlistStart
-                {
-                    Driver = dr.Key,
-                    StartCount = dr.Count(),
-                })
-                .OrderByDescending(dr => dr.StartCount)
-                .Take(10)
-                .ToList();
-
-            leaderlistsModel.LeaderlistNonFinishes = drivers
-                .Select(dr => new LeaderlistNonFinish
-                {
-                    Driver = dr.Key,
-                    NonFinishCount = dr.Sum(s => s.Status == Status.DNF || s.Status == Status.DSQ ? 1 : 0),
-                })
-                .OrderByDescending(dr => dr.NonFinishCount)
-                .Take(10)
-                .ToList();
-
-            leaderlistsModel.LeaderlistPoles = drivers
-                .Select(dr => new LeaderlistPole
-                {
-                    Driver = dr.Key,
-                    PoleCount = dr.Sum(s => s.Grid == 1 ? 1 : 0),
-                })
-                .OrderByDescending(dr => dr.PoleCount)
-                .Take(10)
-                .ToList();
-
-            return View(leaderlistsModel);
+            return driverDict;
         }
 
         [Route("Archived")]
