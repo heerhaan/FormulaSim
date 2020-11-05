@@ -293,3 +293,8 @@ dl.inline-flex {
 .badge-primary {
     color: white !important;
 }
+
+canvas {
+    max-height:100%;
+    max-width:100%;
+}
