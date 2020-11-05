@@ -1,4 +1,5 @@
-﻿using FormuleCirkelEntity.Models;
+﻿using FormuleCirkelEntity.Helpers;
+using FormuleCirkelEntity.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +77,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             if (stint.ApplyQualifyingBonus)
             {
-                result += GetQualifyingBonus(driverResult.Grid, driver.Season.Drivers.Count, driver.Season.QualyBonus);
+                result += Utility.GetQualifyingBonus(driverResult.Grid, driver.Season.Drivers.Count, driver.Season.QualyBonus);
             }
 
             if (stint.ApplyTireLevel && driver.Tires == Tire.Softs)
@@ -112,32 +113,12 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             if (stint.ApplyChassisLevel)
             {
-                Dictionary<string, int> teamSpecs = new Dictionary<string, int>
-                {
-                    { "Topspeed", team.Topspeed },
-                    { "Acceleration", team.Acceleration },
-                    { "Handling", team.Handling }
-                };
-
-                int bonus = GetChassisBonus(teamSpecs, track.Specification.ToString());
+                int bonus = Utility.GetChassisBonus(Utility.CreateTeamSpecDictionary(team), track.Specification.ToString());
                 int statusBonus = (((int)driver.DriverStatus) * -2) + 2;
                 result += (team.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
             }
 
             return result;
-        }
-
-        public static int GetQualifyingBonus(int qualifyingPosition, int totalDriverCount, int qualyBonus)
-        {
-            return (totalDriverCount * qualyBonus) - (qualifyingPosition * qualyBonus);
-        }
-
-        // Kan nog getest worden wat je gaat doen
-        public static int GetChassisBonus(Dictionary<string, int> teamSpecs, string trackSpec)
-        {
-            int bonus = 0;
-            bonus = (teamSpecs.SingleOrDefault(k => k.Key == trackSpec)).Value;
-            return bonus;
         }
 
         public int GetChassisReliabilityResult(int reliability, int additionalDNF)
@@ -164,19 +145,12 @@ namespace FormuleCirkelEntity.ResultGenerators
             if (driver is null || track is null)
                 throw new NullReferenceException();
 
-            Dictionary<string, int> teamSpecs = new Dictionary<string, int>
-            {
-                { "Topspeed", driver.SeasonTeam.Topspeed },
-                { "Acceleration", driver.SeasonTeam.Acceleration },
-                { "Handling", driver.SeasonTeam.Handling }
-            };
-
             var result = 0;
             result += driver.Skill;
             result += qualypace;
             result += driver.SeasonTeam.Chassis;
             result += driver.SeasonTeam.Engine.Power;
-            result += GetChassisBonus(teamSpecs, track.Specification.ToString());
+            result += Utility.GetChassisBonus(Utility.CreateTeamSpecDictionary(driver.SeasonTeam), track.Specification.ToString());
             result += _rng.Next(0, (qualyRNG + 1));
             return result;
         }

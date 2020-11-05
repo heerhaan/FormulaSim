@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.Builders;
 using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Helpers;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
 using FormuleCirkelEntity.ViewModels;
@@ -74,7 +75,7 @@ namespace FormuleCirkelEntity.Controllers
                 .AddModifiedStints(stintlist)
                 .GetResultAndRefresh();
 
-                race.Weather = RandomWeather();
+                race.Weather = Utility.RandomWeather();
                 season.Races.Add(race);
                 await _context.SaveChangesAsync();
             }
@@ -85,7 +86,7 @@ namespace FormuleCirkelEntity.Controllers
                 .AddDefaultStints()
                 .GetResultAndRefresh();
 
-                race.Weather = RandomWeather();
+                race.Weather = Utility.RandomWeather();
                 season.Races.Add(race);
                 await _context.SaveChangesAsync();
             }
@@ -142,34 +143,10 @@ namespace FormuleCirkelEntity.Controllers
                 .AddModifiedStints(stints)
                 .GetResultAndRefresh();
 
-            race.Weather = RandomWeather();
+            race.Weather = Utility.RandomWeather();
             season.Races.Add(race);
             await _context.SaveChangesAsync();
             return RedirectToAction("AddTracks", new { id = raceModel.SeasonId });
-        }
-
-        public static Weather RandomWeather()
-        {
-            int random = rng.Next(1, 21);
-            Weather weather = Weather.Sunny;
-
-            switch (random)
-            {
-                case int n when n <= 8:
-                    weather = Weather.Sunny;
-                    break;
-                case int n when n > 8 && n <= 16:
-                    weather = Weather.Overcast;
-                    break;
-                case int n when n > 16 && n <= 19:
-                    weather = Weather.Rain;
-                    break;
-                case 20:
-                    weather = Weather.Storm;
-                    break;
-            }
-
-            return weather;
         }
 
         [Route("Season/{id}/[Controller]/{raceId}")]
@@ -196,7 +173,7 @@ namespace FormuleCirkelEntity.Controllers
             foreach (var driver in drivers)
             {
                 int modifiers = (driver.DriverRacePace + driver.ChassisRacePace + driver.EngineRacePace);
-                power.Add(GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
+                power.Add(Utility.GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
             }
 
             RacesRaceModel viewmodel = new RacesRaceModel
@@ -212,25 +189,6 @@ namespace FormuleCirkelEntity.Controllers
             };
 
             return View(viewmodel);
-        }
-
-        private static int GetPowerDriver(SeasonDriver driver, int modifiers, string trackspec)
-        {
-            Dictionary<string, int> teamSpecs = new Dictionary<string, int>
-                {
-                    { "Topspeed", driver.SeasonTeam.Topspeed },
-                    { "Acceleration", driver.SeasonTeam.Acceleration },
-                    { "Handling", driver.SeasonTeam.Handling }
-                };
-
-            int power = 0;
-            power += driver.Skill;
-            power += driver.SeasonTeam.Chassis;
-            power += driver.SeasonTeam.Engine.Power;
-            power += ((((int)driver.DriverStatus) * -2) + 2);
-            power += modifiers;
-            power += RaceResultGenerator.GetChassisBonus(teamSpecs, trackspec);
-            return power;
         }
         
         [Route("Season/{id}/[Controller]/{raceId}/Preview")]
@@ -256,28 +214,11 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(st => st.Team)
                 .Include(st => st.Engine)
                 .AsEnumerable()
-                .OrderByDescending(st => (st.Chassis + st.Engine.Power + GetChassisBonus(st, race.Track)))
+                .OrderByDescending(st => (st.Chassis + st.Engine.Power + Utility.GetChassisBonus(Utility.CreateTeamSpecDictionary(st), race.Track.Specification.ToString())))
                 .Take(3)
                 .ToList();
 
             return teams;
-        }
-
-        // To determine the bonus to a chassis a team gets to a specific track
-        private static int GetChassisBonus(SeasonTeam team, Track track)
-        {
-            int bonus = 0;
-            Dictionary<string, int> specs = new Dictionary<string, int>
-            {
-                { "Topspeed", team.Topspeed },
-                { "Acceleration", team.Acceleration },
-                { "Handling", team.Handling }
-            };
-
-            var spec = (specs.SingleOrDefault(k => k.Key == track.Specification.ToString()));
-            bonus = spec.Value;
-
-            return bonus;
         }
 
         [HttpPost("Season/{id}/[Controller]/{raceId}/Start")]
@@ -364,11 +305,11 @@ namespace FormuleCirkelEntity.Controllers
                     if (dnfvalue == 25)
                     {
                         result.Status = Status.DSQ;
-                        result.DSQCause = RandomDSQCause(stintResult.HasValue);
+                        result.DSQCause = Utility.RandomDSQCause(stintResult.HasValue);
                     } else
                     {
                         result.Status = Status.DNF;
-                        result.DNFCause = RandomDNFCause(stintResult.HasValue);
+                        result.DNFCause = Utility.RandomDNFCause(stintResult.HasValue);
                     }
                     if (stintResult.HasValue)
                         stintResult = null;
@@ -401,80 +342,6 @@ namespace FormuleCirkelEntity.Controllers
                 dr.Race = null;
             }
             return new JsonResult(race, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
-        }
-
-        static DNFCause RandomDNFCause(bool driverDNF)
-        {
-            int random = rng.Next(1, 101);
-            DNFCause cause = DNFCause.None;
-
-            if (driverDNF)
-            {
-                switch (random)
-                {
-                    case int n when n <= 16:
-                        cause = DNFCause.Damage;
-                        break;
-                    case int n when n > 16 && n <= 44:
-                        cause = DNFCause.Collision;
-                        break;
-                    case int n when n > 44 && n <= 92:
-                        cause = DNFCause.Accident;
-                        break;
-                    case int n when n > 92:
-                        cause = DNFCause.Puncture;
-                        break;
-                }
-            }
-            else
-            {
-                switch (random)
-                {
-                    case int n when n <= 48:
-                        cause = DNFCause.Engine;
-                        break;
-                    case int n when n > 48 && n <= 78:
-                        cause = DNFCause.Electrics;
-                        break;
-                    case int n when n > 78 && n <= 84:
-                        cause = DNFCause.Exhaust;
-                        break;
-                    case int n when n > 84 && n <= 86:
-                        cause = DNFCause.Clutch;
-                        break;
-                    case int n when n > 86 && n <= 96:
-                        cause = DNFCause.Hydraulics;
-                        break;
-                    case int n when n > 96 && n <= 98:
-                        cause = DNFCause.Wheel;
-                        break;
-                    case int n when n > 98:
-                        cause = DNFCause.Brakes;
-                        break;
-                }
-            }
-
-            return cause;
-        }
-
-        static DSQCause RandomDSQCause(bool driverDNF)
-        {
-
-            DSQCause cause;
-            if (driverDNF)
-            {
-                int random = rng.Next(1, 11);
-                if (random < 9)
-                    cause = DSQCause.Illegal;
-                else
-                    cause = DSQCause.Fuel;
-            }
-            else
-            {
-                cause = DSQCause.Dangerous;
-            }
-
-            return cause;
         }
 
         [HttpPost("Season/{id}/[Controller]/{raceId}/getResults")]
@@ -815,32 +682,5 @@ namespace FormuleCirkelEntity.Controllers
             raceToSwitch.Stints = null;
             return new JsonResult(new[] { race, raceToSwitch });
         }
-    }
-
-    // StintResult is passed along as a parameter for the RaceResultGenerator
-    public class StintResult
-    {
-        public Weather RaceWeather { get; set; }
-        public Specification TrackSpecification { get; set; }
-        public int SeasonDriverCount { get; set; }
-        public int SeasonQualyBonus { get; set; }
-        public int GridPosition { get; set; }
-        public int ModMinRNG { get; set; }
-        public int ModMaxRNG { get; set; }
-        public int ModDriverRacePace { get; set; }
-        public int ModChassisRacePace { get; set; }
-        public int ModEngineRacePace { get; set; }
-        public int ModDriverRel { get; set; }
-        public int ModTeamRel { get; set; }
-        public int DriverSkill { get; set; }
-        public int DriverReliability { get; set; }
-        public Tire DriverTire { get; set; }
-        public DriverStatus DriverStatus { get; set; }
-        public int TeamChassis { get; set; }
-        public int TeamReliability { get; set; }
-        public int TeamTopspeed { get; set; }
-        public int TeamAcceleration { get; set; }
-        public int TeamHandling { get; set; }
-        public int TeamEnginePower { get; set; }
     }
 }

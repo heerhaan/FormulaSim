@@ -1,3 +1,4 @@
+using FormuleCirkelEntity.Helpers;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
 using System;
@@ -26,7 +27,7 @@ namespace FormulaCirkelEntity.Tests
             };
 
             // Act
-            int chassisBonus = RaceResultGenerator.GetChassisBonus(teamSpecs, track.Specification.ToString());
+            int chassisBonus = Utility.GetChassisBonus(teamSpecs, track.Specification.ToString());
 
             // Assert
             Assert.Equal(expected, chassisBonus);
@@ -43,7 +44,7 @@ namespace FormulaCirkelEntity.Tests
         {
             // Arrange
             // Act
-            var qualifyingBonus = RaceResultGenerator.GetQualifyingBonus(qualifyingPosition, 26, 3);
+            var qualifyingBonus = Utility.GetQualifyingBonus(qualifyingPosition, 26, 3);
 
             // Assert
             Assert.Equal(expected, qualifyingBonus);

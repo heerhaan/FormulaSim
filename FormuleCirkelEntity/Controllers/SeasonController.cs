@@ -205,13 +205,11 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Races)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            ViewBag.seasonId = id;
-            ViewBag.number = season.SeasonNumber;
-
             if (season is null)
                 return NotFound();
 
-            ViewBag.points = season.PointsPerPosition.Values.ToList();
+            ViewBag.seasonId = id;
+            ViewBag.number = season.SeasonNumber;
 
             var seasondrivers = _context.SeasonDrivers
                 .AsNoTracking()
@@ -223,7 +221,6 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(sd => sd.SeasonTeam)
                     .ThenInclude(st => st.Engine)
                 .OrderByDescending(sd => (sd.Skill + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (((int)sd.DriverStatus) * -2) + 2))
-                //.OrderBy(sd => sd.SeasonTeam.Team.Abbreviation)
                 .ToList();
 
             seasondrivers = AddTraitReliabilityEffects(seasondrivers);
@@ -898,12 +895,6 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction("DriverReliabilityDev", new { id = seasonId.SeasonId });
         }
 
-        public class GetDev
-        {
-            public int Id { get; set; }
-            public int Newdev { get; set; }
-        }
-
         [Route("Driver/Traits/{id}")]
         public async Task<IActionResult> DriverTraits(int id)
         {
@@ -944,7 +935,6 @@ namespace FormuleCirkelEntity.Controllers
             seasondriver.Traits.Add(seasondriver.Traits.Count, trait);
             _context.Update(seasondriver);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(DriverTraits), new { id });
         }
 
@@ -961,7 +951,6 @@ namespace FormuleCirkelEntity.Controllers
             driver.Traits.Remove(removetrait);
             _context.Update(driver);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(DriverTraits), new { id = driverId });
         }
 
@@ -1020,9 +1009,6 @@ namespace FormuleCirkelEntity.Controllers
             team.Traits.Remove(removetrait);
             _context.Update(team);
             await _context.SaveChangesAsync();
-
-            //object[] array = new object[] { team, trait };
-            //SeasonTeam steam = array[0] as SeasonTeam;
             return RedirectToAction(nameof(TeamTraits), new { id = teamId });
         }
 
@@ -1038,5 +1024,11 @@ namespace FormuleCirkelEntity.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
+    }
+
+    public class GetDev
+    {
+        public int Id { get; set; }
+        public int Newdev { get; set; }
     }
 }
