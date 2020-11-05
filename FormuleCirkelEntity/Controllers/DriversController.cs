@@ -30,7 +30,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Stats/{id}")]
         public async Task<IActionResult> Stats(int? id)
         {
-            if (id == null)
+            if (id is null)
                 return NotFound();
 
             var stats = new DriverStatsModel();

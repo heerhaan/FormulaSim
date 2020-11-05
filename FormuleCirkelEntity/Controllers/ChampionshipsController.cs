@@ -76,6 +76,9 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("ChampionshipId,ChampionshipName,ActiveChampionship")] Championship championship)
         {
+            if (championship is null)
+                throw new NullReferenceException();
+
             if (ModelState.IsValid)
             {
                 var championships = _context.Championships.ToList();
