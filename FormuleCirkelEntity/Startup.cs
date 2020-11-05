@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using FormuleCirkelEntity.Validation;
 using FormuleCirkelEntity.Services;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace FormuleCirkelEntity
 {
@@ -40,9 +41,39 @@ namespace FormuleCirkelEntity
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequiredLength = 6;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.Name = "FormulaCookie";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
+
             services.AddMvc(options => { options.EnableEndpointRouting = false; })
                 .WithRazorPagesAtContentRoot()
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
+
             services.AddControllers()
                 .AddNewtonsoftJson();
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
@@ -70,6 +101,9 @@ namespace FormuleCirkelEntity
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseMvc(routes =>
             {

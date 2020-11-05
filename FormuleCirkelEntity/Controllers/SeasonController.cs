@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -21,6 +22,7 @@ namespace FormuleCirkelEntity.Controllers
             _context = context;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var seasons = await _context.Seasons
