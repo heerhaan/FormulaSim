@@ -49,6 +49,7 @@ namespace FormuleCirkelEntity.Controllers
                 .FirstOrDefault();
 
                 var drivers = _context.SeasonDrivers
+                    .IgnoreQueryFilters()
                     .Where(s => s.SeasonId == currentSeason.SeasonId)
                     .Include(s => s.DriverResults)
                     .Include(s => s.Driver)
@@ -120,12 +121,13 @@ namespace FormuleCirkelEntity.Controllers
                 .FirstOrDefault();
 
             var drivers = _context.SeasonDrivers
-                    .Where(s => s.SeasonId == currentSeason.SeasonId)
-                    .Include(s => s.DriverResults)
-                    .Include(s => s.Driver)
-                    .Include(s => s.SeasonTeam)
-                    .OrderByDescending(s => s.Points)
-                    .ToList();
+                .IgnoreQueryFilters()
+                .Where(s => s.SeasonId == currentSeason.SeasonId)
+                .Include(s => s.DriverResults)
+                .Include(s => s.Driver)
+                .Include(s => s.SeasonTeam)
+                .OrderByDescending(s => s.Points)
+                .ToList();
 
             var rounds = _context.Races
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
@@ -224,6 +226,7 @@ namespace FormuleCirkelEntity.Controllers
                     // Assigns the lowest position that scores points
                     LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
                     SeasonTeams = _context.SeasonTeams
+                        .IgnoreQueryFilters()
                         .Include(st => st.Team)
                         .Include(st => st.SeasonDrivers)
                         .Where(st => st.SeasonId == currentSeason.SeasonId)
