@@ -122,12 +122,13 @@ namespace FormuleCirkelEntity.Controllers
                 .FirstOrDefault();
 
             var drivers = _context.SeasonDrivers
-                    .Where(s => s.SeasonId == currentSeason.SeasonId)
-                    .Include(s => s.DriverResults)
-                    .Include(s => s.Driver)
-                    .Include(s => s.SeasonTeam)
-                    .OrderByDescending(s => s.Points)
-                    .ToList();
+                .IgnoreQueryFilters()
+                .Where(s => s.SeasonId == currentSeason.SeasonId)
+                .Include(s => s.DriverResults)
+                .Include(s => s.Driver)
+                .Include(s => s.SeasonTeam)
+                .OrderByDescending(s => s.Points)
+                .ToList();
 
             var rounds = _context.Races
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
