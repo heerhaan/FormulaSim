@@ -8,17 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using FormuleCirkelEntity.Areas.Identity.Data;
+using FormuleCirkelEntity.Data;
+using FormuleCirkelEntity.Areas.Identity.Authorization;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class TraitsController : Controller
+    public class TraitsController : FormulaController
     {
-        private readonly FormulaContext _context;
-
-        public TraitsController(FormulaContext context)
-        {
-            _context = context;
-        }
+        public TraitsController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager)
+            : base(context, identityContext, authorizationService, userManager)
+        { }
 
         public async Task<IActionResult> Index()
         {
@@ -29,7 +31,7 @@ namespace FormuleCirkelEntity.Controllers
                 TeamTraits = traits.Where(t => t.TraitGroup == TraitGroup.Team).OrderBy(t => t.Name),
                 TrackTraits = traits.Where(t => t.TraitGroup == TraitGroup.Track).OrderBy(t => t.Name)
             };
-
+            ViewBag.userid = await IsUserOwner();
             return View(indexmodel);
         }
 
@@ -48,8 +50,13 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             return View();
         }
 
@@ -69,6 +76,11 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Modify(int? id)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             if (id == null)
             {
                 return NotFound();

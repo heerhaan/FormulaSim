@@ -1,6 +1,10 @@
-﻿using FormuleCirkelEntity.DAL;
+﻿using FormuleCirkelEntity.Areas.Identity.Data;
+using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Data;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -12,15 +16,13 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : FormulaController
     {
-        private readonly FormulaContext _context;
+        public HomeController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager)
+            : base(context, identityContext, authorizationService, userManager)
+        { }
 
-        public HomeController(FormulaContext context)
-        {
-            _context = context;
-        }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
             bool championship = false;

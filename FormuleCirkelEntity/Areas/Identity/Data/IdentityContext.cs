@@ -6,6 +6,7 @@ using FormuleCirkelEntity.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace FormuleCirkelEntity.Data
 {
@@ -19,9 +20,16 @@ namespace FormuleCirkelEntity.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+            builder.Entity<SimUser>()
+                .Property(s => s.Drivers)
+                .HasConversion(
+                    list => JsonConvert.SerializeObject(list, Formatting.None),
+                    json => JsonConvert.DeserializeObject<List<int>>(json) ?? new List<int>());
+            builder.Entity<SimUser>()
+                .Property(s => s.Teams)
+                .HasConversion(
+                    list => JsonConvert.SerializeObject(list, Formatting.None),
+                    json => JsonConvert.DeserializeObject<List<int>>(json) ?? new List<int>());
         }
     }
 }

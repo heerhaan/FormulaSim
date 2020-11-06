@@ -7,7 +7,7 @@
     @if (Model.SeasonState == SeasonState.Progress)
     {
         <div class="flex-row justify-content-between">
-            @if (Model.Race.RaceState == RaceState.Race)
+            @if (Model.Race.RaceState == RaceState.Race && (ViewBag.userid))
             {
                 <a class="btn w-25" onclick="advanceStint()">Next stint</a>
 

@@ -10,19 +10,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using FormuleCirkelEntity.Data;
+using Microsoft.AspNetCore.Identity;
+using FormuleCirkelEntity.Areas.Identity.Data;
+using System.Security.Claims;
+using FormuleCirkelEntity.Areas.Identity.Authorization;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class SeasonController : Controller
+    public class SeasonController : FormulaController
     {
-        private readonly FormulaContext _context;
+        public SeasonController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager)
+            : base(context, identityContext, authorizationService, userManager)
+        { }
 
-        public SeasonController(FormulaContext context)
-        {
-            _context = context;
-        }
-
-        [Authorize]
         public async Task<IActionResult> Index()
         {
             var seasons = await _context.Seasons
@@ -46,6 +47,11 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Create()
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var season = new Season();
             var championship = await _context.Championships.FirstAsync(c => c.ActiveChampionship);
             if (championship is null)
@@ -59,6 +65,11 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> AddDefault(int? id)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             // gets the current and previous season in this championship
             var season = await _context.Seasons
                 .Include(s => s.Races)
@@ -105,6 +116,11 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Start(int? id)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
             if (season is null)
                 return NotFound();
@@ -134,6 +150,11 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Finish(int? id)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
             if (season is null)
                 return NotFound();
@@ -175,11 +196,18 @@ namespace FormuleCirkelEntity.Controllers
                 SeasonTeams = teams
             };
 
+            ViewBag.userid = await IsUserOwner();
+
             return View(nameof(Detail), seasonmodel);
         }
 
         public async Task<IActionResult> RemoveRace(int? id, int seasonId)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var race = await _context.Races.SingleOrDefaultAsync(s => s.RaceId == id);
             var season = await _context.Seasons.Include(s => s.Races).SingleOrDefaultAsync(s => s.SeasonId == seasonId);
             if (race == null)
@@ -199,7 +227,6 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
 
-        // Page that displays the power rankings and a few settings, like the points distribution, of a season.
         public async Task<IActionResult> SeasonStats(int? id)
         {
             var season = await _context.Seasons
@@ -267,6 +294,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("[Controller]/{id}/Settings")]
         public async Task<IActionResult> Settings(int id, [Bind] SeasonSettingsViewModel settingsModel)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var season = await _context.Seasons
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
@@ -308,6 +340,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> SetPoints(SeasonSetPointsModel model)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             if (model is null)
                 return NotFound();
 
@@ -727,6 +764,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var seasonId = await _context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefaultAsync();
@@ -764,6 +806,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveTeamDev([FromBody]IEnumerable<GetDev> dev)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var seasonId = await _context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefaultAsync();
@@ -805,18 +852,22 @@ namespace FormuleCirkelEntity.Controllers
             return View(engines);
         }
 
-        // Receives development values and saves them in the DB
         [HttpPost]
-        public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
+        public async Task<IActionResult> SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var engines = _context.Engines.ToList();
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
+            var engines = await _context.Engines.ToListAsync();
             foreach (var enginedev in dev)
             {
                 var engine = engines.First(e => e.Id == enginedev.Id);
                 engine.Power = enginedev.Newdev;
             }
             _context.UpdateRange(engines);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var seasonId = _context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
@@ -837,16 +888,21 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveTeamReliabilityDev([FromBody]IEnumerable<GetDev> dev)
+        public async Task<IActionResult> SaveTeamReliabilityDev([FromBody]IEnumerable<GetDev> dev)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var seasonId = _context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefault();
 
-            var teams = _context.SeasonTeams
+            var teams = await _context.SeasonTeams
                 .Where(s => s.SeasonId == seasonId.SeasonId)
                 .OrderBy(t => t.Team.Abbreviation)
-                .ToList();
+                .ToListAsync();
 
             foreach (var teamdev in dev)
             {
@@ -854,7 +910,7 @@ namespace FormuleCirkelEntity.Controllers
                 team.Reliability = teamdev.Newdev;
             }
             _context.UpdateRange(teams);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("TeamReliabilityDev", new { id = seasonId.SeasonId });
         }
@@ -875,6 +931,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveDriverReliabilityDev([FromBody]IEnumerable<GetDev> dev)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var seasonId = await _context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefaultAsync();
@@ -926,6 +987,11 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var seasondriver = await _context.SeasonDrivers
                 .SingleOrDefaultAsync(t => t.SeasonDriverId == id);
 
@@ -985,6 +1051,11 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TeamTraits(int id, [Bind("TraitId")] int traitId)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var seasonteam = await _context.SeasonTeams.SingleOrDefaultAsync(st => st.SeasonTeamId == id);
             var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
@@ -1001,6 +1072,11 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Team/Traits/Remove/{teamId}")]
         public async Task<IActionResult> RemoveTeamTrait(int teamId, int traitId)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var team = await _context.SeasonTeams.SingleOrDefaultAsync(st => st.SeasonTeamId == teamId);
             var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 

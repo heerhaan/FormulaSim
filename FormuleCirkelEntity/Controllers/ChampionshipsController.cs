@@ -5,26 +5,34 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using FormuleCirkelEntity.Areas.Identity.Data;
+using FormuleCirkelEntity.Areas.Identity.Authorization;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class ChampionshipsController : Controller
+    public class ChampionshipsController : FormulaController
     {
-        private readonly FormulaContext _context;
-
-        public ChampionshipsController(FormulaContext context)
-        {
-            _context = context;
-        }
+        public ChampionshipsController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager)
+            : base(context, identityContext, authorizationService, userManager)
+        { }
 
         public async Task<IActionResult> Index()
         {
+            ViewBag.userid = await IsUserOwner();
             return View(await _context.Championships.ToListAsync());
         }
 
         [HttpPost]
-        public IActionResult Index([Bind("ChampionshipId")] Championship champ)
+        public async Task<IActionResult> Index([Bind("ChampionshipId")] Championship champ)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             if (champ == null)
             {
                 return NotFound();
@@ -76,6 +84,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("ChampionshipId,ChampionshipName,ActiveChampionship")] Championship championship)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             if (championship is null)
                 throw new NullReferenceException();
 

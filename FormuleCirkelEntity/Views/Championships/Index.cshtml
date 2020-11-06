@@ -6,7 +6,10 @@
 
 <div class="d-inline-block w-75">
     <h1>Racing championships</h1>
-    <a asp-action="Create" class="btn float-left mb-1"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+    @if (ViewBag.userid)
+    {
+        <a asp-action="Create" class="btn float-left mb-1"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+    }
 
     <table class="ctable fullborder fullwidth min-width-index-table">
         <thead class="fullborder">

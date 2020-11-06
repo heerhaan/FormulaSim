@@ -1,8 +1,12 @@
-﻿using FormuleCirkelEntity.DAL;
+﻿using FormuleCirkelEntity.Areas.Identity.Data;
+using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Data;
 using FormuleCirkelEntity.Extensions;
 using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,14 +18,14 @@ namespace FormuleCirkelEntity.Controllers
     public abstract class ViewDataController<T> : FormulaController
         where T : ModelBase, new()
     {
-        protected FormulaContext DataContext { get; }
         protected PagingHelper PagingHelper { get; }
         protected DbSet<T> Data { get; }
 
-        protected ViewDataController(FormulaContext context, PagingHelper pagingHelper)
+        protected ViewDataController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, PagingHelper pagingHelper)
+            : base(context, identityContext, authorizationService, userManager)
         {
-            (DataContext, PagingHelper) = (context, pagingHelper);
-            Data = DataContext.Set<T>();
+            PagingHelper = pagingHelper;
+            Data = _context.Set<T>();
         }
 
         [SortResult, PagedResult]
@@ -44,8 +48,8 @@ namespace FormuleCirkelEntity.Controllers
             newObject.Id = default(int);
             if(!ModelState.IsValid)
                 return View("Modify", newObject);
-            DataContext.Add(newObject);
-            await DataContext.SaveChangesAsync();
+            _context.Add(newObject);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -74,8 +78,8 @@ namespace FormuleCirkelEntity.Controllers
             if(!await Data.AnyAsync(obj => obj.Id == id))
                 return NotFound();
 
-            DataContext.Update(updatedObject);
-            await DataContext.SaveChangesAsync();
+            _context.Update(updatedObject);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -104,11 +108,11 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             if(objectToDelete is IArchivable archivable && archivable.Archived)
-                DataContext.Restore(archivable);
+                _context.Restore(archivable);
             else
-                DataContext.Remove(objectToDelete);
+                _context.Remove(objectToDelete);
 
-            await DataContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

@@ -3,35 +3,44 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FormuleCirkelEntity.Areas.Identity.Authorization;
+using FormuleCirkelEntity.Areas.Identity.Data;
 using FormuleCirkelEntity.Builders;
 using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Data;
 using FormuleCirkelEntity.Helpers;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class RacesController : Controller
+    public class RacesController : FormulaController
     {
-        readonly FormulaContext _context;
         readonly RaceResultGenerator _resultGenerator;
         readonly RaceBuilder _raceBuilder;
         public static readonly Random rng = new Random();
 
-        public RacesController(FormulaContext context, RaceResultGenerator resultGenerator, RaceBuilder raceBuilder)
+        public RacesController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, RaceResultGenerator raceResultGenerator, RaceBuilder raceBuilder)
+            : base(context, identityContext, authorizationService, userManager)
         {
-            _context = context;
-            _resultGenerator = resultGenerator;
+            _resultGenerator = raceResultGenerator;
             _raceBuilder = raceBuilder;
         }
 
         [Route("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var season = await _context.Seasons
                 .AsNoTracking()
                 .Include(s => s.Races)
@@ -50,6 +59,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] int trackId)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var track = await _context.Tracks.SingleOrDefaultAsync(m => m.Id == trackId);
 
             var season = await _context.Seasons
@@ -126,6 +140,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> ModifyRace(RacesModifyRaceModel raceModel)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             if (raceModel == null)
                 return NotFound();
 
@@ -188,6 +207,8 @@ namespace FormuleCirkelEntity.Controllers
                 CountDrivers = drivers.Count
             };
 
+            ViewBag.userid = await IsUserOwner();
+
             return View(viewmodel);
         }
         
@@ -234,6 +255,11 @@ namespace FormuleCirkelEntity.Controllers
 
             if (!race.DriverResults.Any())
             {
+                // Checks if the current logged-in user is the sim owner
+                var isOwner = await IsUserOwner();
+                if (!isOwner)
+                    return Forbid();
+
                 race = _raceBuilder
                     .Use(race)
                     .AddAllDrivers(race.Track)
@@ -274,6 +300,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("Season/{id}/[Controller]/{raceId}/Advance")]
         public async Task<IActionResult> AdvanceStint(int raceId)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var race = await _context.Races
                 .Include(r => r.Season)
                 .Include(r => r.Track)
@@ -361,6 +392,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> FinishRace(int seasonId, int raceId)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var race = await _context.Races
                 .Include(r => r.Season)
                 .Include(r => r.DriverResults)
@@ -415,6 +451,11 @@ namespace FormuleCirkelEntity.Controllers
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public async Task<IActionResult> UpdateQualifying(int id, int raceId, string source, bool secondRun)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             if (string.IsNullOrWhiteSpace(source))
                 return BadRequest();
 
@@ -521,9 +562,14 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public IActionResult Return(int? id, int? raceId)
+        public async Task<IActionResult> Return(int? id, int? raceId)
         {
-            if(id == null || raceId == null)
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
+            if (id == null || raceId == null)
             {
                 return BadRequest();
             }
@@ -646,6 +692,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("Season/{id}/[Controller]/{raceId}/round")]
         public async Task<IActionResult> MoveRound(int id, int raceId, [FromQuery] int direction)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return BadRequest("Only the sim owner is allowed to move rounds.");
+
             if (direction != -1 && direction != 1)
                 return BadRequest("Direction may only be 1 or -1.");
 

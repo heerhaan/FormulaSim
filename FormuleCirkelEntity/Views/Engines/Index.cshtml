@@ -13,7 +13,10 @@
     <h1>Engines</h1>
 
     <div class="flex-row justify-content-between index-btns">
-        <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+        @if (ViewBag.userid)
+        {
+            <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+        }
         <a asp-action="ArchivedEngines" class="btn"><i class="fas fa-archive"></i><span class="ml-1">Archive</span></a>
     </div>
 
@@ -32,16 +35,19 @@
                 <tr>
                     <td>@item.Name</td>
                     <td>@item.Power</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">
-                            <i class="fas fa-wrench fa-2x"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id">
-                            <i class="fas fa-trash-alt fa-2x"></i>
-                        </a>
-                    </td>
+                    @if (ViewBag.userid)
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">
+                                <i class="fas fa-wrench fa-2x"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fas fa-trash-alt fa-2x"></i>
+                            </a>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

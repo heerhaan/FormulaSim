@@ -1,8 +1,12 @@
-﻿using FormuleCirkelEntity.DAL;
+﻿using FormuleCirkelEntity.Areas.Identity.Data;
+using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Data;
 using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -14,14 +18,16 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class TracksController : ViewDataController<Track>
     {
-        public TracksController(FormulaContext context, PagingHelper pagingHelper) : base(context, pagingHelper)
+        public TracksController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, PagingHelper pagingHelper)
+            : base(context, identityContext, authorizationService, userManager, pagingHelper)
         {
         }
 
         [SortResult(nameof(Track.Location)), PagedResult]
-        public override Task<IActionResult> Index()
+        public override async Task<IActionResult> Index()
         {
-            return base.Index();
+            ViewBag.userid = await IsUserOwner();
+            return base.Index().Result;
         }
         
         [Route("Traits/{id}")]
@@ -30,7 +36,7 @@ namespace FormuleCirkelEntity.Controllers
             var track = await Data.IgnoreQueryFilters()
                 .SingleOrDefaultAsync(t => t.Id == id);
 
-            var traits = DataContext.Traits
+            var traits = _context.Traits
                 .AsEnumerable()
                 .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Any(res => res.Value.TraitId == tr.TraitId))
                 .OrderBy(t => t.Name)
@@ -52,15 +58,20 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TrackTraits(int id, [Bind("TraitId")] int traitId)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var track = await Data.SingleOrDefaultAsync(t => t.Id == id);
-            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
+            var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
             if (track == null || trait == null)
                 return NotFound();
 
             track.Traits.Add(track.Traits.Count, trait);
-            DataContext.Update(track);
-            await DataContext.SaveChangesAsync();
+            _context.Update(track);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(TrackTraits), new { id });
         }
@@ -69,15 +80,15 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RemoveTrait(int trackId, int traitId)
         {
             var track = await Data.SingleOrDefaultAsync(t => t.Id == trackId);
-            var trait = await DataContext.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
+            var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
             if (track == null || trait == null)
                 return NotFound();
 
             var removetrait = track.Traits.First(item => item.Value.TraitId == trait.TraitId);
             track.Traits.Remove(removetrait);
-            DataContext.Update(track);
-            await DataContext.SaveChangesAsync();
+            _context.Update(track);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(TrackTraits), new { id = trackId });
         }

@@ -42,11 +42,14 @@
                             <i class="fas fa-id-card fa-2x"></i>
                         </a>
                     </td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id">
-                            <i class="fas fa-undo fa-2x"></i>
-                        </a>
-                    </td>
+                    @if ((await AuthorizationService.AuthorizeAsync(User, User, UserOperations.ManageSim)).Succeeded)
+                    {
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fas fa-undo fa-2x"></i>
+                            </a>
+                        </td>
+                    } else { <td></td> }
                 </tr>
             }
         </tbody>
