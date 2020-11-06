@@ -441,6 +441,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("[Controller]/{id}/Teams/Add/{globalTeamId}")]
         public async Task<IActionResult> AddTeam(int id, int? globalTeamId, [Bind] SeasonTeam seasonTeam)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
                 .Include(s => s.Teams)
@@ -623,6 +628,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("[Controller]/{id}/Drivers/Add/{globalDriverId}")]
         public async Task<IActionResult> AddDriver(int id, int? globalDriverId, [Bind] SeasonDriver seasonDriver)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
                 .Include(s => s.Drivers)

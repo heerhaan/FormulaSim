@@ -8,14 +8,13 @@
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
     List<int> ownedteams = ViewBag.ownedteams;
-    var isOwner = ViewBag.userid;
 }
 
 <div class="d-inline-block">
     <h1>Teams</h1>
 
     <div class="flex-row justify-content-between index-btns">
-        @if (isOwner.Succeeded)
+        @if (ViewBag.userid)
         {
             <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
         }
@@ -38,7 +37,7 @@
                 <tr>
                     <td class="text-left"><span class="flag flag-@(item.Country) flag-margin ml-cel"></span>@item.Abbreviation</td>
                     <td><a asp-action="Stats" asp-route-id="@item.Id"><i class="fas fa-signal fa-2x"></i></a></td>
-                    @if (ownedteams.Contains(item.Id) || isOwner.Succeeded)
+                    @if (ownedteams.Contains(item.Id) || ViewBag.userid)
                     {
                         <td><a asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-wrench fa-2x"></i></a></td>
                         <td><a asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt fa-2x"></i></a></td>

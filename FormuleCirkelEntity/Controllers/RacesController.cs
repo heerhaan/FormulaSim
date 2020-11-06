@@ -178,8 +178,8 @@ namespace FormuleCirkelEntity.Controllers
                 .SingleOrDefaultAsync(s => s.SeasonId == race.SeasonId);
 
             var drivers = await _context.DriverResults
-                .IgnoreQueryFilters()
                 .Where(dr => dr.RaceId == raceId)
+                .IgnoreQueryFilters()
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
                 .Include(dr => dr.SeasonDriver.SeasonTeam)
@@ -281,6 +281,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var drivers = await _context.DriverResults
                 .Where(dr => dr.RaceId == raceId)
+                .IgnoreQueryFilters()
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
                 .Include(dr => dr.SeasonDriver.SeasonTeam)

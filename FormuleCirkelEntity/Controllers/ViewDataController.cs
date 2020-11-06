@@ -45,6 +45,11 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Create(T newObject)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             newObject.Id = default(int);
             if(!ModelState.IsValid)
                 return View("Modify", newObject);
@@ -70,6 +75,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int id, T updatedObject)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             updatedObject.Id = id;
 
             if(!ModelState.IsValid)
@@ -103,6 +113,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            // Checks if the current logged-in user is the sim owner
+            var isOwner = await IsUserOwner();
+            if (!isOwner)
+                return Forbid();
+
             var objectToDelete = await Data.IgnoreQueryFilters().FindAsync(id);
             if(objectToDelete == null)
                 return NotFound();
