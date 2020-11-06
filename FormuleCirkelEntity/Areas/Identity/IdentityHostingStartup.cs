@@ -19,8 +19,7 @@ namespace FormuleCirkelEntity.Areas.Identity
         {
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<IdentityContext>(options =>
-                    options.UseSqlServer(
-                        context.Configuration.GetConnectionString("IdentityContextConnection")));
+                    options.UseSqlServer(context.Configuration["DatabaseSettings:ConnectionString"]));
 
                 services.AddDefaultIdentity<SimUser>(options => options.SignIn.RequireConfirmedAccount = false)
                     .AddRoles<IdentityRole>()

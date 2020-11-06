@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/formulasimserver/databases/FormulaSim",
+      "type": "mssql.azure",
+      "connectionId": "DatabaseSettings/ConnectionString",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}
