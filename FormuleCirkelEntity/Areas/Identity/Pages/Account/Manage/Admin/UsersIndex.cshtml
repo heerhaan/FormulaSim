@@ -1,0 +1,36 @@
+﻿@page
+@model UsersIndexModel
+@{
+    ViewData["Title"] = "Users index";
+    ViewData["ActivePage"] = ManageNavPages.UsersIndex;
+}
+
+<table class="ctable fullborder fullwidth min-width-index-table">
+    <thead>
+        <tr>
+            <td>Username</td>
+            <td>Full name</td>
+            <td>E-mail</td>
+            <td>Owns drivers</td>
+            <td>Owns teams</td>
+            <td>Modify</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => user.UserName)</td>
+                <td>@Html.DisplayFor(modelItem => user.FullName)</td>
+                <td>@Html.DisplayFor(modelItem => user.Email)</td>
+                <td>@Html.DisplayFor(modelItem => user.Drivers.Count)</td>
+                <td>@Html.DisplayFor(modelItem => user.Teams.Count)</td>
+                <td>
+                    <a asp-page="./UserEdit" asp-route-id="@user.Id">
+                        <i class="fas fa-wrench fa-2x"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
