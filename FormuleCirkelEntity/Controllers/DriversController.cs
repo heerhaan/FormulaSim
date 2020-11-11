@@ -198,9 +198,10 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Archived")]
-        public IActionResult ArchivedDrivers()
+        public async Task<IActionResult> ArchivedDrivers()
         {
             var drivers = Data.IgnoreQueryFilters().Where(d => d.Archived).OrderBy(d => d.Name).ToList();
+            ViewBag.userid = await IsUserOwner();
             return View(drivers);
         }
 

@@ -42,7 +42,39 @@ namespace FormuleCirkelEntity.Controllers
             else
                 ViewBag.championship = championship.ChampionshipName;
 
+            var champs = await _context.Championships
+                .ToListAsync();
+
+            ViewBag.champs = champs;
+
             return View(seasons);
+        }
+
+        [ActionName("ChampionshipSelect")]
+        public async Task<IActionResult> Index(int championshipId)
+        {
+            var seasons = await _context.Seasons
+                .IgnoreQueryFilters()
+                .Where(s => s.ChampionshipId == championshipId)
+                .Include(s => s.Drivers)
+                    .ThenInclude(dr => dr.Driver)
+                .Include(s => s.Teams)
+                    .ThenInclude(s => s.Team)
+                .OrderByDescending(s => s.SeasonNumber)
+                .ToListAsync();
+
+            var championship = _context.Championships.FirstOrDefault(s => s.ChampionshipId == championshipId);
+            if (championship is null)
+                ViewBag.championship = "NaN";
+            else
+                ViewBag.championship = championship.ChampionshipName;
+
+            var champs = await _context.Championships
+                .ToListAsync();
+
+            ViewBag.champs = champs;
+
+            return View("Index", seasons);
         }
 
         public async Task<IActionResult> Create()
