@@ -12,8 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using FormuleCirkelEntity.Validation;
 using FormuleCirkelEntity.Services;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace FormuleCirkelEntity
 {
@@ -47,13 +45,10 @@ namespace FormuleCirkelEntity
 
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
 
-            services.AddControllers(config => 
-                {
-                    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                    config.Filters.Add(new AuthorizeFilter(policy));
-                })
-                .AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSingleton(new Random());
+
+            // Custom services related to [fill in]
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();
             services.AddTransient<SeasonSettingsValidator>();

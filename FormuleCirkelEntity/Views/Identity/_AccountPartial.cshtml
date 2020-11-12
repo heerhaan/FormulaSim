@@ -1,15 +1,4 @@
-﻿@{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
-    {
-        Layout = (string)parentLayout;
-    }
-    else
-    {
-        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
-    }
-}
-
-<div class="d-inline-block">
+﻿<div class="d-inline-block">
     <h2>Manage your account</h2>
 
     <div>
@@ -25,7 +14,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    @RenderSection("Scripts", required: false)
-}

@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using FormuleCirkelEntity.Areas.Identity.Data;
 using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using FormuleCirkelEntity.Areas.Identity.Authorization;
+using FormuleCirkelEntity.Models;
 
 namespace FormuleCirkelEntity.Controllers
 {

@@ -10,11 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using FormuleCirkelEntity.Data;
 using Microsoft.AspNetCore.Identity;
-using FormuleCirkelEntity.Areas.Identity.Data;
-using System.Security.Claims;
-using FormuleCirkelEntity.Areas.Identity.Authorization;
 
 namespace FormuleCirkelEntity.Controllers
 {

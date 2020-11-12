@@ -1,17 +1,16 @@
 ﻿using System;
 using FormuleCirkelEntity.Areas.Identity.Authorization;
-using FormuleCirkelEntity.Areas.Identity.Data;
-using FormuleCirkelEntity.Data;
+using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-[assembly: HostingStartup(typeof(FormuleCirkelEntity.Areas.Identity.IdentityHostingStartup))]
-namespace FormuleCirkelEntity.Areas.Identity
+[assembly: HostingStartup(typeof(FormuleCirkelEntity.IdentityHostingStartup))]
+namespace FormuleCirkelEntity
 {
     public class IdentityHostingStartup : IHostingStartup
     {
@@ -28,9 +27,7 @@ namespace FormuleCirkelEntity.Areas.Identity
                 services.Configure<IdentityOptions>(options =>
                 {
                     // Password settings
-                    options.Password.RequireDigit = true;
-                    options.Password.RequireLowercase = true;
-                    options.Password.RequiredLength = 6;
+                    options.Password.RequiredLength = 4;
 
                     // Lockout settings
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
@@ -50,7 +47,7 @@ namespace FormuleCirkelEntity.Areas.Identity
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 
                     options.LoginPath = "/Identity/Account/Login";
-                    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                    options.AccessDeniedPath = "/Views/Shared/AccessDenied";
                     options.SlidingExpiration = true;
                 });
 

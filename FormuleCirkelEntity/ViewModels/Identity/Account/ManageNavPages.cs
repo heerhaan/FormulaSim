@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace FormuleCirkelEntity.Areas.Identity.Pages.Account.Manage
+namespace FormuleCirkelEntity.ViewModels
 {
     public static class ManageNavPages
     {

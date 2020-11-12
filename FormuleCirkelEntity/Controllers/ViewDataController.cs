@@ -1,6 +1,4 @@
-﻿using FormuleCirkelEntity.Areas.Identity.Data;
-using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Data;
+﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Extensions;
 using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
@@ -10,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers

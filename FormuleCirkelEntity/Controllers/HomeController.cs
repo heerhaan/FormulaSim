@@ -1,6 +1,4 @@
-﻿using FormuleCirkelEntity.Areas.Identity.Data;
-using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Data;
+﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Authorization;

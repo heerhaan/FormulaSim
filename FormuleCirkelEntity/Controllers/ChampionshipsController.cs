@@ -5,11 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
-using FormuleCirkelEntity.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using FormuleCirkelEntity.Areas.Identity.Data;
-using FormuleCirkelEntity.Areas.Identity.Authorization;
 
 namespace FormuleCirkelEntity.Controllers
 {

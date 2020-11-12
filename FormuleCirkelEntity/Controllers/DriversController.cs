@@ -1,7 +1,4 @@
-﻿using FormuleCirkelEntity.Areas.Identity.Authorization;
-using FormuleCirkelEntity.Areas.Identity.Data;
-using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Data;
+﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Extensions;
 using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;

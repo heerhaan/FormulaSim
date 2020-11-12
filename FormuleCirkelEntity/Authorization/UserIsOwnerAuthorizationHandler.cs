@@ -1,4 +1,4 @@
-﻿using FormuleCirkelEntity.Areas.Identity.Data;
+﻿using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;

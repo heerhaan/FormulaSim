@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FormuleCirkelEntity.Areas.Identity.Authorization;
-using FormuleCirkelEntity.Areas.Identity.Data;
+using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace FormuleCirkelEntity.Data
+namespace FormuleCirkelEntity.DAL
 {
     public class IdentityContext : IdentityDbContext<SimUser>
     {
