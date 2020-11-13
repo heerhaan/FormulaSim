@@ -7,13 +7,14 @@
     var pageNumber = (int)ViewData["pageNumber"];
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
     <h1>Engines</h1>
 
     <div class="flex-row justify-content-between index-btns">
-        @if (ViewBag.userid)
+        @if (isAdmin)
         {
             <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
         }
@@ -35,7 +36,7 @@
                 <tr>
                     <td>@item.Name</td>
                     <td>@item.Power</td>
-                    @if (ViewBag.userid)
+                    @if (isAdmin)
                     {
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id">
@@ -47,7 +48,7 @@
                                 <i class="fas fa-trash-alt fa-2x"></i>
                             </a>
                         </td>
-                    }
+                    } else { <td></td><td></td>}
                 </tr>
             }
         </tbody>

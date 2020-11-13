@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.Builders;
 using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Helpers;
+using FormuleCirkelEntity.Utility;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
 using FormuleCirkelEntity.ViewModels;
@@ -19,25 +19,25 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class RacesController : FormulaController
     {
-        readonly RaceResultGenerator _resultGenerator;
-        readonly RaceBuilder _raceBuilder;
-        public static readonly Random rng = new Random();
+        private readonly RaceResultGenerator _resultGenerator;
+        private readonly RaceBuilder _raceBuilder;
+        private static readonly Random rng = new Random();
 
-        public RacesController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, RaceResultGenerator raceResultGenerator, RaceBuilder raceBuilder)
-            : base(context, identityContext, authorizationService, userManager)
+        public RacesController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            RaceResultGenerator raceResultGenerator, 
+            RaceBuilder raceBuilder)
+            : base(context, identityContext, userManager)
         {
             _resultGenerator = raceResultGenerator;
             _raceBuilder = raceBuilder;
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             var season = await _context.Seasons
                 .AsNoTracking()
                 .Include(s => s.Races)
@@ -53,14 +53,10 @@ namespace FormuleCirkelEntity.Controllers
             return View(unusedTracks);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] int trackId)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             var track = await _context.Tracks.SingleOrDefaultAsync(m => m.Id == trackId);
 
             var season = await _context.Seasons
@@ -86,7 +82,7 @@ namespace FormuleCirkelEntity.Controllers
                 .AddModifiedStints(stintlist)
                 .GetResultAndRefresh();
 
-                race.Weather = Utility.RandomWeather();
+                race.Weather = Helpers.RandomWeather();
                 season.Races.Add(race);
                 await _context.SaveChangesAsync();
             }
@@ -97,7 +93,7 @@ namespace FormuleCirkelEntity.Controllers
                 .AddDefaultStints()
                 .GetResultAndRefresh();
 
-                race.Weather = Utility.RandomWeather();
+                race.Weather = Helpers.RandomWeather();
                 season.Races.Add(race);
                 await _context.SaveChangesAsync();
             }
@@ -105,6 +101,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(AddTracks), new { id });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult ModifyRace(int id, int trackId)
         {
             var model = new RacesModifyRaceModel
@@ -134,14 +131,10 @@ namespace FormuleCirkelEntity.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> ModifyRace(RacesModifyRaceModel raceModel)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             if (raceModel == null)
                 return NotFound();
 
@@ -159,7 +152,7 @@ namespace FormuleCirkelEntity.Controllers
                 .AddModifiedStints(stints)
                 .GetResultAndRefresh();
 
-            race.Weather = Utility.RandomWeather();
+            race.Weather = Helpers.RandomWeather();
             season.Races.Add(race);
             await _context.SaveChangesAsync();
             return RedirectToAction("AddTracks", new { id = raceModel.SeasonId });
@@ -189,7 +182,7 @@ namespace FormuleCirkelEntity.Controllers
             foreach (var driver in drivers)
             {
                 int modifiers = (driver.DriverRacePace + driver.ChassisRacePace + driver.EngineRacePace);
-                power.Add(Utility.GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
+                power.Add(Helpers.GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
             }
 
             RacesRaceModel viewmodel = new RacesRaceModel
@@ -203,8 +196,6 @@ namespace FormuleCirkelEntity.Controllers
                 MaxPos = currentSeason.PointsPerPosition.Keys.Max(),
                 CountDrivers = drivers.Count
             };
-
-            ViewBag.userid = await IsUserOwner();
 
             return View(viewmodel);
         }
@@ -232,7 +223,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(st => st.Team)
                 .Include(st => st.Engine)
                 .AsEnumerable()
-                .OrderByDescending(st => (st.Chassis + st.Engine.Power + Utility.GetChassisBonus(Utility.CreateTeamSpecDictionary(st), race.Track.Specification.ToString())))
+                .OrderByDescending(st => (st.Chassis + st.Engine.Power + Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(st), race.Track.Specification.ToString())))
                 .Take(3)
                 .ToList();
 
@@ -252,20 +243,24 @@ namespace FormuleCirkelEntity.Controllers
 
             if (!race.DriverResults.Any())
             {
-                // Checks if the current logged-in user is the sim owner
-                var isOwner = await IsUserOwner();
-                if (!isOwner)
-                    return Forbid();
-
-                race = _raceBuilder
+                // Checks if the user activating the race is the admin
+                SimUser user = await _userManager.GetUserAsync(User);
+                var result = await _userManager.IsInRoleAsync(user, Constants.RoleAdmin);
+                if (result)
+                {
+                    race = _raceBuilder
                     .Use(race)
                     .AddAllDrivers(race.Track)
                     .GetResult();
 
-                _context.DriverResults.AddRange(race.DriverResults);
-                await _context.SaveChangesAsync();
+                    _context.DriverResults.AddRange(race.DriverResults);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Forbid();
+                }
             }
-            
             return RedirectToAction("RaceWeekend", new { id, raceId });
         }
 
@@ -295,14 +290,10 @@ namespace FormuleCirkelEntity.Controllers
             return View(viewmodel);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Season/{id}/[Controller]/{raceId}/Advance")]
         public async Task<IActionResult> AdvanceStint(int raceId)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             var race = await _context.Races
                 .Include(r => r.Season)
                 .Include(r => r.Track)
@@ -334,11 +325,11 @@ namespace FormuleCirkelEntity.Controllers
                     if (dnfvalue == 25)
                     {
                         result.Status = Status.DSQ;
-                        result.DSQCause = Utility.RandomDSQCause(stintResult.HasValue);
+                        result.DSQCause = Helpers.RandomDSQCause(stintResult.HasValue);
                     } else
                     {
                         result.Status = Status.DNF;
-                        result.DNFCause = Utility.RandomDNFCause(stintResult.HasValue);
+                        result.DNFCause = Helpers.RandomDNFCause(stintResult.HasValue);
                     }
                     if (stintResult.HasValue)
                         stintResult = null;
@@ -387,14 +378,10 @@ namespace FormuleCirkelEntity.Controllers
             return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> FinishRace(int seasonId, int raceId)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             var race = await _context.Races
                 .Include(r => r.Season)
                 .Include(r => r.DriverResults)
@@ -445,15 +432,11 @@ namespace FormuleCirkelEntity.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying/Update")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public async Task<IActionResult> UpdateQualifying(int id, int raceId, string source, bool secondRun)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             if (string.IsNullOrWhiteSpace(source))
                 return BadRequest();
 
@@ -531,7 +514,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        static IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers, int raceId)
+        private static IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers, int raceId)
         {
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
@@ -550,7 +533,7 @@ namespace FormuleCirkelEntity.Controllers
             return result;
         }
 
-        static int GetQualifyingDriverLimit(string qualifyingStage, Season season)
+        private static int GetQualifyingDriverLimit(string qualifyingStage, Season season)
         {
             if (qualifyingStage == "Q2")
                 return season.QualificationRemainingDriversQ2;
@@ -559,14 +542,10 @@ namespace FormuleCirkelEntity.Controllers
             return season.Drivers.Count;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Return(int? id, int? raceId)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             if (id == null || raceId == null)
             {
                 return BadRequest();
@@ -687,14 +666,10 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction("RaceWeekend", new { id, raceId });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Season/{id}/[Controller]/{raceId}/round")]
         public async Task<IActionResult> MoveRound(int id, int raceId, [FromQuery] int direction)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return BadRequest("Only the sim owner is allowed to move rounds.");
-
             if (direction != -1 && direction != 1)
                 return BadRequest("Direction may only be 1 or -1.");
 

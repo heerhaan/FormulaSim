@@ -15,11 +15,12 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class HomeController : FormulaController
     {
-        public HomeController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager)
-            : base(context, identityContext, authorizationService, userManager)
+        public HomeController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager)
+            : base(context, identityContext, userManager)
         { }
 
-        [AllowAnonymous]
         public IActionResult Index(string message = null)
         {
             bool championship = false;
@@ -376,11 +377,5 @@ namespace FormuleCirkelEntity.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
-
-    public class AverageFinish
-    {
-        public SeasonDriver Driver { get; set; }
-        public double Averagepos { get; set; }
     }
 }

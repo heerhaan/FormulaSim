@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.DAL;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using FormuleCirkelEntity.ViewModels;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Utility;
 using Microsoft.Extensions.Logging;
-using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace FormuleCirkelEntity.Controllers
@@ -25,11 +23,10 @@ namespace FormuleCirkelEntity.Controllers
 
         public AccountsController(FormulaContext context, 
             IdentityContext identityContext, 
-            IAuthorizationService authorizationService, 
             UserManager<SimUser> userManager,
             SignInManager<SimUser> signInManager,
             ILogger<AccountsController> logger)
-            : base(context, identityContext, authorizationService, userManager)
+            : base(context, identityContext, userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -100,7 +97,7 @@ namespace FormuleCirkelEntity.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
+                    result = await _userManager.AddToRoleAsync(user, Constants.RoleGuest);
                     await _signInManager.SignInAsync(user, isPersistent: true);
                     return RedirectToAction("Index", "Home", new { message = $"Registration succeeded, welcome to the sim {registerModel.Username}" });
                 }
@@ -235,6 +232,11 @@ namespace FormuleCirkelEntity.Controllers
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
             return RedirectToAction("Index", new { statusmessage = "Your password has been changed." });
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

@@ -16,15 +16,17 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class TracksController : ViewDataController<Track>
     {
-        public TracksController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, PagingHelper pagingHelper)
-            : base(context, identityContext, authorizationService, userManager, pagingHelper)
+        public TracksController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            PagingHelper pagingHelper)
+            : base(context, identityContext, userManager, pagingHelper)
         {
         }
 
         [SortResult(nameof(Track.Location)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            ViewBag.userid = await IsUserOwner();
             return base.Index().Result;
         }
         
@@ -52,15 +54,11 @@ namespace FormuleCirkelEntity.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Traits/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TrackTraits(int id, [Bind("TraitId")] int traitId)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             var track = await Data.SingleOrDefaultAsync(t => t.Id == id);
             var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
@@ -74,6 +72,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(TrackTraits), new { id });
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Traits/Remove/{trackId}")]
         public async Task<IActionResult> RemoveTrait(int trackId, int traitId)
         {

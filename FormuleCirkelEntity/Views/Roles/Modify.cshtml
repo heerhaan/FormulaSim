@@ -1,0 +1,59 @@
+﻿@model RolesEditModel
+
+<div class="d-inline-block">
+    <h1>Update Role</h1>
+    <a asp-action="Index" class="btn">Back</a>
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <form method="post">
+        <input type="hidden" name="roleName" value="@Model.Role.Name" />
+        <input type="hidden" name="roleId" value="@Model.Role.Id" />
+
+        <h2 class="p-1">Add To @Model.Role.Name</h2>
+        <table class="ctable fullborder fullwidth min-width-index-table">
+            @if (Model.NonMembers.Count() == 0)
+            {
+                <tr><td colspan="2">All Users Are Members</td></tr>
+            }
+            else
+            {
+                @foreach (SimUser user in Model.NonMembers)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>
+                            <input type="checkbox" name="AddIds" value="@user.Id">
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+
+        <h2 class="p-1">Remove From @Model.Role.Name</h2>
+        <table class="ctable fullborder fullwidth min-width-index-table">
+            @if (Model.Members.Count() == 0)
+            {
+                <tr><td colspan="2">No Users Are Members</td></tr>
+            }
+            else
+            {
+                @foreach (SimUser user in Model.Members)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>
+                            <input type="checkbox" name="DeleteIds" value="@user.Id">
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+        <button type="submit" class="btn">Save</button>
+    </form>
+</div>
+
+<style>
+    input[type=checkbox] {
+        transform: scale(2);
+    }
+</style>

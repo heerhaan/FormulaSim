@@ -10,10 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FormuleCirkelEntity.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : FormulaController
     {
-        public AdminController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager)
-            : base(context, identityContext, authorizationService, userManager)
+        public AdminController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager)
+            : base(context, identityContext, userManager)
         { }
 
         public IActionResult Index()

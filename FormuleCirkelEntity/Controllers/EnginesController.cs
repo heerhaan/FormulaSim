@@ -2,7 +2,6 @@
 using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +14,16 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class EnginesController : ViewDataController<Engine>
     {
-        public EnginesController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, PagingHelper pagingHelper)
-            : base(context, identityContext, authorizationService, userManager, pagingHelper)
+        public EnginesController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            PagingHelper pagingHelper)
+            : base(context, identityContext, userManager, pagingHelper)
         { }
 
         [SortResult(nameof(Engine.Name)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            ViewBag.userid = await IsUserOwner();
             return base.Index().Result;
         }
 

@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Season detail";
-    bool isOwner = ViewBag.userid;
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block w-75">
@@ -12,7 +12,7 @@
         @if (Model.Season.State == SeasonState.Draft)
         {
             <div class="btn-group">
-                @if (isOwner)
+                @if (isAdmin)
                 {
                     <a asp-action="Start" asp-route-id="@Model.Season.SeasonId" class="btn">Start season!</a>
                     <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.Season.SeasonId" class="btn">Add race</a>
@@ -30,7 +30,7 @@
         {
             <div class="btn-group">
                 <a asp-action="PenaltyList" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-wrench"></i> Parts list</a>
-                @if (isOwner)
+                @if (isAdmin)
                 {
                     <button class="btn" onclick="randomDriver()"><i class="fas fa-dice"></i> Driver trait</button>
                     <button class="btn" onclick="randomTeam()"><i class="fas fa-dice"></i> Team trait</button>
@@ -58,7 +58,7 @@
                     <th>Skill</th>
                     <th>Reliability</th>
                     <th>Tire</th>
-                @if (Model.Season.State == SeasonState.Progress && isOwner || Model.Season.State == SeasonState.Draft && isOwner)
+                @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
                 {
                     <th>Edit</th>
                     <th>Traits</th>
@@ -85,7 +85,7 @@
                         <td>@driver.Skill</td>
                         <td>@driver.Reliability</td>
                         <td><span class="badge tire font-size-default">@(driver.Tires.ToString()[0])</span></td>
-                        @if (Model.Season.State == SeasonState.Progress && isOwner || Model.Season.State == SeasonState.Draft && isOwner)
+                        @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
                         {
                             <td>
                                 <a asp-action="UpdateDriver" asp-route-id="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
@@ -116,7 +116,7 @@
                 }
             </tbody>
         </table>
-        @if (Model.Season.State == SeasonState.Progress && isOwner)
+        @if (Model.Season.State == SeasonState.Progress && isAdmin)
         {
             <div class="flex-row">
                 <a asp-action="DriverDev" asp-route-id="@Model.Season.SeasonId" class="btn col-6">Driver development</a>
@@ -135,7 +135,7 @@
                     <th data-field="round">Round</th>
                     <th data-field="specification">Spec</th>
                     <th>Race</th>
-                    @if (Model.Season.State == SeasonState.Draft && isOwner)
+                    @if (Model.Season.State == SeasonState.Draft && isAdmin)
                     {
                         <th></th>
                         <th></th>
@@ -157,7 +157,7 @@
                             <i class="fas @(race.RaceState == RaceState.Finished ? "fa-search" : "fa-flag-checkered") fa-2x"></i>
                         </a>
                     </td>
-                    @if (Model.Season.State == SeasonState.Draft && isOwner)
+                    @if (Model.Season.State == SeasonState.Draft && isAdmin)
                     {
                         <td>
                             <a class="cursor-pointer" onclick="moveRound(@Model.Season.SeasonId, @race.RaceId, -1)"><i class="fas fa-chevron-up fa"></i></a>
@@ -187,7 +187,7 @@
                     <th>Reliability</th>
                     <th class="tcc-chassis"><span>Engine</span></th>
                     <th>Power</th>
-                    @if (Model.Season.State == SeasonState.Progress && isOwner || Model.Season.State == SeasonState.Draft && isOwner)
+                    @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
                     {
                         <th>Edit</th>
                         <th>Trait</th>
@@ -209,7 +209,7 @@
                         <td>@team.Reliability</td>
                         <td>@team.Engine.Name</td>
                         <td>@team.Engine.Power</td>
-                        @if (Model.Season.State == SeasonState.Progress && isOwner || Model.Season.State == SeasonState.Draft && isOwner)
+                        @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
                         {
                             <td>
                                 <a asp-action="UpdateTeam" asp-route-id="@Model.Season.SeasonId" asp-route-teamId="@team.SeasonTeamId">
@@ -226,7 +226,7 @@
                 }
             </tbody>
         </table>
-        @if (Model.Season.State == SeasonState.Progress && isOwner)
+        @if (Model.Season.State == SeasonState.Progress && isAdmin)
         {
             <div class="flex-row">
                 <a asp-action="TeamDev" asp-route-id="@Model.Season.SeasonId" class="btn col-4">Chassis development</a>

@@ -8,13 +8,14 @@
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
     List<int> ownedteams = ViewBag.ownedteams;
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
     <h1>Teams</h1>
 
     <div class="flex-row justify-content-between index-btns">
-        @if (ViewBag.userid)
+        @if (isAdmin)
         {
             <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
         }
@@ -37,7 +38,7 @@
                 <tr>
                     <td class="text-left"><span class="flag flag-@(item.Country) flag-margin ml-cel"></span>@item.Abbreviation</td>
                     <td><a asp-action="Stats" asp-route-id="@item.Id"><i class="fas fa-signal fa-2x"></i></a></td>
-                    @if (ownedteams.Contains(item.Id) || ViewBag.userid)
+                    @if (ownedteams.Contains(item.Id) || isAdmin)
                     {
                         <td><a asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-wrench fa-2x"></i></a></td>
                         <td><a asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt fa-2x"></i></a></td>

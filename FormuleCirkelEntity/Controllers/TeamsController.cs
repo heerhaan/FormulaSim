@@ -4,7 +4,6 @@ using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,8 +17,11 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class TeamsController : ViewDataController<Team>
     {
-        public TeamsController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, PagingHelper pagingHelper)
-            : base(context, identityContext, authorizationService, userManager, pagingHelper)
+        public TeamsController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            PagingHelper pagingHelper)
+            : base(context, identityContext, userManager, pagingHelper)
         { }
 
         [SortResult(nameof(Team.Abbreviation)), PagedResult]
@@ -27,7 +29,6 @@ namespace FormuleCirkelEntity.Controllers
         {
             SimUser simuser = await _userManager.GetUserAsync(User);
             ViewBag.ownedteams = simuser.Teams;
-            ViewBag.userid = await IsUserOwner();
             return base.Index().Result;
         }
 

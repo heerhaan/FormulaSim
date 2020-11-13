@@ -18,8 +18,11 @@ namespace FormuleCirkelEntity.Controllers
         protected PagingHelper PagingHelper { get; }
         protected DbSet<T> Data { get; }
 
-        protected ViewDataController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, PagingHelper pagingHelper)
-            : base(context, identityContext, authorizationService, userManager)
+        protected ViewDataController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            PagingHelper pagingHelper)
+            : base(context, identityContext, userManager)
         {
             PagingHelper = pagingHelper;
             Data = _context.Set<T>();
@@ -31,6 +34,7 @@ namespace FormuleCirkelEntity.Controllers
             return await AsTask(View(Data));
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Create")]
         public virtual async Task<IActionResult> Create()
         {
@@ -38,15 +42,11 @@ namespace FormuleCirkelEntity.Controllers
             return await AsTask(View("Modify", newObject));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Create(T newObject)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             newObject.Id = default(int);
             if(!ModelState.IsValid)
                 return View("Modify", newObject);
@@ -55,6 +55,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("{id}")]
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int? id)
@@ -67,16 +68,12 @@ namespace FormuleCirkelEntity.Controllers
             return View("Modify", updatingObject);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("{id}")]
         [ValidateAntiForgeryToken]
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int id, T updatedObject)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             updatedObject.Id = id;
 
             if(!ModelState.IsValid)
@@ -90,6 +87,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Delete/{id}")]
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> Delete(int? id)
@@ -105,16 +103,12 @@ namespace FormuleCirkelEntity.Controllers
             return View(item);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Delete/{id}")]
         [ValidateAntiForgeryToken]
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             var objectToDelete = await Data.IgnoreQueryFilters().FindAsync(id);
             if(objectToDelete == null)
                 return NotFound();

@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Archived Drivers";
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
@@ -42,7 +43,7 @@
                             <i class="fas fa-id-card fa-2x"></i>
                         </a>
                     </td>
-                    @if (ViewBag.userid)
+                    @if (isAdmin)
                     {
                         <td>
                             <a asp-action="Delete" asp-route-id="@item.Id">

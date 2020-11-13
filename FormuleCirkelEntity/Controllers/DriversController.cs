@@ -4,7 +4,6 @@ using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +18,11 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class DriversController : ViewDataController<Driver>
     {
-        public DriversController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager, PagingHelper pagingHelper)
-            : base(context, identityContext, authorizationService, userManager, pagingHelper)
+        public DriversController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            PagingHelper pagingHelper)
+            : base(context, identityContext, userManager, pagingHelper)
         {
         }
 
@@ -29,7 +31,6 @@ namespace FormuleCirkelEntity.Controllers
         {
             SimUser simuser = await _userManager.GetUserAsync(User);
             ViewBag.owneddrivers = simuser.Drivers;
-            ViewBag.userid = await IsUserOwner();
             return base.Index().Result;
         }
 
@@ -198,7 +199,6 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> ArchivedDrivers()
         {
             var drivers = Data.IgnoreQueryFilters().Where(d => d.Archived).OrderBy(d => d.Name).ToList();
-            ViewBag.userid = await IsUserOwner();
             return View(drivers);
         }
 

@@ -8,13 +8,14 @@
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
     List<int> owneddrivers = ViewBag.owneddrivers;
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
     <h1>Drivers</h1>
 
     <div class="flex-row justify-content-between index-btns">
-        @if (ViewBag.userid)
+        @if (isAdmin)
         {
             <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
         }
@@ -57,7 +58,7 @@
                             <i class="fas fa-id-card fa-2x"></i>
                         </a>
                     </td>
-                    @if(owneddrivers.Contains(item.Id) || ViewBag.userid)
+                    @if(owneddrivers.Contains(item.Id) || isAdmin)
                     {
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id">

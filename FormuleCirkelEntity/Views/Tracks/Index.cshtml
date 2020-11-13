@@ -7,14 +7,14 @@
     var pageNumber = (int)ViewData["pageNumber"];
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
-    bool isOwner = ViewBag.userid;
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
     <h1>Tracks</h1>
 
     <div class="flex-row justify-content-between index-btns">
-        @if (isOwner)
+        @if (isAdmin)
         {
             <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
         }
@@ -33,7 +33,7 @@
                 <th>
                     Specification
                 </th>
-                @if (isOwner)
+                @if (isAdmin)
                 {
                     <th class="w-10">Edit</th>
                     <th class="w-10">Traits</th>
@@ -54,7 +54,7 @@
                 <td>
                     @item.Specification
                 </td>
-                @if (isOwner)
+                @if (isAdmin)
                 {
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">

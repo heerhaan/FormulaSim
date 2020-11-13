@@ -13,8 +13,10 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class TraitsController : FormulaController
     {
-        public TraitsController(FormulaContext context, IdentityContext identityContext, IAuthorizationService authorizationService, UserManager<SimUser> userManager)
-            : base(context, identityContext, authorizationService, userManager)
+        public TraitsController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager)
+            : base(context, identityContext, userManager)
         { }
 
         public async Task<IActionResult> Index()
@@ -26,7 +28,6 @@ namespace FormuleCirkelEntity.Controllers
                 TeamTraits = traits.Where(t => t.TraitGroup == TraitGroup.Team).OrderBy(t => t.Name),
                 TrackTraits = traits.Where(t => t.TraitGroup == TraitGroup.Track).OrderBy(t => t.Name)
             };
-            ViewBag.userid = await IsUserOwner();
             return View(indexmodel);
         }
 
@@ -45,16 +46,13 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace,Archived")] Trait trait)
@@ -69,13 +67,9 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Modify(int? id)
         {
-            // Checks if the current logged-in user is the sim owner
-            var isOwner = await IsUserOwner();
-            if (!isOwner)
-                return Forbid();
-
             if (id == null)
             {
                 return NotFound();
@@ -90,6 +84,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modify(int id, [Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace")] Trait trait)

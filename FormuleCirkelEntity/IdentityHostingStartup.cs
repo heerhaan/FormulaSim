@@ -1,5 +1,4 @@
 ﻿using System;
-using FormuleCirkelEntity.Areas.Identity.Authorization;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +26,10 @@ namespace FormuleCirkelEntity
                 services.Configure<IdentityOptions>(options =>
                 {
                     // Password settings
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredUniqueChars = 0;
                     options.Password.RequiredLength = 4;
 
                     // Lockout settings
@@ -46,13 +49,10 @@ namespace FormuleCirkelEntity
                     options.Cookie.HttpOnly = true;
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 
-                    options.LoginPath = "/Identity/Accounts/Login";
-                    options.AccessDeniedPath = "/Views/Shared/AccessDenied";
+                    options.LoginPath = "/Accounts/Login";
+                    options.AccessDeniedPath = "/Accounts/AccessDenied";
                     options.SlidingExpiration = true;
                 });
-
-                // Authorization handler
-                services.AddScoped<IAuthorizationHandler, UserIsOwnerAuthorizationHandler>();
             });
         }
     }
