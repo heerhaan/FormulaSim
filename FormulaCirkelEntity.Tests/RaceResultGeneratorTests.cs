@@ -1,6 +1,5 @@
 using FormuleCirkelEntity.Helpers;
 using FormuleCirkelEntity.Models;
-using FormuleCirkelEntity.ResultGenerators;
 using System;
 using System.Collections.Generic;
 using Xunit;

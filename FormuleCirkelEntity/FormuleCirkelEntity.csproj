@@ -56,7 +56,6 @@
   <ItemGroup>
     <Folder Include="ViewModels\Identity\Admin\" />
     <Folder Include="ViewModels\Identity\Role\" />
-    <Folder Include="Views\Identity\Roles\" />
   </ItemGroup>
 
 </Project>

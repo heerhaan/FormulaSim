@@ -35,9 +35,15 @@ namespace FormuleCirkelEntity.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string statusmessage = null)
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+            ViewBag.statusmessage = statusmessage;
+            return View(user);
         }
 
         public async Task<IActionResult> Login()
@@ -189,6 +195,46 @@ namespace FormuleCirkelEntity.Controllers
             }
             return View();
             */
+        }
+
+        public async Task<IActionResult> ChangePassword()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (!changePasswordResult.Succeeded)
+            {
+                foreach (var error in changePasswordResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View();
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            _logger.LogInformation("User changed their password successfully.");
+            return RedirectToAction("Index", new { statusmessage = "Your password has been changed." });
         }
     }
 }

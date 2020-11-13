@@ -20,7 +20,7 @@ namespace FormuleCirkelEntity
                 services.AddDbContext<IdentityContext>(options =>
                     options.UseSqlServer(context.Configuration["DatabaseSettings:ConnectionString"]));
 
-                services.AddDefaultIdentity<SimUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                services.AddDefaultIdentity<SimUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<IdentityContext>();
 
@@ -46,7 +46,7 @@ namespace FormuleCirkelEntity
                     options.Cookie.HttpOnly = true;
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 
-                    options.LoginPath = "/Identity/Account/Login";
+                    options.LoginPath = "/Identity/Accounts/Login";
                     options.AccessDeniedPath = "/Views/Shared/AccessDenied";
                     options.SlidingExpiration = true;
                 });
