@@ -39,7 +39,7 @@ namespace FormuleCirkelEntity
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc(options => { options.EnableEndpointRouting = false; })
+            services.AddMvc()
                 .WithRazorPagesAtContentRoot()
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
 
@@ -70,17 +70,18 @@ namespace FormuleCirkelEntity
             }
             
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

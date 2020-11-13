@@ -1,18 +1,21 @@
-﻿@{
+﻿@model HomeViewModel
+
+@{
     ViewData["Title"] = "Home";
 }
 
 <div class="text-center hero-text">
-
-    @if (ViewBag.championship == false)
+    @if (Model.ChampExists)
     {
         <h1 class="display-4">Welcome to Formula Sim!</h1>
         <h2 class="display-4">Please create a championship before proceeding!</h2>
     }
     else
     {
-        <h1 class="display-4">Welcome to @ViewBag.name</h1>
+        <h1 class="display-4">Welcome to @Model.ChampionshipName</h1>
     }
+    <hr />
+    <h3 class="display-4">@Html.DisplayFor(modelItem => modelItem.Message)</h3>
 </div>
 
 <style>
