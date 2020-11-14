@@ -39,14 +39,14 @@
                         @Html.DisplayFor(modelItem => item.Abbreviation)
                     </td>
                     <td>
-                        <a asp-action="Stats" asp-route-id="@item.Id">
+                        <a class="btn" asp-action="Stats" asp-route-id="@item.Id">
                             <i class="fas fa-id-card fa-2x"></i>
                         </a>
                     </td>
                     @if (isAdmin)
                     {
                         <td>
-                            <a asp-action="Delete" asp-route-id="@item.Id">
+                            <a class="btn" asp-action="Delete" asp-route-id="@item.Id">
                                 <i class="fas fa-undo fa-2x"></i>
                             </a>
                         </td>

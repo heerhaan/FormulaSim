@@ -20,14 +20,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var team in Model.OwnedTeams)
+                @foreach (var team in Model.OwnedTeams.OrderBy(t => t.Abbreviation))
                 {
                     <tr>
-                        <td><span class="flag fa-@team.Country flag-margin ml-cel"></span>
+                        <td><span class="flag flag-@team.Country flag-margin ml-cel"></span>
                             @Html.DisplayFor(modelItem => team.Abbreviation)
                         </td>
                         <td>
-                            <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                            <a class="btn" asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                         <td>
                             <a asp-action="RemoveTeamFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-teamId="@team.Id" class="btn fullwidth">Remove</a>
@@ -55,14 +55,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var team in Model.OtherTeams)
+                @foreach (var team in Model.OtherTeams.OrderBy(t => t.Abbreviation))
                 {
                     <tr>
                         <td class="text-left"><span class="flag flag-@team.Country flag-margin ml-cel"></span>
                             @Html.DisplayFor(modelItem => team.Abbreviation)
                         </td>
                         <td>
-                            <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                            <a class="btn" asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                         <td>
                             <form method="POST">

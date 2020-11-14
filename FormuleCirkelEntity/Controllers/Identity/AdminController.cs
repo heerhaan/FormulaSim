@@ -160,7 +160,7 @@ namespace FormuleCirkelEntity.Controllers
 
             user.Teams.Add(teamId);
             _ = await _userManager.UpdateAsync(user);
-            return RedirectToAction(nameof(AddDriverToUser), new { userId });
+            return RedirectToAction(nameof(AddTeamToUser), new { userId });
         }
 
         public async Task<IActionResult> RemoveTeamFromUser(string userId, int teamId)
@@ -171,7 +171,7 @@ namespace FormuleCirkelEntity.Controllers
 
             user.Teams.Remove(teamId);
             _ = await _userManager.UpdateAsync(user);
-            return RedirectToAction(nameof(AddDriverToUser), new { userId });
+            return RedirectToAction(nameof(AddTeamToUser), new { userId });
         }
 
         private IEnumerable<Team> GetTeamsByUser(SimUser user, bool owns = true)

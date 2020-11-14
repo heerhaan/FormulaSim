@@ -26,14 +26,14 @@
                         <span class="flag flag-@(item.Country) flag-margin ml-cel"></span>@item.Abbreviation
                     </td>
                     <td>
-                        <a asp-action="Stats" asp-route-id="@item.Id">
+                        <a class="btn" asp-action="Stats" asp-route-id="@item.Id">
                             <i class="fas fa-signal fa-2x"></i>
                         </a>
                     </td>
                     @if (isAdmin)
                     {
                         <td>
-                            <a asp-action="Delete" asp-route-id="@item.Id">
+                            <a class="btn" asp-action="Delete" asp-route-id="@item.Id">
                                 <i class="fas fa-undo fa-2x"></i>
                             </a>
                         </td>

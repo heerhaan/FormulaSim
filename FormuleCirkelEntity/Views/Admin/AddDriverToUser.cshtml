@@ -5,7 +5,7 @@
 }
 
 <div class="d-inline-block w-60">
-    <h1>Teams from @Html.DisplayFor(modelItem => modelItem.SimUser.UserName)</h1>
+    <h1>Drivers from @Html.DisplayFor(modelItem => modelItem.SimUser.UserName)</h1>
 
     <div class="col">
         <h3>Owned teams</h3>
@@ -26,7 +26,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var driver in Model.OwnedDrivers)
+            @foreach (var driver in Model.OwnedDrivers.OrderBy(d => d.Name))
             {
                 <tr>
                     <td>
@@ -39,7 +39,7 @@
                         @driver.Abbreviation
                     </td>
                     <td>
-                        <a asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                        <a class="btn" asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
                         <a asp-action="RemoveDriverFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-driverId="@driver.Id" class="btn fullwidth">Remove</a>
@@ -73,7 +73,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var driver in Model.OtherDrivers)
+            @foreach (var driver in Model.OtherDrivers.OrderBy(d => d.Name))
             {
                 <tr>
                     <td>
@@ -86,7 +86,7 @@
                         @driver.Abbreviation
                     </td>
                     <td>
-                        <a asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                        <a class="btn" asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
                         <form method="POST">

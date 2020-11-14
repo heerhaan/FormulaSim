@@ -88,12 +88,12 @@
                         @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
                         {
                             <td>
-                                <a asp-action="UpdateDriver" asp-route-id="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
+                                <a class="btn" asp-action="UpdateDriver" asp-route-id="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
                                     <i class="fas fa-wrench fa-2x"></i>
                                 </a>
                             </td>
                             <td>
-                                <a asp-action="DriverTraits" asp-route-id="@driver.SeasonDriverId">
+                                <a class="btn" asp-action="DriverTraits" asp-route-id="@driver.SeasonDriverId">
                                     <i class="fas fa-yin-yang fa-2x"></i>
                                 </a>
                             </td>
@@ -106,7 +106,7 @@
                             else
                             {
                                 <td>
-                                    <a asp-action="DropDriverFromTeam" asp-route-seasonId="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
+                                    <a class="btn" asp-action="DropDriverFromTeam" asp-route-seasonId="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
                                         <i class="far fa-times-circle fa-2x"></i>
                                     </a>
                                 </td>
@@ -153,7 +153,7 @@
                     <td data-field="round">@race.Round</td>
                     <td data-field="specification">@race.Track.Specification</td>
                     <td>
-                        <a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.Season.SeasonId" asp-route-raceId="@race.RaceId">
+                        <a class="btn" asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.Season.SeasonId" asp-route-raceId="@race.RaceId">
                             <i class="fas @(race.RaceState == RaceState.Finished ? "fa-search" : "fa-flag-checkered") fa-2x"></i>
                         </a>
                     </td>
@@ -164,7 +164,7 @@
                             <a class="cursor-pointer" onclick="moveRound(@Model.Season.SeasonId, @race.RaceId, 1)"><i class="fas fa-chevron-down fa"></i></a>
                         </td>
                         <td>
-                            <a asp-action="RemoveRace" asp-route-id="@race.RaceId" asp-route-seasonId="@Model.Season.SeasonId">
+                            <a class="btn" asp-action="RemoveRace" asp-route-id="@race.RaceId" asp-route-seasonId="@Model.Season.SeasonId">
                                 <i class="fas fa-trash-alt fa-2x"></i>
                             </a>
                         </td>
@@ -212,12 +212,12 @@
                         @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
                         {
                             <td>
-                                <a asp-action="UpdateTeam" asp-route-id="@Model.Season.SeasonId" asp-route-teamId="@team.SeasonTeamId">
+                                <a class="btn" asp-action="UpdateTeam" asp-route-id="@Model.Season.SeasonId" asp-route-teamId="@team.SeasonTeamId">
                                     <i class="fas fa-wrench fa-2x"></i>
                                 </a>
                             </td>
                             <td>
-                                <a asp-action="TeamTraits" asp-route-id="@team.SeasonTeamId">
+                                <a class="btn" asp-action="TeamTraits" asp-route-id="@team.SeasonTeamId">
                                     <i class="fas fa-yin-yang fa-2x"></i>
                                 </a>
                             </td>

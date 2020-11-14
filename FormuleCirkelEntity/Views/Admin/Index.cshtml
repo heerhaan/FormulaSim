@@ -18,24 +18,24 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model)
+            @foreach (var user in Model.OrderBy(u => u.UserName))
             {
                 <tr>
                     <td>@Html.DisplayFor(modelItem => user.UserName)</td>
                     <td>@Html.DisplayFor(modelItem => user.FullName)</td>
                     <td>@Html.DisplayFor(modelItem => user.Email)</td>
                     <td>
-                        <a class="btn" asp-action="AddDriverToUser" asp-route-userId="@user.Id">
+                        <a class="btn fullwidth" asp-action="AddDriverToUser" asp-route-userId="@user.Id">
                             @Html.DisplayFor(modelItem => user.Drivers.Count)
                         </a>
                     </td>
                     <td>
-                        <a class="btn" asp-action="AddTeamToUser" asp-route-userId="@user.Id">
+                        <a class="btn fullwidth" asp-action="AddTeamToUser" asp-route-userId="@user.Id">
                             @Html.DisplayFor(modelItem => user.Teams.Count)
                         </a>
                     </td>
                     <td>
-                        <a asp-action="Modify" asp-route-userId="@user.Id">
+                        <a class="btn" asp-action="Modify" asp-route-userId="@user.Id">
                             <i class="fas fa-wrench fa-2x"></i>
                         </a>
                     </td>

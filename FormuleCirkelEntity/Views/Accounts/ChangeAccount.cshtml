@@ -22,7 +22,7 @@
             <input asp-for="OldPassword" class="form-control" />
             <span asp-validation-for="OldPassword" class="text-danger"></span>
         </div>
-        <button id="showPassButton" class="btn fullwidth" onclick="showPassInput()" type="button">Change password</button>
+        <button id="showPassButton" class="btn fullwidth mb-2" onclick="showPassInput()" type="button">Change password</button>
         <div id="passInputFields" style="display:none">
             <div class="form-group">
                 <label asp-for="NewPassword"></label>
@@ -35,7 +35,7 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
         </div>
-        <button type="submit" class="btn">Update account</button>
+        <button type="submit" class="btn fullwidth">Update account</button>
     </form>
 
     <div class="float-left">
