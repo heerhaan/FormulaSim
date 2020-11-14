@@ -2,7 +2,7 @@
 
 <div class="d-inline-block">
     <h1>All Roles</h1>
-    <a asp-action="Create" class="btn">Create Role</a>
+    <a asp-action="Create" class="btn float-left"><i class="fas fa-plus"></i> New role</a>
 
     <table class="ctable fullborder min-width-index-table">
         <tr><th>Name</th><th>Update</th><th>Delete</th></tr>
@@ -10,11 +10,15 @@
         {
             <tr>
                 <td>@role.Name</td>
-                <td><a class="btn btn-sm" asp-action="Modify" asp-route-id="@role.Id">Modify</a></td>
+                <td>
+                    <a class="btn btn-sm" asp-action="Modify" asp-route-id="@role.Id">
+                        <i class="fas fa-wrench fa-2x"></i>
+                    </a>
+                </td>
                 <td>
                     <form asp-action="Delete" asp-route-id="@role.Id" method="post">
-                        <button type="submit" class="btn btn-sm btn-danger">
-                            Delete
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt fa-2x"></i>
                         </button>
                     </form>
                 </td>

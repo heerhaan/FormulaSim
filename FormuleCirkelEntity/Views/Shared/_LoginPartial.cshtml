@@ -4,25 +4,22 @@
 @inject SignInManager<SimUser> SignInManager
 @inject UserManager<SimUser> UserManager
 
-<ul class="navbar-nav">
+<div class="ml-auto">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a id="manage" class="nav-link" asp-controller="Accounts" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
+    <span class="mr-2">Hello @UserManager.GetUserName(User)!</span>
+    <div class="btn-group">
+        <a id="manage" class="btn" asp-controller="Accounts" asp-action="Index">Profile</a>
         <form id="logoutForm" class="form-inline" asp-controller="Accounts" asp-action="Logout" method="post">
-            <button id="logout" type="submit" class="nav-link btn btn-link">Logout</button>
+            <button id="logout" type="submit" class="btn">Logout</button>
         </form>
-    </li>
+    </div>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link" id="register" asp-controller="Accounts" asp-action="Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="login" asp-controller="Accounts" asp-action="Login">Login</a>
-    </li>
+    <div class="btn-group">
+        <a class="btn" id="register" asp-controller="Accounts" asp-action="Register">Register</a>
+        <a class="btn" id="login" asp-controller="Accounts" asp-action="Login">Login</a>
+    </div>
 }
-</ul>
+</div>

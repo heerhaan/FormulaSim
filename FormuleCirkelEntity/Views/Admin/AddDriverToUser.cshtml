@@ -1,0 +1,122 @@
+﻿@model FormuleCirkelEntity.ViewModels.AddDriverToUserModel
+
+@{
+    ViewData["Title"] = "Add team to user";
+}
+
+<div class="d-inline-block w-60">
+    <h1>Teams from @Html.DisplayFor(modelItem => modelItem.SimUser.UserName)</h1>
+
+    <div class="col">
+        <h3>Owned teams</h3>
+        <table class="ctable fullborder fullwidth">
+            <thead class="fullborder">
+                <tr>
+                    <th>
+                        Number
+                    </th>
+                    <th class="text-left">
+                        Name
+                    </th>
+                    <th>
+                        Abbreviation
+                    </th>
+                    <th class="w-10">Info</th>
+                    <th class="w-10">Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var driver in Model.OwnedDrivers)
+            {
+                <tr>
+                    <td>
+                        @driver.DriverNumber
+                    </td>
+                    <td class="text-left">
+                        <span class="flag flag-@(driver.Country) flag-margin ml-cel"></span>@driver.Name
+                    </td>
+                    <td>
+                        @driver.Abbreviation
+                    </td>
+                    <td>
+                        <a asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                    </td>
+                    <td>
+                        <a asp-action="RemoveDriverFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-driverId="@driver.Id" class="btn fullwidth">Remove</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <h3>Other teams</h3>
+        <div class="row justify-content-between mb-1">
+            <form method="POST">
+                <input id="randomInput" type="hidden" name="teamId" />
+                <input id="randomSubmit" type="submit" class="btn fullwidth" value="Random" />
+            </form>
+        </div>
+        <table class="ctable fullborder fullwidth">
+            <thead class="fullborder">
+                <tr>
+                    <th>
+                        Number
+                    </th>
+                    <th class="text-left">
+                        Name
+                    </th>
+                    <th>
+                        Abbreviation
+                    </th>
+                    <th class="w-10">Info</th>
+                    <th class="w-10">Add</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var driver in Model.OtherDrivers)
+            {
+                <tr>
+                    <td>
+                        @driver.DriverNumber
+                    </td>
+                    <td class="text-left">
+                        <span class="flag flag-@(driver.Country) flag-margin ml-cel"></span>@driver.Name
+                    </td>
+                    <td>
+                        @driver.Abbreviation
+                    </td>
+                    <td>
+                        <a asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                    </td>
+                    <td>
+                        <form method="POST">
+                            <input type="hidden" name="driverId" value="@driver.Id" />
+                            <input type="submit" class="btn fullwidth" value="Add" />
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+        var drivers = @(Json.Serialize(Model.OtherDrivers.Select(t => t.Id)));
+
+        if (traits.length == 0) {
+            document.getElementById("randomSubmit").style.display = "none";
+        }
+        else {
+            const randomId = drivers[Math.floor(Math.random() * drivers.length)];
+            document.getElementById("randomInput").value = randomId;
+        }
+    }
+</script>

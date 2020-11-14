@@ -14,6 +14,7 @@
                 <td>Owns drivers</td>
                 <td>Owns teams</td>
                 <td>Modify</td>
+                <td>Delete</td>
             </tr>
         </thead>
         <tbody>
@@ -23,13 +24,28 @@
                     <td>@Html.DisplayFor(modelItem => user.UserName)</td>
                     <td>@Html.DisplayFor(modelItem => user.FullName)</td>
                     <td>@Html.DisplayFor(modelItem => user.Email)</td>
-                    <td>@Html.DisplayFor(modelItem => user.Drivers.Count)</td>
-                    <td>@Html.DisplayFor(modelItem => user.Teams.Count)</td>
+                    <td>
+                        <a class="btn" asp-action="AddDriverToUser" asp-route-userId="@user.Id">
+                            @Html.DisplayFor(modelItem => user.Drivers.Count)
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn" asp-action="AddTeamToUser" asp-route-userId="@user.Id">
+                            @Html.DisplayFor(modelItem => user.Teams.Count)
+                        </a>
+                    </td>
                     <td>
                         <a asp-action="Modify" asp-route-userId="@user.Id">
                             <i class="fas fa-wrench fa-2x"></i>
                         </a>
                     </td>
+                    <td>
+                    <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt fa-2x"></i>
+                        </button>
+                    </form>
+                </td>
                 </tr>
             }
         </tbody>

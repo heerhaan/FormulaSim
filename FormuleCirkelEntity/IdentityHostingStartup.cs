@@ -19,7 +19,7 @@ namespace FormuleCirkelEntity
                 services.AddDbContext<IdentityContext>(options =>
                     options.UseSqlServer(context.Configuration["DatabaseSettings:ConnectionString"]));
 
-                services.AddDefaultIdentity<SimUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<SimUser>(options => options.SignIn.RequireConfirmedAccount = false)
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<IdentityContext>();
 

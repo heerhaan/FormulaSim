@@ -111,6 +111,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
                 ModelState.AddModelError("", "No role found");
+
             return View("Index", _roleManager.Roles);
         }
 
