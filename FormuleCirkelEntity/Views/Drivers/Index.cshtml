@@ -54,19 +54,19 @@
                         @item.Abbreviation
                     </td>
                     <td>
-                        <a class="btn" asp-action="Stats" asp-route-id="@item.Id">
+                        <a asp-action="Stats" asp-route-id="@item.Id">
                             <i class="fas fa-id-card fa-2x"></i>
                         </a>
                     </td>
                     @if(owneddrivers.Contains(item.Id) || isAdmin)
                     {
                         <td>
-                            <a class="btn" asp-action="Edit" asp-route-id="@item.Id">
+                            <a asp-action="Edit" asp-route-id="@item.Id">
                                 <i class="fas fa-wrench fa-2x"></i>
                             </a>
                         </td>
                         <td>
-                            <a class="btn" asp-action="Delete" asp-route-id="@item.Id">
+                            <a asp-action="Delete" asp-route-id="@item.Id">
                                 <i class="fas fa-trash-alt fa-2x"></i>
                             </a>
                         </td>

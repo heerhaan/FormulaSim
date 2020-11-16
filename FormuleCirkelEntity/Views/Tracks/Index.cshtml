@@ -57,17 +57,17 @@
                 @if (isAdmin)
                 {
                     <td>
-                        <a class="btn" asp-action="Edit" asp-route-id="@item.Id">
+                        <a asp-action="Edit" asp-route-id="@item.Id">
                             <i class="fas fa-wrench fa-2x"></i>
                         </a>
                     </td>
                     <td>
-                        <a class="btn" asp-action="TrackTraits" asp-route-id="@item.Id">
+                        <a asp-action="TrackTraits" asp-route-id="@item.Id">
                             <i class="fas fa-yin-yang fa-2x"></i>
                         </a>
                     </td>
                     <td>
-                        <a class="btn" asp-action="Delete" asp-route-id="@item.Id">
+                        <a asp-action="Delete" asp-route-id="@item.Id">
                             <i class="fas fa-trash-alt fa-2x"></i>
                         </a>
                     </td>

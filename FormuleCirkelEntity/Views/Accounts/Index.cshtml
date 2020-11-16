@@ -17,9 +17,13 @@
             }
         </div>
         <div class="col-8">
-            <h4>Soon this place will have more stuff, meanwhile enjoy this image of a horse.</h4>
-            <img src="~/images/Pein.png" style="width:100%"/>
+            <h4>Soon this place will have more stuff, meanwhile enjoy suffering.</h4>
+            <img id="manImg" style="width:100%"/>
         </div>
     </div>
 </div>
 
+<script>
+    var manImage = returnRandomMan();
+    document.getElementById("manImg").src = manImage;
+</script>

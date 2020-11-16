@@ -25,7 +25,7 @@
                     <td>@Html.DisplayFor(modelItem => item.Location)</td>
                     <td>@Html.DisplayFor(modelItem => item.Specification)</td>
                     <td>
-                        <a class="btn" asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.Id">
+                        <a asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.Id">
                             <i class="fas fa-cog fa-2x"></i>
                         </a>
                     </td>

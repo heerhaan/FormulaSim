@@ -27,7 +27,7 @@
                             @Html.DisplayFor(modelItem => team.Abbreviation)
                         </td>
                         <td>
-                            <a class="btn" asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                            <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                         <td>
                             <a asp-action="RemoveTeamFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-teamId="@team.Id" class="btn fullwidth">Remove</a>
@@ -62,7 +62,7 @@
                             @Html.DisplayFor(modelItem => team.Abbreviation)
                         </td>
                         <td>
-                            <a class="btn" asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                            <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                         </td>
                         <td>
                             <form method="POST">

@@ -39,7 +39,7 @@
                         @driver.Abbreviation
                     </td>
                     <td>
-                        <a class="btn" asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                        <a asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
                         <a asp-action="RemoveDriverFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-driverId="@driver.Id" class="btn fullwidth">Remove</a>
@@ -86,7 +86,7 @@
                         @driver.Abbreviation
                     </td>
                     <td>
-                        <a class="btn" asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                        <a asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
                         <form method="POST">

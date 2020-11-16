@@ -11,13 +11,13 @@
             <tr>
                 <td>@role.Name</td>
                 <td>
-                    <a class="btn btn-sm" asp-action="Modify" asp-route-id="@role.Id">
+                    <a asp-action="Modify" asp-route-id="@role.Id">
                         <i class="fas fa-wrench fa-2x"></i>
                     </a>
                 </td>
                 <td>
                     <form asp-action="Delete" asp-route-id="@role.Id" method="post">
-                        <button type="submit" class="btn btn-danger">
+                        <button type="submit">
                             <i class="fas fa-trash-alt fa-2x"></i>
                         </button>
                     </form>

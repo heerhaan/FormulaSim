@@ -28,28 +28,6 @@
 </style>
 
 <script>
-    var bgs = [
-        '/../../images/backgrounds/AlfaRomeoAss.jpg',
-        '/../../images/backgrounds/FerrariFutureTrip.jpeg',
-        '/../../images/backgrounds/HaasCurrentTrippy.jpg',
-        '/../../images/backgrounds/HakkinenUnderMoon.jpg',
-        '/../../images/backgrounds/HamiltonLeclercCrash.jpg',
-        '/../../images/backgrounds/HamiltonVerstappenMonaco.jpg',
-        '/../../images/backgrounds/KimiFerrariNightLight.jpg',
-        '/../../images/backgrounds/McLarenFinish.jpeg',
-        '/../../images/backgrounds/McLarenFutureAss.jpg',
-        '/../../images/backgrounds/McLarenUpFuture.jpg',
-        '/../../images/backgrounds/McLarenWest20xx.jpg',
-        '/../../images/backgrounds/MikaMcLarenJump.jpg',
-        '/../../images/backgrounds/RedBullRain.jpg',
-        '/../../images/backgrounds/ToroRossoSide.jpg',
-        '/../../images/backgrounds/VerstappenGermanyWin.jpg',
-        '/../../images/backgrounds/VettelNumberOne.jpg',
-        '/../../images/backgrounds/VettelPitstop.jpg',
-        '/../../images/backgrounds/VettelVerstappenCrash.jpg',
-        '/../../images/backgrounds/CharlesLeCrash.jpg'
-    ];
-
-    var n = Math.floor(Math.random() * bgs.length);
-    document.body.style.backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(' + bgs[n] + ')';
+    var background = returnRandomBackground();
+    document.body.style.backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(' + background + ')';
 </script>
