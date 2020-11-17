@@ -44,6 +44,19 @@ function hideElements() {
     }
 }
 
+// Return random background
+function returnRandomBackground() {
+    var n = Math.floor(Math.random() * bgs.length);
+    return bgs[n];
+}
+
+// Return random man
+function returnRandomMan() {
+    var n = Math.floor(Math.random() * man.length);
+    return man[n];
+}
+
+
 var isoCountries = [
     { id: 'af', text: 'Afghanistan' },
     { id: 'al', text: 'Albania' },
@@ -242,4 +255,37 @@ var isoCountries = [
     { id: 'ye', text: 'Yemen' },
     { id: 'zm', text: 'Zambia' },
     { id: 'zw', text: 'Zimbabwe' }
+];
+
+var bgs = [
+    '/../images/backgrounds/AlfaRomeoAss.jpg',
+    '/../images/backgrounds/FerrariFutureTrip.jpeg',
+    '/../images/backgrounds/HaasCurrentTrippy.jpg',
+    '/../images/backgrounds/HakkinenUnderMoon.jpg',
+    '/../images/backgrounds/HamiltonLeclercCrash.jpg',
+    '/../images/backgrounds/HamiltonVerstappenMonaco.jpg',
+    '/../images/backgrounds/KimiFerrariNightLight.jpg',
+    '/../images/backgrounds/McLarenFinish.jpeg',
+    '/../images/backgrounds/McLarenFutureAss.jpg',
+    '/../images/backgrounds/McLarenUpFuture.jpg',
+    '/../images/backgrounds/McLarenWest20xx.jpg',
+    '/../images/backgrounds/MikaMcLarenJump.jpg',
+    '/../images/backgrounds/RedBullRain.jpg',
+    '/../images/backgrounds/ToroRossoSide.jpg',
+    '/../images/backgrounds/VerstappenGermanyWin.jpg',
+    '/../images/backgrounds/VettelNumberOne.jpg',
+    '/../images/backgrounds/VettelPitstop.jpg',
+    '/../images/backgrounds/VettelVerstappenCrash.jpg',
+    '/../images/backgrounds/CharlesLeCrash.jpg'
+];
+
+var man = [
+    '/../images/man/MAN.png',
+    '/../images/man/man2.png',
+    '/../images/man/man3.jpg',
+    '/../images/man/man4.png',
+    '/../images/man/men.png',
+    '/../images/man/myhomie.jpg',
+    '/../images/man/myman.jpg',
+    '/../images/man/Pein.png'
 ];

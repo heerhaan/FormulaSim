@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "ArchivedTracks";
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
@@ -35,11 +36,14 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Specification)
                 </td>
-                <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id">
-                        <i class="fas fa-undo fa-2x"></i>
-                    </a>
-                </td>
+                @if (isAdmin)
+                {
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fas fa-undo fa-2x"></i>
+                        </a>
+                    </td>
+                } else { <td></td> }
             </tr>
             }
         </tbody>

@@ -1,0 +1,55 @@
+﻿@model ChangeAccountModel
+@{
+    ViewData["Title"] = "Change account";
+}
+
+<div class="d-inline-block">
+    <h4>@ViewData["Title"]</h4>
+    <form id="change-password-form" method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" class="form-control" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="OldPassword"></label>
+            <input asp-for="OldPassword" class="form-control" />
+            <span asp-validation-for="OldPassword" class="text-danger"></span>
+        </div>
+        <button id="showPassButton" class="btn fullwidth mb-2" onclick="showPassInput()" type="button">Change password</button>
+        <div id="passInputFields" style="display:none">
+            <div class="form-group">
+                <label asp-for="NewPassword"></label>
+                <input asp-for="NewPassword" class="form-control" />
+                <span asp-validation-for="NewPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+        <button type="submit" class="btn fullwidth">Update account</button>
+    </form>
+
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
+</div>
+
+<script>
+    function showPassInput() {
+        var passButton = document.getElementById("showPassButton");
+        var passFields = document.getElementById("passInputFields");
+        passButton.style.display = "none";
+        passFields.style.display = "block";
+    }
+</script>

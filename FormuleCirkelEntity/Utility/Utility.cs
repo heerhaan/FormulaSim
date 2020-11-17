@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FormuleCirkelEntity.Helpers
+namespace FormuleCirkelEntity.Utility
 {
     // Here should methods be placed that have some utility function, like RNG-ing a DNFcause.
-    public static class Utility
+    public static class Helpers
     {
         public static readonly Random rng = new Random();
 

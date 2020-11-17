@@ -3,10 +3,11 @@ using FormuleCirkelEntity.Extensions;
 using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
@@ -14,14 +15,17 @@ namespace FormuleCirkelEntity.Controllers
     public abstract class ViewDataController<T> : FormulaController
         where T : ModelBase, new()
     {
-        protected FormulaContext DataContext { get; }
         protected PagingHelper PagingHelper { get; }
         protected DbSet<T> Data { get; }
 
-        protected ViewDataController(FormulaContext context, PagingHelper pagingHelper)
+        protected ViewDataController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            PagingHelper pagingHelper)
+            : base(context, identityContext, userManager)
         {
-            (DataContext, PagingHelper) = (context, pagingHelper);
-            Data = DataContext.Set<T>();
+            PagingHelper = pagingHelper;
+            Data = _context.Set<T>();
         }
 
         [SortResult, PagedResult]
@@ -30,6 +34,7 @@ namespace FormuleCirkelEntity.Controllers
             return await AsTask(View(Data));
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Create")]
         public virtual async Task<IActionResult> Create()
         {
@@ -37,6 +42,7 @@ namespace FormuleCirkelEntity.Controllers
             return await AsTask(View("Modify", newObject));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Create(T newObject)
@@ -44,11 +50,12 @@ namespace FormuleCirkelEntity.Controllers
             newObject.Id = default(int);
             if(!ModelState.IsValid)
                 return View("Modify", newObject);
-            DataContext.Add(newObject);
-            await DataContext.SaveChangesAsync();
+            _context.Add(newObject);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("{id}")]
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int? id)
@@ -61,6 +68,7 @@ namespace FormuleCirkelEntity.Controllers
             return View("Modify", updatingObject);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("{id}")]
         [ValidateAntiForgeryToken]
         [HttpErrorsToPagesRedirect]
@@ -74,11 +82,12 @@ namespace FormuleCirkelEntity.Controllers
             if(!await Data.AnyAsync(obj => obj.Id == id))
                 return NotFound();
 
-            DataContext.Update(updatedObject);
-            await DataContext.SaveChangesAsync();
+            _context.Update(updatedObject);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Delete/{id}")]
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> Delete(int? id)
@@ -94,6 +103,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(item);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Delete/{id}")]
         [ValidateAntiForgeryToken]
         [HttpErrorsToPagesRedirect]
@@ -104,11 +114,11 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             if(objectToDelete is IArchivable archivable && archivable.Archived)
-                DataContext.Restore(archivable);
+                _context.Restore(archivable);
             else
-                DataContext.Remove(objectToDelete);
+                _context.Remove(objectToDelete);
 
-            await DataContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

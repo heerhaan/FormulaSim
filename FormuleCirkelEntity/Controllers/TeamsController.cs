@@ -4,6 +4,7 @@ using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,14 +17,19 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class TeamsController : ViewDataController<Team>
     {
-        public TeamsController(FormulaContext context, PagingHelper pagingHelper)
-            : base(context, pagingHelper)
+        public TeamsController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            PagingHelper pagingHelper)
+            : base(context, identityContext, userManager, pagingHelper)
         { }
 
         [SortResult(nameof(Team.Abbreviation)), PagedResult]
-        public override Task<IActionResult> Index()
+        public override async Task<IActionResult> Index()
         {
-            return base.Index();
+            SimUser simuser = await _userManager.GetUserAsync(User);
+            ViewBag.ownedteams = simuser.Teams;
+            return base.Index().Result;
         }
 
         [Route("Stats/{id}")]
@@ -36,7 +42,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Prepares table items for ViewModel
             var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
-            var seasons = DataContext.Seasons
+            var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
                 .ToList();
 
@@ -46,7 +52,7 @@ namespace FormuleCirkelEntity.Controllers
             stats.TeamBio = team.Biography;
 
             // Acquire team colours
-            var lastSeasonTeam = DataContext.SeasonTeams
+            var lastSeasonTeam = _context.SeasonTeams
                 .ToList()
                 .Where(st => st.TeamId == id)
                 .LastOrDefault();
@@ -59,7 +65,7 @@ namespace FormuleCirkelEntity.Controllers
             }
 
             // Selects which drivers have driven for the team
-            var drivers = DataContext.SeasonDrivers
+            var drivers = _context.SeasonDrivers
                 .IgnoreQueryFilters()
                 .Where(sd => sd.SeasonTeam.TeamId == id)
                 .Include(sd => sd.Driver)
@@ -70,7 +76,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Distinct()
                 .Select(d => d.Name);
 
-            var results = DataContext.DriverResults
+            var results = _context.DriverResults
                 .Where(dr => dr.SeasonDriver.SeasonTeam.TeamId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
                 .ToList();
 
@@ -99,7 +105,7 @@ namespace FormuleCirkelEntity.Controllers
             int teamchamps = 0;
             foreach (var season in seasons)
             {
-                var teamwinner = DataContext.SeasonTeams
+                var teamwinner = _context.SeasonTeams
                     .IgnoreQueryFilters()
                     .Where(s => s.SeasonId == season.SeasonId && s.Season.State == SeasonState.Finished)
                     .OrderByDescending(dr => dr.Points)
@@ -121,7 +127,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Leaderlists")]
         public IActionResult Leaderlists()
         {
-            var teams = DataContext.DriverResults
+            var teams = _context.DriverResults
                 .IgnoreQueryFilters()
                 .Where(dr => dr.Race.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver.SeasonTeam.Team)
@@ -129,7 +135,7 @@ namespace FormuleCirkelEntity.Controllers
                 .GroupBy(st => st.SeasonDriver.SeasonTeam.Team)
                 .ToList();
 
-            var seasons = DataContext.Seasons
+            var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship && s.State == SeasonState.Finished)
                 .Include(s => s.Teams)
                     .ThenInclude(sd => sd.Team)
@@ -208,10 +214,10 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("SaveBiography")]
         public IActionResult SaveBiography(int id, string biography)
         {
-            var team = DataContext.Teams.SingleOrDefault(t => t.Id == id);
+            var team = _context.Teams.SingleOrDefault(t => t.Id == id);
             team.Biography = biography;
-            DataContext.Teams.Update(team);
-            DataContext.SaveChanges();
+            _context.Teams.Update(team);
+            _context.SaveChanges();
             return RedirectToAction("Stats", new { id });
         }
     }

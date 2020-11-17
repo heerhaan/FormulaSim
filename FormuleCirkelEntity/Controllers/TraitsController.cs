@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class TraitsController : Controller
+    public class TraitsController : FormulaController
     {
-        private readonly FormulaContext _context;
-
-        public TraitsController(FormulaContext context)
-        {
-            _context = context;
-        }
+        public TraitsController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager)
+            : base(context, identityContext, userManager)
+        { }
 
         public async Task<IActionResult> Index()
         {
@@ -29,7 +28,6 @@ namespace FormuleCirkelEntity.Controllers
                 TeamTraits = traits.Where(t => t.TraitGroup == TraitGroup.Team).OrderBy(t => t.Name),
                 TrackTraits = traits.Where(t => t.TraitGroup == TraitGroup.Track).OrderBy(t => t.Name)
             };
-
             return View(indexmodel);
         }
 
@@ -48,11 +46,13 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
-        public IActionResult Create()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace,Archived")] Trait trait)
@@ -67,6 +67,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Modify(int? id)
         {
             if (id == null)
@@ -83,6 +84,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(trait);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modify(int id, [Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace")] Trait trait)

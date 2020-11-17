@@ -1,6 +1,8 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -8,20 +10,18 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : FormulaController
     {
-        private readonly FormulaContext _context;
+        public HomeController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager)
+            : base(context, identityContext, userManager)
+        { }
 
-        public HomeController(FormulaContext context)
-        {
-            _context = context;
-        }
-
-        public IActionResult Index()
+        public IActionResult Index(string message = null)
         {
             bool championship = false;
             string name = "Formula";
@@ -31,10 +31,14 @@ namespace FormuleCirkelEntity.Controllers
                 var champname = _context.Championships.FirstOrDefault(c => c.ActiveChampionship);
                 name = champname.ChampionshipName;
             }
-            
-            ViewBag.championship = championship;
-            ViewBag.name = name;
-            return View();
+
+            HomeViewModel viewModel = new HomeViewModel
+            {
+                ChampionshipName = name,
+                Message = message,
+                ChampExists = championship
+            };
+            return View(viewModel);
         }
 
         public IActionResult DriverStandings()
@@ -178,6 +182,33 @@ namespace FormuleCirkelEntity.Controllers
             };
 
             return View("DriverStandings", viewmodel);
+        }
+
+        // Calculates the average finishing position for the given season per driver
+        private List<double> CalculateAverageFinish(List<SeasonDriver> drivers)
+        {
+            List<double> averages = new List<double>();
+            foreach (var driver in drivers)
+            {
+                List<double> positions = new List<double>();
+                double average = 0;
+                if (driver.DriverResults.Any())
+                {
+                    foreach (var result in driver.DriverResults)
+                    {
+                        if (result.Status == Status.Finished)
+                        {
+                            positions.Add(result.Position);
+                        }
+                    }
+                    if (positions.Any())
+                    {
+                        average = Math.Round((positions.Average()), 2);
+                    }
+                }
+                averages.Add(average);
+            }
+            return averages;
         }
 
         [HttpPost("[Controller]/{seasonId}/GetDriverGraphData")]
@@ -348,11 +379,5 @@ namespace FormuleCirkelEntity.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
-
-    public class AverageFinish
-    {
-        public SeasonDriver Driver { get; set; }
-        public double Averagepos { get; set; }
     }
 }

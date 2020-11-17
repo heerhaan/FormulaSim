@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FormuleCirkelEntity.DAL
+namespace FormuleCirkelEntity.ViewModels
 {
-    public static class ContextExtensions
+    public class AccountViewModel
     {
-
     }
 }

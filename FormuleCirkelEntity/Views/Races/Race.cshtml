@@ -1,13 +1,14 @@
 ﻿@model FormuleCirkelEntity.ViewModels.RacesRaceModel
 @{
     ViewData["Title"] = "Race";
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
     @if (Model.SeasonState == SeasonState.Progress)
     {
         <div class="flex-row justify-content-between">
-            @if (Model.Race.RaceState == RaceState.Race)
+            @if (Model.Race.RaceState == RaceState.Race && isAdmin)
             {
                 <a class="btn w-25" onclick="advanceStint()">Next stint</a>
 

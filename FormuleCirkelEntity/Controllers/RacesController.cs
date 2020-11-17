@@ -5,30 +5,36 @@ using System.Linq;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.Builders;
 using FormuleCirkelEntity.DAL;
-using FormuleCirkelEntity.Helpers;
+using FormuleCirkelEntity.Utility;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class RacesController : Controller
+    public class RacesController : FormulaController
     {
-        readonly FormulaContext _context;
-        readonly RaceResultGenerator _resultGenerator;
-        readonly RaceBuilder _raceBuilder;
-        public static readonly Random rng = new Random();
+        private readonly RaceResultGenerator _resultGenerator;
+        private readonly RaceBuilder _raceBuilder;
+        private static readonly Random rng = new Random();
 
-        public RacesController(FormulaContext context, RaceResultGenerator resultGenerator, RaceBuilder raceBuilder)
+        public RacesController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            RaceResultGenerator raceResultGenerator, 
+            RaceBuilder raceBuilder)
+            : base(context, identityContext, userManager)
         {
-            _context = context;
-            _resultGenerator = resultGenerator;
+            _resultGenerator = raceResultGenerator;
             _raceBuilder = raceBuilder;
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id)
         {
@@ -47,6 +53,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(unusedTracks);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] int trackId)
         {
@@ -75,7 +82,7 @@ namespace FormuleCirkelEntity.Controllers
                 .AddModifiedStints(stintlist)
                 .GetResultAndRefresh();
 
-                race.Weather = Utility.RandomWeather();
+                race.Weather = Helpers.RandomWeather();
                 season.Races.Add(race);
                 await _context.SaveChangesAsync();
             }
@@ -86,7 +93,7 @@ namespace FormuleCirkelEntity.Controllers
                 .AddDefaultStints()
                 .GetResultAndRefresh();
 
-                race.Weather = Utility.RandomWeather();
+                race.Weather = Helpers.RandomWeather();
                 season.Races.Add(race);
                 await _context.SaveChangesAsync();
             }
@@ -94,6 +101,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(AddTracks), new { id });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult ModifyRace(int id, int trackId)
         {
             var model = new RacesModifyRaceModel
@@ -123,6 +131,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> ModifyRace(RacesModifyRaceModel raceModel)
         {
@@ -143,7 +152,7 @@ namespace FormuleCirkelEntity.Controllers
                 .AddModifiedStints(stints)
                 .GetResultAndRefresh();
 
-            race.Weather = Utility.RandomWeather();
+            race.Weather = Helpers.RandomWeather();
             season.Races.Add(race);
             await _context.SaveChangesAsync();
             return RedirectToAction("AddTracks", new { id = raceModel.SeasonId });
@@ -159,8 +168,8 @@ namespace FormuleCirkelEntity.Controllers
                 .SingleOrDefaultAsync(s => s.SeasonId == race.SeasonId);
 
             var drivers = await _context.DriverResults
-                .IgnoreQueryFilters()
                 .Where(dr => dr.RaceId == raceId)
+                .IgnoreQueryFilters()
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
                 .Include(dr => dr.SeasonDriver.SeasonTeam)
@@ -173,7 +182,7 @@ namespace FormuleCirkelEntity.Controllers
             foreach (var driver in drivers)
             {
                 int modifiers = (driver.DriverRacePace + driver.ChassisRacePace + driver.EngineRacePace);
-                power.Add(Utility.GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
+                power.Add(Helpers.GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
             }
 
             RacesRaceModel viewmodel = new RacesRaceModel
@@ -214,7 +223,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(st => st.Team)
                 .Include(st => st.Engine)
                 .AsEnumerable()
-                .OrderByDescending(st => (st.Chassis + st.Engine.Power + Utility.GetChassisBonus(Utility.CreateTeamSpecDictionary(st), race.Track.Specification.ToString())))
+                .OrderByDescending(st => (st.Chassis + st.Engine.Power + Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(st), race.Track.Specification.ToString())))
                 .Take(3)
                 .ToList();
 
@@ -234,15 +243,24 @@ namespace FormuleCirkelEntity.Controllers
 
             if (!race.DriverResults.Any())
             {
-                race = _raceBuilder
+                // Checks if the user activating the race is the admin
+                SimUser user = await _userManager.GetUserAsync(User);
+                var result = await _userManager.IsInRoleAsync(user, Constants.RoleAdmin);
+                if (result)
+                {
+                    race = _raceBuilder
                     .Use(race)
                     .AddAllDrivers(race.Track)
                     .GetResult();
 
-                _context.DriverResults.AddRange(race.DriverResults);
-                await _context.SaveChangesAsync();
+                    _context.DriverResults.AddRange(race.DriverResults);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return Forbid();
+                }
             }
-            
             return RedirectToAction("RaceWeekend", new { id, raceId });
         }
 
@@ -255,6 +273,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var drivers = await _context.DriverResults
                 .Where(dr => dr.RaceId == raceId)
+                .IgnoreQueryFilters()
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
                 .Include(dr => dr.SeasonDriver.SeasonTeam)
@@ -271,6 +290,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(viewmodel);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Season/{id}/[Controller]/{raceId}/Advance")]
         public async Task<IActionResult> AdvanceStint(int raceId)
         {
@@ -305,11 +325,11 @@ namespace FormuleCirkelEntity.Controllers
                     if (dnfvalue == 25)
                     {
                         result.Status = Status.DSQ;
-                        result.DSQCause = Utility.RandomDSQCause(stintResult.HasValue);
+                        result.DSQCause = Helpers.RandomDSQCause(stintResult.HasValue);
                     } else
                     {
                         result.Status = Status.DNF;
-                        result.DNFCause = Utility.RandomDNFCause(stintResult.HasValue);
+                        result.DNFCause = Helpers.RandomDNFCause(stintResult.HasValue);
                     }
                     if (stintResult.HasValue)
                         stintResult = null;
@@ -358,6 +378,7 @@ namespace FormuleCirkelEntity.Controllers
             return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> FinishRace(int seasonId, int raceId)
         {
@@ -411,6 +432,7 @@ namespace FormuleCirkelEntity.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying/Update")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public async Task<IActionResult> UpdateQualifying(int id, int raceId, string source, bool secondRun)
@@ -492,7 +514,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
-        static IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers, int raceId)
+        private static IList<Qualification> GetQualificationsFromDrivers(IList<SeasonDriver> drivers, int raceId)
         {
             var result = new List<Qualification>();
             foreach (var driver in drivers.ToList())
@@ -511,7 +533,7 @@ namespace FormuleCirkelEntity.Controllers
             return result;
         }
 
-        static int GetQualifyingDriverLimit(string qualifyingStage, Season season)
+        private static int GetQualifyingDriverLimit(string qualifyingStage, Season season)
         {
             if (qualifyingStage == "Q2")
                 return season.QualificationRemainingDriversQ2;
@@ -520,10 +542,11 @@ namespace FormuleCirkelEntity.Controllers
             return season.Drivers.Count;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult Return(int? id, int? raceId)
+        public async Task<IActionResult> Return(int? id, int? raceId)
         {
-            if(id == null || raceId == null)
+            if (id == null || raceId == null)
             {
                 return BadRequest();
             }
@@ -643,6 +666,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction("RaceWeekend", new { id, raceId });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Season/{id}/[Controller]/{raceId}/round")]
         public async Task<IActionResult> MoveRound(int id, int raceId, [FromQuery] int direction)
         {

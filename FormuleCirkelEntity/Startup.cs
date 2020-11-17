@@ -6,7 +6,6 @@ using FormuleCirkelEntity.ResultGenerators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,13 +39,16 @@ namespace FormuleCirkelEntity
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc(options => { options.EnableEndpointRouting = false; })
+            services.AddMvc()
                 .WithRazorPagesAtContentRoot()
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
-            services.AddControllers()
-                .AddNewtonsoftJson();
+
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
+
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSingleton(new Random());
+
+            // Custom services related to [fill in]
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();
             services.AddTransient<SeasonSettingsValidator>();
@@ -62,20 +64,24 @@ namespace FormuleCirkelEntity
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Shared/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

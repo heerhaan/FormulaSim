@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using FormuleCirkelEntity.Models
+
+@inject SignInManager<SimUser> SignInManager
+@inject UserManager<SimUser> UserManager
+
+<div class="ml-auto">
+@if (SignInManager.IsSignedIn(User))
+{
+    <span class="mr-2">Hello @UserManager.GetUserName(User)!</span>
+    <div class="btn-group">
+        <a id="manage" class="btn" asp-controller="Accounts" asp-action="Index">Profile</a>
+        <form id="logoutForm" class="form-inline" asp-controller="Accounts" asp-action="Logout" method="post">
+            <button id="logout" type="submit" class="btn">Logout</button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="btn-group">
+        <a class="btn" id="register" asp-controller="Accounts" asp-action="Register">Register</a>
+        <a class="btn" id="login" asp-controller="Accounts" asp-action="Login">Login</a>
+    </div>
+}
+</div>

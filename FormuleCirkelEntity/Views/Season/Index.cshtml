@@ -1,8 +1,28 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Season>
 
+@{ 
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
+}
+
 <div class="d-inline-block w-75">
     <h1>Seasons in @ViewBag.championship</h1>
-    <a class="btn float-left mb-1" asp-action="Create">New season</a>
+    <div class="row justify-content-between">
+        @if (isAdmin)
+        {
+            <a class="btn float-left mb-1" asp-action="Create">New season</a>
+        }
+        <div class="dropdown show">
+            <a class="btn dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-flag-checkered"></i> Championship
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                @foreach (var item in ViewBag.champs)
+                {
+                    <a class="dropdown-item" asp-action="ChampionshipSelect" asp-route-championshipId="@item.ChampionshipId">@item.ChampionshipName</a>
+                }
+            </div>
+        </div>
+    </div>
 
     <table class="ctable fullborder fullwidth">
         <thead class="fullborder">

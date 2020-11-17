@@ -4,6 +4,7 @@ using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,14 +18,20 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class DriversController : ViewDataController<Driver>
     {
-        public DriversController(FormulaContext context, PagingHelper pagingHelper)
-            : base(context, pagingHelper)
-        { }
+        public DriversController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager, 
+            PagingHelper pagingHelper)
+            : base(context, identityContext, userManager, pagingHelper)
+        {
+        }
 
         [SortResult(nameof(Driver.Name)), PagedResult]
-        public override Task<IActionResult> Index()
+        public override async Task<IActionResult> Index()
         {
-            return base.Index();
+            SimUser simuser = await _userManager.GetUserAsync(User);
+            ViewBag.owneddrivers = simuser.Drivers;
+            return base.Index().Result;
         }
 
         [Route("Stats/{id}")]
@@ -37,7 +44,7 @@ namespace FormuleCirkelEntity.Controllers
 
             // Prepares table items for ViewModel
             var driver = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
-            var seasons = DataContext.Seasons
+            var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
                 .Include(s => s.Drivers)
                 .ToList();
@@ -49,7 +56,7 @@ namespace FormuleCirkelEntity.Controllers
             stats.DriverBio = driver.Biography;
 
             // Count of the types of race finishes the driver had
-            var results = DataContext.DriverResults
+            var results = _context.DriverResults
                 .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver)
                 .ToList();
@@ -81,7 +88,7 @@ namespace FormuleCirkelEntity.Controllers
             stats.MechanicalCount = results.Where(r => r.DNFCause == DNFCause.Brakes || r.DNFCause == DNFCause.Clutch || r.DNFCause == DNFCause.Electrics ||
                 r.DNFCause == DNFCause.Exhaust || r.DNFCause == DNFCause.Hydraulics || r.DNFCause == DNFCause.Wheel).Count();
 
-            var seasondriver = DataContext
+            var seasondriver = _context
                 .SeasonDrivers
                 .Where(s => s.Driver.Id == id)
                 .Include(s => s.SeasonTeam)
@@ -118,7 +125,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             DriverLeaderlistsModel leaderlistsModel = new DriverLeaderlistsModel();
 
-            var drivers = DataContext.DriverResults
+            var drivers = _context.DriverResults
                 .IgnoreQueryFilters()
                 .Where(dr => dr.Race.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver.Driver)
@@ -126,7 +133,7 @@ namespace FormuleCirkelEntity.Controllers
                 .GroupBy(sd => sd.SeasonDriver.Driver)
                 .ToList();
 
-            var seasons = DataContext.Seasons
+            var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship && s.State == SeasonState.Finished)
                 .Include(s => s.Drivers)
                     .ThenInclude(sd => sd.Driver)
@@ -189,7 +196,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Archived")]
-        public IActionResult ArchivedDrivers()
+        public async Task<IActionResult> ArchivedDrivers()
         {
             var drivers = Data.IgnoreQueryFilters().Where(d => d.Archived).OrderBy(d => d.Name).ToList();
             return View(drivers);
@@ -198,10 +205,10 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("SaveBiography")]
         public IActionResult SaveBiography(int id, string biography)
         {
-            var driver = DataContext.Drivers.SingleOrDefault(d => d.Id == id);
+            var driver = _context.Drivers.SingleOrDefault(d => d.Id == id);
             driver.Biography = biography;
-            DataContext.Drivers.Update(driver);
-            DataContext.SaveChanges();
+            _context.Drivers.Update(driver);
+            _context.SaveChanges();
             return RedirectToAction("Stats", new { id });
         }
     }

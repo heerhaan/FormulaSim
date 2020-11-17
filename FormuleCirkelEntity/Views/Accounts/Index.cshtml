@@ -1,0 +1,29 @@
+﻿@model SimUser
+@{
+    ViewData["Title"] = "Profile";
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
+}
+
+<div class="d-inline-block">
+    <h1>@ViewData["Title"] @Html.DisplayFor(modelItem => modelItem.UserName)</h1>
+    <partial name="_StatusMessage" model="ViewBag.statusmessage" />
+    <div class="row">
+        <div class="col-4">
+            <a class="btn fullwidth" asp-action="ChangeAccount">Edit account</a>
+            @if (isAdmin)
+            {
+                <a class="btn fullwidth" asp-controller="Admin" asp-action="Index">Users</a>
+                <a class="btn fullwidth" asp-controller="Roles" asp-action="Index">Roles</a>
+            }
+        </div>
+        <div class="col-8">
+            <h4>Soon this place will have more stuff, meanwhile enjoy suffering.</h4>
+            <img id="manImg" style="width:100%"/>
+        </div>
+    </div>
+</div>
+
+<script>
+    var manImage = returnRandomMan();
+    document.getElementById("manImg").src = manImage;
+</script>

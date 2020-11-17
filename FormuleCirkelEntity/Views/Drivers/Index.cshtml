@@ -7,13 +7,18 @@
     var pageNumber = (int)ViewData["pageNumber"];
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
+    List<int> owneddrivers = ViewBag.owneddrivers;
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
     <h1>Drivers</h1>
 
     <div class="flex-row justify-content-between index-btns">
-        <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+        @if (isAdmin)
+        {
+            <a asp-action="Create" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+        }
         <a asp-action="ArchivedDrivers" class="btn"><i class="fas fa-archive"></i><span class="ml-1">Archive</span></a>
         <a asp-action="Leaderlists" class="btn"><i class="fas fa-signal"></i><span class="ml-1">Leaderlist</span></a>
     </div>
@@ -30,8 +35,8 @@
                 <th>
                     Abbreviation
                 </th>
-                <th class="w-10">Edit</th>
                 <th class="w-10">Stats</th>
+                <th class="w-10">Edit</th>
                 <th class="w-10">Archive</th>
             </tr>
         </thead>
@@ -49,20 +54,28 @@
                         @item.Abbreviation
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">
-                            <i class="fas fa-wrench fa-2x"></i>
-                        </a>
-                    </td>
-                    <td>
                         <a asp-action="Stats" asp-route-id="@item.Id">
                             <i class="fas fa-id-card fa-2x"></i>
                         </a>
                     </td>
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id">
-                            <i class="fas fa-trash-alt fa-2x"></i>
-                        </a>
-                    </td>
+                    @if(owneddrivers.Contains(item.Id) || isAdmin)
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">
+                                <i class="fas fa-wrench fa-2x"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.Id">
+                                <i class="fas fa-trash-alt fa-2x"></i>
+                            </a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                        <td></td>
+                    }
                 </tr>
             }
         </tbody>

@@ -2,12 +2,16 @@
 
 @{
     ViewData["Title"] = "Index";
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
     <h1>Traits</h1>
     <div class="flex-row mb-1">
-        <a asp-action="Create" class="btn"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+        @if (isAdmin)
+        {
+            <a asp-action="Create" class="btn"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+        }
     </div>
 
     <div class="flex-col">

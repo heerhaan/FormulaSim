@@ -1,0 +1,38 @@
+﻿@model FormuleCirkelEntity.Models.SimUser
+
+@{
+    ViewData["Title"] = "Modify";
+}
+
+<div class="d-inline-block">
+    <h1>Modify user</h1>
+    <div class="fullwidth">
+        <form method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label float-left"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FullName" class="control-label float-left"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label float-left"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn fullwidth" />
+            </div>
+        </form>
+    </div>
+
+    <div class="float-left">
+        <a asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        </a>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-﻿using FormuleCirkelEntity.Helpers;
+﻿using FormuleCirkelEntity.Utility;
 using FormuleCirkelEntity.Models;
 using System;
 using System.Collections.Generic;
@@ -77,7 +77,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             if (stint.ApplyQualifyingBonus)
             {
-                result += Utility.GetQualifyingBonus(driverResult.Grid, driver.Season.Drivers.Count, driver.Season.QualyBonus);
+                result += Helpers.GetQualifyingBonus(driverResult.Grid, driver.Season.Drivers.Count, driver.Season.QualyBonus);
             }
 
             if (stint.ApplyTireLevel && driver.Tires == Tire.Softs)
@@ -113,7 +113,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             if (stint.ApplyChassisLevel)
             {
-                int bonus = Utility.GetChassisBonus(Utility.CreateTeamSpecDictionary(team), track.Specification.ToString());
+                int bonus = Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(team), track.Specification.ToString());
                 int statusBonus = (((int)driver.DriverStatus) * -2) + 2;
                 result += (team.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
             }
@@ -150,7 +150,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             result += qualypace;
             result += driver.SeasonTeam.Chassis;
             result += driver.SeasonTeam.Engine.Power;
-            result += Utility.GetChassisBonus(Utility.CreateTeamSpecDictionary(driver.SeasonTeam), track.Specification.ToString());
+            result += Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(driver.SeasonTeam), track.Specification.ToString());
             result += _rng.Next(0, (qualyRNG + 1));
             return result;
         }

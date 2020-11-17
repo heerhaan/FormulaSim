@@ -81,11 +81,10 @@
         </table>
     </div>
     <div class="flex-row mb-1">
-        @if (Model.Race.RaceState == RaceState.Race || Model.Race.RaceState == RaceState.Finished)
+        @if (Model.Race.RaceState == RaceState.Race || Model.Race.RaceState == RaceState.Finished || Model.Race.Season.State == SeasonState.Finished)
         {
             <a asp-action="Race" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" class="btn w-25">Race</a>
-        }
-        @if (Model.Race.RaceState == RaceState.Concept || Model.Race.RaceState == RaceState.Qualifying)
+        } else if (Model.Race.RaceState == RaceState.Concept || Model.Race.RaceState == RaceState.Qualifying)
         {
             <a asp-action="Qualifying" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" class="btn w-25">Qualifying</a>
         }

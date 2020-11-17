@@ -1,7 +1,7 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
-using FormuleCirkelEntity.Helpers;
+using FormuleCirkelEntity.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,17 +9,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace FormuleCirkelEntity.Controllers
 {
-    public class SeasonController : Controller
+    public class SeasonController : FormulaController
     {
-        private readonly FormulaContext _context;
-
-        public SeasonController(FormulaContext context)
-        {
-            _context = context;
-        }
+        public SeasonController(FormulaContext context, 
+            IdentityContext identityContext, 
+            UserManager<SimUser> userManager)
+            : base(context, identityContext, userManager)
+        { }
 
         public async Task<IActionResult> Index()
         {
@@ -39,9 +40,42 @@ namespace FormuleCirkelEntity.Controllers
             else
                 ViewBag.championship = championship.ChampionshipName;
 
+            var champs = await _context.Championships
+                .ToListAsync();
+
+            ViewBag.champs = champs;
+
             return View(seasons);
         }
 
+        [ActionName("ChampionshipSelect")]
+        public async Task<IActionResult> Index(int championshipId)
+        {
+            var seasons = await _context.Seasons
+                .IgnoreQueryFilters()
+                .Where(s => s.ChampionshipId == championshipId)
+                .Include(s => s.Drivers)
+                    .ThenInclude(dr => dr.Driver)
+                .Include(s => s.Teams)
+                    .ThenInclude(s => s.Team)
+                .OrderByDescending(s => s.SeasonNumber)
+                .ToListAsync();
+
+            var championship = _context.Championships.FirstOrDefault(s => s.ChampionshipId == championshipId);
+            if (championship is null)
+                ViewBag.championship = "NaN";
+            else
+                ViewBag.championship = championship.ChampionshipName;
+
+            var champs = await _context.Championships
+                .ToListAsync();
+
+            ViewBag.champs = champs;
+
+            return View("Index", seasons);
+        }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var season = new Season();
@@ -55,6 +89,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddDefault(int? id)
         {
             // gets the current and previous season in this championship
@@ -90,7 +125,7 @@ namespace FormuleCirkelEntity.Controllers
                             Round = race.Round,
                             Stints = race.Stints,
                             TrackId = race.TrackId,
-                            Weather = Utility.RandomWeather(),
+                            Weather = Helpers.RandomWeather(),
                             RaceState = RaceState.Concept
                         };
                         season.Races.Add(newRace);
@@ -101,6 +136,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Detail), new { id });
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Start(int? id)
         {
             var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -130,6 +166,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Detail), new { id });
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Finish(int? id)
         {
             var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -172,10 +209,10 @@ namespace FormuleCirkelEntity.Controllers
                 SeasonDrivers = drivers,
                 SeasonTeams = teams
             };
-
             return View(nameof(Detail), seasonmodel);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveRace(int? id, int seasonId)
         {
             var race = await _context.Races.SingleOrDefaultAsync(s => s.RaceId == id);
@@ -197,7 +234,6 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
 
-        // Page that displays the power rankings and a few settings, like the points distribution, of a season.
         public async Task<IActionResult> SeasonStats(int? id)
         {
             var season = await _context.Seasons
@@ -262,6 +298,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(new SeasonSettingsViewModel(season));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("[Controller]/{id}/Settings")]
         public async Task<IActionResult> Settings(int id, [Bind] SeasonSettingsViewModel settingsModel)
         {
@@ -286,6 +323,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(settingsModel);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SetPoints(int id)
         {
             var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -303,6 +341,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> SetPoints(SeasonSetPointsModel model)
         {
@@ -323,6 +362,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Settings), new { id = model.SeasonId });
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("[Controller]/{id}/Teams/Add")]
         public async Task<IActionResult> AddTeams(int? id)
         {
@@ -350,6 +390,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // Page underneath is slow
+        [Authorize(Roles = "Admin")]
         [Route("[Controller]/{id}/Teams/Add/{globalTeamId}")]
         public async Task<IActionResult> AddTeam(int? id, int? globalTeamId)
         {
@@ -399,6 +440,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         // Page underneath is slow
+        [Authorize(Roles = "Admin")]
         [HttpPost("[Controller]/{id}/Teams/Add/{globalTeamId}")]
         public async Task<IActionResult> AddTeam(int id, int? globalTeamId, [Bind] SeasonTeam seasonTeam)
         {
@@ -450,6 +492,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("[Controller]/{id}/Teams/Update/{teamId}")]
         public async Task<IActionResult> UpdateTeam(int id, int? teamId)
         {
@@ -472,6 +515,7 @@ namespace FormuleCirkelEntity.Controllers
             return View("AddOrUpdateTeam", team);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("[Controller]/{id}/Teams/Update/{teamId}")]
         public async Task<IActionResult> UpdateTeam(int id, int? teamId, [Bind] SeasonTeam updatedTeam)
         {
@@ -512,6 +556,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("[Controller]/{id}/Drivers/Add")]
         public async Task<IActionResult> AddDrivers(int? id)
         {
@@ -540,6 +585,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(unregisteredDrivers);
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("[Controller]/{id}/Drivers/Add/{globalDriverId}")]
         public async Task<IActionResult> AddDriver(int? id, int? globalDriverId)
         {
@@ -581,6 +627,7 @@ namespace FormuleCirkelEntity.Controllers
             return View("AddOrUpdateDriver", seasonDriver);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("[Controller]/{id}/Drivers/Add/{globalDriverId}")]
         public async Task<IActionResult> AddDriver(int id, int? globalDriverId, [Bind] SeasonDriver seasonDriver)
         {
@@ -629,6 +676,7 @@ namespace FormuleCirkelEntity.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("[Controller]/{id}/Drivers/Update/{driverId}")]
         public async Task<IActionResult> UpdateDriver(int id, int? driverId)
         {
@@ -652,6 +700,7 @@ namespace FormuleCirkelEntity.Controllers
             return View("AddOrUpdateDriver", driver);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("[Controller]/{id}/Drivers/Update/{driverId}")]
         public async Task<IActionResult> UpdateDriver(int id, int? driverId, [Bind] SeasonDriver updatedDriver)
         {
@@ -716,12 +765,13 @@ namespace FormuleCirkelEntity.Controllers
                 .ToListAsync());
         }
 
-        public int GetCurrentYear(int seasonId)
+        private int GetCurrentYear(int seasonId)
         {
             var season = _context.Seasons.FirstOrDefault(s => s.SeasonId == seasonId);
             return season.SeasonNumber;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
         {
@@ -758,7 +808,7 @@ namespace FormuleCirkelEntity.Controllers
                 .ToListAsync());
         }
 
-        //Receives development values and saves them in the DB
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> SaveTeamDev([FromBody]IEnumerable<GetDev> dev)
         {
@@ -803,18 +853,18 @@ namespace FormuleCirkelEntity.Controllers
             return View(engines);
         }
 
-        // Receives development values and saves them in the DB
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
+        public async Task<IActionResult> SaveEngineDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var engines = _context.Engines.ToList();
+            var engines = await _context.Engines.ToListAsync();
             foreach (var enginedev in dev)
             {
                 var engine = engines.First(e => e.Id == enginedev.Id);
                 engine.Power = enginedev.Newdev;
             }
             _context.UpdateRange(engines);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var seasonId = _context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
@@ -834,17 +884,18 @@ namespace FormuleCirkelEntity.Controllers
                 .ToList());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public IActionResult SaveTeamReliabilityDev([FromBody]IEnumerable<GetDev> dev)
+        public async Task<IActionResult> SaveTeamReliabilityDev([FromBody]IEnumerable<GetDev> dev)
         {
             var seasonId = _context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefault();
 
-            var teams = _context.SeasonTeams
+            var teams = await _context.SeasonTeams
                 .Where(s => s.SeasonId == seasonId.SeasonId)
                 .OrderBy(t => t.Team.Abbreviation)
-                .ToList();
+                .ToListAsync();
 
             foreach (var teamdev in dev)
             {
@@ -852,7 +903,7 @@ namespace FormuleCirkelEntity.Controllers
                 team.Reliability = teamdev.Newdev;
             }
             _context.UpdateRange(teams);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("TeamReliabilityDev", new { id = seasonId.SeasonId });
         }
@@ -870,6 +921,7 @@ namespace FormuleCirkelEntity.Controllers
                 .ToList());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> SaveDriverReliabilityDev([FromBody]IEnumerable<GetDev> dev)
         {
@@ -920,6 +972,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Driver/Traits/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
@@ -938,6 +991,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(DriverTraits), new { id });
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Driver/Traits/Remove/{driverId}")]
         public async Task<IActionResult> RemoveDriverTrait(int driverId, int traitId)
         {
@@ -979,6 +1033,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("Team/Traits/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TeamTraits(int id, [Bind("TraitId")] int traitId)
@@ -996,6 +1051,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(TeamTraits), new { id });
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Team/Traits/Remove/{teamId}")]
         public async Task<IActionResult> RemoveTeamTrait(int teamId, int traitId)
         {
@@ -1012,6 +1068,7 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(TeamTraits), new { id = teamId });
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Driver/Drop/{driverId}")]
         public async Task<IActionResult> DropDriverFromTeam(int seasonId, int driverId)
         {
