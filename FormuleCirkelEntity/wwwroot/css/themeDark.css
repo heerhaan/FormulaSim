@@ -5,17 +5,17 @@
     body code[class*=language-],
     body table tbody > tr:nth-child(odd) > td,
     body table tbody > tr:nth-child(odd) > th {
-        background: #282c34
+        background: rgb(40, 44, 52)
     }
 
 .table-prev {
-    border: 1px solid #bd2130;
+    border: 1px solid rgb(189, 33, 48);
 }
     .table-prev th {
-        border: 1px solid #bd2130;
+        border: 1px solid rgb(189, 33, 48);
     }
     .table-prev td {
-        border: 1px solid #bd2130;
+        border: 1px solid rgb(189, 33, 48);
     }
 
 .standings-border th, .standings-border td {
@@ -28,11 +28,11 @@
 }
 
 .secondary {
-    background-color: #343a40;
+    background-color: rgb(52, 58, 64);
 }
 
 .teritary {
-    background-color: #bd2130;
+    background-color: rgb(189, 33, 48);
     color: white;
 }
 
@@ -41,21 +41,21 @@
 }
 
 .page-link {
-    background-color: #282c34;
-    color: #bd2130;
-    border-color: #bd2130;
+    background-color: rgb(40, 44, 52);
+    color: rgb(189, 33, 48);
+    border-color: rgb(189, 33, 48);
 }
 
 .page-item.active .page-link {
-    background-color: #bd2130;
-    border-color: #bd2130;
-    color: #282c34;
+    background-color: rgb(189, 33, 48);
+    border-color: rgb(189, 33, 48);
+    color: rgb(40, 44, 52);
 }
 
 .btn {
-    background-color: #282c34;
+    background-color: rgb(40, 44, 52);
     color: white;
-    border-color: #bd2130;
+    border-color: rgb(189, 33, 48);
 }
     .btn:hover {
         background-color: black;
@@ -71,21 +71,21 @@ i.fas, i.fab, i.far, .link {
 }
 
 .fullborder {
-    border: 1px solid #bd2130 !important;
+    border: 1px solid rgb(189, 33, 48) !important;
 }
 
 .upperline {
-    border-top: 1px solid #bd2130 !important;
+    border-top: 1px solid rgb(189, 33, 48) !important;
 }
 
 .bottomline {
-    border-bottom: 1px solid #bd2130 !important;
+    border-bottom: 1px solid rgb(189, 33, 48) !important;
 }
 
 .leftline {
-    border-right: 1px solid #bd2130 !important;
+    border-right: 1px solid rgb(189, 33, 48) !important;
 }
 
 .rightline {
-    border-right: 1px solid #bd2130 !important;
+    border-right: 1px solid rgb(189, 33, 48) !important;
 }

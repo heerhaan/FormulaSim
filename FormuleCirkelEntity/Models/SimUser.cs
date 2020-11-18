@@ -14,7 +14,7 @@ namespace FormuleCirkelEntity.Models
             Drivers = new List<int>();
             Teams = new List<int>();
         }
-        public string FullName { get; set; }
+        public DateTime LastLogin { get; set; }
         public string Country { get; set; }
 
         public IList<int> Drivers { get; set; }

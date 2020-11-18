@@ -27,21 +27,30 @@ namespace FormuleCirkelEntity.Controllers
         [SortResult(nameof(Team.Abbreviation)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            SimUser simuser = await _userManager.GetUserAsync(User);
-            ViewBag.ownedteams = simuser.Teams;
+            // Checks if the user is authenticated and sends the list of owned team id's if that's the case
+            // Other wise assigns an empty int list to prevent a nullreference in the view
+            if (User.Identity.IsAuthenticated)
+            {
+                SimUser simuser = await _userManager.GetUserAsync(User);
+                ViewBag.ownedteams = simuser.Teams;
+            }
+            else
+                ViewBag.ownedteams = new List<int>();
+
             return base.Index().Result;
         }
 
         [Route("Stats/{id}")]
         public async Task<IActionResult> Stats(int? id)
         {
-            if (id == null)
+            if (id is null)
                 return NotFound();
 
             var stats = new TeamStatsModel();
 
-            // Prepares table items for ViewModel
+            // Finds the team corresponding to the given id
             var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
+            // Only take seasons from the championship that is currently in use
             var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
                 .ToList();
@@ -51,7 +60,7 @@ namespace FormuleCirkelEntity.Controllers
             stats.TeamShort = team.Abbreviation;
             stats.TeamBio = team.Biography;
 
-            // Acquire team colours
+            // Tries to find the last season in which this team was used so their possible long name and team colours can be set
             var lastSeasonTeam = _context.SeasonTeams
                 .ToList()
                 .Where(st => st.TeamId == id)
@@ -88,7 +97,7 @@ namespace FormuleCirkelEntity.Controllers
             stats.ThirdFinishes = results.Where(r => r.Position == 3).Count();
             stats.DidNotFinish = results.Where(r => r.Status == Status.DNF || r.Status == Status.DSQ).Count();
 
-            // Calculate point finishes
+            // Calculate the amount of times the drivers from the team has finished inside the points
             int pointCount = 0;
             foreach (var season in seasons)
             {
@@ -124,6 +133,7 @@ namespace FormuleCirkelEntity.Controllers
             return View(stats);
         }
 
+        // This view showcases the teams that lead in varied amount of statistics
         [Route("Leaderlists")]
         public IActionResult Leaderlists()
         {

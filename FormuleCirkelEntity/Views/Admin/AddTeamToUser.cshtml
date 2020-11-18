@@ -20,25 +20,25 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var team in Model.OwnedTeams.OrderBy(t => t.Abbreviation))
-                {
-                    <tr>
-                        <td><span class="flag flag-@team.Country flag-margin ml-cel"></span>
-                            @Html.DisplayFor(modelItem => team.Abbreviation)
-                        </td>
-                        <td>
-                            <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
-                        </td>
-                        <td>
-                            <a asp-action="RemoveTeamFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-teamId="@team.Id" class="btn fullwidth">Remove</a>
-                        </td>
-                    </tr>
-                }
+            @foreach (var team in Model.OwnedTeams.OrderBy(t => t.Abbreviation))
+            {
+                <tr>
+                    <td class="text-left"><span class="flag flag-@team.Country flag-margin ml-cel"></span>
+                        @Html.DisplayFor(modelItem => team.Abbreviation)
+                    </td>
+                    <td>
+                        <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                    </td>
+                    <td>
+                        <a asp-action="RemoveTeamFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-teamId="@team.Id" class="btn fullwidth">Remove</a>
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
 
         <h3>Other teams</h3>
-        <div class="row justify-content-between mb-1">
+        <div class="flex-row justify-content-between mb-1">
             <form method="POST">
                 <input id="randomInput" type="hidden" name="teamId" />
                 <input id="randomSubmit" type="submit" class="btn fullwidth" value="Random" />
@@ -55,23 +55,23 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var team in Model.OtherTeams.OrderBy(t => t.Abbreviation))
-                {
-                    <tr>
-                        <td class="text-left"><span class="flag flag-@team.Country flag-margin ml-cel"></span>
-                            @Html.DisplayFor(modelItem => team.Abbreviation)
-                        </td>
-                        <td>
-                            <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
-                        </td>
-                        <td>
-                            <form method="POST">
-                                <input type="hidden" name="teamId" value="@team.Id" />
-                                <input type="submit" class="btn fullwidth" value="Add" />
-                            </form>
-                        </td>
-                    </tr>
-                }
+            @foreach (var team in Model.OtherTeams.OrderBy(t => t.Abbreviation))
+            {
+                <tr>
+                    <td class="text-left"><span class="flag flag-@team.Country flag-margin ml-cel"></span>
+                        @Html.DisplayFor(modelItem => team.Abbreviation)
+                    </td>
+                    <td>
+                        <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
+                    </td>
+                    <td>
+                        <form method="POST">
+                            <input type="hidden" name="teamId" value="@team.Id" />
+                            <input type="submit" class="btn fullwidth" value="Add" />
+                        </form>
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>

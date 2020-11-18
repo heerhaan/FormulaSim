@@ -25,15 +25,15 @@
             <table id="racestints" class="ctable standings-border fullborder fullwidth">
                 <thead>
                     <tr>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="Applies the skill of the driver plus the style bonus.">Driver skill</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="Applies the chassis of the team plus various bonusses, like specification.">Chassis</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="Applies the power of the engine.">Engine</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="Gives solid +10 to drivers with soft tires.">Tire bonus</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="RNG of [-20 to 0] for drivers with soft tires.">Tire wear</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="Applies the bonus the qualifying position gives.">Qualifying bonus</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="Roll between [0 to 100] that causes a DNF when the roll is higher than the drivers reliability.">Reliability</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="Lowest possible RNG for a stint.">@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMinimum)</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="Highest possible RNG for a stint.">@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMaximum)</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventDriverSkill>Driver skill</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventTeamChassis>Chassis</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventEnginePower>Engine</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventTireBonus>Tire bonus</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventTireWear>Tire wear</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventQualyBonus>Qualifying bonus</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventReliability>Reliability</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventLowerRng>@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMinimum)</th>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventUpperRng>@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMaximum)</th>
                         <th class="w-10"></th>
                     </tr>
                 </thead>

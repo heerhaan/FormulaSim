@@ -5,37 +5,38 @@
 body {
     font-family: Bahnschrift;
 }
-
-body table {
-        background-color: #001D4D;
+    body table {
+        background-color: rgb(0, 29, 77);
         color: white;
     }
-
-    body code[class*=language-],
-    body table tbody > tr:nth-child(odd) > td,
-    body table tbody > tr:nth-child(odd) > th {
-        background: #002766;
-    }
+        body code[class*=language-],
+        body table tbody > tr:nth-child(odd) > td,
+        body table tbody > tr:nth-child(odd) > th {
+            background: rgb(0, 39, 102);
+        }
 
 .table-prev {
     border: 1px solid white;
 }
-
     .table-prev th {
         border: 1px solid white;
     }
-
     .table-prev td {
         border: 1px solid white;
     }
 
 .primary {
-    background-color: #001D4D;
+    background-color: rgb(0, 29, 77);
     color: white;
 }
 
 .secondary {
-    background-color: #002766;
+    background-color: rgb(0, 39, 102);
+}
+
+.teritary {
+    background-color: white;
+    color: rgb(0, 29, 77);
 }
 
 .nav-link {
@@ -43,7 +44,7 @@ body table {
 }
 
 .page-link {
-    background-color: #002766;
+    background-color: rgb(0, 39, 102);
     color: white;
     border-color: white;
 }
@@ -51,17 +52,21 @@ body table {
 .page-item.active .page-link {
     background-color: white;
     border-color: white;
-    color: #002766;
+    color: rgb(0, 39, 102);
 }
 
 .btn {
-    background-color: #002766;
+    background-color: rgb(0, 39, 102);
     color: white;
     border-color: white;
 }
+    .btn:hover {
+        background-color: rgb(0, 29, 77);
+        color: white;
+    }
 
 #graphic {
-    background-color: #001D4D;
+    background-color: rgb(0, 29, 77);
 }
 
 i.fas, i.fab, .link {

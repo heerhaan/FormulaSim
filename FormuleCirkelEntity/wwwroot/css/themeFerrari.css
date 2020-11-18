@@ -1,0 +1,92 @@
+﻿body table {
+    background-color: rgb(255, 0, 0);
+    color: white;
+}
+
+    body code[class*=language-],
+    body table tbody > tr:nth-child(odd) > td,
+    body table tbody > tr:nth-child(odd) > th {
+        background: rgb(255, 102, 102);
+    }
+
+.table-prev {
+    border: 1px solid rgb(0, 0, 0);
+}
+    .table-prev th {
+        border: 1px solid rgb(0, 0, 0);
+    }
+    .table-prev td {
+        border: 1px solid rgb(0, 0, 0);
+    }
+
+.standings-border th, .standings-border td {
+    border: 1px solid rgba(192,192,192,0.4);
+}
+
+.primary {
+    background-color: rgb(255, 0, 0);
+    color: white;
+}
+
+.secondary {
+    background-color: rgb(255, 102, 102);
+}
+
+.teritary {
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.page-link {
+    background-color: rgb(255, 102, 102);
+    color: rgb(0, 0, 0);
+    border-color: rgb(0, 0, 0);
+}
+
+.page-item.active .page-link {
+    background-color: rgb(0, 0, 0);
+    border-color: rgb(0, 0, 0);
+    color: rgb(255, 102, 102);
+}
+
+.btn {
+    background-color: rgb(255, 102, 102);
+    color: white;
+    border-color: rgb(0, 0, 0);
+}
+    .btn:hover {
+        background-color: rgb(255, 0, 0);
+        color: white;
+    }
+
+#graphic {
+    background-color: rgb(255, 0, 0);
+}
+
+i.fas, i.fab, i.far, .link {
+    color: white;
+}
+
+.fullborder {
+    border: 1px solid rgb(0, 0, 0) !important;
+}
+
+.upperline {
+    border-top: 1px solid rgb(0, 0, 0) !important;
+}
+
+.bottomline {
+    border-bottom: 1px solid rgb(0, 0, 0) !important;
+}
+
+.leftline {
+    border-right: 1px solid rgb(0, 0, 0) !important;
+}
+
+.rightline {
+    border-right: 1px solid rgb(0, 0, 0) !important;
+}

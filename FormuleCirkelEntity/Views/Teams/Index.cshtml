@@ -37,7 +37,7 @@
             {
                 <tr>
                     <td class="text-left"><span class="flag flag-@(item.Country) flag-margin ml-cel"></span>@item.Abbreviation</td>
-                    <td><a class="btn" asp-action="Stats" asp-route-id="@item.Id"><i class="fas fa-signal fa-2x"></i></a></td>
+                    <td><a asp-action="Stats" asp-route-id="@item.Id"><i class="fas fa-signal fa-2x"></i></a></td>
                     @if (ownedteams.Contains(item.Id) || isAdmin)
                     {
                         <td><a  asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-wrench fa-2x"></i></a></td>

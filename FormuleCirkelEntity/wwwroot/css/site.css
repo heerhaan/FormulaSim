@@ -185,6 +185,10 @@ dl.inline-flex {
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
+.bigger-text {
+    font-size: 1.2REM;
+}
+
 .flex-col {
     display: flex;
     flex-direction: column;

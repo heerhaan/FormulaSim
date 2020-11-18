@@ -1,4 +1,4 @@
-using FormuleCirkelEntity.Helpers;
+using FormuleCirkelEntity.Utility;
 using FormuleCirkelEntity.Models;
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace FormulaCirkelEntity.Tests
             };
 
             // Act
-            int chassisBonus = Utility.GetChassisBonus(teamSpecs, track.Specification.ToString());
+            int chassisBonus = Helpers.GetChassisBonus(teamSpecs, track.Specification.ToString());
 
             // Assert
             Assert.Equal(expected, chassisBonus);
@@ -43,7 +43,7 @@ namespace FormulaCirkelEntity.Tests
         {
             // Arrange
             // Act
-            var qualifyingBonus = Utility.GetQualifyingBonus(qualifyingPosition, 26, 3);
+            var qualifyingBonus = Helpers.GetQualifyingBonus(qualifyingPosition, 26, 3);
 
             // Assert
             Assert.Equal(expected, qualifyingBonus);

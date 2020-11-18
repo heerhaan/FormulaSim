@@ -1,33 +1,39 @@
 ﻿body table {
-    background-color: #ebebeb;
+    background-color: rgb(235, 235, 235);
     color: black;
 }
-
     body code[class*=language-],
     body table tbody > tr:nth-child(odd) > td,
     body table tbody > tr:nth-child(odd) > th {
-        background: #d5d5d5
+        background: rgb(213, 213, 213)
     }
 
 .table-prev {
-    border: 1px solid #35cdff;
+    border: 1px solid rgb(53, 205, 255);
+}
+    .table-prev th {
+        border: 1px solid rgb(53, 205, 255);
+    }
+    .table-prev td {
+        border: 1px solid rgb(53, 205, 255);
+    }
+
+.standings-border th, .standings-border td {
+    border: 1px solid rgba(192,192,192,0.4);
 }
 
-    .table-prev th {
-        border: 1px solid #35cdff;
-    }
-
-    .table-prev td {
-        border: 1px solid #35cdff;
-    }
-
 .primary {
-    background-color: #ebebeb;
+    background-color: rgb(235, 235, 235);
     color: black;
 }
 
 .secondary {
-    background: #d5d5d5
+    background: rgb(213, 213, 213)
+}
+
+.teritary {
+    background-color: rgb(53, 205, 255);
+    color: black;
 }
 
 .nav-link {
@@ -35,47 +41,51 @@
 }
 
 .page-link {
-    background-color: #d5d5d5;
-    color: #35cdff;
-    border-color: #35cdff;
+    background-color: rgb(213, 213, 213);
+    color: rgb(53, 205, 255);
+    border-color: rgb(53, 205, 255);
 }
 
 .page-item.active .page-link {
-    background-color: #35cdff;
-    border-color: #35cdff;
-    color: #d5d5d5;
+    background-color: rgb(53, 205, 255);
+    border-color: rgb(53, 205, 255);
+    color: rgb(213, 213, 213);
 }
 
 .btn {
-    background-color: #d5d5d5;
+    background-color: rgb(213, 213, 213);
     color: black;
-    border-color: #35cdff;
+    border-color: rgb(53, 205, 255);
 }
+    .btn:hover {
+        background-color: rgb(230, 230, 230);
+        color: black;
+    }
 
 #graphic {
-    background-color: #ebebeb;
+    background-color: rgb(235, 235, 235);
 }
 
-i.fas, i.fab, .link {
+i.fas, i.fab, i.far, .link {
     color: black;
 }
 
 .fullborder {
-    border: 1px solid #35cdff !important;
+    border: 1px solid rgb(53, 205, 255) !important;
 }
 
 .upperline {
-    border-top: 1px solid #35cdff !important;
+    border-top: 1px solid rgb(53, 205, 255) !important;
 }
 
 .bottomline {
-    border-bottom: 1px solid #35cdff !important;
+    border-bottom: 1px solid rgb(53, 205, 255) !important;
 }
 
 .leftline {
-    border-right: 1px solid #35cdff !important;
+    border-right: 1px solid rgb(53, 205, 255) !important;
 }
 
 .rightline {
-    border-right: 1px solid #35cdff !important;
+    border-right: 1px solid rgb(53, 205, 255) !important;
 }

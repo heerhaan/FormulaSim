@@ -8,10 +8,10 @@
 <div class="d-inline-block">
     <h1>Traits</h1>
     <div class="flex-row mb-1">
-        @if (isAdmin)
-        {
-            <a asp-action="Create" class="btn"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
-        }
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="btn"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+    }
     </div>
 
     <div class="flex-col">
@@ -27,27 +27,33 @@
                             Description
                         </th>
                         <th class="w-10">Info</th>
+                        @if (isAdmin)
+                        {
                         <th class="w-10">Edit</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.DriverTraits)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
-                            <td class="text-left">
-                                <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
-                            </td>
-                            <td>
-                                <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
-                            </td>
-                            <td>
-                                <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
-                            </td>
-                        </tr>
-                    }
+                @foreach (var item in Model.DriverTraits)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td class="text-left">
+                            <span class="ml-cel">@Html.DisplayFor(modelItem => item.TraitDescription)</span>
+                        </td>
+                        <td>
+                            <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
+                        </td>
+                        @if (isAdmin)
+                        {
+                        <td>
+                            <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
+                        </td>
+                        }
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>

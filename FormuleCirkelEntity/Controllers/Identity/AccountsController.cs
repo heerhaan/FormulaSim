@@ -62,6 +62,8 @@ namespace FormuleCirkelEntity.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    user.LastLogin = DateTime.Now;
+                    await _userManager.UpdateAsync(user);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -91,9 +93,9 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && registerModel != null)
             {
-                var user = new SimUser { UserName = registerModel.Username, Email = registerModel.Email };
+                var user = new SimUser { UserName = registerModel.Username, Email = registerModel.Email, LastLogin = DateTime.Now };
                 var result = await _userManager.CreateAsync(user, registerModel.Password);
                 if (result.Succeeded)
                 {
@@ -115,7 +117,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> ChangeAccount()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
