@@ -1081,6 +1081,50 @@ namespace FormuleCirkelEntity.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
+
+        public async Task<IActionResult> QualifyingBattle(int seasonId)
+        {
+            var races = await _context.Races
+                .IgnoreQueryFilters()
+                .Where(r => r.SeasonId == seasonId)
+                .Include(r => r.DriverResults)
+                .ToListAsync();
+
+            var drivers = await _context.SeasonDrivers
+                .IgnoreQueryFilters()
+                .Where(r => r.SeasonId == seasonId)
+                .Select(sd => sd.SeasonDriverId)
+                .ToListAsync();
+
+            var teams = await _context.SeasonTeams
+                .IgnoreQueryFilters()
+                .Where(r => r.SeasonId == seasonId)
+                .Include(st => st.SeasonDrivers)
+                    .ThenInclude(sd => sd.Driver)
+                .Include(st => st.Team)
+                .ToListAsync();
+
+            Dictionary<int, int> Battles = new Dictionary<int, int>();
+            foreach (var driver in drivers)
+                Battles.Add(driver, 0);
+
+            foreach (var race in races)
+            {
+                foreach (var team in teams)
+                {
+                    var qualyWinner = race.DriverResults
+                        .Where(dr => team.SeasonDrivers.Contains(dr.SeasonDriver))
+                        .OrderBy(o => o.Grid)
+                        .FirstOrDefault();
+
+                    if (qualyWinner is null)
+                        continue;
+
+                    Battles[qualyWinner.SeasonDriverId] += 1;
+                }
+            }
+            return View(new QualifyingBattleModel { QualyBattles = Battles, Teams = teams });
+        }
     }
 
     public class GetDev

@@ -1,0 +1,37 @@
+﻿@model FormuleCirkelEntity.ViewModels.QualifyingBattleModel
+
+@{
+    ViewData["Title"] = "Qualifying battles";
+}
+
+<div class="d-inline-block">
+    <h1>Qualifying battles</h1>
+    <hr />
+    <table class="ctable fullborder fullwidth min-width-index-table">
+        <thead class="fullborder">
+            <tr>
+                <th>Team</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in Model.Teams)
+            {
+            bool first = true;
+            <tr style="height:50px;">
+                <td style="background-color:@(team.Colour);color:@(team.Accent);" class="text-left">
+                    <span class="pl-1 pr-1">
+                        <span class="flag flag-@(team.Team.Country) flag-margin"></span>@team.Name
+                    </span>
+                </td>
+                @foreach (var driver in team.SeasonDrivers)
+                {
+                    @if (!first) { <td> - </td> }
+                    <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.Driver.Country) flag-margin"></span>@driver.Driver.Name</span></td>
+                    <td class="bigger-text">@Model.QualyBattles[driver.SeasonDriverId]</td>
+                    first = false;
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

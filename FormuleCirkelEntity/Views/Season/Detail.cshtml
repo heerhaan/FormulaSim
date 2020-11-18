@@ -30,6 +30,7 @@
         {
         <div class="btn-group">
             <a asp-action="PenaltyList" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-wrench"></i> Parts list</a>
+            <a asp-action="QualifyingBattle" asp-route-seasonId="@Model.Season.SeasonId" class="btn"><i class="fas fa-signal"></i> Qualy battles</a>
             @if (isAdmin)
             {
                 <button class="btn" onclick="randomDriver()"><i class="fas fa-dice"></i> Driver trait</button>
