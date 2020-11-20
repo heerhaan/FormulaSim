@@ -17,6 +17,8 @@
     <Compile Remove="Migrations\20191223113032_Traits.Designer.cs" />
     <Compile Remove="Migrations\20191223165233_TraitFix.cs" />
     <Compile Remove="Migrations\20191223165233_TraitFix.Designer.cs" />
+    <Compile Remove="Migrations\20201119202815_ChampionshipDevRanges.cs" />
+    <Compile Remove="Migrations\20201119202815_ChampionshipDevRanges.Designer.cs" />
     <Compile Remove="Migrations\Identity\20201118082029_DateTime.cs" />
     <Compile Remove="Migrations\Identity\20201118082029_DateTime.Designer.cs" />
   </ItemGroup>

@@ -754,15 +754,27 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> DriverDev(int id)
         {
-            ViewBag.seasonId = id;
-            ViewBag.year = GetCurrentYear(id);
+            DriverDevModel viewmodel = new DriverDevModel();
+            var season = await _context.Seasons.FindAsync(id);
+            var championship = await _context.Championships.FirstOrDefaultAsync(c => c.ActiveChampionship);
+            if (season is null || championship is null)
+                return NotFound();
 
-            return View(await _context.SeasonDrivers
+            viewmodel.SeasonId = season.SeasonId;
+            viewmodel.Year = season.SeasonNumber;
+            foreach (var skillrange in championship.SkillDevRanges)
+                viewmodel.SkillDevRanges.Add(skillrange);
+            foreach (var agerange in championship.AgeDevRanges)
+                viewmodel.AgeDevRanges.Add(agerange);
+
+            viewmodel.SeasonDrivers = await _context.SeasonDrivers
                 .Where(s => s.SeasonId == id && s.Dropped == false)
                 .Include(t => t.SeasonTeam)
                 .Include(d => d.Driver)
                 .OrderBy(s => s.SeasonTeam.Name)
-                .ToListAsync());
+                .ToListAsync();
+
+            return View(viewmodel);
         }
 
         private int GetCurrentYear(int seasonId)
@@ -776,8 +788,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
         {
             var seasonId = await _context.Seasons
-                .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(s => s.Championship.ActiveChampionship);
 
             var drivers = await _context.SeasonDrivers
                 .Where(s => s.SeasonId == seasonId.SeasonId && s.Dropped == false)
@@ -793,7 +804,6 @@ namespace FormuleCirkelEntity.Controllers
             }
             _context.UpdateRange(drivers);
             await _context.SaveChangesAsync();
-
             return RedirectToAction("DriverDev", new { id = seasonId.SeasonId });
         }
 
