@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
     public class SeasonDriver
     {
-        public SeasonDriver()
-        {
-            Traits = new Dictionary<int, Trait>();
-            Dropped = false;
-        }
         [Key]
         public int SeasonDriverId { get; set; }
         public int Skill { get; set; }
@@ -35,8 +27,8 @@ namespace FormuleCirkelEntity.Models
         public int SeasonId { get; set; }
         public Season Season { get; set; }
 
-        public IDictionary<int, Trait> Traits { get; set; }
-        public virtual ICollection<DriverResult> DriverResults { get; set; }
+        public IList<Trait> Traits { get; } = new List<Trait>();
+        public IList<DriverResult> DriverResults { get; } = new List<DriverResult>();
     }
 
     public enum Tire { Hards, Softs }

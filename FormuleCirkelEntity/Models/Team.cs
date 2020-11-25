@@ -13,6 +13,6 @@ namespace FormuleCirkelEntity.Models
         public string Biography { get; set; }
         public bool Archived { get; set; }
 
-        public virtual ICollection<SeasonTeam> SeasonTeams { get; set; }
+        public IList<SeasonTeam> SeasonTeams { get; } = new List<SeasonTeam>();
     }
 }

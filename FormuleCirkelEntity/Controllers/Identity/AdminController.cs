@@ -86,8 +86,8 @@ namespace FormuleCirkelEntity.Controllers
             AddDriverToUserModel viewModel = new AddDriverToUserModel
             {
                 SimUser = user,
-                OwnedDrivers = GetDriversByUser(user, true),
-                OtherDrivers = GetDriversByUser(user, false)
+                OwnedDrivers = user.Drivers,
+                OtherDrivers = GetDriversNotOwnedbyUser(user)
             };
             return View(viewModel);
         }
@@ -115,24 +115,16 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(AddDriverToUser), new { userId });
         }
 
-        private IEnumerable<Driver> GetDriversByUser(SimUser user, bool owns = true)
+        private IEnumerable<Driver> GetDriversNotOwnedbyUser(SimUser user)
         {
             if (user is null)
                 return null;
 
             IEnumerable<Driver> drivers;
-            if (owns)
-            {
-                drivers = _context.Drivers
-                .Where(t => user.Drivers.Contains(t.Id))
+            drivers = _context.Drivers
+                .Where(t => !user.Drivers.Contains(t))
                 .AsEnumerable();
-            }
-            else
-            {
-                drivers = _context.Drivers
-                .Where(t => !user.Drivers.Contains(t.Id))
-                .AsEnumerable();
-            }
+
             return drivers;
         }
 
