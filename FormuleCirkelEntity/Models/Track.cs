@@ -19,7 +19,7 @@ namespace FormuleCirkelEntity.Models
         public Specification Specification { get; set; }
         public bool Archived { get; set; }
 
-        public IList<Trait> Traits { get; } = new List<Trait>();
+        public IList<TrackTrait> TrackTraits { get; } = new List<TrackTrait>();
         public IList<Race> Races { get; } = new List<Race>();
     }
 }

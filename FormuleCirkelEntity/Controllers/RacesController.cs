@@ -355,7 +355,7 @@ namespace FormuleCirkelEntity.Controllers
             // Clean up unneeded large reference properties to prevent them from being serialized and sent over HTTP.
             race.Season = null;
             race.Track = null;
-            race.Stints = null;
+            race.Stints.Clear();
             foreach(var dr in race.DriverResults)
             {
                 dr.SeasonDriver = null;
@@ -696,14 +696,14 @@ namespace FormuleCirkelEntity.Controllers
             await _context.SaveChangesAsync();
 
             // Prepare race object for serialization
-            race.DriverResults = null;
+            race.DriverResults.Clear();
             race.Season = null;
             race.Track = null;
-            race.Stints = null;
-            raceToSwitch.DriverResults = null;
+            race.Stints.Clear();
+            raceToSwitch.DriverResults.Clear();
             raceToSwitch.Season = null;
             raceToSwitch.Track = null;
-            raceToSwitch.Stints = null;
+            raceToSwitch.Stints.Clear();
             return new JsonResult(new[] { race, raceToSwitch });
         }
     }

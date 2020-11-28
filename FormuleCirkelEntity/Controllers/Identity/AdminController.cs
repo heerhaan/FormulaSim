@@ -96,10 +96,11 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddDriverToUser(string userId, [Bind("driverId")] int driverId)
         {
             SimUser user = await _userManager.FindByIdAsync(userId);
-            if (user is null)
+            Driver driver = await _context.Drivers.FindAsync(driverId);
+            if (user is null || driver is null)
                 return NotFound();
 
-            user.Drivers.Add(driverId);
+            user.Drivers.Add(driver);
             _ = await _userManager.UpdateAsync(user);
             return RedirectToAction(nameof(AddDriverToUser), new { userId });
         }
@@ -107,10 +108,11 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RemoveDriverFromUser(string userId, int driverId)
         {
             SimUser user = await _userManager.FindByIdAsync(userId);
-            if (user is null)
+            Driver driver = await _context.Drivers.FindAsync(driverId);
+            if (user is null || driver is null)
                 return NotFound();
 
-            user.Drivers.Remove(driverId);
+            user.Drivers.Remove(driver);
             _ = await _userManager.UpdateAsync(user);
             return RedirectToAction(nameof(AddDriverToUser), new { userId });
         }
@@ -137,8 +139,9 @@ namespace FormuleCirkelEntity.Controllers
             AddTeamToUserModel viewModel = new AddTeamToUserModel
             {
                 SimUser = user,
-                OwnedTeams = GetTeamsByUser(user, true),
-                OtherTeams = GetTeamsByUser(user, false)
+
+                OwnedTeams = user.Teams,
+                OtherTeams = GetTeamsNotOwnedByUser(user)
             };
             return View(viewModel);
         }
@@ -147,10 +150,11 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddTeamToUser(string userId, [Bind("teamId")] int teamId)
         {
             SimUser user = await _userManager.FindByIdAsync(userId);
-            if (user is null)
+            Team team = await _context.Teams.FindAsync(teamId);
+            if (user is null || team is null)
                 return NotFound();
 
-            user.Teams.Add(teamId);
+            user.Teams.Add(team);
             _ = await _userManager.UpdateAsync(user);
             return RedirectToAction(nameof(AddTeamToUser), new { userId });
         }
@@ -158,32 +162,25 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RemoveTeamFromUser(string userId, int teamId)
         {
             SimUser user = await _userManager.FindByIdAsync(userId);
-            if (user is null)
+            Team team = user.Teams.FirstOrDefault(t => t.Id == teamId);
+            if (user is null || team is null)
                 return NotFound();
 
-            user.Teams.Remove(teamId);
+            user.Teams.Remove(team);
             _ = await _userManager.UpdateAsync(user);
             return RedirectToAction(nameof(AddTeamToUser), new { userId });
         }
 
-        private IEnumerable<Team> GetTeamsByUser(SimUser user, bool owns = true)
+        private IEnumerable<Team> GetTeamsNotOwnedByUser(SimUser user)
         {
             if (user is null)
                 return null;
 
             IEnumerable<Team> teams;
-            if (owns)
-            {
-                teams = _context.Teams
-                .Where(t => user.Teams.Contains(t.Id))
+            teams = _context.Teams
+                .Where(t => !user.Teams.Contains(t))
                 .AsEnumerable();
-            }
-            else
-            {
-                teams = _context.Teams
-                .Where(t => !user.Teams.Contains(t.Id))
-                .AsEnumerable();
-            }
+
             return teams;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FormuleCirkelEntity.Models
@@ -32,6 +33,9 @@ namespace FormuleCirkelEntity.Models
         public int? MinimumRNG { get; set; }
         // Determines if the trait is still in use in the application.
         public bool Archived { get; set; }
+        public IList<SeasonDriverTrait> DriverTraits { get; } = new List<SeasonDriverTrait>();
+        public IList<SeasonTeamTrait> TeamTraits { get; } = new List<SeasonTeamTrait>();
+        public IList<TrackTrait> TrackTraits { get; } = new List<TrackTrait>();
     }
 
     public enum TraitGroup { Driver, Team, Track }

@@ -19,6 +19,8 @@
     <Compile Remove="Migrations\20191223165233_TraitFix.Designer.cs" />
     <Compile Remove="Migrations\Identity\20201118082029_DateTime.cs" />
     <Compile Remove="Migrations\Identity\20201118082029_DateTime.Designer.cs" />
+    <Compile Remove="Migrations\Identity\20201128115037_NormalizeModelIdentity.cs" />
+    <Compile Remove="Migrations\Identity\20201128115037_NormalizeModelIdentity.Designer.cs" />
   </ItemGroup>
 
 

@@ -105,7 +105,8 @@ namespace FormuleCirkelEntity.Controllers
 
             if (lastSeason != null)
             {
-                season.PointsPerPosition = lastSeason.PointsPerPosition;
+                foreach (var pointPosition in lastSeason.PointsPerPosition)
+                    season.PointsPerPosition.Add(pointPosition);
                 season.PolePoints = lastSeason.PolePoints;
                 season.QualificationRemainingDriversQ2 = lastSeason.QualificationRemainingDriversQ2;
                 season.QualificationRemainingDriversQ3 = lastSeason.QualificationRemainingDriversQ3;
@@ -123,11 +124,12 @@ namespace FormuleCirkelEntity.Controllers
                             Season = season,
                             Name = race.Name,
                             Round = race.Round,
-                            Stints = race.Stints,
                             TrackId = race.TrackId,
                             Weather = Helpers.RandomWeather(),
                             RaceState = RaceState.Concept
                         };
+                        foreach (var stint in race.Stints)
+                            newRace.Stints.Add(stint);
                         season.Races.Add(newRace);
                     }
                 }
@@ -270,13 +272,13 @@ namespace FormuleCirkelEntity.Controllers
             foreach (var driver in drivers)
             {
                 // This loop looks over all the traits a driver has.
-                foreach (var trait in driver.Traits.Values)
+                foreach (var trait in driver.Traits)
                 {
                     if (trait.DriverReliability.HasValue)
                         driver.Reliability += trait.DriverReliability.Value;
                 }
                 // This loop looks over all the traits a team has.
-                foreach (var trait in driver.SeasonTeam.Traits.Values)
+                foreach (var trait in driver.SeasonTeam.Traits)
                 {
                     if (trait.DriverReliability.HasValue)
                         driver.Reliability += trait.DriverReliability.Value;
@@ -357,7 +359,8 @@ namespace FormuleCirkelEntity.Controllers
                 position++;
             }
 
-            season.PointsPerPosition = pairs;
+            foreach (var pair in pairs)
+                season.PointsPerPosition.Add(pair);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Settings), new { id = model.SeasonId });
         }
@@ -472,7 +475,8 @@ namespace FormuleCirkelEntity.Controllers
 
                 if (lastTeam != null)
                 {
-                    seasonTeam.Traits = lastTeam.Traits;
+                    foreach (var trait in lastTeam.Traits)
+                        seasonTeam.Traits.Add(trait);
                 }
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
@@ -658,7 +662,10 @@ namespace FormuleCirkelEntity.Controllers
                     .LastOrDefault(s => s.DriverId == globalDriverId);
 
                 if (lastDriver != null)
-                    seasonDriver.Traits = lastDriver.Traits;
+                {
+                    foreach (var trait in lastDriver.Traits)
+                        seasonDriver.Traits.Add(trait);
+                }
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
                 await _context.AddAsync(seasonDriver);
@@ -956,7 +963,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var traits = _context.Traits
                 .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Any(res => res.Value.TraitId == tr.TraitId))
+                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Any(res => res.TraitId == tr.TraitId))
                 .OrderBy(t => t.Name)
                 .ToList();
 
@@ -985,7 +992,7 @@ namespace FormuleCirkelEntity.Controllers
             if (seasondriver == null || trait == null)
                 return NotFound();
 
-            seasondriver.Traits.Add(seasondriver.Traits.Count, trait);
+            seasondriver.Traits.Add(trait);
             _context.Update(seasondriver);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(DriverTraits), new { id });
@@ -1001,7 +1008,7 @@ namespace FormuleCirkelEntity.Controllers
             if (driver == null || trait == null)
                 return NotFound();
 
-            var removetrait = driver.Traits.First(item => item.Value.TraitId == trait.TraitId);
+            var removetrait = driver.Traits.First(item => item.TraitId == trait.TraitId);
             driver.Traits.Remove(removetrait);
             _context.Update(driver);
             await _context.SaveChangesAsync();
@@ -1017,7 +1024,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var traits = _context.Traits
                 .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Any(res => res.Value.TraitId == tr.TraitId))
+                .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Any(res => res.TraitId == tr.TraitId))
                 .OrderBy(t => t.Name)
                 .ToList();
 
@@ -1044,7 +1051,7 @@ namespace FormuleCirkelEntity.Controllers
             if (seasonteam == null || trait == null)
                 return NotFound();
 
-            seasonteam.Traits.Add(seasonteam.Traits.Count, trait);
+            seasonteam.Traits.Add(trait);
             _context.Update(seasonteam);
             await _context.SaveChangesAsync();
 
@@ -1061,7 +1068,7 @@ namespace FormuleCirkelEntity.Controllers
             if (team == null || trait == null)
                 return NotFound();
 
-            var removetrait = team.Traits.First(item => item.Value.TraitId == trait.TraitId);
+            var removetrait = team.Traits.First(item => item.TraitId == trait.TraitId);
             team.Traits.Remove(removetrait);
             _context.Update(team);
             await _context.SaveChangesAsync();

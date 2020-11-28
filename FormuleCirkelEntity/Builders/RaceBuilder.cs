@@ -127,7 +127,7 @@ namespace FormuleCirkelEntity.Builders
             {
                 if (driver.SeasonDriver.Traits.Any())
                 {
-                    foreach (var trait in driver.SeasonDriver.Traits.Values)
+                    foreach (var trait in driver.SeasonDriver.Traits)
                     {
                         SetIndividualTraitMod(driver, trait);
                     }
@@ -135,7 +135,7 @@ namespace FormuleCirkelEntity.Builders
 
                 if (driver.SeasonDriver.SeasonTeam.Traits.Any())
                 {
-                    foreach (var trait in driver.SeasonDriver.SeasonTeam.Traits.Values)
+                    foreach (var trait in driver.SeasonDriver.SeasonTeam.Traits)
                     {
                         SetIndividualTraitMod(driver, trait);
                     }
@@ -143,7 +143,7 @@ namespace FormuleCirkelEntity.Builders
 
                 if (track.Traits.Any())
                 {
-                    foreach (var trait in track.Traits.Values)
+                    foreach (var trait in track.Traits)
                     {
                         SetIndividualTraitMod(driver, trait);
                     }

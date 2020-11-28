@@ -55,7 +55,7 @@
             {
                 <h4 class="text-left">Traits</h4>
                 <ul class="text-left" style="line-height: 150%;">
-                    @foreach (var trait in Model.Track.Traits.Values)
+                    @foreach (var trait in Model.Track.Traits)
                     {
                         <li><b>@trait.Name:</b>  @trait.TraitDescription</li>
                         if (trait.MinimumRNG.HasValue) { minRNGMod += trait.MinimumRNG.Value; }

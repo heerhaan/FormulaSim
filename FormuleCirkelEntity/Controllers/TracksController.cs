@@ -38,7 +38,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var traits = _context.Traits
                 .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Any(res => res.Value.TraitId == tr.TraitId))
+                .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Any(res => res.TraitId == tr.TraitId))
                 .OrderBy(t => t.Name)
                 .ToList();
 
@@ -65,7 +65,7 @@ namespace FormuleCirkelEntity.Controllers
             if (track == null || trait == null)
                 return NotFound();
 
-            track.Traits.Add(track.Traits.Count, trait);
+            track.Traits.Add(trait);
             _context.Update(track);
             await _context.SaveChangesAsync();
 
@@ -82,7 +82,7 @@ namespace FormuleCirkelEntity.Controllers
             if (track == null || trait == null)
                 return NotFound();
 
-            var removetrait = track.Traits.First(item => item.Value.TraitId == trait.TraitId);
+            var removetrait = track.Traits.First(item => item.TraitId == trait.TraitId);
             track.Traits.Remove(removetrait);
             _context.Update(track);
             await _context.SaveChangesAsync();
