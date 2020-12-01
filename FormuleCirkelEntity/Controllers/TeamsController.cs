@@ -4,6 +4,7 @@ using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -131,6 +132,66 @@ namespace FormuleCirkelEntity.Controllers
 
             stats.ConstructorTitles = teamchamps;
             return View(stats);
+        }
+
+        [Route("Traits/{id}")]
+        public async Task<IActionResult> TeamTraits(int id)
+        {
+            Team team = await Data
+                .FirstAsync(dr => dr.Id == id);
+
+            List<Trait> teamTraits = await _context.TeamTraits
+                .Where(ttr => ttr.TeamId == id)
+                .Select(ttr => ttr.Trait)
+                .ToListAsync();
+
+            List<Trait> traits = await _context.Traits
+                .Where(tr => tr.TraitGroup == TraitGroup.Team && !teamTraits.Any(ttr => ttr.TraitId == tr.TraitId))
+                .OrderBy(tr => tr.Name)
+                .ToListAsync();
+
+            var viewmodel = new TeamTraitsModel
+            {
+                Team = team,
+                TeamTraits = teamTraits,
+                Traits = traits
+            };
+            return View(viewmodel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Traits/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TeamTraits(int id, [Bind("TraitId")] int traitId)
+        {
+            Team team = await Data.FirstAsync(t => t.Id == id);
+            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
+
+            if (team is null || trait is null)
+                return NotFound();
+
+            TeamTrait newTrait = new TeamTrait { Team = team, Trait = trait };
+            await _context.AddAsync(newTrait);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(TeamTraits), new { id });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [Route("Traits/Remove/{teamId}")]
+        public async Task<IActionResult> RemoveTeamTrait(int teamId, int traitId)
+        {
+            Team team = await Data.Include(te => te.TeamTraits).FirstAsync(te => te.Id == teamId);
+            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
+
+            if (team == null || trait == null)
+                return NotFound();
+
+            TeamTrait removetrait = team.TeamTraits.First(ttr => ttr.TraitId == traitId);
+            _context.Remove(removetrait);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(TeamTraits), new { id = teamId });
         }
 
         // This view showcases the teams that lead in varied amount of statistics

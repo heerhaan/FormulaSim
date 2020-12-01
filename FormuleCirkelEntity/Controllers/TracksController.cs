@@ -33,14 +33,20 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> TrackTraits(int id)
         {
-            var track = await _context.Tracks.SingleAsync(tr => tr.Id == id);
-            var trackTraits = await _context.TrackTraits.Where(trt => trt.TrackId == id).ToListAsync();
+            // Finds the selected track by it's id
+            Track track = await Data.Tracks
+                .FirstAsync(tr => tr.Id == id);
+            // Finds the traits used by the given track and returns a list of it
+            List<Trait> trackTraits = await _context.TrackTraits
+                .Where(trt => trt.TrackId == id)
+                .Select(trt => trt.Trait)
+                .ToListAsync();
 
-            var traits = _context.Traits
-                .AsEnumerable()
+            // Finds the traits that belong to Tracks and aren't yet used by the given track
+            List<Trait> traits = await _context.Traits
                 .Where(tr => tr.TraitGroup == TraitGroup.Track && !trackTraits.Any(res => res.TraitId == tr.TraitId))
-                .OrderBy(t => t.Name)
-                .ToList();
+                .OrderBy(tr => tr.Name)
+                .ToListAsync();
 
             if (track is null)
                 return NotFound();
@@ -51,7 +57,6 @@ namespace FormuleCirkelEntity.Controllers
                 TrackTraits = trackTraits,
                 Traits = traits
             };
-
             return View(model);
         }
 
@@ -60,8 +65,8 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TrackTraits(int id, [Bind("TraitId")] int traitId)
         {
-            var track = await Data.SingleOrDefaultAsync(t => t.Id == id);
-            var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
+            Track track = await Data.FirstAsync(t => t.Id == id);
+            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (track is null || trait is null)
                 return NotFound();
@@ -77,13 +82,13 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{trackId}")]
         public async Task<IActionResult> RemoveTrait(int trackId, int traitId)
         {
-            var track = await Data.Include(tr => tr.TrackTraits).SingleOrDefaultAsync(t => t.Id == trackId);
-            var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
+            Track track = await Data.Include(tr => tr.TrackTraits).FirstAsync(t => t.Id == trackId);
+            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (track == null || trait == null)
                 return NotFound();
 
-            var removetrait = track.TrackTraits.SingleOrDefault(trt => trt.TraitId == traitId);
+            TrackTrait removetrait = track.TrackTraits.First(trt => trt.TraitId == traitId);
             _context.Remove(removetrait);
             await _context.SaveChangesAsync();
 
