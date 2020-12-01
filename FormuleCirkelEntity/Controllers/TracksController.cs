@@ -33,21 +33,22 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> TrackTraits(int id)
         {
-            var track = await Data.IgnoreQueryFilters()
-                .SingleOrDefaultAsync(t => t.Id == id);
+            var track = await _context.Tracks.SingleAsync(tr => tr.Id == id);
+            var trackTraits = await _context.TrackTraits.Where(trt => trt.TrackId == id).ToListAsync();
 
             var traits = _context.Traits
                 .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Track && !track.Traits.Any(res => res.TraitId == tr.TraitId))
+                .Where(tr => tr.TraitGroup == TraitGroup.Track && !trackTraits.Any(res => res.TraitId == tr.TraitId))
                 .OrderBy(t => t.Name)
                 .ToList();
 
-            if (track == null)
+            if (track is null)
                 return NotFound();
 
             var model = new TrackTraitsTrackModel
             {
                 Track = track,
+                TrackTraits = trackTraits,
                 Traits = traits
             };
 
@@ -62,11 +63,11 @@ namespace FormuleCirkelEntity.Controllers
             var track = await Data.SingleOrDefaultAsync(t => t.Id == id);
             var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
-            if (track == null || trait == null)
+            if (track is null || trait is null)
                 return NotFound();
 
-            track.Traits.Add(trait);
-            _context.Update(track);
+            TrackTrait newTrait = new TrackTrait { Track = track, Trait = trait };
+            await _context.AddAsync(newTrait);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(TrackTraits), new { id });
@@ -76,15 +77,14 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{trackId}")]
         public async Task<IActionResult> RemoveTrait(int trackId, int traitId)
         {
-            var track = await Data.SingleOrDefaultAsync(t => t.Id == trackId);
+            var track = await Data.Include(tr => tr.TrackTraits).SingleOrDefaultAsync(t => t.Id == trackId);
             var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
 
             if (track == null || trait == null)
                 return NotFound();
 
-            var removetrait = track.Traits.First(item => item.TraitId == trait.TraitId);
-            track.Traits.Remove(removetrait);
-            _context.Update(track);
+            var removetrait = track.TrackTraits.SingleOrDefault(trt => trt.TraitId == traitId);
+            _context.Remove(removetrait);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(TrackTraits), new { id = trackId });

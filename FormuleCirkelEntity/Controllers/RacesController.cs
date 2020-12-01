@@ -326,7 +326,8 @@ namespace FormuleCirkelEntity.Controllers
                     {
                         result.Status = Status.DSQ;
                         result.DSQCause = Helpers.RandomDSQCause(stintResult.HasValue);
-                    } else
+                    } 
+                    else
                     {
                         result.Status = Status.DNF;
                         result.DNFCause = Helpers.RandomDNFCause(stintResult.HasValue);

@@ -28,8 +28,8 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<DriverResult> DriverResults { get; set; }
         public DbSet<Qualification> Qualification { get; set; }
         public DbSet<Trait> Traits { get; set; }
-        public DbSet<SeasonDriverTrait> SeasonDriverTraits { get; set; }
-        public DbSet<SeasonTeamTrait> SeasonTeamTraits { get; set; }
+        public DbSet<DriverTrait> DriverTraits { get; set; }
+        public DbSet<TeamTrait> TeamTraits { get; set; }
         public DbSet<TrackTrait> TrackTraits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -64,10 +64,10 @@ namespace FormuleCirkelEntity.DAL
                 .HasConversion(
                     dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
                     json => JsonConvert.DeserializeObject<Dictionary<int, int?>>(json) ?? new Dictionary<int, int?>());
-            builder.Entity<SeasonDriverTrait>()
-                .HasKey(dt => new { dt.SeasonDriverId, dt.TraitId });
-            builder.Entity<SeasonTeamTrait>()
-                .HasKey(tt => new { tt.SeasonTeamId, tt.TraitId });
+            builder.Entity<DriverTrait>()
+                .HasKey(dt => new { dt.DriverId, dt.TraitId });
+            builder.Entity<TeamTrait>()
+                .HasKey(tt => new { tt.TeamId, tt.TraitId });
             builder.Entity<TrackTrait>()
                 .HasKey(tr => new { tr.TrackId, tr.TraitId });
         }

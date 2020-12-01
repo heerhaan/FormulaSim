@@ -13,6 +13,7 @@ namespace FormuleCirkelEntity.Models
         public string Biography { get; set; }
         public bool Archived { get; set; }
 
+        public IList<DriverTrait> DriverTraits { get; } = new List<DriverTrait>();
         public IList<SeasonDriver> SeasonDrivers { get; } = new List<SeasonDriver>();
     }
 }

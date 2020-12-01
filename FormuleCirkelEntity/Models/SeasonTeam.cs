@@ -31,7 +31,6 @@ namespace FormuleCirkelEntity.Models
         public int EngineId { get; set; }
         public Engine Engine { get; set; }
 
-        public IList<SeasonTeamTrait> TeamTraits { get; } = new List<SeasonTeamTrait>();
         public IList<SeasonDriver> SeasonDrivers { get; } = new List<SeasonDriver>();
     }
 }

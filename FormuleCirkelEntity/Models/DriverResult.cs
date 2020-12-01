@@ -24,7 +24,7 @@ namespace FormuleCirkelEntity.Models
 
         public IDictionary<int, int?> StintResults { get; } = new Dictionary<int, int?>();
 
-        // Modifiers for this race that apply every stint
+        // Modifiers for this race that apply every stint || maybe rethink, change or remove this since this is a bit weird
         public int QualyMod { get; set; }
         public int DriverRacePace { get; set; }
         public int ChassisRacePace { get; set; }

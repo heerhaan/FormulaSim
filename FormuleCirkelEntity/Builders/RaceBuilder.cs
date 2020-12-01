@@ -107,6 +107,7 @@ namespace FormuleCirkelEntity.Builders
 
             foreach (var driver in drivers)
             {
+                // Ensures that dropped drivers won't be added to a race by not creating a result object for them
                 if (driver.Dropped)
                     continue;
 

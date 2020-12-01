@@ -33,8 +33,8 @@ namespace FormuleCirkelEntity.Models
         public int? MinimumRNG { get; set; }
         // Determines if the trait is still in use in the application.
         public bool Archived { get; set; }
-        public IList<SeasonDriverTrait> DriverTraits { get; } = new List<SeasonDriverTrait>();
-        public IList<SeasonTeamTrait> TeamTraits { get; } = new List<SeasonTeamTrait>();
+        public IList<DriverTrait> DriverTraits { get; } = new List<DriverTrait>();
+        public IList<TeamTrait> TeamTraits { get; } = new List<TeamTrait>();
         public IList<TrackTrait> TrackTraits { get; } = new List<TrackTrait>();
     }
 

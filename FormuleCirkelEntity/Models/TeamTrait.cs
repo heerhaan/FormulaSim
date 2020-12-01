@@ -2,10 +2,10 @@
 
 namespace FormuleCirkelEntity.Models
 {
-    public class TrackTrait
+    public class TeamTrait
     {
-        public int TrackId { get; set; }
-        public Track Track { get; set; }
+        public int TeamId { get; set; }
+        public Team Team { get; set; }
         public int TraitId { get; set; }
         public Trait Trait { get; set; }
     }

@@ -261,31 +261,7 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(sd => (sd.Skill + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (((int)sd.DriverStatus) * -2) + 2))
                 .ToList();
 
-            seasondrivers = AddTraitReliabilityEffects(seasondrivers);
-
             return View(seasondrivers);
-        }
-
-        // Adds the effects of a trait to the total driver and chassis reliablity to all the drivers.
-        private static List<SeasonDriver> AddTraitReliabilityEffects(List<SeasonDriver> drivers)
-        {
-            foreach (var driver in drivers)
-            {
-                // This loop looks over all the traits a driver has.
-                foreach (var trait in driver.Traits)
-                {
-                    if (trait.DriverReliability.HasValue)
-                        driver.Reliability += trait.DriverReliability.Value;
-                }
-                // This loop looks over all the traits a team has.
-                foreach (var trait in driver.SeasonTeam.Traits)
-                {
-                    if (trait.DriverReliability.HasValue)
-                        driver.Reliability += trait.DriverReliability.Value;
-                }
-            }
-
-            return drivers;
         }
 
         [Route("[Controller]/{id}/Settings")]
@@ -466,19 +442,6 @@ namespace FormuleCirkelEntity.Controllers
                 seasonTeam.SeasonId = id;
                 seasonTeam.TeamId = globalTeamId ?? throw new ArgumentNullException(nameof(globalTeamId));
 
-                // Adds last previous used traits from team as default
-                var lastTeam = _context.SeasonTeams
-                    .Include(st => st.Team)
-                    .ToList()
-                    .OrderBy(st => st.SeasonTeamId)
-                    .LastOrDefault(s => s.Team.Id == globalTeamId);
-
-                if (lastTeam != null)
-                {
-                    foreach (var trait in lastTeam.Traits)
-                        seasonTeam.Traits.Add(trait);
-                }
-
                 // Persist the new SeasonDriver and return to AddDrivers page.
                 await _context.AddAsync(seasonTeam);
                 await _context.SaveChangesAsync();
@@ -655,17 +618,6 @@ namespace FormuleCirkelEntity.Controllers
                 // Set the Season and global Driver again as these are not bound in the view.
                 seasonDriver.SeasonId = id;
                 seasonDriver.DriverId = globalDriverId ?? throw new ArgumentNullException(nameof(globalDriverId));
-
-                // Adds last previous used traits from driver as default
-                var lastDriver = _context.SeasonDrivers
-                    .AsEnumerable()
-                    .LastOrDefault(s => s.DriverId == globalDriverId);
-
-                if (lastDriver != null)
-                {
-                    foreach (var trait in lastDriver.Traits)
-                        seasonDriver.Traits.Add(trait);
-                }
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
                 await _context.AddAsync(seasonDriver);

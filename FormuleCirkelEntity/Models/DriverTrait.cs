@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public class SeasonTeamTrait
+    public class DriverTrait
     {
-        public int SeasonTeamId { get; set; }
-        public SeasonTeam SeasonTeam { get; set; }
+        public int DriverId { get; set; }
+        public Driver Driver { get; set; }
         public int TraitId { get; set; }
         public Trait Trait { get; set; }
     }
