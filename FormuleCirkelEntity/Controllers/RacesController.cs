@@ -235,10 +235,10 @@ namespace FormuleCirkelEntity.Controllers
         {
             var race = await _context.Races
                 .IgnoreQueryFilters()
-                .Include(r => r.Season.Drivers)
-                .Include(r => r.Season.Teams)
+                .Include(r => r.Season.Drivers).ThenInclude(sd => sd.Driver.DriverTraits)
+                .Include(r => r.Season.Teams).ThenInclude(st => st.Team.TeamTraits)
                 .Include(r => r.DriverResults)
-                .Include(r => r.Track)
+                .Include(r => r.Track.TrackTraits)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             if (!race.DriverResults.Any())
@@ -250,7 +250,7 @@ namespace FormuleCirkelEntity.Controllers
                 {
                     race = _raceBuilder
                     .Use(race)
-                    .AddAllDrivers(race.Track)
+                    .AddAllDrivers()
                     .GetResult();
 
                     _context.DriverResults.AddRange(race.DriverResults);

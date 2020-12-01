@@ -34,8 +34,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> TrackTraits(int id)
         {
             // Finds the selected track by it's id
-            Track track = await Data.Tracks
-                .FirstAsync(tr => tr.Id == id);
+            Track track = await Data.FirstAsync(tr => tr.Id == id);
             // Finds the traits used by the given track and returns a list of it
             List<Trait> trackTraits = await _context.TrackTraits
                 .Where(trt => trt.TrackId == id)
@@ -51,7 +50,7 @@ namespace FormuleCirkelEntity.Controllers
             if (track is null)
                 return NotFound();
 
-            var model = new TrackTraitsTrackModel
+            var model = new TrackTraitsModel
             {
                 Track = track,
                 TrackTraits = trackTraits,

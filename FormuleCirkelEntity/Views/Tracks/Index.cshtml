@@ -35,8 +35,8 @@
                 </th>
                 @if (isAdmin)
                 {
-                    <th class="w-10">Edit</th>
                     <th class="w-10">Traits</th>
+                    <th class="w-10">Edit</th>
                     <th class="w-10">Archive</th>
                 }
             </tr>
@@ -57,13 +57,13 @@
                 @if (isAdmin)
                 {
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">
-                            <i class="fas fa-wrench fa-2x"></i>
+                        <a asp-action="TrackTraits" asp-route-id="@item.Id">
+                            <i class="fas fa-yin-yang fa-2x"></i>
                         </a>
                     </td>
                     <td>
-                        <a asp-action="TrackTraits" asp-route-id="@item.Id">
-                            <i class="fas fa-yin-yang fa-2x"></i>
+                        <a asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-wrench fa-2x"></i>
                         </a>
                     </td>
                     <td>

@@ -92,17 +92,18 @@ namespace FormuleCirkelEntity.Builders
             return this;
         }
 
-        public RaceBuilder AddAllDrivers(Track track)
+        public RaceBuilder AddAllDrivers()
         {
             if (_race.Season != null)
-                AddDrivers(_race.Season.Drivers, track);
+                AddDrivers(_race.Season.Drivers);
+
             return this;
         }
 
-        public RaceBuilder AddDrivers(IEnumerable<SeasonDriver> drivers, Track track)
+        public RaceBuilder AddDrivers(IEnumerable<SeasonDriver> drivers)
         {
             // Check if given parameters aren't null
-            if (drivers is null || track is null)
+            if (drivers is null)
                 throw new NullReferenceException();
 
             foreach (var driver in drivers)
@@ -111,51 +112,33 @@ namespace FormuleCirkelEntity.Builders
                 if (driver.Dropped)
                     continue;
 
-                DriverResult driverResult = new DriverResult
-                {
-                    SeasonDriver = driver
-                };
-
-                _race.DriverResults.Add(SetTraitMods(driverResult, track));
+                DriverResult driverResult = new DriverResult { SeasonDriver = driver };
+                _race.DriverResults.Add(SetTraitMods(driverResult, _race.Track.TrackTraits));
             }
-                
             return this;
         }
 
-        private static DriverResult SetTraitMods(DriverResult driver, Track track)
+        private static DriverResult SetTraitMods(DriverResult driver, IList<TrackTrait> trackTraits)
         {
-            try
+            // Loops through all the traits a driver may have and adds them to the driverresult modifiers
+            foreach (var trait in driver.SeasonDriver.Driver.DriverTraits)
             {
-                if (driver.SeasonDriver.Traits.Any())
-                {
-                    foreach (var trait in driver.SeasonDriver.Traits)
-                    {
-                        SetIndividualTraitMod(driver, trait);
-                    }
-                }
-
-                if (driver.SeasonDriver.SeasonTeam.Traits.Any())
-                {
-                    foreach (var trait in driver.SeasonDriver.SeasonTeam.Traits)
-                    {
-                        SetIndividualTraitMod(driver, trait);
-                    }
-                }
-
-                if (track.Traits.Any())
-                {
-                    foreach (var trait in track.Traits)
-                    {
-                        SetIndividualTraitMod(driver, trait);
-                    }
-                }
-
-                return driver;
+                SetIndividualTraitMod(driver, trait.Trait);
             }
-            catch (NullReferenceException)
+
+            // Loops through all the traits the team of a driver may have and adds them to the driverresult modifiers
+            foreach (var trait in driver.SeasonDriver.SeasonTeam.Team.TeamTraits)
             {
-                return driver;
+                SetIndividualTraitMod(driver, trait.Trait);
             }
+
+            // Loops through all the traits a track may have and adds them to the driverresult modifiers
+            foreach (var trait in trackTraits)
+            {
+                SetIndividualTraitMod(driver, trait.Trait);
+            }
+
+            return driver;
         }
 
         private static void SetIndividualTraitMod(DriverResult driver, Trait trait)
