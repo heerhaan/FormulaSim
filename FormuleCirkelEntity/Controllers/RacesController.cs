@@ -209,7 +209,13 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
+            var trackTraits = await _context.TrackTraits
+                .Where(trt => trt.TrackId == race.TrackId)
+                .Include(trt => trt.Trait)
+                .ToListAsync();
+
             ViewBag.favourites = Favourites(race);
+            ViewBag.tracktraits = trackTraits;
 
             return View(race);
         }
@@ -265,17 +271,14 @@ namespace FormuleCirkelEntity.Controllers
                     {
                         // Gets the traits from the driver in the loop and sets them
                         var thisDriverTraits = driverTraits.Where(drt => drt.DriverId == driverRes.SeasonDriver.DriverId);
-                        if (thisDriverTraits != null)
-                            RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
+                        RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
                         // Gets the seasonteam of the driver in the loop
                         var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
                         // Gets the traits from the team of the driver in the loop and sets them
                         var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
-                        if (thisTeamTraits != null)
-                            RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
+                        RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
                         // Sets the traits from the track to the driver in the loop
-                        if (trackTraits != null)
-                            RaceService.SetTrackTraitMods(driverRes, trackTraits);
+                        RaceService.SetTrackTraitMods(driverRes, trackTraits);
                     }
 
                     _context.DriverResults.AddRange(race.DriverResults);
