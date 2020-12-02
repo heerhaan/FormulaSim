@@ -304,8 +304,12 @@ namespace FormuleCirkelEntity.Controllers
                 .IgnoreQueryFilters()
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
+                    .ThenInclude(d => d.DriverTraits)
+                    .ThenInclude(drt => drt.Trait)
                 .Include(dr => dr.SeasonDriver.SeasonTeam)
                     .ThenInclude(st => st.Team)
+                    .ThenInclude(t => t.TeamTraits)
+                    .ThenInclude(tet => tet.Trait)
                 .ToListAsync();
 
             RaceWeekendModel viewmodel = new RaceWeekendModel
