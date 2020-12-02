@@ -17,10 +17,9 @@ namespace FormuleCirkelEntity.Controllers
     public class TracksController : ViewDataController<Track>
     {
         public TracksController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager, 
             PagingHelper pagingHelper)
-            : base(context, identityContext, userManager, pagingHelper)
+            : base(context, userManager, pagingHelper)
         {
         }
 
@@ -42,10 +41,12 @@ namespace FormuleCirkelEntity.Controllers
                 .ToListAsync();
 
             // Finds the traits that belong to Tracks and aren't yet used by the given track
-            List<Trait> traits = await _context.Traits
+            List<Trait> traits = _context.Traits
+                .AsNoTracking()
+                .AsEnumerable()
                 .Where(tr => tr.TraitGroup == TraitGroup.Track && !trackTraits.Any(res => res.TraitId == tr.TraitId))
                 .OrderBy(tr => tr.Name)
-                .ToListAsync();
+                .ToList();
 
             if (track is null)
                 return NotFound();

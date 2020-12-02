@@ -19,10 +19,9 @@ namespace FormuleCirkelEntity.Controllers
     public class TeamsController : ViewDataController<Team>
     {
         public TeamsController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager, 
             PagingHelper pagingHelper)
-            : base(context, identityContext, userManager, pagingHelper)
+            : base(context, userManager, pagingHelper)
         { }
 
         [SortResult(nameof(Team.Abbreviation)), PagedResult]
@@ -36,7 +35,7 @@ namespace FormuleCirkelEntity.Controllers
                 ViewBag.ownedteams = simuser.Teams;
             }
             else
-                ViewBag.ownedteams = new List<int>();
+                ViewBag.ownedteams = new List<Team>();
 
             return base.Index().Result;
         }
@@ -145,10 +144,12 @@ namespace FormuleCirkelEntity.Controllers
                 .Select(ttr => ttr.Trait)
                 .ToListAsync();
 
-            List<Trait> traits = await _context.Traits
+            List<Trait> traits = _context.Traits
+                .AsNoTracking()
+                .AsEnumerable()
                 .Where(tr => tr.TraitGroup == TraitGroup.Team && !teamTraits.Any(ttr => ttr.TraitId == tr.TraitId))
                 .OrderBy(tr => tr.Name)
-                .ToListAsync();
+                .ToList();
 
             var viewmodel = new TeamTraitsModel
             {

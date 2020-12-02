@@ -21,11 +21,10 @@ namespace FormuleCirkelEntity.Controllers
         //private readonly IEmailSender _emailSender;
 
         public AccountsController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager,
             SignInManager<SimUser> signInManager,
             ILogger<AccountsController> logger)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         {
             _signInManager = signInManager;
             _logger = logger;

@@ -15,5 +15,8 @@ namespace FormuleCirkelEntity.Models
 
         public IList<TeamTrait> TeamTraits { get; } = new List<TeamTrait>();
         public IList<SeasonTeam> SeasonTeams { get; } = new List<SeasonTeam>();
+
+        public int? SimUserId { get; set; }
+        public SimUser SimUser { get; set; }
     }
 }

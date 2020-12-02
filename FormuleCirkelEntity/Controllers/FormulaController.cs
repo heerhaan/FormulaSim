@@ -10,15 +10,12 @@ namespace FormuleCirkelEntity.Controllers
     public class FormulaController : Controller
     {
         protected readonly FormulaContext _context;
-        protected readonly IdentityContext _identityContext;
         protected readonly UserManager<SimUser> _userManager;
 
         protected FormulaController(FormulaContext context,
-            IdentityContext identityContext,
             UserManager<SimUser> userManager)
         {
             _context = context;
-            _identityContext = identityContext;
             _userManager = userManager;
         }
 

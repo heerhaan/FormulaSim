@@ -7,7 +7,7 @@
     var pageNumber = (int)ViewData["pageNumber"];
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
-    List<int> owneddrivers = ViewBag.owneddrivers;
+    List<Driver> userOwned = ViewBag.owneddrivers;
     bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
@@ -65,7 +65,7 @@
                         <i class="fas fa-id-card fa-2x"></i>
                     </a>
                 </td>
-            @if(owneddrivers.Contains(item.Id) || isAdmin)
+            @if(userOwned.Contains(item) || isAdmin)
             {
                 <td>
                     <a asp-action="DriverTraits" asp-route-id="@item.Id">

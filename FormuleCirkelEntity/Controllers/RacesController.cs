@@ -8,6 +8,7 @@ using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Utility;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
+using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,11 +25,10 @@ namespace FormuleCirkelEntity.Controllers
         private static readonly Random rng = new Random();
 
         public RacesController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager, 
             RaceResultGenerator raceResultGenerator, 
             RaceBuilder raceBuilder)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         {
             _resultGenerator = raceResultGenerator;
             _raceBuilder = raceBuilder;
@@ -234,11 +234,8 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RaceStart(int id, int raceId)
         {
             var race = await _context.Races
-                .IgnoreQueryFilters()
-                .Include(r => r.Season.Drivers).ThenInclude(sd => sd.Driver.DriverTraits)
-                .Include(r => r.Season.Teams).ThenInclude(st => st.Team.TeamTraits)
+                .Include(r => r.Season.Drivers)
                 .Include(r => r.DriverResults)
-                .Include(r => r.Track.TrackTraits)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             if (!race.DriverResults.Any())
@@ -249,9 +246,37 @@ namespace FormuleCirkelEntity.Controllers
                 if (result)
                 {
                     race = _raceBuilder
-                    .Use(race)
-                    .AddAllDrivers()
-                    .GetResult();
+                        .Use(race)
+                        .AddAllDrivers()
+                        .GetResult();
+
+                    var driverTraits = await _context.DriverTraits
+                        .Include(drt => drt.Trait)
+                        .ToListAsync();
+                    var teamTraits = await _context.TeamTraits
+                        .Include(ttr => ttr.Trait)
+                        .ToListAsync();
+                    var trackTraits = await _context.TrackTraits
+                        .Include(tet => tet.Trait)
+                        .Where(trt => trt.TrackId == race.TrackId)
+                        .ToListAsync();
+                    var seasonTeams = await _context.SeasonTeams.Where(st => st.SeasonId == race.SeasonId).ToListAsync();
+                    foreach (var driverRes in race.DriverResults)
+                    {
+                        // Gets the traits from the driver in the loop and sets them
+                        var thisDriverTraits = driverTraits.Where(drt => drt.DriverId == driverRes.SeasonDriver.DriverId);
+                        if (thisDriverTraits != null)
+                            RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
+                        // Gets the seasonteam of the driver in the loop
+                        var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
+                        // Gets the traits from the team of the driver in the loop and sets them
+                        var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
+                        if (thisTeamTraits != null)
+                            RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
+                        // Sets the traits from the track to the driver in the loop
+                        if (trackTraits != null)
+                            RaceService.SetTrackTraitMods(driverRes, trackTraits);
+                    }
 
                     _context.DriverResults.AddRange(race.DriverResults);
                     await _context.SaveChangesAsync();

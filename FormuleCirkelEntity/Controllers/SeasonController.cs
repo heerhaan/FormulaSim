@@ -17,9 +17,8 @@ namespace FormuleCirkelEntity.Controllers
     public class SeasonController : FormulaController
     {
         public SeasonController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         { }
 
         public async Task<IActionResult> Index()

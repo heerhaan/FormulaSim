@@ -15,9 +15,8 @@ namespace FormuleCirkelEntity.Controllers
     public class AdminController : FormulaController
     {
         public AdminController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         { }
 
         public IActionResult Index()

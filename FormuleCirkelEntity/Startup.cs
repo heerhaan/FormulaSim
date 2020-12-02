@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using FormuleCirkelEntity.Validation;
 using FormuleCirkelEntity.Services;
 using Microsoft.Extensions.Hosting;
+using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace FormuleCirkelEntity
 {
@@ -43,11 +45,46 @@ namespace FormuleCirkelEntity
                 .WithRazorPagesAtContentRoot()
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
 
+            services.AddControllers()
+                .AddNewtonsoftJson();
+
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
+            services.AddDefaultIdentity<SimUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<FormulaContext>();
 
-            services.AddControllers().AddNewtonsoftJson();
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequiredLength = 4;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.Name = "FormulaCookie";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+
+                options.LoginPath = "/Accounts/Login";
+                options.AccessDeniedPath = "/Accounts/AccessDenied";
+                options.SlidingExpiration = true;
+            });
+
             services.AddSingleton(new Random());
-
             // Custom services related to [fill in]
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();

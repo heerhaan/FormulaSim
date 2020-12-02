@@ -14,9 +14,8 @@ namespace FormuleCirkelEntity.Controllers
     public class TraitsController : FormulaController
     {
         public TraitsController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         { }
 
         public async Task<IActionResult> Index()

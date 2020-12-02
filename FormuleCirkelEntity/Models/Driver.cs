@@ -15,5 +15,8 @@ namespace FormuleCirkelEntity.Models
 
         public IList<DriverTrait> DriverTraits { get; } = new List<DriverTrait>();
         public IList<SeasonDriver> SeasonDrivers { get; } = new List<SeasonDriver>();
+
+        public int? SimUserId { get; set; }
+        public SimUser SimUser { get; set; }
     }
 }

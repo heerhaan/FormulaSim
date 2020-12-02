@@ -1,4 +1,5 @@
 ﻿using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.DAL
 {
-    public class FormulaContext : DbContext
+    public class FormulaContext : IdentityDbContext<SimUser>
     {
         public FormulaContext(DbContextOptions<FormulaContext> options) : base(options) { }
 
@@ -34,16 +35,18 @@ namespace FormuleCirkelEntity.DAL
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // Regular null-check so no stuff that breaks will get called if builders appears to be null
+            if (builder is null) return;
+            // Uses the base class from Identity
+            base.OnModelCreating(builder);
+            // Makes it so that archived elements are usually hidden unless specified otherwise
             EnableArchivable(builder);
-            if (builder is null)
-                return;
             //Removes the Cascade Delete functionality related to relations between tables
             foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
 
-            //Makes table property unique
             builder.Entity<Engine>()
                 .HasIndex(e => e.Name)
                 .IsUnique();

@@ -16,9 +16,8 @@ namespace FormuleCirkelEntity.Controllers
     public class HomeController : FormulaController
     {
         public HomeController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         { }
 
         public IActionResult Index(string message = null)

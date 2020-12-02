@@ -20,10 +20,9 @@ namespace FormuleCirkelEntity.Controllers
     public class DriversController : ViewDataController<Driver>
     {
         public DriversController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager, 
             PagingHelper pagingHelper)
-            : base(context, identityContext, userManager, pagingHelper)
+            : base(context, userManager, pagingHelper)
         {
         }
 
@@ -38,7 +37,7 @@ namespace FormuleCirkelEntity.Controllers
                 ViewBag.owneddrivers = simuser.Drivers;
             }
             else
-                ViewBag.owneddrivers = new List<int>();
+                ViewBag.owneddrivers = new List<Driver>();
             return base.Index().Result;
         }
 
@@ -139,10 +138,12 @@ namespace FormuleCirkelEntity.Controllers
                 .Select(drt => drt.Trait)
                 .ToListAsync();
 
-            List<Trait> traits = await _context.Traits
+            List<Trait> traits = _context.Traits
+                .AsNoTracking()
+                .AsEnumerable()
                 .Where(tr => tr.TraitGroup == TraitGroup.Driver && !driverTraits.Any(drt => drt.TraitId == tr.TraitId))
                 .OrderBy(tr => tr.Name)
-                .ToListAsync();
+                .ToList();
 
             var viewmodel = new DriverTraitsModel
             {
