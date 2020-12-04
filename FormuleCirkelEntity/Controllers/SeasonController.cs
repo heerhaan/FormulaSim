@@ -713,8 +713,12 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DriverDev(int id)
         {
             DriverDevModel viewmodel = new DriverDevModel();
-            var season = await _context.Seasons.FindAsync(id);
-            var championship = await _context.Championships.FirstOrDefaultAsync(c => c.ActiveChampionship);
+            var season = await _context.Seasons.FirstAsync(s => s.SeasonId == id);
+            var championship = await _context.Championships
+                .Include(c => c.AgeDevRanges)
+                .Include(c => c.SkillDevRanges)
+                .SingleOrDefaultAsync(c => c.ActiveChampionship);
+
             if (season is null || championship is null)
                 return NotFound();
 

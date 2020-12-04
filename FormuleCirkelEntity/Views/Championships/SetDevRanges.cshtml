@@ -1,6 +1,6 @@
 ﻿@model FormuleCirkelEntity.ViewModels.SetDevModel
 
-@{ 
+@{
     ViewData["Title"] = "Dev Ranges";
 }
 
@@ -12,7 +12,7 @@
             @Html.TextBoxFor(c => c.ChampionshipId, new { style = "display: none;" })
         </div>
         <div class="col">
-            <div class="col-6">
+            <div class="col-10">
                 <button type="button" id="addskill" class="btn float-left">Add</button>
                 <table class="ctable fullborder fullwidth">
                     <thead class="fullborder">
@@ -44,19 +44,10 @@
                                 </tr>
                             }
                         }
-                        @if (!Model.SkillValueKey.Contains(9999))
-                        {
-                            <tr>
-                                <td><input name="SkillValueKey" type="number" value="9999" readonly /></td>
-                                <td><input name="SkillMinDev" type="number" /></td>
-                                <td><input name="SkillMaxDev" type="number" /></td>
-                                <td>Required</td>
-                            </tr>
-                        }
                     </tbody>
                 </table>
             </div>
-            <div class="col-6">
+            <div class="col-10">
                 <button type="button" id="addage" class="btn float-left">Add</button>
                 <table class="ctable fullborder fullwidth">
                     <thead class="fullborder">
@@ -88,28 +79,29 @@
                                 </tr>
                             }
                         }
-                        @if (!Model.AgeValueKey.Contains(9999))
-                        {
-                            <tr>
-                                <td><input name="AgeValueKey" type="number" value="9999" readonly /></td>
-                                <td><input name="AgeMinDev" type="number" /></td>
-                                <td><input name="AgeMaxDev" type="number" /></td>
-                                <td>Required</td>
-                            </tr>
-                        }
                     </tbody>
                 </table>
             </div>
             <button type="submit" class="btn mt-2 fullwidth">Save</button>
         </div>
     }
+</div>
 
+<div>
     <table id="newskill" style="display:none;">
         <tr>
             <td><input name="SkillValueKey" type="number" /></td>
             <td><input name="SkillMinDev" type="number" /></td>
             <td><input name="SkillMaxDev" type="number" /></td>
             <td><button type="button" class="btn fullwidth delete">Delete</button></td>
+        </tr>
+    </table>
+    <table id="newmaxskill" style="display:none;">
+        <tr>
+            <td><input name="SkillValueKey" type="number" value="9999" readonly /></td>
+            <td><input name="SkillMinDev" type="number" /></td>
+            <td><input name="SkillMaxDev" type="number" /></td>
+            <td>Required</td>
         </tr>
     </table>
     <table id="newage" style="display:none;">
@@ -120,6 +112,14 @@
             <td><button type="button" class="btn fullwidth delete">Delete</button></td>
         </tr>
     </table>
+    <table id="newmaxage" style="display:none;">
+        <tr>
+            <td><input name="AgeValueKey" type="number" value="9999" readonly /></td>
+            <td><input name="AgeMinDev" type="number" /></td>
+            <td><input name="AgeMaxDev" type="number" /></td>
+            <td>Required</td>
+        </tr>
+    </table>
 </div>
 
 <script>
@@ -127,16 +127,31 @@
     var newage = $("#newage");
 
     $("#addskill").click(function () {
-        var skillclone = newskill.find('tr').clone();
-        $("#skillDevRange tr:last").before(skillclone);
+        if ($("#skillDevRange").children().length == 0) {
+            var skillclone = $("#newmaxskill").find('tr').clone();
+            $("#skillDevRange").append(skillclone);
+        }
+        else {
+            var skillclone = newskill.find('tr').clone();
+            $("#skillDevRange tr:last").before(skillclone);
+        }
     });
+
     $("#addage").click(function () {
-        var ageclone = newage.find('tr').clone();
-        $("#ageDevRange tr:last").before(ageclone);
+        if ($("#ageDevRange").children().length == 0) {
+            var ageclone = $("#newmaxage").find('tr').clone();
+            $("#ageDevRange").append(ageclone);
+        }
+        else {
+            var ageclone = newage.find('tr').clone();
+            $("#ageDevRange tr:last").before(ageclone);
+        }
     });
+
     $('#skillDevRange').on('click', '.delete', function () {
         $(this).closest('tr').remove();
     });
+
     $('#ageDevRange').on('click', '.delete', function () {
         $(this).closest('tr').remove();
     });

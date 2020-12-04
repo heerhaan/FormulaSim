@@ -70,9 +70,10 @@
 </div>
 
 <script>
-    const skillDevRange = @(Json.Serialize(Model.SkillDevRanges));
-    const ageDevRange = @(Json.Serialize(Model.AgeDevRanges));
+    const skillDevRange = @(Json.Serialize(Model.SkillDevRanges))
+    const ageDevRange = @(Json.Serialize(Model.AgeDevRanges))
     console.log(skillDevRange);
+    console.log(ageDevRange);
     $(document).ready(function () {
         $("#save").hide();
 
@@ -103,8 +104,8 @@
                 var text = element.textContent;
                 var old = Number(text);
                 var age = Number(document.getElementById("driver_age_" + number).textContent);
-                var skillEffect = ReturnSkillDevEffect(old);
-                var ageEffect = ReturnAgeDevEffect(age);
+                var skillEffect = ReturnDevEffect(old, skillDevRange);
+                var ageEffect = ReturnDevEffect(age, ageDevRange);
                 var min = skillEffect[0] + ageEffect[0];
                 var max = skillEffect[1] + ageEffect[1];
                 var dev = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -119,24 +120,11 @@
             $("#save").show();
         });
 
-        function ReturnSkillDevEffect(skill) {
+        function ReturnDevEffect(comparer, range) {
             var min = 0;
             var max = 0;
-            $.each(skillDevRange, function (value) {
-                if (skill < value.valueKey) {
-                    min = value.minDev;
-                    max = value.maxDev;
-                    return false;
-                }
-            });
-            return [min, max];
-        }
-
-        function ReturnAgeDevEffect(age) {
-            var min = 0;
-            var max = 0;
-            $.each(ageDevRange, function (value) {
-                if (age < value.valueKey) {
+            $.each(range, function (key, value) {
+                if (comparer <= value.valueKey) {
                     min = value.minDev;
                     max = value.maxDev;
                     return false;

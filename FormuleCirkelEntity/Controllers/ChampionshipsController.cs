@@ -83,6 +83,8 @@ namespace FormuleCirkelEntity.Controllers
         public IActionResult SetDevRanges(int id, string statusmessage = null)
         {
             var championship = _context.Championships
+                .Include(c => c.AgeDevRanges)
+                .Include(c => c.SkillDevRanges)
                 .Single(ch => ch.ChampionshipId == id);
             if (championship is null)
                 return NotFound();
