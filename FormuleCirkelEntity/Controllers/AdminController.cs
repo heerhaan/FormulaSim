@@ -82,12 +82,7 @@ namespace FormuleCirkelEntity.Controllers
             if (user is null)
                 return NotFound();
 
-            AddDriverToUserModel viewModel = new AddDriverToUserModel
-            {
-                SimUser = user,
-                OwnedDrivers = user.Drivers,
-                OtherDrivers = GetDriversNotOwnedbyUser(user)
-            };
+            AddDriverToUserModel viewModel = new AddDriverToUserModel(user, user.Drivers, GetDriversNotOwnedbyUser(user));
             return View(viewModel);
         }
 
@@ -116,15 +111,15 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(AddDriverToUser), new { userId });
         }
 
-        private IEnumerable<Driver> GetDriversNotOwnedbyUser(SimUser user)
+        private List<Driver> GetDriversNotOwnedbyUser(SimUser user)
         {
             if (user is null)
                 return null;
 
-            IEnumerable<Driver> drivers;
-            drivers = _context.Drivers
+            var drivers = _context.Drivers
+                .AsEnumerable()
                 .Where(t => !user.Drivers.Contains(t))
-                .AsEnumerable();
+                .ToList();
 
             return drivers;
         }
@@ -135,13 +130,7 @@ namespace FormuleCirkelEntity.Controllers
             if (user is null)
                 return NotFound();
 
-            AddTeamToUserModel viewModel = new AddTeamToUserModel
-            {
-                SimUser = user,
-
-                OwnedTeams = user.Teams,
-                OtherTeams = GetTeamsNotOwnedByUser(user)
-            };
+            AddTeamToUserModel viewModel = new AddTeamToUserModel(user, user.Teams, GetTeamsNotOwnedByUser(user));
             return View(viewModel);
         }
 
@@ -170,15 +159,15 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(AddTeamToUser), new { userId });
         }
 
-        private IEnumerable<Team> GetTeamsNotOwnedByUser(SimUser user)
+        private List<Team> GetTeamsNotOwnedByUser(SimUser user)
         {
             if (user is null)
                 return null;
 
-            IEnumerable<Team> teams;
-            teams = _context.Teams
+            var teams = _context.Teams
+                .AsEnumerable()
                 .Where(t => !user.Teams.Contains(t))
-                .AsEnumerable();
+                .ToList();
 
             return teams;
         }

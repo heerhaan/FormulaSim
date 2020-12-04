@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var team in Model.OwnedTeams.OrderBy(t => t.Abbreviation))
+            @foreach (var team in Model.OwnedTeams)
             {
                 <tr>
                     <td class="text-left"><span class="flag flag-@team.Country flag-margin ml-cel"></span>
@@ -55,7 +55,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var team in Model.OtherTeams.OrderBy(t => t.Abbreviation))
+            @foreach (var team in Model.OtherTeams)
             {
                 <tr>
                     <td class="text-left"><span class="flag flag-@team.Country flag-margin ml-cel"></span>
