@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
@@ -13,6 +11,9 @@ namespace FormuleCirkelEntity.Models
         public int ChampionshipId { get; set; }
         public string ChampionshipName { get; set; }
         public bool ActiveChampionship { get; set; }
+
+        public IList<MinMaxDevRange> SkillDevRanges { get; } = new List<MinMaxDevRange>();
+        public IList<MinMaxDevRange> AgeDevRanges { get; } = new List<MinMaxDevRange>();
 
         public IList<Season> Seasons { get; } = new List<Season>();
     }

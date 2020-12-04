@@ -1,0 +1,143 @@
+﻿@model FormuleCirkelEntity.ViewModels.SetDevModel
+
+@{ 
+    ViewData["Title"] = "Dev Ranges";
+}
+
+<div class="d-inline-block">
+    <partial name="_StatusMessage" model="ViewBag.statusmessage" />
+    @using (Html.BeginForm())
+    {
+        <div class="form-group">
+            @Html.TextBoxFor(c => c.ChampionshipId, new { style = "display: none;" })
+        </div>
+        <div class="col">
+            <div class="col-6">
+                <button type="button" id="addskill" class="btn float-left">Add</button>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Skill lower than</th>
+                            <th>Minimum dev</th>
+                            <th>Maximum dev</th>
+                        </tr>
+                    </thead>
+                    <tbody id="skillDevRange">
+                        @for (int i = 0; i < Model.SkillValueKey.Count; i++)
+                        {
+                            @if (Model.SkillValueKey[i] == 9999)
+                            {
+                                <tr>
+                                    <td><input name="SkillValueKey" type="number" value="@Model.SkillValueKey[i]" readonly /></td>
+                                    <td><input name="SkillMinDev" type="number" value="@Model.SkillMinDev[i]" /></td>
+                                    <td><input name="SkillMaxDev" type="number" value="@Model.SkillMaxDev[i]" /></td>
+                                    <td>Required</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td><input name="SkillValueKey" type="number" value="@Model.SkillValueKey[i]" /></td>
+                                    <td><input name="SkillMinDev" type="number" value="@Model.SkillMinDev[i]" /></td>
+                                    <td><input name="SkillMaxDev" type="number" value="@Model.SkillMaxDev[i]" /></td>
+                                    <td><button type="button" class="btn fullwidth delete">Delete</button></td>
+                                </tr>
+                            }
+                        }
+                        @if (!Model.SkillValueKey.Contains(9999))
+                        {
+                            <tr>
+                                <td><input name="SkillValueKey" type="number" value="9999" readonly /></td>
+                                <td><input name="SkillMinDev" type="number" /></td>
+                                <td><input name="SkillMaxDev" type="number" /></td>
+                                <td>Required</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-6">
+                <button type="button" id="addage" class="btn float-left">Add</button>
+                <table class="ctable fullborder fullwidth">
+                    <thead class="fullborder">
+                        <tr>
+                            <th>Age lower than</th>
+                            <th>Minimum dev</th>
+                            <th>Maximum dev</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ageDevRange">
+                        @for (int i = 0; i < Model.AgeValueKey.Count; i++)
+                        {
+                            @if (Model.AgeValueKey[i] == 9999)
+                            {
+                                <tr>
+                                    <td><input name="AgeValueKey" type="number" value="@Model.AgeValueKey[i]" readonly /></td>
+                                    <td><input name="AgeMinDev" type="number" value="@Model.AgeMinDev[i]" /></td>
+                                    <td><input name="AgeMaxDev" type="number" value="@Model.AgeMaxDev[i]" /></td>
+                                    <td>Required</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td><input name="AgeValueKey" type="number" value="@Model.AgeValueKey[i]" /></td>
+                                    <td><input name="AgeMinDev" type="number" value="@Model.AgeMinDev[i]" /></td>
+                                    <td><input name="AgeMaxDev" type="number" value="@Model.AgeMaxDev[i]" /></td>
+                                    <td><button type="button" class="btn fullwidth delete">Delete</button></td>
+                                </tr>
+                            }
+                        }
+                        @if (!Model.AgeValueKey.Contains(9999))
+                        {
+                            <tr>
+                                <td><input name="AgeValueKey" type="number" value="9999" readonly /></td>
+                                <td><input name="AgeMinDev" type="number" /></td>
+                                <td><input name="AgeMaxDev" type="number" /></td>
+                                <td>Required</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <button type="submit" class="btn mt-2 fullwidth">Save</button>
+        </div>
+    }
+
+    <table id="newskill" style="display:none;">
+        <tr>
+            <td><input name="SkillValueKey" type="number" /></td>
+            <td><input name="SkillMinDev" type="number" /></td>
+            <td><input name="SkillMaxDev" type="number" /></td>
+            <td><button type="button" class="btn fullwidth delete">Delete</button></td>
+        </tr>
+    </table>
+    <table id="newage" style="display:none;">
+        <tr>
+            <td><input name="AgeValueKey" type="number" /></td>
+            <td><input name="AgeMinDev" type="number" /></td>
+            <td><input name="AgeMaxDev" type="number" /></td>
+            <td><button type="button" class="btn fullwidth delete">Delete</button></td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    var newskill = $("#newskill");
+    var newage = $("#newage");
+
+    $("#addskill").click(function () {
+        var skillclone = newskill.find('tr').clone();
+        $("#skillDevRange tr:last").before(skillclone);
+    });
+    $("#addage").click(function () {
+        var ageclone = newage.find('tr').clone();
+        $("#ageDevRange tr:last").before(ageclone);
+    });
+    $('#skillDevRange').on('click', '.delete', function () {
+        $(this).closest('tr').remove();
+    });
+    $('#ageDevRange').on('click', '.delete', function () {
+        $(this).closest('tr').remove();
+    });
+</script>

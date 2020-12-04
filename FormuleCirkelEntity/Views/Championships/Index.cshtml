@@ -15,9 +15,9 @@
     <table class="ctable fullborder fullwidth min-width-index-table">
         <thead class="fullborder">
             <tr>
-                <th>
-                    Championships
-                </th>
+                <th>Championships</th>
+                <th class="w-10">Settings</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +27,10 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.ChampionshipName)
                     </td>
+                    <td>
+                        <a asp-action="SetDevRanges" asp-route-id="@item.ChampionshipId">
+                            <i class="fas fa-cog fa-2x"></i>
+                        </a></td>
                     <td>
                         <form method="POST">
                             <input type="hidden" name="championshipId" value="@item.ChampionshipId" />

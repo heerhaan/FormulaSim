@@ -1,9 +1,7 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.SeasonDriver>
+﻿@model FormuleCirkelEntity.ViewModels.DriverDevModel
 
 @{
     ViewData["Title"] = "Driver development";
-    int seasonId = ViewBag.seasonId;
-    int year = ViewBag.year;
 }
 
 <div class="d-inline-block w-60">
@@ -12,10 +10,12 @@
     <div class="flex-row justify-content-between mb-1">
         <div>
             <button id="develop" class="btn">Develop</button>
+            <button id="rateddevelop" class="btn">Rated dev</button>
             <input id="min" class="input-style fullheight" type="number" placeholder="Min. RNG"/>
             <input id="max" class="input-style fullheight" type="number" placeholder="Max. RNG" />
         </div>
-        <button id="custom" class="btn">Custom</button>
+        <button id="showcustom" class="btn">Custom dev</button>
+        <button id="custom" class="btn customdev" style="display:none;">Custom</button>
     </div>
 
     <table id="graphic" class="ctable fullborder fullwidth">
@@ -24,20 +24,20 @@
                 <th class="text-left"><span class="ml-cel">Name</span></th>
                 <th>Age</th>
                 <th>Team</th>
-                <th onclick="hideElements()" style="cursor:pointer;">Old</th>
-                <th onclick="hideElements()" style="cursor:pointer;">Change</th>
-                <th onclick="hideElements()" style="cursor:pointer;">New</th>
-                <th class="w-25">Custom</th>
+                <th>Old</th>
+                <th>Change</th>
+                <th>New</th>
+                <th class="w-25 customdev" style="display:none;">Custom</th>
             </tr>
         </thead>
         <tbody id="devtable">
             @{
                 int number = 1;
-                foreach (var driver in Model)
+                foreach (var driver in Model.SeasonDrivers)
                 {
                     <tr>
                         <td class="text-left"><span class="ml-cel">@driver.Driver.Name</span></td>
-                        <td>@(year - driver.Driver.DateOfBirth.Year)</td>
+                        <td id="driver_age_@number">@(Model.Year - driver.Driver.DateOfBirth.Year)</td>
                         <td>
                             <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);
                                     color:@(driver.SeasonTeam.Accent);">
@@ -47,7 +47,7 @@
                         <td id="old-value-@number" class="onclick-hide">@driver.Skill</td>
                         <td id="custom-change-@number">?</td>
                         <td id="custom-new-@number" class="onclick-hide">-</td>
-                        <td>
+                        <td class="customdev" style="display:none;">
                             <input id="custom-min-@number" class="input-style" type="number" placeholder="Min. RNG" />
                             <input id="custom-max-@number" class="input-style" type="number" placeholder="Max. RNG" />
                         </td>
@@ -60,7 +60,7 @@
     <button id="save" class="btn fullwidth">Save</button>
 
     <div class="row justify-content-between mb-1">
-        <a asp-action="Detail" asp-route-id="@seasonId">
+        <a asp-action="Detail" asp-route-id="@Model.SeasonId">
             <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
         </a>
         <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
@@ -70,6 +70,9 @@
 </div>
 
 <script>
+    const skillDevRange = @(Json.Serialize(Model.SkillDevRanges));
+    const ageDevRange = @(Json.Serialize(Model.AgeDevRanges));
+    console.log(skillDevRange);
     $(document).ready(function () {
         $("#save").hide();
 
@@ -91,6 +94,63 @@
             });
 
             $("#save").show();
+        });
+
+        $("#rateddevelop").click(function () {
+            var number = 1;
+            $('#devtable').children('tr').each(function () {
+                var element = document.getElementById("old-value-" + number);
+                var text = element.textContent;
+                var old = Number(text);
+                var age = Number(document.getElementById("driver_age_" + number).textContent);
+                var skillEffect = ReturnSkillDevEffect(old);
+                var ageEffect = ReturnAgeDevEffect(age);
+                var min = skillEffect[0] + ageEffect[0];
+                var max = skillEffect[1] + ageEffect[1];
+                var dev = Math.floor(Math.random() * (max - min + 1)) + min;
+                var newdev = (old + dev);
+
+                document.getElementById("custom-change-" + number).innerText = dev;
+                document.getElementById("custom-new-" + number).innerText = newdev;
+
+                number = (number + 1);
+            });
+
+            $("#save").show();
+        });
+
+        function ReturnSkillDevEffect(skill) {
+            var min = 0;
+            var max = 0;
+            $.each(skillDevRange, function (value) {
+                if (skill < value.valueKey) {
+                    min = value.minDev;
+                    max = value.maxDev;
+                    return false;
+                }
+            });
+            return [min, max];
+        }
+
+        function ReturnAgeDevEffect(age) {
+            var min = 0;
+            var max = 0;
+            $.each(ageDevRange, function (value) {
+                if (age < value.valueKey) {
+                    min = value.minDev;
+                    max = value.maxDev;
+                    return false;
+                }
+            });
+            return [min, max];
+        }
+
+        $("#showcustom").click(function () {
+            var customElems = document.getElementsByClassName("customdev");
+            for (var i = 0; i < customElems.length; i++) {
+                customElems[i].style.display = "initial";
+            }
+            $("#showcustom").css('display', 'none');
         });
 
         $('#custom').click(function () {
