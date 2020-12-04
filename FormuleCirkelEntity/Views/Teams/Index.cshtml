@@ -20,6 +20,7 @@
         <a asp-action="Create" class="btn mr-auto">
             <i class="fas fa-plus"></i><span class="ml-1">New</span>
         </a>
+        <button class="btn" onclick="randomTeam()"><i class="fas fa-dice"></i> Team trait</button>
     }
         <a asp-action="ArchivedTeams" class="btn">
             <i class="fas fa-archive"></i><span class="ml-1">Archive</span>
@@ -44,7 +45,7 @@
         {
             <tr>
                 <td class="text-left">
-                    <span class="flag flag-@(item.Country) flag-margin ml-cel"></span>@item.Abbreviation
+                    <span class="flag flag-@(item.Country) ff-md flag-margin ml-cel"></span>@item.Abbreviation
                 </td>
                 <td>
                     <a asp-action="Stats" asp-route-id="@item.Id">
@@ -92,3 +93,12 @@
         </ul>
     </nav>
 </div>
+
+<script>
+    function randomTeam() {
+        var teams = @(Json.Serialize(Model.Select(te => te.Id)));
+        const randomId = teams[Math.floor(Math.random() * teams.length)];
+
+        window.location.href = '/Traits/' + randomId;
+    }
+</script>

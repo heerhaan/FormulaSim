@@ -30,11 +30,6 @@
         <div class="btn-group">
             <a asp-action="PenaltyList" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-wrench"></i> Parts list</a>
             <a asp-action="QualifyingBattle" asp-route-seasonId="@Model.Season.SeasonId" class="btn"><i class="fas fa-signal"></i> Qualy battles</a>
-            @if (isAdmin)
-            {
-                <button class="btn" onclick="randomDriver()"><i class="fas fa-dice"></i> Driver trait</button>
-                <button class="btn" onclick="randomTeam()"><i class="fas fa-dice"></i> Team trait</button>
-            }
         </div>
     }
     @if (Model.Season.State == SeasonState.Progress)
@@ -80,7 +75,7 @@
                     <td>
                         <span class="badge badge-team fullwidth text-left font-size-default" 
                               style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
-                            <span class="flag flag-@(driver.Driver.Country) flag-margin"></span>@driver.Driver.Name
+                            <span class="flag flag-@(driver.Driver.Country) ff-md flag-margin"></span>@driver.Driver.Name
                         </span>
                     </td>
                     <td>@driver.Skill</td>
@@ -95,7 +90,7 @@
                     </td>
                 @if (driver.Dropped)
                 {
-                    <td>
+                    <td class="dropped_driver_row">
                         <i class="fas fa-times fa-2x" data-toggle="tooltip" data-placement="top" title=@Constants.ToolTipDropDriverBtn></i>
                     </td>
                 }
@@ -143,7 +138,7 @@
             {
                 <tr data-obj-id="@race.RaceId">
                     <td data-field="location" class="text-left">
-                        <span class="flag flag-@(race.Track.Country) flag-margin ml-cel"></span>@race.Track.Location
+                        <span class="flag flag-@(race.Track.Country) ff-md flag-margin ml-cel"></span>@race.Track.Location
                     </td>
                     <td data-field="name">@race.Name</td>
                     <td data-field="round">@race.Round</td>
@@ -197,7 +192,7 @@
                     <td>@team.Points</td>
                     <td>
                         <span class="badge badge-team text-left fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);font-size:1rem;">
-                            <span class="flag flag-@(team.Team.Country) flag-margin"></span>@team.Name
+                            <span class="flag flag-@(team.Team.Country) ff-md flag-margin"></span>@team.Name
                         </span>
                     </td>
                     <td>@team.Chassis</td>
@@ -231,20 +226,8 @@
     document.addEventListener('DOMContentLoaded', function () {
         $(".tire:contains('H')").css("background-color", "darkorange");
         $(".tire:contains('S')").css("background-color", "darkred");
+        $(".dropped_driver_row").parent().css("background-color", "#480000");
     });
-
-    function randomDriver() {
-        var drivers = @(Json.Serialize(Model.SeasonDrivers.Select(sd => sd.SeasonDriverId)));
-        const randomId = drivers[Math.floor(Math.random() * drivers.length)];
-        window.location.href = '/Driver/Traits/' + randomId;
-    }
-
-    function randomTeam() {
-        var teams = @(Json.Serialize(Model.SeasonTeams.Select(st => st.SeasonTeamId)));
-        const randomId = teams[Math.floor(Math.random() * teams.length)];
-
-        window.location.href = '/Team/Traits/' + randomId;
-    }
 
     function updateRaces(races) {
         const table = document.querySelector('#races');

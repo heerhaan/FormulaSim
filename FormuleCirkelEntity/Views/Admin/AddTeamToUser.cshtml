@@ -23,7 +23,7 @@
             @foreach (var team in Model.OwnedTeams)
             {
                 <tr>
-                    <td class="text-left"><span class="flag flag-@team.Country flag-margin ml-cel"></span>
+                    <td class="text-left"><span class="flag flag-@team.Country ff-md flag-margin ml-cel"></span>
                         @Html.DisplayFor(modelItem => team.Abbreviation)
                     </td>
                     <td>
@@ -58,7 +58,7 @@
             @foreach (var team in Model.OtherTeams)
             {
                 <tr>
-                    <td class="text-left"><span class="flag flag-@team.Country flag-margin ml-cel"></span>
+                    <td class="text-left"><span class="flag flag-@team.Country ff-md flag-margin ml-cel"></span>
                         @Html.DisplayFor(modelItem => team.Abbreviation)
                     </td>
                     <td>

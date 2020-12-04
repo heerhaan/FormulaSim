@@ -42,7 +42,7 @@
         function formatCountry(country) {
             if (!country.id) { return country.text; }
             var $country = $(
-                '<span class="flag flag-' + country.id + '"></span>' +
+                '<span class="flag flag-' + country.id + ' ff-md"></span>' +
                 '<span class="flag-text">' + country.text + "</span>"
             );
             return $country;
