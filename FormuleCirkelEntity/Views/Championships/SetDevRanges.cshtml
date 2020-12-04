@@ -18,38 +18,38 @@
                     <thead class="fullborder">
                         <tr>
                             <th>Skill lower than</th>
-                            <th>Negative dev</th>
-                            <th>Positive dev</th>
+                            <th>Minimum dev</th>
+                            <th>Maximum dev</th>
                         </tr>
                     </thead>
                     <tbody id="skillDevRange">
-                        @for (int i = 0; i < Model.SkillKey.Count; i++)
+                        @for (int i = 0; i < Model.SkillValueKey.Count; i++)
                         {
-                            @if (Model.SkillKey[i] == 999)
+                            @if (Model.SkillValueKey[i] == 9999)
                             {
                                 <tr>
-                                    <td><input name="SkillKey" type="number" value="@Model.SkillKey[i]" readonly /></td>
-                                    <td><input name="SkillLower" type="number" value="@Model.SkillLower[i]" /></td>
-                                    <td><input name="SkillHigher" type="number" value="@Model.SkillHigher[i]" /></td>
+                                    <td><input name="SkillValueKey" type="number" value="@Model.SkillValueKey[i]" readonly /></td>
+                                    <td><input name="SkillMinDev" type="number" value="@Model.SkillMinDev[i]" /></td>
+                                    <td><input name="SkillMaxDev" type="number" value="@Model.SkillMaxDev[i]" /></td>
                                     <td>Required</td>
                                 </tr>
                             }
                             else
                             {
                                 <tr>
-                                    <td><input name="SkillKey" type="number" value="@Model.SkillKey[i]" /></td>
-                                    <td><input name="SkillLower" type="number" value="@Model.SkillLower[i]" /></td>
-                                    <td><input name="SkillHigher" type="number" value="@Model.SkillHigher[i]" /></td>
+                                    <td><input name="SkillValueKey" type="number" value="@Model.SkillValueKey[i]" /></td>
+                                    <td><input name="SkillMinDev" type="number" value="@Model.SkillMinDev[i]" /></td>
+                                    <td><input name="SkillMaxDev" type="number" value="@Model.SkillMaxDev[i]" /></td>
                                     <td><button type="button" class="btn fullwidth delete">Delete</button></td>
                                 </tr>
                             }
                         }
-                        @if (!Model.SkillKey.Contains(999))
+                        @if (!Model.SkillValueKey.Contains(9999))
                         {
                             <tr>
-                                <td><input name="SkillKey" type="number" value="999" readonly /></td>
-                                <td><input name="SkillLower" type="number" /></td>
-                                <td><input name="SkillHigher" type="number" /></td>
+                                <td><input name="SkillValueKey" type="number" value="9999" readonly /></td>
+                                <td><input name="SkillMinDev" type="number" /></td>
+                                <td><input name="SkillMaxDev" type="number" /></td>
                                 <td>Required</td>
                             </tr>
                         }
@@ -62,38 +62,38 @@
                     <thead class="fullborder">
                         <tr>
                             <th>Age lower than</th>
-                            <th>Negative dev</th>
-                            <th>Positive dev</th>
+                            <th>Minimum dev</th>
+                            <th>Maximum dev</th>
                         </tr>
                     </thead>
                     <tbody id="ageDevRange">
-                        @for (int i = 0; i < Model.AgeKey.Count; i++)
+                        @for (int i = 0; i < Model.AgeValueKey.Count; i++)
                         {
-                            @if (Model.AgeKey[i] == 999)
+                            @if (Model.AgeValueKey[i] == 9999)
                             {
                                 <tr>
-                                    <td><input name="AgeKey" type="number" value="@Model.AgeKey[i]" readonly /></td>
-                                    <td><input name="AgeLower" type="number" value="@Model.AgeLower[i]" /></td>
-                                    <td><input name="AgeHigher" type="number" value="@Model.AgeHigher[i]" /></td>
+                                    <td><input name="AgeValueKey" type="number" value="@Model.AgeValueKey[i]" readonly /></td>
+                                    <td><input name="AgeMinDev" type="number" value="@Model.AgeMinDev[i]" /></td>
+                                    <td><input name="AgeMaxDev" type="number" value="@Model.AgeMaxDev[i]" /></td>
                                     <td>Required</td>
                                 </tr>
                             }
                             else
                             {
                                 <tr>
-                                    <td><input name="AgeKey" type="number" value="@Model.AgeKey[i]" /></td>
-                                    <td><input name="AgeLower" type="number" value="@Model.AgeLower[i]" /></td>
-                                    <td><input name="AgeHigher" type="number" value="@Model.AgeHigher[i]" /></td>
+                                    <td><input name="AgeValueKey" type="number" value="@Model.AgeValueKey[i]" /></td>
+                                    <td><input name="AgeMinDev" type="number" value="@Model.AgeMinDev[i]" /></td>
+                                    <td><input name="AgeMaxDev" type="number" value="@Model.AgeMaxDev[i]" /></td>
                                     <td><button type="button" class="btn fullwidth delete">Delete</button></td>
                                 </tr>
                             }
                         }
-                        @if (!Model.AgeKey.Contains(999))
+                        @if (!Model.AgeValueKey.Contains(9999))
                         {
                             <tr>
-                                <td><input name="AgeKey" type="number" value="999" readonly /></td>
-                                <td><input name="AgeLower" type="number" /></td>
-                                <td><input name="AgeHigher" type="number" /></td>
+                                <td><input name="AgeValueKey" type="number" value="9999" readonly /></td>
+                                <td><input name="AgeMinDev" type="number" /></td>
+                                <td><input name="AgeMaxDev" type="number" /></td>
                                 <td>Required</td>
                             </tr>
                         }
@@ -106,17 +106,17 @@
 
     <table id="newskill" style="display:none;">
         <tr>
-            <td><input name="SkillKey" type="number" /></td>
-            <td><input name="SkillLower" type="number" /></td>
-            <td><input name="SkillHigher" type="number" /></td>
+            <td><input name="SkillValueKey" type="number" /></td>
+            <td><input name="SkillMinDev" type="number" /></td>
+            <td><input name="SkillMaxDev" type="number" /></td>
             <td><button type="button" class="btn fullwidth delete">Delete</button></td>
         </tr>
     </table>
     <table id="newage" style="display:none;">
         <tr>
-            <td><input name="AgeKey" type="number" /></td>
-            <td><input name="AgeLower" type="number" /></td>
-            <td><input name="AgeHigher" type="number" /></td>
+            <td><input name="AgeValueKey" type="number" /></td>
+            <td><input name="AgeMinDev" type="number" /></td>
+            <td><input name="AgeMaxDev" type="number" /></td>
             <td><button type="button" class="btn fullwidth delete">Delete</button></td>
         </tr>
     </table>

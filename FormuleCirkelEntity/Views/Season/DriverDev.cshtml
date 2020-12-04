@@ -72,6 +72,7 @@
 <script>
     const skillDevRange = @(Json.Serialize(Model.SkillDevRanges));
     const ageDevRange = @(Json.Serialize(Model.AgeDevRanges));
+    console.log(skillDevRange);
     $(document).ready(function () {
         $("#save").hide();
 
@@ -119,11 +120,10 @@
         });
 
         function ReturnSkillDevEffect(skill) {
-            console.log(skillDevRange);
             var min = 0;
             var max = 0;
-            $.each(skillDevRange, function (key, value) {
-                if (skill < key) {
+            $.each(skillDevRange, function (value) {
+                if (skill < value.valueKey) {
                     min = value.minDev;
                     max = value.maxDev;
                     return false;
@@ -133,11 +133,10 @@
         }
 
         function ReturnAgeDevEffect(age) {
-            console.log(ageDevRange);
             var min = 0;
             var max = 0;
-            $.each(ageDevRange, function (key, value) {
-                if (age < key) {
+            $.each(ageDevRange, function (value) {
+                if (age < value.valueKey) {
                     min = value.minDev;
                     max = value.maxDev;
                     return false;

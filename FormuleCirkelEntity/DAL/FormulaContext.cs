@@ -51,16 +51,6 @@ namespace FormuleCirkelEntity.DAL
                 .HasConversion(
                     dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
                     json => JsonConvert.DeserializeObject<Dictionary<int, Stint>>(json) ?? new Dictionary<int, Stint>());
-            builder.Entity<Championship>()
-                .Property(c => c.AgeDevRanges)
-                .HasConversion(
-                dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
-                json => JsonConvert.DeserializeObject<Dictionary<int, MinMaxDevRange>>(json) ?? new Dictionary<int, MinMaxDevRange>());
-            builder.Entity<Championship>()
-                .Property(c => c.SkillDevRanges)
-                .HasConversion(
-                dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
-                json => JsonConvert.DeserializeObject<Dictionary<int, MinMaxDevRange>>(json) ?? new Dictionary<int, MinMaxDevRange>());
             builder.Entity<DriverResult>()
                 .Property(r => r.StintResults)
                 .HasConversion(

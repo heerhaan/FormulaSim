@@ -11,8 +11,8 @@ namespace FormuleCirkelEntity.Models
         public string ChampionshipName { get; set; }
         public bool ActiveChampionship { get; set; }
 
-        public IDictionary<int, MinMaxDevRange> SkillDevRanges { get; } = new Dictionary<int, MinMaxDevRange>();
-        public IDictionary<int, MinMaxDevRange> AgeDevRanges { get; } = new Dictionary<int, MinMaxDevRange>();
+        public IList<MinMaxDevRange> SkillDevRanges { get; } = new List<MinMaxDevRange>();
+        public IList<MinMaxDevRange> AgeDevRanges { get; } = new List<MinMaxDevRange>();
 
         public virtual IList<Season> Seasons { get; set; }
     }
