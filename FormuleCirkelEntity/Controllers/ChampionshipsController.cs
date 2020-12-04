@@ -18,9 +18,8 @@ namespace FormuleCirkelEntity.Controllers
     public class ChampionshipsController : FormulaController
     {
         public ChampionshipsController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         { }
 
         public async Task<IActionResult> Index()
@@ -33,24 +32,19 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Index([Bind("ChampionshipId")] Championship champ)
         {
             if (champ == null)
-            {
                 return NotFound();
-            }
 
-            var championships = _context.Championships.ToList();
+            // Activates the current championship and ensures the rest is deactivated
+            var championships = await _context.Championships.ToListAsync();
             foreach (var championship in championships)
             {
                 if (championship.ChampionshipId == champ.ChampionshipId)
-                {
                     championship.ActiveChampionship = true;
-                }
                 else
-                {
                     championship.ActiveChampionship = false;
-                }
             }
             _context.UpdateRange(championships);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Home");
         }
@@ -69,7 +63,7 @@ namespace FormuleCirkelEntity.Controllers
 
             if (ModelState.IsValid)
             {
-                var championships = _context.Championships.ToList();
+                var championships = await _context.Championships.ToListAsync();
                 foreach (var item in championships)
                 {
                     item.ActiveChampionship = false;

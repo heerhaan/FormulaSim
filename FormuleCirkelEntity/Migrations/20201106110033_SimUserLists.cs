@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FormuleCirkelEntity.Migrations.Identity
+namespace FormuleCirkelEntity.Migrations
 {
     public partial class SimUserLists : Migration
     {

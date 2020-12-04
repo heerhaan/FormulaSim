@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace FormuleCirkelEntity.Models
@@ -14,6 +15,6 @@ namespace FormuleCirkelEntity.Models
         public IList<MinMaxDevRange> SkillDevRanges { get; } = new List<MinMaxDevRange>();
         public IList<MinMaxDevRange> AgeDevRanges { get; } = new List<MinMaxDevRange>();
 
-        public virtual IList<Season> Seasons { get; set; }
+        public IList<Season> Seasons { get; } = new List<Season>();
     }
 }

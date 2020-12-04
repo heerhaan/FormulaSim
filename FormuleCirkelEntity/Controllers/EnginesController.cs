@@ -15,10 +15,9 @@ namespace FormuleCirkelEntity.Controllers
     public class EnginesController : ViewDataController<Engine>
     {
         public EnginesController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager, 
             PagingHelper pagingHelper)
-            : base(context, identityContext, userManager, pagingHelper)
+            : base(context, userManager, pagingHelper)
         { }
 
         [SortResult(nameof(Engine.Name)), PagedResult]

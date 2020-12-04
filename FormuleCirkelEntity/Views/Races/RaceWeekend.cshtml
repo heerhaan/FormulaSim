@@ -50,29 +50,15 @@
                             <td><span class="badge badge-dsq fullwidth">@(driver.PenaltyReason)</span></td>
                         }
                         <td>
-                            @if (driver.SeasonDriver.Traits.Any())
+                            @foreach (var trait in driver.SeasonDriver.Driver.DriverTraits)
                             {
-                                foreach (var trait in driver.SeasonDriver.Traits.Values)
-                                {
-                                    <b class="alt-font small">[@trait.Name]</b>
-                                }
-                            }
-                            else
-                            {
-                                <span>-</span>
+                                <b class="alt-font small">[@trait.Trait.Name]</b>
                             }
                         </td>
                         <td>
-                            @if (driver.SeasonDriver.SeasonTeam.Traits.Any())
+                            @foreach (var trait in driver.SeasonDriver.SeasonTeam.Team.TeamTraits)
                             {
-                                foreach (var trait in driver.SeasonDriver.SeasonTeam.Traits.Values)
-                                {
-                                    <b class="alt-font small">[@trait.Name]</b>
-                                }
-                            }
-                            else
-                            {
-                                <span>-</span>
+                                <b class="alt-font small">[@trait.Trait.Name]</b>
                             }
                         </td>
                     </tr>

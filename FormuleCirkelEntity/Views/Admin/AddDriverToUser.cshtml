@@ -26,7 +26,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var driver in Model.OwnedDrivers.OrderBy(d => d.Name))
+            @foreach (var driver in Model.OwnedDrivers)
             {
                 <tr>
                     <td>
@@ -73,7 +73,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var driver in Model.OtherDrivers.OrderBy(d => d.Name))
+            @foreach (var driver in Model.OtherDrivers)
             {
                 <tr>
                     <td>

@@ -10,11 +10,6 @@ namespace FormuleCirkelEntity.Models
 
     public class Track : ModelBase, IArchivable
     {
-        public Track()
-        {
-            Traits = new Dictionary<int, Trait>();
-        }
-
         public string Name { get; set; }
         public string Location { get; set; }
         public decimal LengthKM { get; set; }
@@ -24,7 +19,7 @@ namespace FormuleCirkelEntity.Models
         public Specification Specification { get; set; }
         public bool Archived { get; set; }
 
-        public IDictionary<int, Trait> Traits { get; set; }
-        public virtual ICollection<Race> Races { get; set; }
+        public IList<TrackTrait> TrackTraits { get; } = new List<TrackTrait>();
+        public IList<Race> Races { get; } = new List<Race>();
     }
 }

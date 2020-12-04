@@ -9,25 +9,24 @@
     <h1>Season: @Model.Season.SeasonNumber</h1>
 
     <div class="flex-row justify-content-between mb-2">
-        @if (Model.Season.State == SeasonState.Draft)
-        {
+    @if (Model.Season.State == SeasonState.Draft)
+    {
         <div class="btn-group">
-            @if (isAdmin)
-            {
+        @if (isAdmin)
+        {
             <a asp-action="Start" asp-route-id="@Model.Season.SeasonId" class="btn">Start season!</a>
             <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.Season.SeasonId" class="btn">Add race</a>
             <a asp-action="Settings" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-cog"></i> Settings</a>
-            <a asp-action="AddDefault" asp-route-id="@Model.Season.SeasonId" class="btn" 
-                        data-toggle="tooltip" data-placement="top" title=@Constants.ToolTipDefaultSeasonBtn>
+            <a asp-action="AddDefault" asp-route-id="@Model.Season.SeasonId" class="btn" data-toggle="tooltip" data-placement="top" title=@Constants.ToolTipDefaultSeasonBtn>
                 <i class="fas fa-recycle"></i> Default
             </a>
-            }
+        }
             <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn">Add driver</a>
             <a asp-action="AddTeams" asp-route-id="@Model.Season.SeasonId" class="btn">Add team</a>
         </div>
-        }
-        else
-        {
+    }
+    else
+    {
         <div class="btn-group">
             <a asp-action="PenaltyList" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-wrench"></i> Parts list</a>
             <a asp-action="QualifyingBattle" asp-route-seasonId="@Model.Season.SeasonId" class="btn"><i class="fas fa-signal"></i> Qualy battles</a>
@@ -37,14 +36,14 @@
                 <button class="btn" onclick="randomTeam()"><i class="fas fa-dice"></i> Team trait</button>
             }
         </div>
-        }
-        @if (Model.Season.State == SeasonState.Progress)
-        {
+    }
+    @if (Model.Season.State == SeasonState.Progress)
+    {
         <div class="btn-group">
             <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn">Add driver</a>
             <a asp-action="Finish" asp-route-id="@Model.Season.SeasonId" class="btn">End season</a>
         </div>
-        }
+    }
     </div>
 
     <div class="mb-2">
@@ -59,71 +58,67 @@
                     <th>Skill</th>
                     <th>Reliability</th>
                     <th>Tire</th>
-                    @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
-                    {
+                @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
+                {
                     <th>Edit</th>
-                    <th>Traits</th>
                     <th>Drop</th>
-                    }
+                }
                 </tr>
             </thead>
             <tbody class="table-counter">
-                @foreach (var driver in Model.SeasonDrivers.OrderByDescending(d => d.Points).ToList())
-                {
+            @foreach (var driver in Model.SeasonDrivers.OrderByDescending(d => d.Points).ToList())
+            {
                 <tr>
                     <td><b class="table-count"></b></td>
                     <td>@driver.Points</td>
                     <td style="width: 30px;">
-                        <span class="badge badge-team" style="width:25px;background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
+                        <span class="badge badge-team" 
+                              style="width:25px;background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
                             @driver.Driver.DriverNumber
                         </span>
                     </td>
                     <td>
-                        <span class="badge badge-team fullwidth text-left font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
+                        <span class="badge badge-team fullwidth text-left font-size-default" 
+                              style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
                             <span class="flag flag-@(driver.Driver.Country) flag-margin"></span>@driver.Driver.Name
                         </span>
                     </td>
                     <td>@driver.Skill</td>
                     <td>@driver.Reliability</td>
                     <td><span class="badge tire font-size-default">@(driver.Tires.ToString()[0])</span></td>
-                    @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
-                    {
+                @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
+                {
                     <td>
                         <a asp-action="UpdateDriver" asp-route-id="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
                             <i class="fas fa-wrench fa-2x"></i>
                         </a>
                     </td>
-                    <td>
-                        <a asp-action="DriverTraits" asp-route-id="@driver.SeasonDriverId">
-                            <i class="fas fa-yin-yang fa-2x"></i>
-                        </a>
-                    </td>
-                    @if (driver.Dropped)
-                    {
+                @if (driver.Dropped)
+                {
                     <td>
                         <i class="fas fa-times fa-2x" data-toggle="tooltip" data-placement="top" title=@Constants.ToolTipDropDriverBtn></i>
                     </td>
-                    }
-                    else
-                    {
+                }
+                else
+                {
                     <td>
                         <a asp-action="DropDriverFromTeam" asp-route-seasonId="@Model.Season.SeasonId" asp-route-driverId="@driver.SeasonDriverId">
                             <i class="far fa-times-circle fa-2x"></i>
                         </a>
                     </td>
-                    }
-                    }
-                </tr>
                 }
+                }
+                </tr>
+            }
             </tbody>
         </table>
-        @if (Model.Season.State == SeasonState.Progress && isAdmin)
-        {
+    @if (Model.Season.State == SeasonState.Progress && isAdmin)
+    {
         <div class="flex-row">
             <a asp-action="DriverDev" asp-route-id="@Model.Season.SeasonId" class="btn col-6">Driver development</a>
             <a asp-action="DriverReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn col-6">Reliability</a>
         </div>
-        }
+    }
     </div>
 
     <div class="mb-2">
@@ -136,16 +131,16 @@
                     <th data-field="round">Round</th>
                     <th data-field="specification">Spec</th>
                     <th>Race</th>
-                    @if (Model.Season.State == SeasonState.Draft && isAdmin)
-                    {
+                @if (Model.Season.State == SeasonState.Draft && isAdmin)
+                {
                     <th></th>
                     <th></th>
-                    }
+                }
                 </tr>
             </thead>
             <tbody>
-                @foreach (var race in Model.Season.Races.OrderBy(r => r.Round))
-                {
+            @foreach (var race in Model.Season.Races.OrderBy(r => r.Round))
+            {
                 <tr data-obj-id="@race.RaceId">
                     <td data-field="location" class="text-left">
                         <span class="flag flag-@(race.Track.Country) flag-margin ml-cel"></span>@race.Track.Location
@@ -158,8 +153,8 @@
                             <i class="fas @(race.RaceState == RaceState.Finished ? "fa-search" : "fa-flag-checkered") fa-2x"></i>
                         </a>
                     </td>
-                    @if (Model.Season.State == SeasonState.Draft && isAdmin)
-                    {
+                @if (Model.Season.State == SeasonState.Draft && isAdmin)
+                {
                     <td>
                         <a class="cursor-pointer" onclick="moveRound(@Model.Season.SeasonId, @race.RaceId, -1)"><i class="fas fa-chevron-up fa"></i></a>
                         <a class="cursor-pointer" onclick="moveRound(@Model.Season.SeasonId, @race.RaceId, 1)"><i class="fas fa-chevron-down fa"></i></a>
@@ -169,9 +164,9 @@
                             <i class="fas fa-trash-alt fa-2x"></i>
                         </a>
                     </td>
-                    }
-                </tr>
                 }
+                </tr>
+            }
             </tbody>
         </table>
     </div>
@@ -188,16 +183,15 @@
                     <th>Reliability</th>
                     <th class="tcc-chassis"><span>Engine</span></th>
                     <th>Power</th>
-                    @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
-                    {
+                @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
+                {
                     <th>Edit</th>
-                    <th>Trait</th>
-                    }
+                }
                 </tr>
             </thead>
             <tbody class="table-counter">
-                @foreach (var team in Model.SeasonTeams.OrderByDescending(t => t.Points).ToList())
-                {
+            @foreach (var team in Model.SeasonTeams.OrderByDescending(t => t.Points).ToList())
+            {
                 <tr>
                     <td><b class="table-count"></b></td>
                     <td>@team.Points</td>
@@ -210,21 +204,16 @@
                     <td>@team.Reliability</td>
                     <td>@team.Engine.Name</td>
                     <td>@team.Engine.Power</td>
-                    @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
-                    {
+                @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
+                {
                     <td>
                         <a asp-action="UpdateTeam" asp-route-id="@Model.Season.SeasonId" asp-route-teamId="@team.SeasonTeamId">
                             <i class="fas fa-wrench fa-2x"></i>
                         </a>
                     </td>
-                    <td>
-                        <a asp-action="TeamTraits" asp-route-id="@team.SeasonTeamId">
-                            <i class="fas fa-yin-yang fa-2x"></i>
-                        </a>
-                    </td>
-                    }
-                </tr>
                 }
+                </tr>
+            }
             </tbody>
         </table>
         @if (Model.Season.State == SeasonState.Progress && isAdmin)

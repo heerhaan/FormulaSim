@@ -8,11 +8,6 @@ namespace FormuleCirkelEntity.Models
 {
     public class DriverResult
     {
-        public DriverResult()
-        {
-            StintResults = new Dictionary<int, int?>();
-        }
-
         [Key]
         public int DriverResultId { get; set; }
         public int Points { get; set; }
@@ -27,9 +22,9 @@ namespace FormuleCirkelEntity.Models
         [EnumDataType(typeof(DSQCause))]
         public DSQCause DSQCause { get; set; }
 
-        public IDictionary<int, int?> StintResults { get; set; }
+        public IDictionary<int, int?> StintResults { get; } = new Dictionary<int, int?>();
 
-        // Modifiers for this race that apply every stint
+        // Modifiers for this race that apply every stint || maybe rethink, change or remove this since this is a bit weird
         public int QualyMod { get; set; }
         public int DriverRacePace { get; set; }
         public int ChassisRacePace { get; set; }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace FormuleCirkelEntity.ViewModels
 {
-    public class SeasonTraitsDriverModel
+    public class TrackTraitsModel
     {
-        public SeasonDriver Driver { get; set; }
+        public Track Track { get; set; }
+        public IEnumerable<Trait> TrackTraits { get; set; }
         public IEnumerable<Trait> Traits { get; set; }
     }
 }

@@ -17,9 +17,8 @@ namespace FormuleCirkelEntity.Controllers
     public class SeasonController : FormulaController
     {
         public SeasonController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         { }
 
         public async Task<IActionResult> Index()
@@ -105,7 +104,8 @@ namespace FormuleCirkelEntity.Controllers
 
             if (lastSeason != null)
             {
-                season.PointsPerPosition = lastSeason.PointsPerPosition;
+                foreach (var pointPosition in lastSeason.PointsPerPosition)
+                    season.PointsPerPosition.Add(pointPosition);
                 season.PolePoints = lastSeason.PolePoints;
                 season.QualificationRemainingDriversQ2 = lastSeason.QualificationRemainingDriversQ2;
                 season.QualificationRemainingDriversQ3 = lastSeason.QualificationRemainingDriversQ3;
@@ -123,11 +123,12 @@ namespace FormuleCirkelEntity.Controllers
                             Season = season,
                             Name = race.Name,
                             Round = race.Round,
-                            Stints = race.Stints,
                             TrackId = race.TrackId,
                             Weather = Helpers.RandomWeather(),
                             RaceState = RaceState.Concept
                         };
+                        foreach (var stint in race.Stints)
+                            newRace.Stints.Add(stint);
                         season.Races.Add(newRace);
                     }
                 }
@@ -259,31 +260,7 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(sd => (sd.Skill + sd.SeasonTeam.Chassis + sd.SeasonTeam.Engine.Power + (((int)sd.DriverStatus) * -2) + 2))
                 .ToList();
 
-            seasondrivers = AddTraitReliabilityEffects(seasondrivers);
-
             return View(seasondrivers);
-        }
-
-        // Adds the effects of a trait to the total driver and chassis reliablity to all the drivers.
-        private static List<SeasonDriver> AddTraitReliabilityEffects(List<SeasonDriver> drivers)
-        {
-            foreach (var driver in drivers)
-            {
-                // This loop looks over all the traits a driver has.
-                foreach (var trait in driver.Traits.Values)
-                {
-                    if (trait.DriverReliability.HasValue)
-                        driver.Reliability += trait.DriverReliability.Value;
-                }
-                // This loop looks over all the traits a team has.
-                foreach (var trait in driver.SeasonTeam.Traits.Values)
-                {
-                    if (trait.DriverReliability.HasValue)
-                        driver.Reliability += trait.DriverReliability.Value;
-                }
-            }
-
-            return drivers;
         }
 
         [Route("[Controller]/{id}/Settings")]
@@ -357,7 +334,8 @@ namespace FormuleCirkelEntity.Controllers
                 position++;
             }
 
-            season.PointsPerPosition = pairs;
+            foreach (var pair in pairs)
+                season.PointsPerPosition.Add(pair);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Settings), new { id = model.SeasonId });
         }
@@ -462,18 +440,6 @@ namespace FormuleCirkelEntity.Controllers
                 // Set the Season and global Driver again as these are not bound in the view.
                 seasonTeam.SeasonId = id;
                 seasonTeam.TeamId = globalTeamId ?? throw new ArgumentNullException(nameof(globalTeamId));
-
-                // Adds last previous used traits from team as default
-                var lastTeam = _context.SeasonTeams
-                    .Include(st => st.Team)
-                    .ToList()
-                    .OrderBy(st => st.SeasonTeamId)
-                    .LastOrDefault(s => s.Team.Id == globalTeamId);
-
-                if (lastTeam != null)
-                {
-                    seasonTeam.Traits = lastTeam.Traits;
-                }
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
                 await _context.AddAsync(seasonTeam);
@@ -651,14 +617,6 @@ namespace FormuleCirkelEntity.Controllers
                 // Set the Season and global Driver again as these are not bound in the view.
                 seasonDriver.SeasonId = id;
                 seasonDriver.DriverId = globalDriverId ?? throw new ArgumentNullException(nameof(globalDriverId));
-
-                // Adds last previous used traits from driver as default
-                var lastDriver = _context.SeasonDrivers
-                    .AsEnumerable()
-                    .LastOrDefault(s => s.DriverId == globalDriverId);
-
-                if (lastDriver != null)
-                    seasonDriver.Traits = lastDriver.Traits;
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
                 await _context.AddAsync(seasonDriver);
@@ -955,127 +913,6 @@ namespace FormuleCirkelEntity.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("DriverReliabilityDev", new { id = seasonId.SeasonId });
-        }
-
-        [Route("Driver/Traits/{id}")]
-        public async Task<IActionResult> DriverTraits(int id)
-        {
-            var seasondriver = await _context.SeasonDrivers
-                .Include(sd => sd.Driver)
-                .SingleOrDefaultAsync(t => t.SeasonDriverId == id);
-
-            var traits = _context.Traits
-                .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !seasondriver.Traits.Any(res => res.Value.TraitId == tr.TraitId))
-                .OrderBy(t => t.Name)
-                .ToList();
-
-            if (seasondriver == null)
-                return NotFound();
-
-            var model = new SeasonTraitsDriverModel
-            {
-                Driver = seasondriver,
-                Traits = traits
-            };
-
-            return View(model);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost("Driver/Traits/{id}")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
-        {
-            var seasondriver = await _context.SeasonDrivers
-                .SingleOrDefaultAsync(t => t.SeasonDriverId == id);
-
-            var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
-
-            if (seasondriver == null || trait == null)
-                return NotFound();
-
-            seasondriver.Traits.Add(seasondriver.Traits.Count, trait);
-            _context.Update(seasondriver);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(DriverTraits), new { id });
-        }
-
-        [Authorize(Roles = "Admin")]
-        [Route("Driver/Traits/Remove/{driverId}")]
-        public async Task<IActionResult> RemoveDriverTrait(int driverId, int traitId)
-        {
-            var driver = await _context.SeasonDrivers.SingleOrDefaultAsync(sd => sd.SeasonDriverId == driverId);
-            var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
-
-            if (driver == null || trait == null)
-                return NotFound();
-
-            var removetrait = driver.Traits.First(item => item.Value.TraitId == trait.TraitId);
-            driver.Traits.Remove(removetrait);
-            _context.Update(driver);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(DriverTraits), new { id = driverId });
-        }
-
-        [Route("Team/Traits/{id}")]
-        public async Task<IActionResult> TeamTraits(int id)
-        {
-            var seasonteam = await _context.SeasonTeams
-                .Include(st => st.Team)
-                .SingleOrDefaultAsync(st => st.SeasonTeamId == id);
-
-            var traits = _context.Traits
-                .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Team && !seasonteam.Traits.Any(res => res.Value.TraitId == tr.TraitId))
-                .OrderBy(t => t.Name)
-                .ToList();
-
-            if (seasonteam == null)
-                return NotFound();
-
-            var model = new SeasonTraitsTeamModel
-            {
-                Team = seasonteam,
-                Traits = traits
-            };
-
-            return View(model);
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost("Team/Traits/{id}")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> TeamTraits(int id, [Bind("TraitId")] int traitId)
-        {
-            var seasonteam = await _context.SeasonTeams.SingleOrDefaultAsync(st => st.SeasonTeamId == id);
-            var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
-
-            if (seasonteam == null || trait == null)
-                return NotFound();
-
-            seasonteam.Traits.Add(seasonteam.Traits.Count, trait);
-            _context.Update(seasonteam);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(TeamTraits), new { id });
-        }
-
-        [Authorize(Roles = "Admin")]
-        [Route("Team/Traits/Remove/{teamId}")]
-        public async Task<IActionResult> RemoveTeamTrait(int teamId, int traitId)
-        {
-            var team = await _context.SeasonTeams.SingleOrDefaultAsync(st => st.SeasonTeamId == teamId);
-            var trait = await _context.Traits.SingleOrDefaultAsync(tr => tr.TraitId == traitId);
-
-            if (team == null || trait == null)
-                return NotFound();
-
-            var removetrait = team.Traits.First(item => item.Value.TraitId == trait.TraitId);
-            team.Traits.Remove(removetrait);
-            _context.Update(team);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(TeamTraits), new { id = teamId });
         }
 
         [Authorize(Roles = "Admin")]

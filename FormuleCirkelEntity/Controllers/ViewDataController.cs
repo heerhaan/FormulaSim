@@ -19,10 +19,9 @@ namespace FormuleCirkelEntity.Controllers
         protected DbSet<T> Data { get; }
 
         protected ViewDataController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager, 
             PagingHelper pagingHelper)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         {
             PagingHelper = pagingHelper;
             Data = _context.Set<T>();

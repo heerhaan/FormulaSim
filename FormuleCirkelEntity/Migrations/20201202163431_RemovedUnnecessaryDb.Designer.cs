@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20201202163431_RemovedUnnecessaryDb")]
+    partial class RemovedUnnecessaryDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,13 +31,7 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<bool>("ActiveChampionship")
                         .HasColumnType("bit");
 
-                    b.Property<string>("AgeDevRanges")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ChampionshipName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SkillDevRanges")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ChampionshipId");
