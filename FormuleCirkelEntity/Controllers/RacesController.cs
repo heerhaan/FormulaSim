@@ -8,6 +8,7 @@ using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Utility;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ResultGenerators;
+using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,11 +25,10 @@ namespace FormuleCirkelEntity.Controllers
         private static readonly Random rng = new Random();
 
         public RacesController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager, 
             RaceResultGenerator raceResultGenerator, 
             RaceBuilder raceBuilder)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         {
             _resultGenerator = raceResultGenerator;
             _raceBuilder = raceBuilder;
@@ -46,8 +46,14 @@ namespace FormuleCirkelEntity.Controllers
             if (season == null)
                 return NotFound();
 
-            var existingTrackIds = season.Races.Select(r => r.TrackId).ToList();
-            var unusedTracks = _context.Tracks.Where(t => !existingTrackIds.Contains(t.Id)).OrderBy(t => t.Location).OrderBy(t => t.Location).ToList();
+            var existingTrackIds = season.Races
+                .Select(r => r.TrackId)
+                .ToList();
+            var unusedTracks = _context.Tracks
+                .Where(t => !existingTrackIds.Contains(t.Id))
+                .OrderBy(t => t.Location)
+                .OrderBy(t => t.Location)
+                .ToList();
 
             ViewBag.seasonId = id;
             return View(unusedTracks);
@@ -209,7 +215,13 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
+            var trackTraits = await _context.TrackTraits
+                .Where(trt => trt.TrackId == race.TrackId)
+                .Include(trt => trt.Trait)
+                .ToListAsync();
+
             ViewBag.favourites = Favourites(race);
+            ViewBag.tracktraits = trackTraits;
 
             return View(race);
         }
@@ -234,11 +246,8 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RaceStart(int id, int raceId)
         {
             var race = await _context.Races
-                .IgnoreQueryFilters()
                 .Include(r => r.Season.Drivers)
-                .Include(r => r.Season.Teams)
                 .Include(r => r.DriverResults)
-                .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             if (!race.DriverResults.Any())
@@ -249,9 +258,34 @@ namespace FormuleCirkelEntity.Controllers
                 if (result)
                 {
                     race = _raceBuilder
-                    .Use(race)
-                    .AddAllDrivers(race.Track)
-                    .GetResult();
+                        .Use(race)
+                        .AddAllDrivers()
+                        .GetResult();
+
+                    var driverTraits = await _context.DriverTraits
+                        .Include(drt => drt.Trait)
+                        .ToListAsync();
+                    var teamTraits = await _context.TeamTraits
+                        .Include(ttr => ttr.Trait)
+                        .ToListAsync();
+                    var trackTraits = await _context.TrackTraits
+                        .Include(tet => tet.Trait)
+                        .Where(trt => trt.TrackId == race.TrackId)
+                        .ToListAsync();
+                    var seasonTeams = await _context.SeasonTeams.Where(st => st.SeasonId == race.SeasonId).ToListAsync();
+                    foreach (var driverRes in race.DriverResults)
+                    {
+                        // Gets the traits from the driver in the loop and sets them
+                        var thisDriverTraits = driverTraits.Where(drt => drt.DriverId == driverRes.SeasonDriver.DriverId);
+                        RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
+                        // Gets the seasonteam of the driver in the loop
+                        var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
+                        // Gets the traits from the team of the driver in the loop and sets them
+                        var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
+                        RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
+                        // Sets the traits from the track to the driver in the loop
+                        RaceService.SetTrackTraitMods(driverRes, trackTraits);
+                    }
 
                     _context.DriverResults.AddRange(race.DriverResults);
                     await _context.SaveChangesAsync();
@@ -276,8 +310,12 @@ namespace FormuleCirkelEntity.Controllers
                 .IgnoreQueryFilters()
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
+                    .ThenInclude(d => d.DriverTraits)
+                    .ThenInclude(drt => drt.Trait)
                 .Include(dr => dr.SeasonDriver.SeasonTeam)
                     .ThenInclude(st => st.Team)
+                    .ThenInclude(t => t.TeamTraits)
+                    .ThenInclude(tet => tet.Trait)
                 .ToListAsync();
 
             RaceWeekendModel viewmodel = new RaceWeekendModel
@@ -326,7 +364,8 @@ namespace FormuleCirkelEntity.Controllers
                     {
                         result.Status = Status.DSQ;
                         result.DSQCause = Helpers.RandomDSQCause(stintResult.HasValue);
-                    } else
+                    } 
+                    else
                     {
                         result.Status = Status.DNF;
                         result.DNFCause = Helpers.RandomDNFCause(stintResult.HasValue);
@@ -355,7 +394,7 @@ namespace FormuleCirkelEntity.Controllers
             // Clean up unneeded large reference properties to prevent them from being serialized and sent over HTTP.
             race.Season = null;
             race.Track = null;
-            race.Stints = null;
+            race.Stints.Clear();
             foreach(var dr in race.DriverResults)
             {
                 dr.SeasonDriver = null;
@@ -696,14 +735,14 @@ namespace FormuleCirkelEntity.Controllers
             await _context.SaveChangesAsync();
 
             // Prepare race object for serialization
-            race.DriverResults = null;
+            race.DriverResults.Clear();
             race.Season = null;
             race.Track = null;
-            race.Stints = null;
-            raceToSwitch.DriverResults = null;
+            race.Stints.Clear();
+            raceToSwitch.DriverResults.Clear();
             raceToSwitch.Season = null;
             raceToSwitch.Track = null;
-            raceToSwitch.Stints = null;
+            raceToSwitch.Stints.Clear();
             return new JsonResult(new[] { race, raceToSwitch });
         }
     }

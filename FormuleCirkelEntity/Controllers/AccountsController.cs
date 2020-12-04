@@ -17,16 +17,14 @@ namespace FormuleCirkelEntity.Controllers
     {
         private readonly SignInManager<SimUser> _signInManager;
         private readonly ILogger<AccountsController> _logger;
-        
         // There is a possibility that the IEmailSender is setup as soon as I understand how that could work
         //private readonly IEmailSender _emailSender;
 
         public AccountsController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager,
             SignInManager<SimUser> signInManager,
             ILogger<AccountsController> logger)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -109,7 +107,6 @@ namespace FormuleCirkelEntity.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return View();
         }

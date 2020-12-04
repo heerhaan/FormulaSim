@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
@@ -17,6 +13,10 @@ namespace FormuleCirkelEntity.Models
         public string Biography { get; set; }
         public bool Archived { get; set; }
 
-        public virtual ICollection<SeasonDriver> SeasonDrivers { get; set; }
+        public IList<DriverTrait> DriverTraits { get; } = new List<DriverTrait>();
+        public IList<SeasonDriver> SeasonDrivers { get; } = new List<SeasonDriver>();
+
+        public int? SimUserId { get; set; }
+        public SimUser SimUser { get; set; }
     }
 }

@@ -1,11 +1,11 @@
-﻿@model FormuleCirkelEntity.ViewModels.TrackTraitsModel
+﻿@model FormuleCirkelEntity.ViewModels.TeamTraitsModel
 
 @{
-    ViewData["Title"] = "Traits for track";
+    ViewData["Title"] = "Traits for team";
 }
 
 <div class="d-inline-block w-60">
-    <h1>Traits for @Html.DisplayFor(modelItem => modelItem.Track.Name)</h1>
+    <h1>Traits for @Html.DisplayFor(modelItem => modelItem.Team.Abbreviation)</h1>
 
     <h3>Applied traits</h3>
     <table class="ctable fullborder fullwidth">
@@ -18,7 +18,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var trait in Model.TrackTraits)
+            @foreach (var trait in Model.TeamTraits)
             {
                 <tr>
                     <td>
@@ -31,7 +31,7 @@
                         <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
-                        <a asp-controller="Tracks" asp-action="RemoveTrait" asp-route-trackId="@Model.Track.Id" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
+                        <a asp-controller="Tracks" asp-action="RemoveTrait" asp-route-trackId="@Model.Team.Id" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
                     </td>
                 </tr>
             }

@@ -4,6 +4,7 @@ using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +20,9 @@ namespace FormuleCirkelEntity.Controllers
     public class DriversController : ViewDataController<Driver>
     {
         public DriversController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager, 
             PagingHelper pagingHelper)
-            : base(context, identityContext, userManager, pagingHelper)
+            : base(context, userManager, pagingHelper)
         {
         }
 
@@ -37,7 +37,7 @@ namespace FormuleCirkelEntity.Controllers
                 ViewBag.owneddrivers = simuser.Drivers;
             }
             else
-                ViewBag.owneddrivers = new List<int>();
+                ViewBag.owneddrivers = new List<Driver>();
             return base.Index().Result;
         }
 
@@ -127,6 +127,68 @@ namespace FormuleCirkelEntity.Controllers
             return View(stats);
         }
 
+        [Route("Traits/{id}")]
+        public async Task<IActionResult> DriverTraits(int id)
+        {
+            Driver driver = await Data
+                .FirstAsync(dr => dr.Id == id);
+
+            List<Trait> driverTraits = await _context.DriverTraits
+                .Where(drt => drt.DriverId == id)
+                .Select(drt => drt.Trait)
+                .ToListAsync();
+
+            List<Trait> traits = _context.Traits
+                .AsNoTracking()
+                .AsEnumerable()
+                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !driverTraits.Any(drt => drt.TraitId == tr.TraitId))
+                .OrderBy(tr => tr.Name)
+                .ToList();
+
+            var viewmodel = new DriverTraitsModel
+            {
+                Driver = driver,
+                DriverTraits = driverTraits,
+                Traits = traits
+            };
+            return View(viewmodel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Traits/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
+        {
+            Driver driver = await Data.FirstAsync(d => d.Id == id);
+            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
+
+            if (driver is null || trait is null)
+                return NotFound();
+
+            DriverTrait newTrait = new DriverTrait { Driver = driver, Trait = trait };
+            await _context.AddAsync(newTrait);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(DriverTraits), new { id });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [Route("Traits/Remove/{driverId}")]
+        public async Task<IActionResult> RemoveDriverTrait(int driverId, int traitId)
+        {
+            Driver driver = await Data.Include(dr => dr.DriverTraits).FirstAsync(dr => dr.Id == driverId);
+            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
+
+            if (driver == null || trait == null)
+                return NotFound();
+
+            DriverTrait removetrait = driver.DriverTraits.First(drt => drt.TraitId == traitId);
+            _context.Remove(removetrait);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(DriverTraits), new { id = driverId });
+        }
+
         [Route("Leaderlists")]
         public IActionResult Leaderlists()
         {
@@ -203,19 +265,19 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Archived")]
-        public async Task<IActionResult> ArchivedDrivers()
+        public IActionResult ArchivedDrivers()
         {
             var drivers = Data.IgnoreQueryFilters().Where(d => d.Archived).OrderBy(d => d.Name).ToList();
             return View(drivers);
         }
 
         [HttpPost("SaveBiography")]
-        public IActionResult SaveBiography(int id, string biography)
+        public async Task<IActionResult> SaveBiography(int id, string biography)
         {
-            var driver = _context.Drivers.SingleOrDefault(d => d.Id == id);
+            var driver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == id);
             driver.Biography = biography;
             _context.Drivers.Update(driver);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToAction("Stats", new { id });
         }
     }

@@ -25,12 +25,6 @@ namespace FormuleCirkelEntity.Models
 
     public class Race
     {
-        public Race()
-        {
-            Stints = new Dictionary<int, Stint>();
-            DriverResults = new List<DriverResult>();
-        }
-
         [Key]
         public int RaceId { get; set; }
         public int Round { get; set; }
@@ -48,8 +42,7 @@ namespace FormuleCirkelEntity.Models
         public int SeasonId { get; set; }
         public Season Season { get; set; }
 
-        public IDictionary<int, Stint> Stints { get; set; }
-
-        public IList<DriverResult> DriverResults { get; set; }
+        public IDictionary<int, Stint> Stints { get; } = new Dictionary<int, Stint>();
+        public IList<DriverResult> DriverResults { get; } = new List<DriverResult>();
     }
 }

@@ -13,6 +13,10 @@ namespace FormuleCirkelEntity.Models
         public string Biography { get; set; }
         public bool Archived { get; set; }
 
-        public virtual ICollection<SeasonTeam> SeasonTeams { get; set; }
+        public IList<TeamTrait> TeamTraits { get; } = new List<TeamTrait>();
+        public IList<SeasonTeam> SeasonTeams { get; } = new List<SeasonTeam>();
+
+        public int? SimUserId { get; set; }
+        public SimUser SimUser { get; set; }
     }
 }

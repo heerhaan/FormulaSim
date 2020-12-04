@@ -14,9 +14,8 @@ namespace FormuleCirkelEntity.Controllers
     public class TraitsController : FormulaController
     {
         public TraitsController(FormulaContext context, 
-            IdentityContext identityContext, 
             UserManager<SimUser> userManager)
-            : base(context, identityContext, userManager)
+            : base(context, userManager)
         { }
 
         public async Task<IActionResult> Index()
@@ -39,15 +38,13 @@ namespace FormuleCirkelEntity.Controllers
             var trait = await _context.Traits.FindAsync(id);
 
             if (trait == null)
-            {
                 return NotFound();
-            }
 
             return View(trait);
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return View();
         }
@@ -59,7 +56,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(trait);
+                await _context.AddAsync(trait);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -71,15 +68,11 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Modify(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var trait = await _context.Traits.FindAsync(id);
             if (trait == null)
-            {
                 return NotFound();
-            }
 
             return View(trait);
         }
@@ -89,10 +82,8 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Modify(int id, [Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace")] Trait trait)
         {
-            if (id != trait.TraitId)
-            {
+            if (trait is null || id != trait.TraitId)
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -103,24 +94,11 @@ namespace FormuleCirkelEntity.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TraitExists(trait.TraitId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-
             return View(trait);
-        }
-
-        private bool TraitExists(int id)
-        {
-            return _context.Traits.Any(e => e.TraitId == id);
         }
     }
 }

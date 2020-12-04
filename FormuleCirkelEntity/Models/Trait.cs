@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
@@ -12,7 +10,7 @@ namespace FormuleCirkelEntity.Models
         public int TraitId { get; set; }
         // The name of the trait.
         public string Name { get; set; }
-        //The group which the trait belongs to.
+        //The group which the trait belongs to, this is either driver, team or track as defined in the enum.
         [EnumDataType(typeof(TraitGroup))]
         public TraitGroup TraitGroup { get; set; }
         // A description of the trait.
@@ -35,6 +33,9 @@ namespace FormuleCirkelEntity.Models
         public int? MinimumRNG { get; set; }
         // Determines if the trait is still in use in the application.
         public bool Archived { get; set; }
+        public IList<DriverTrait> DriverTraits { get; } = new List<DriverTrait>();
+        public IList<TeamTrait> TeamTraits { get; } = new List<TeamTrait>();
+        public IList<TrackTrait> TrackTraits { get; } = new List<TrackTrait>();
     }
 
     public enum TraitGroup { Driver, Team, Track }

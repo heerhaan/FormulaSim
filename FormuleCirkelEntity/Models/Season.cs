@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace FormuleCirkelEntity.Models
 {
@@ -14,11 +13,6 @@ namespace FormuleCirkelEntity.Models
 
     public class Season
     {
-        public Season()
-        {
-            PointsPerPosition = new Dictionary<int, int?>();
-        }
-
         [Key]
         public int SeasonId { get; set; }
         public DateTime? SeasonStart { get; set; }
@@ -31,14 +25,14 @@ namespace FormuleCirkelEntity.Models
         public int QualificationRemainingDriversQ3 { get; set; }
         public int QualificationRNG { get; set; }
         public int QualyBonus { get; set; }
-        public IDictionary<int, int?> PointsPerPosition { get; set; }
+        public IDictionary<int, int?> PointsPerPosition { get; } = new Dictionary<int, int?>();
         public int PolePoints { get; set; }
 
         public int ChampionshipId { get; set; }
         public Championship Championship { get; set; }
 
-        public virtual IList<Race> Races { get; set; }
-        public virtual IList<SeasonDriver> Drivers { get; set; }
-        public virtual IList<SeasonTeam> Teams { get; set; }
+        public IList<Race> Races { get; } = new List<Race>();
+        public IList<SeasonDriver> Drivers { get; } = new List<SeasonDriver>();
+        public IList<SeasonTeam> Teams { get; } = new List<SeasonTeam>();
     }
 }

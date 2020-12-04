@@ -1,8 +1,8 @@
 ﻿using FormuleCirkelEntity.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.DAL
 {
-    public class FormulaContext : DbContext
+    public class FormulaContext : IdentityDbContext<SimUser>
     {
         public FormulaContext(DbContextOptions<FormulaContext> options) : base(options) { }
 
@@ -29,19 +29,24 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<DriverResult> DriverResults { get; set; }
         public DbSet<Qualification> Qualification { get; set; }
         public DbSet<Trait> Traits { get; set; }
+        public DbSet<DriverTrait> DriverTraits { get; set; }
+        public DbSet<TeamTrait> TeamTraits { get; set; }
+        public DbSet<TrackTrait> TrackTraits { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // Regular null-check so no stuff that breaks will get called if builders appears to be null
+            if (builder is null) return;
+            // Uses the base class from Identity
+            base.OnModelCreating(builder);
+            // Makes it so that archived elements are usually hidden unless specified otherwise
             EnableArchivable(builder);
-            if (builder is null)
-                return;
             //Removes the Cascade Delete functionality related to relations between tables
             foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
 
-            //Makes table property unique
             builder.Entity<Engine>()
                 .HasIndex(e => e.Name)
                 .IsUnique();
@@ -62,21 +67,12 @@ namespace FormuleCirkelEntity.DAL
                 .HasConversion(
                     dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
                     json => JsonConvert.DeserializeObject<Dictionary<int, int?>>(json) ?? new Dictionary<int, int?>());
-            builder.Entity<Track>()
-                .Property(t => t.Traits)
-                .HasConversion(
-                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
-                    json => JsonConvert.DeserializeObject<Dictionary<int, Trait>>(json) ?? new Dictionary<int, Trait>());
-            builder.Entity<SeasonDriver>()
-                .Property(t => t.Traits)
-                .HasConversion(
-                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
-                    json => JsonConvert.DeserializeObject<Dictionary<int, Trait>>(json) ?? new Dictionary<int, Trait>());
-            builder.Entity<SeasonTeam>()
-                .Property(t => t.Traits)
-                .HasConversion(
-                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
-                    json => JsonConvert.DeserializeObject<Dictionary<int, Trait>>(json) ?? new Dictionary<int, Trait>());
+            builder.Entity<DriverTrait>()
+                .HasKey(dt => new { dt.DriverId, dt.TraitId });
+            builder.Entity<TeamTrait>()
+                .HasKey(tt => new { tt.TeamId, tt.TraitId });
+            builder.Entity<TrackTrait>()
+                .HasKey(tr => new { tr.TrackId, tr.TraitId });
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
