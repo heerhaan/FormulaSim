@@ -746,7 +746,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
         {
             var seasonId = await _context.Seasons
-                .FirstOrDefaultAsync(s => s.Championship.ActiveChampionship);
+                .FirstOrDefaultAsync(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship);
 
             var drivers = await _context.SeasonDrivers
                 .Where(s => s.SeasonId == seasonId.SeasonId && s.Dropped == false)
