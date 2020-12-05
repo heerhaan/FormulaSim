@@ -57,7 +57,7 @@
                     @item.DriverNumber
                 </td>
                 <td class="text-left">
-                    <span class="flag flag-@(item.Country) ff-md flag-margin ml-cel"></span>@item.Name
+                    <span class="flag flag-@(item.Country) ff-sm flag-margin ml-cel"></span>@item.Name
                 </td>
                 <td>
                     @item.Abbreviation
@@ -67,29 +67,30 @@
                         <i class="fas fa-id-card fa-2x"></i>
                     </a>
                 </td>
-            @if(userOwned.Contains(item) || isAdmin)
-            {
-                <td>
-                    <a asp-action="DriverTraits" asp-route-id="@item.Id">
-                        <i class="fas fa-yin-yang fa-2x"></i>
-                    </a>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">
-                        <i class="fas fa-wrench fa-2x"></i>
-                    </a>
-                </td>
-                <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id">
-                        <i class="fas fa-trash-alt fa-2x"></i>
-                    </a>
-                </td>
-            }
-            else
-            {
-                <td></td>
-                <td></td>
-            }
+                @if (isAdmin)
+                {
+                    <td>
+                        <a asp-action="DriverTraits" asp-route-id="@item.Id">
+                            <i class="fas fa-yin-yang fa-2x"></i>
+                        </a>
+                    </td>
+                }
+                else { <td></td> }
+                @if (userOwned.Contains(item) || isAdmin)
+                {
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">
+                            <i class="fas fa-wrench fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">
+                            <i class="fas fa-trash-alt fa-2x"></i>
+                        </a>
+                    </td>
+                }
+                else { <td></td><td></td> }
             </tr>
         }
         </tbody>

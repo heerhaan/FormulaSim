@@ -75,7 +75,7 @@
                     <td>
                         <span class="badge badge-team fullwidth text-left font-size-default" 
                               style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
-                            <span class="flag flag-@(driver.Driver.Country) ff-md flag-margin"></span>@driver.Driver.Name
+                            <span class="flag flag-@(driver.Driver.Country) ff-sm flag-margin"></span>@driver.Driver.Name
                         </span>
                     </td>
                     <td>@driver.Skill</td>
@@ -138,7 +138,7 @@
             {
                 <tr data-obj-id="@race.RaceId">
                     <td data-field="location" class="text-left">
-                        <span class="flag flag-@(race.Track.Country) ff-md flag-margin ml-cel"></span>@race.Track.Location
+                        <span class="flag flag-@(race.Track.Country) ff-sm flag-margin ml-cel"></span>@race.Track.Location
                     </td>
                     <td data-field="name">@race.Name</td>
                     <td data-field="round">@race.Round</td>
@@ -192,7 +192,7 @@
                     <td>@team.Points</td>
                     <td>
                         <span class="badge badge-team text-left fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);font-size:1rem;">
-                            <span class="flag flag-@(team.Team.Country) ff-md flag-margin"></span>@team.Name
+                            <span class="flag flag-@(team.Team.Country) ff-sm flag-margin"></span>@team.Name
                         </span>
                     </td>
                     <td>@team.Chassis</td>

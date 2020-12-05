@@ -27,7 +27,7 @@
                     @foreach (var track in Model.Tracks)
                     {
                         <th class="fullborder">@(track.Location.Substring(0, 3).ToUpper())
-                            <br /><span class="flag flag-@(track.Country) ff-md"></span></th>
+                            <br /><span class="flag flag-@(track.Country) ff-sm"></span></th>
                     }
                     <th class="fullborder">
                         Pts.
@@ -48,7 +48,7 @@
                             <b>@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</b>
                         </td>
                         <td class="text-left pr-2">
-                            <span class="ml-cel"><span class="flag flag-@(item.Driver.Country) ff-md flag-margin"></span>
+                            <span class="ml-cel"><span class="flag flag-@(item.Driver.Country) ff-sm flag-margin"></span>
                             @Html.DisplayFor(modelItem => item.Driver.Name)</span>
                         </td>
                         <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
