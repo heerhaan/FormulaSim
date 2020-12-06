@@ -118,6 +118,6 @@
     function randomDriver() {
         var drivers = @(Json.Serialize(Model.Select(d => d.Id)));
         const randomId = drivers[Math.floor(Math.random() * drivers.length)];
-        window.location.href = '/Traits/' + randomId;
+        window.location.href = '/Drivers/Traits/' + randomId;
     }
 </script>
