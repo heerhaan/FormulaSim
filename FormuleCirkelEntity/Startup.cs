@@ -84,7 +84,10 @@ namespace FormuleCirkelEntity
                 options.SlidingExpiration = true;
             });
 
+            // Singleton services only get made once
             services.AddSingleton(new Random());
+            // Scoped services
+            services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
             // Custom services related to [fill in]
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();

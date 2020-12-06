@@ -20,8 +20,9 @@ namespace FormuleCirkelEntity.Controllers
     {
         public TeamsController(FormulaContext context, 
             UserManager<SimUser> userManager, 
-            PagingHelper pagingHelper)
-            : base(context, userManager, pagingHelper)
+            PagingHelper pagingHelper,
+            IDataService<Team> dataService)
+            : base(context, userManager, pagingHelper, dataService)
         { }
 
         [SortResult(nameof(Team.Abbreviation)), PagedResult]
@@ -49,7 +50,7 @@ namespace FormuleCirkelEntity.Controllers
             var stats = new TeamStatsModel();
 
             // Finds the team corresponding to the given id
-            var team = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
+            var team = await DataService.GetAnyEntity(id.Value);
             // Only take seasons from the championship that is currently in use
             var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
@@ -136,8 +137,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> TeamTraits(int id)
         {
-            Team team = await Data
-                .FirstAsync(dr => dr.Id == id);
+            Team team = await DataService.GetEntity(id);
 
             List<Trait> teamTraits = await _context.TeamTraits
                 .Where(ttr => ttr.TeamId == id)
@@ -165,7 +165,7 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TeamTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Team team = await Data.FirstAsync(t => t.Id == id);
+            Team team = await DataService.GetEntity(id);
             Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (team is null || trait is null)
@@ -182,16 +182,20 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{teamId}")]
         public async Task<IActionResult> RemoveTeamTrait(int teamId, int traitId)
         {
-            Team team = await Data.Include(te => te.TeamTraits).FirstAsync(te => te.Id == teamId);
-            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
+            Team team = await _context.Teams
+                .Include(te => te.TeamTraits)
+                .FirstAsync(te => te.Id == teamId);
+            Trait trait = await _context.Traits
+                .FirstAsync(tr => tr.TraitId == traitId);
 
             if (team == null || trait == null)
                 return NotFound();
 
-            TeamTrait removetrait = team.TeamTraits.First(ttr => ttr.TraitId == traitId);
+            TeamTrait removetrait = team.TeamTraits
+                .First(ttr => ttr.TraitId == traitId);
+
             _context.Remove(removetrait);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(TeamTraits), new { id = teamId });
         }
 
@@ -275,7 +279,8 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Archived")]
         public IActionResult ArchivedTeams()
         {
-            var teams = Data.IgnoreQueryFilters()
+            var teams = _context.Teams
+                .IgnoreQueryFilters()
                 .Where(t => t.Archived)
                 .OrderBy(t => t.Abbreviation)
                 .ToList();

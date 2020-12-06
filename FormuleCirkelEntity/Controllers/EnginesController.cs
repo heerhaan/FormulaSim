@@ -16,8 +16,9 @@ namespace FormuleCirkelEntity.Controllers
     {
         public EnginesController(FormulaContext context, 
             UserManager<SimUser> userManager, 
-            PagingHelper pagingHelper)
-            : base(context, userManager, pagingHelper)
+            PagingHelper pagingHelper,
+            IDataService<Engine> dataService)
+            : base(context, userManager, pagingHelper, dataService)
         { }
 
         [SortResult(nameof(Engine.Name)), PagedResult]
@@ -29,7 +30,8 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Archived")]
         public IActionResult ArchivedEngines()
         {
-            List<Engine> engines = Data.IgnoreQueryFilters()
+            List<Engine> engines = _context.Engines
+                .IgnoreQueryFilters()
                 .Where(e => e.Archived)
                 .OrderBy(e => e.Name)
                 .ToList();
