@@ -157,6 +157,8 @@ namespace FormuleCirkelEntity.DAL
                 .Where(et => typeof(IArchivable).IsAssignableFrom(et.ClrType));
         }
 
+        public DbSet<FormuleCirkelEntity.Models.MinMaxDevRange> MinMaxDevRange { get; set; }
+
         #endregion
     }
 }

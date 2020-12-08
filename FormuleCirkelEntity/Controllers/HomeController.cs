@@ -372,6 +372,11 @@ namespace FormuleCirkelEntity.Controllers
                 return RedirectToAction("Index", "Season");
             }
         }
+
+        public IActionResult AboutMe()
+        {
+            return View();
+        }
         
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
