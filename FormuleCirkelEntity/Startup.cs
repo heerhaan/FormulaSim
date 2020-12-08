@@ -61,12 +61,10 @@ namespace FormuleCirkelEntity
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequiredLength = 4;
-
                 // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
-
                 // User settings
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
@@ -77,7 +75,7 @@ namespace FormuleCirkelEntity
                 // Cookie settings
                 options.Cookie.Name = "FormulaCookie";
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromHours(2);
 
                 options.LoginPath = "/Accounts/Login";
                 options.AccessDeniedPath = "/Accounts/AccessDenied";
