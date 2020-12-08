@@ -82,7 +82,7 @@ namespace FormuleCirkelEntity.Controllers
 
             if(lastracemodel != null)
             {
-                var stintlist = lastracemodel.Stints.Values.ToList();
+                var stintlist = lastracemodel.Stints;
                 var race = _raceBuilder
                 .InitializeRace(track, season)
                 .AddModifiedStints(stintlist)
@@ -121,14 +121,16 @@ namespace FormuleCirkelEntity.Controllers
             // Finds the last time track was used and uses same stintsetup as then
             var lastracemodel = _context.Races
                 .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
+                .Include(r => r.Stints)
                 .Include(r => r.Track)
                 .ToList()
                 .LastOrDefault(lr => lr.Track.Id == trackId);
 
             if (lastracemodel != null)
             {
-                var stintlist = lastracemodel.Stints.Values.ToList();
-                model.RaceStints = stintlist;
+                var stintlist = lastracemodel.Stints;
+                foreach (var stint in stintlist)
+                    model.RaceStints.Add(stint);
             }
 
             var track = _context.Tracks.SingleOrDefault(m => m.Id == trackId);
@@ -151,11 +153,9 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Drivers)
                 .SingleOrDefaultAsync(s => s.SeasonId == raceModel.SeasonId);
 
-            IList<Stint> stints = raceModel.RaceStints;
-
             var race = _raceBuilder
                 .InitializeRace(track, season)
-                .AddModifiedStints(stints)
+                .AddModifiedStints(raceModel.RaceStints)
                 .GetResultAndRefresh();
 
             race.Weather = Helpers.RandomWeather();
@@ -168,6 +168,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Race(int raceId)
         {
             Race race = await _context.Races
+                .Include(r => r.Stints)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             Season currentSeason = await _context.Seasons
@@ -176,6 +177,7 @@ namespace FormuleCirkelEntity.Controllers
             var drivers = await _context.DriverResults
                 .Where(dr => dr.RaceId == raceId)
                 .IgnoreQueryFilters()
+                .Include(dr => dr.StintResults)
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
                 .Include(dr => dr.SeasonDriver.SeasonTeam)
@@ -211,6 +213,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var race = await _context.Races
                 .IgnoreQueryFilters()
+                .Include(r => r.Stints)
                 .Include(r => r.Season)
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
@@ -246,8 +249,10 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RaceStart(int id, int raceId)
         {
             var race = await _context.Races
+                .Include(r => r.Stints)
                 .Include(r => r.Season.Drivers)
                 .Include(r => r.DriverResults)
+                    .ThenInclude(r => r.StintResults)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             if (!race.DriverResults.Any())
@@ -303,6 +308,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var race = await _context.Races
                 .Include(r => r.Season)
+                .Include(r => r.Stints)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             var drivers = await _context.DriverResults
@@ -335,6 +341,9 @@ namespace FormuleCirkelEntity.Controllers
             var race = await _context.Races
                 .Include(r => r.Season)
                 .Include(r => r.Track)
+                .Include(r => r.Stints)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(res => res.StintResults)
                 .Include(r => r.DriverResults)
                     .ThenInclude(res => res.SeasonDriver.Driver)
                 .Include(r => r.DriverResults)
@@ -347,37 +356,42 @@ namespace FormuleCirkelEntity.Controllers
                 return BadRequest();
 
             race.StintProgress++;
-            var stint = race.Stints[race.StintProgress];
+            var stint = race.Stints.Single(s => s.Number == race.StintProgress);
             var track = race.Track;
 
             // Calculate results for all drivers who have not been DSQ'd or DNF'd.
             foreach (var result in race.DriverResults.Where(d => d.Status == Status.Finished))
             {
-                var stintResult = _resultGenerator.GetStintResult(result, stint, track, race);
+                var stintResult = result.StintResults.Single(sr => sr.Number == race.StintProgress);
+
+                _resultGenerator.UpdateStintResult(stintResult, result, stint, track, race);
                 
                 // A null or -1000 result indicates a non-finish.
-                if (stintResult == null || stintResult.Value == -1000)
+                if (stintResult.StintStatus != StintStatus.Running)
                 {
                     // RNG to determine the type of DNF.
                     int dnfvalue = rng.Next(1, 26);
                     if (dnfvalue == 25)
                     {
                         result.Status = Status.DSQ;
-                        result.DSQCause = Helpers.RandomDSQCause(stintResult.HasValue);
+                        result.Points += -2000;
+                        if (stintResult.StintStatus == StintStatus.DriverDNF)
+                            result.DSQCause = Helpers.RandomDriverDSQ();
+                        else
+                            result.DSQCause = Helpers.RandomChassisDSQ();
                     } 
                     else
                     {
                         result.Status = Status.DNF;
-                        result.DNFCause = Helpers.RandomDNFCause(stintResult.HasValue);
+                        result.Points += -1000;
+                        if (stintResult.StintStatus == StintStatus.DriverDNF)
+                            result.DNFCause = Helpers.RandomDriverDNF();
+                        else
+                            result.DNFCause = Helpers.RandomChassisDNF();
                     }
-                    if (stintResult.HasValue)
-                        stintResult = null;
                 }
-
-                result.StintResults.Add(race.StintProgress, stintResult);
-                result.Points = result.StintResults.Sum(sr => sr.Value ?? -999);
-                if (result.DSQCause != DSQCause.None)
-                    result.Points += -999;
+                // It sums the score of all stintresults of a driver, could maybe also just add the current score up
+                result.Points = result.StintResults.Sum(sr => sr.Result);
             }
 
             var positionsList = RaceResultGenerator.GetPositionsBasedOnRelativePoints(race.DriverResults);
@@ -385,7 +399,8 @@ namespace FormuleCirkelEntity.Controllers
             foreach (var result in race.DriverResults)
             {
                 result.Position = positionsList.OrderedResults[result.DriverResultId];
-                result.Points = positionsList.DriverResults.SingleOrDefault(dr => dr.SeasonDriverId == result.SeasonDriverId).Points;
+                result.Points = positionsList.DriverResults.Single(dr => dr.SeasonDriverId == result.SeasonDriverId).Points;
+                result.StintResults.Single(sr => sr.Number == race.StintProgress).Position = result.Position;
             }
 
             _context.UpdateRange(race.DriverResults);
@@ -409,6 +424,7 @@ namespace FormuleCirkelEntity.Controllers
             var driverResults = _context.DriverResults
                 .IgnoreQueryFilters()
                 .Where(res => res.RaceId == raceId)
+                .Include(res => res.StintResults)
                 .Include(res => res.SeasonDriver.Driver)
                 .Include(res => res.SeasonDriver.SeasonTeam.Team)
                 .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Abbreviation)

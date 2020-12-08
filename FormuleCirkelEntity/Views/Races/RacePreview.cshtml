@@ -23,13 +23,14 @@
                     Location:
                 </dt>
                 <dd class="col-3">
-                    @(Model.Track.Location)
+                    @(Html.DisplayFor(model => model.Track.Location))
                 </dd>
                 <dt class="col-3">
                     Track:
                 </dt>
                 <dd class="col-3">
-                    <span class="flag flag-@(Model.Track.Country) ff-md flag-margin"></span>@Html.DisplayFor(model => model.Track.Name)
+                    <span class="flag flag-@(Html.DisplayFor(model => model.Track.Country)) ff-md flag-margin"></span>
+                    @Html.DisplayFor(model => model.Track.Name)
                 </dd>
                 <dt class="col-3">
                     Length:
@@ -68,6 +69,7 @@
                 <tr>
                     <th>#</th>
                     <th>Driver</th>
+                    <th>Pitstop</th>
                     <th class="tcc-crew"><span>Chassis</span></th>
                     <th class="tcc-chassis"><span>Engine</span></th>
                     <th>Qualy bonus</th>
@@ -82,8 +84,24 @@
                 @foreach (var stint in Model.Stints)
                 {
                 <tr>
-                    <td class="alt-font">@stint.Key</td>
-                    @if (stint.Value.ApplyDriverLevel)
+                    <td class="alt-font">@stint.Number</td>
+                    @if (stint.ApplyPitstop)
+                    {
+                        <td class="result-points">✓</td>
+ }
+                    else
+                    {
+                        <td></td>
+}
+                    @if (stint.ApplyDriverLevel)
+                    {
+                        <td class="result-points">✓</td>
+                    }
+                    else
+                    {
+                        <td></td>
+}
+                    @if (stint.ApplyChassisLevel)
                     {
                         <td class="result-points">✓</td>
                     }
@@ -91,7 +109,7 @@
                     {
                         <td></td>
                     }
-                    @if (stint.Value.ApplyChassisLevel)
+                    @if (stint.ApplyEngineLevel)
                     {
                         <td class="result-points">✓</td>
                     }
@@ -99,7 +117,7 @@
                     {
                         <td></td>
                     }
-                    @if (stint.Value.ApplyEngineLevel)
+                    @if (stint.ApplyQualifyingBonus)
                     {
                         <td class="result-points">✓</td>
                     }
@@ -107,7 +125,7 @@
                     {
                         <td></td>
                     }
-                    @if (stint.Value.ApplyQualifyingBonus)
+                    @if (stint.ApplyTireLevel)
                     {
                         <td class="result-points">✓</td>
                     }
@@ -115,7 +133,7 @@
                     {
                         <td></td>
                     }
-                    @if (stint.Value.ApplyTireLevel)
+                    @if (stint.ApplyTireWear)
                     {
                         <td class="result-points">✓</td>
                     }
@@ -123,7 +141,7 @@
                     {
                         <td></td>
                     }
-                    @if (stint.Value.ApplyTireWear)
+                    @if (stint.ApplyReliability)
                     {
                         <td class="result-points">✓</td>
                     }
@@ -131,24 +149,8 @@
                     {
                         <td></td>
                     }
-                    @if (stint.Value.ApplyReliability)
-                    {
-                        <td class="result-points">✓</td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    @if (stint.Value.RNGMaximum > 0)
-                    {
-                        <td>@(stint.Value.RNGMinimum + minRNGMod)</td>
-                        <td>@(stint.Value.RNGMaximum + maxRNGMod)</td>
-                    }
-                    else
-                    {
-                        <td>@(stint.Value.RNGMinimum)</td>
-                        <td>@(stint.Value.RNGMaximum)</td>
-                    }
+                    <td>@(stint.RNGMinimum + minRNGMod)</td>
+                    <td>@(stint.RNGMaximum + maxRNGMod)</td>
                 </tr>
                 }
             </tbody>

@@ -356,7 +356,7 @@ namespace FormuleCirkelEntity.Controllers
 
                 var nextrace = currentSeason.Races
                     .OrderBy(r => r.Round)
-                    .FirstOrDefault(r => r.StintProgress == 0);
+                    .FirstOrDefault(r => r.RaceState != RaceState.Finished);
 
                 if (nextrace == null)
                 {

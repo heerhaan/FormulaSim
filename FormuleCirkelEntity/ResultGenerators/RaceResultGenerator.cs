@@ -21,9 +21,9 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResult">The partial <see cref="DriverResult"/> from which to derive certain modifiers.</param>
         /// <param name="stint">The <see cref="Stint"/> supplying the modifiers to use.</param>
         /// <returns>A <see cref="int"/> points value, or <see cref="int.MinValue"/> if a DNF result occured.</returns>
-        public int? GetStintResult(DriverResult driverResult, Stint stint, Track track, Race race)
+        public void UpdateStintResult(StintResult stintResult, DriverResult driverResult, Stint stint, Track track, Race race)
         {
-            if (driverResult is null || stint is null || track is null || race is null)
+            if (stintResult is null || driverResult is null || stint is null || track is null || race is null)
                 throw new NullReferenceException();
 
             // Applies the increased or decreased odds for the specific track.
@@ -34,91 +34,94 @@ namespace FormuleCirkelEntity.ResultGenerators
             int weatherRNG = 0;
             int weatherDNF = 0;
 
-            int result = 0;
-
             var driver = driverResult.SeasonDriver;
             var team = driverResult.SeasonDriver.SeasonTeam;
 
-            // If the stint is not a pitstop then it applies the RNG modifiers and the weather effects.
-            if (stint.RNGMaximum > 0)
+            stintResult.StintStatus = StintStatus.Running;
+            switch (race.Weather)
             {
-                switch (race.Weather)
-                {
-                    case Weather.Sunny:
-                        tireWeatherWear += 4;
-                        engineWeatherMultiplier = 0.9;
-                        break;
-                    case Weather.Overcast:
-                        tireWeatherBonus += 2;
-                        engineWeatherMultiplier = 1.1;
-                        break;
-                    case Weather.Rain:
-                        weatherRNG += 10;
-                        weatherDNF += -3;
-                        break;
-                    case Weather.Storm:
-                        weatherRNG += 20;
-                        weatherDNF += -5;
-                        break;
-                }
-
-                // Add one because Random.Next() has an exclusive upper bound.
-                result = _rng.Next((stint.RNGMinimum + driverResult.MinRNG), (stint.RNGMaximum + weatherRNG + driverResult.MaxRNG) + 1);
-            }
-            else
-            {
-                result = _rng.Next((stint.RNGMinimum), (stint.RNGMaximum) + 1);
-            }
-
-            if (stint.ApplyDriverLevel)
-            {
-                result += driver.Skill + driverResult.DriverRacePace;
-            }
-
-            if (stint.ApplyQualifyingBonus)
-            {
-                result += Helpers.GetQualifyingBonus(driverResult.Grid, driver.Season.Drivers.Count, driver.Season.QualyBonus);
-            }
-
-            if (stint.ApplyTireLevel && driver.Tires == Tire.Softs)
-            {
-                result += (10 + tireWeatherBonus);
-            }
-
-            // Applies the power of the engine plus external factors when it is relevant for the current stint
-            if (stint.ApplyEngineLevel)
-            {
-                result += (int)Math.Round((team.Engine.Power + driverResult.EngineRacePace) * engineWeatherMultiplier);
-            }
-
-            if (stint.ApplyTireWear && driver.Tires == Tire.Softs)
-            {
-                // Calculates the extra wear a tire may have due to weather circumstances.
-                int maxWear = -20;
-                maxWear -= tireWeatherWear;
-                // Maximum of 1 because Random.Next() has an exclusive upper bound.
-                result += _rng.Next(maxWear, 1);
+                case Weather.Sunny:
+                    tireWeatherWear += 4;
+                    engineWeatherMultiplier = 0.9;
+                    break;
+                case Weather.Overcast:
+                    tireWeatherBonus += 2;
+                    engineWeatherMultiplier = 1.1;
+                    break;
+                case Weather.Rain:
+                    weatherRNG += 10;
+                    weatherDNF += -3;
+                    break;
+                case Weather.Storm:
+                    weatherRNG += 20;
+                    weatherDNF += -5;
+                    break;
             }
 
             if (stint.ApplyReliability)
             {
                 // Check for the reliability of the chassis.
                 if (GetChassisReliabilityResult(team.Reliability, driverResult.ChassisRelMod) == -1)
-                    return null;
-
+                {
+                    stintResult.StintStatus = StintStatus.ChassisDNF;
+                }
                 // Check for the reliability of the driver.
-                if (GetDriverReliabilityResult(driver.Reliability, weatherDNF + driverResult.DriverRelMod) == -1)
-                    return -1000;
+                else if (GetDriverReliabilityResult(driver.Reliability, weatherDNF + driverResult.DriverRelMod) == -1)
+                {
+                    stintResult.StintStatus = StintStatus.DriverDNF;
+                }
             }
 
-            if (stint.ApplyChassisLevel)
+            if (stintResult.StintStatus == StintStatus.Running)
             {
-                int bonus = Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(team), track.Specification.ToString());
-                int statusBonus = (((int)driver.DriverStatus) * -2) + 2;
-                result += (team.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
-            }
+                // Add one because Random.Next() has an exclusive upper bound.
+                int result = _rng.Next((stint.RNGMinimum + driverResult.MinRNG), (stint.RNGMaximum + weatherRNG + driverResult.MaxRNG) + 1);
 
-            return result;
+                if (stint.ApplyPitstop)
+                {
+                    // So yes, everything is not setup yet to apply pitstops through a stint
+                    throw new NotImplementedException();
+                }
+
+                if (stint.ApplyDriverLevel)
+                {
+                    result += driver.Skill + driverResult.DriverRacePace;
+                }
+
+                if (stint.ApplyChassisLevel)
+                {
+                    int bonus = Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(team), track.Specification.ToString());
+                    int statusBonus = (((int)driver.DriverStatus) * -2) + 2;
+                    result += (team.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
+                }
+
+                if (stint.ApplyQualifyingBonus)
+                {
+                    result += Helpers.GetQualifyingBonus(driverResult.Grid, driver.Season.Drivers.Count, driver.Season.QualyBonus);
+                }
+
+                if (stint.ApplyTireLevel && driver.Tires == Tire.Softs)
+                {
+                    result += (10 + tireWeatherBonus);
+                }
+
+                // Applies the power of the engine plus external factors when it is relevant for the current stint
+                if (stint.ApplyEngineLevel)
+                {
+                    result += (int)Math.Round((team.Engine.Power + driverResult.EngineRacePace) * engineWeatherMultiplier);
+                }
+
+                if (stint.ApplyTireWear && driver.Tires == Tire.Softs)
+                {
+                    // Calculates the extra wear a tire may have due to weather circumstances.
+                    int maxWear = -20;
+                    maxWear -= tireWeatherWear;
+                    // Maximum of 1 because Random.Next() has an exclusive upper bound.
+                    result += _rng.Next(maxWear, 1);
+                }
+                // Finally adds the result of the stint to the stintresult
+                stintResult.Result = result;
+            }
         }
 
         public int GetChassisReliabilityResult(int reliability, int additionalDNF)
