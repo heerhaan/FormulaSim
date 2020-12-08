@@ -122,6 +122,10 @@ i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
+.list-space li {
+    margin-bottom: 5px;
+}
+
 /* Styling for the in-season pages */
 .nav-tabs {
     border-bottom: none;
