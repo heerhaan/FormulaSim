@@ -79,8 +79,8 @@ namespace FormuleCirkelEntity.ResultGenerators
 
                 if (stint.ApplyPitstop)
                 {
-                    // So yes, everything is not setup yet to apply pitstops through a stint
-                    throw new NotImplementedException();
+                    // Temporary since pitstops should also be settable
+                    result += _rng.Next(-65, -54);
                 }
 
                 if (stint.ApplyDriverLevel)
