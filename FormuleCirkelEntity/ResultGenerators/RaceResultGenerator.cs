@@ -172,22 +172,22 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResults">The <see cref="DriverResult"/>s to determine the relative positions of.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> of the driverResult ID's and the corresponding positions.</returns>
         /// <remarks>When two driver points totals are equal, their position is determined based on their original grid position.</remarks>
-        public static DriverSwap GetPositionsBasedOnRelativePoints(IEnumerable<DriverResult> driverResults)
+        public static void GetPositionsBasedOnRelativePoints(List<DriverResult> driverResults, int stintProgress)
         {
-            var orderedResults = driverResults
+            driverResults = driverResults
                 .OrderByDescending(d => d.Points)
                 .ThenBy(d => d.Grid)
                 .ToList();
 
             // Swap drivers when the driver above is the second driver for the driver below
-            foreach (var driver in orderedResults)
+            foreach (var driver in driverResults)
             {
                 if (driver.SeasonDriver.DriverStatus == DriverStatus.First && driver.Status == Status.Finished)
                 {
-                    int index = orderedResults.IndexOf(driver);
+                    int index = driverResults.IndexOf(driver);
                     if (index != 0)
                     {
-                        var aboveDriver = orderedResults[(index - 1)];
+                        var aboveDriver = driverResults[(index - 1)];
                         if (driver.SeasonDriver.SeasonTeam == aboveDriver.SeasonDriver.SeasonTeam)
                         {
                             int firstDriverPoints = driver.Points;
@@ -197,27 +197,16 @@ namespace FormuleCirkelEntity.ResultGenerators
                     }
                 }
             }
-            orderedResults.Sort((l, r) => -1 * l.Points.CompareTo(r.Points));
-            /* First finish the other tasks, then check of this works and can replace the mess that is the stuff underneath
+
+            // Quickly sort all the driverResults again
+            driverResults.Sort((l, r) => -1 * l.Points.CompareTo(r.Points));
             int position = 0;
-            foreach (var orderRes in orderedResults)
+            foreach (var result in driverResults)
             {
                 position++;
-                orderRes.Position = position;
-            }*/
-            DriverSwap swap = new DriverSwap
-            {
-                DriverResults = orderedResults,
-                OrderedResults = orderedResults.ToDictionary((res => res.DriverResultId), (res => orderedResults.IndexOf(res) + 1))
-            };
-
-            return swap;
+                result.Position = position;
+                result.StintResults.Single(sr => sr.Number == stintProgress).Position = position;
+            }
         }
-    }
-
-    public class DriverSwap
-    {
-        public IDictionary<int, int> OrderedResults { get; set; }
-        public List<DriverResult> DriverResults { get; set; }
     }
 }

@@ -80,7 +80,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction("Index", "Home");
+            return View();
         }
 
         public IActionResult Register()

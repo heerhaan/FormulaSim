@@ -330,10 +330,15 @@
 
         $(res).each(function (driverKey, driverValue) {
             var stintresults = [];
+            // First enters the grid position of the driver as their starting point
             stintresults.push(driverValue.Grid);
-            for (var stint in driverValue.StintResults) {
-                stintresults.push(stint.Position);
+            // Gets the stintresults and first orders them by their stint number
+            var stintsToLoop = driverValue.StintResults.sort((a, b) => (a.Number > b.Number) ? 1 : ((b.Number > a.Number) ? -1 : 0));
+            // Loop through the sorted stints and add the position they had during that respective stint to the stintresults
+            for (index = 0; index < stintsToLoop.length; ++index) {
+                stintresults.push(stintsToLoop[index].Position);
             }
+            // Dataset object of one driver which is used for the graph
             var driverDataset = {
                 label: driverValue.SeasonDriver.Driver.Name,
                 backgroundColor: driverValue.SeasonDriver.SeasonTeam.Accent,
@@ -347,10 +352,9 @@
             }
             driversets.push(driverDataset);
         });
-
         driversets.sort((a, b) => (a.teamName > b.teamName) ? 1 : -1);
-        var stintlabels = [];
 
+        var stintlabels = [];
         for (i = 0; i <= raceLen; i++) {
             var stringstint = i;
             stintlabels.push(stringstint);

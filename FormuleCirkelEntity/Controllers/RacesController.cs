@@ -146,7 +146,8 @@ namespace FormuleCirkelEntity.Controllers
             if (raceModel == null)
                 return NotFound();
 
-            var track = _context.Tracks.SingleOrDefault(m => m.Id == raceModel.TrackId);
+            var track = await _context.Tracks
+                .SingleOrDefaultAsync(m => m.Id == raceModel.TrackId);
 
             var season = await _context.Seasons
                 .Include(s => s.Races)
@@ -404,13 +405,7 @@ namespace FormuleCirkelEntity.Controllers
                 result.Points = result.StintResults.Sum(sr => sr.Result);
             }
 
-            var positionsList = RaceResultGenerator.GetPositionsBasedOnRelativePoints(driverResults);
-            foreach (var result in driverResults)
-            {
-                result.Position = positionsList.OrderedResults[result.DriverResultId];
-                result.Points = positionsList.DriverResults.Single(dr => dr.SeasonDriverId == result.SeasonDriverId).Points;
-                result.StintResults.Single(sr => sr.Number == race.StintProgress).Position = result.Position;
-            }
+            RaceResultGenerator.GetPositionsBasedOnRelativePoints(driverResults, race.StintProgress);
 
             _context.Update(race);
             _context.UpdateRange(driverResults);
