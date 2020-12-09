@@ -21,9 +21,18 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <param name="driverResult">The partial <see cref="DriverResult"/> from which to derive certain modifiers.</param>
         /// <param name="stint">The <see cref="Stint"/> supplying the modifiers to use.</param>
         /// <returns>A <see cref="int"/> points value, or <see cref="int.MinValue"/> if a DNF result occured.</returns>
-        public void UpdateStintResult(StintResult stintResult, DriverResult driverResult, Stint stint, Track track, Race race)
+        public void UpdateStintResult(StintResult stintResult, 
+            Stint stint, 
+            DriverResult driverResult,
+            SeasonTeam team,
+            Weather weather,
+            Specification trackSpec,
+            int driverCount,
+            int qualyBonus,
+            int pitMin,
+            int pitMax)
         {
-            if (stintResult is null || driverResult is null || stint is null || track is null || race is null)
+            if (stintResult is null || driverResult is null || stint is null || team is null)
                 throw new NullReferenceException();
 
             // Applies the increased or decreased odds for the specific track.
@@ -35,10 +44,9 @@ namespace FormuleCirkelEntity.ResultGenerators
             int weatherDNF = 0;
 
             var driver = driverResult.SeasonDriver;
-            var team = driverResult.SeasonDriver.SeasonTeam;
 
             stintResult.StintStatus = StintStatus.Running;
-            switch (race.Weather)
+            switch (weather)
             {
                 case Weather.Sunny:
                     tireWeatherWear += 4;
@@ -77,10 +85,15 @@ namespace FormuleCirkelEntity.ResultGenerators
                 // Add one because Random.Next() has an exclusive upper bound.
                 int result = _rng.Next((stint.RNGMinimum + driverResult.MinRNG), (stint.RNGMaximum + weatherRNG + driverResult.MaxRNG) + 1);
 
+                if (stint.ApplyQualifyingBonus)
+                {
+                    result += Helpers.GetQualifyingBonus(driverResult.Grid, driverCount, qualyBonus);
+                }
+
                 if (stint.ApplyPitstop)
                 {
                     // Temporary since pitstops should also be settable
-                    result += _rng.Next(-65, -54);
+                    result += _rng.Next(pitMin, pitMax);
                 }
 
                 if (stint.ApplyDriverLevel)
@@ -90,25 +103,20 @@ namespace FormuleCirkelEntity.ResultGenerators
 
                 if (stint.ApplyChassisLevel)
                 {
-                    int bonus = Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(team), track.Specification.ToString());
+                    int bonus = Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(team), trackSpec.ToString());
                     int statusBonus = (((int)driver.DriverStatus) * -2) + 2;
                     result += (team.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
-                }
-
-                if (stint.ApplyQualifyingBonus)
-                {
-                    result += Helpers.GetQualifyingBonus(driverResult.Grid, driver.Season.Drivers.Count, driver.Season.QualyBonus);
-                }
-
-                if (stint.ApplyTireLevel && driver.Tires == Tire.Softs)
-                {
-                    result += (10 + tireWeatherBonus);
                 }
 
                 // Applies the power of the engine plus external factors when it is relevant for the current stint
                 if (stint.ApplyEngineLevel)
                 {
                     result += (int)Math.Round((team.Engine.Power + driverResult.EngineRacePace) * engineWeatherMultiplier);
+                }
+
+                if (stint.ApplyTireLevel && driver.Tires == Tire.Softs)
+                {
+                    result += (10 + tireWeatherBonus);
                 }
 
                 if (stint.ApplyTireWear && driver.Tires == Tire.Softs)
@@ -190,6 +198,13 @@ namespace FormuleCirkelEntity.ResultGenerators
                 }
             }
             orderedResults.Sort((l, r) => -1 * l.Points.CompareTo(r.Points));
+            /* First finish the other tasks, then check of this works and can replace the mess that is the stuff underneath
+            int position = 0;
+            foreach (var orderRes in orderedResults)
+            {
+                position++;
+                orderRes.Position = position;
+            }*/
             DriverSwap swap = new DriverSwap
             {
                 DriverResults = orderedResults,

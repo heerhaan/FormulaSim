@@ -76,7 +76,7 @@
                         </td>
                         @foreach (var stint in Model.Race.Stints)
                         {
-                            var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Number == stint.Number);
+                            var stintResult = driverResult.StintResults.First(res => res.Number == stint.Number);
                             <td data-field="stintResult-@stintResult.Number">
                                 @if (stintResult.StintStatus == StintStatus.Running)
                                 {
@@ -150,7 +150,7 @@
 </div>
 
 <script>
-    var progress = @Model.Race.StintProgress;
+    const raceLen = @(Model.Race.Stints.Count);
     const pointsPosition = @(Json.Serialize(Model.PointsPerPosition));
 
     const table = document.querySelector('#results');
@@ -208,8 +208,7 @@
     ];
 
     function processStintResponse(res) {
-        progress = res.StintProgress;
-        res.DriverResults.forEach((driverResult, idx) => {
+        res.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
 
             if (driverResult.Status == 1) {
@@ -328,7 +327,6 @@
         ctx.height = 250;
         ctx.getContext('2d');
         var driversets = [];
-        var stints = progress;
 
         $(res).each(function (driverKey, driverValue) {
             var stintresults = [];
@@ -353,7 +351,7 @@
         driversets.sort((a, b) => (a.teamName > b.teamName) ? 1 : -1);
         var stintlabels = [];
 
-        for (i = 0; i <= stints; i++) {
+        for (i = 0; i <= raceLen; i++) {
             var stringstint = i;
             stintlabels.push(stringstint);
         }
@@ -361,12 +359,11 @@
         Chart.pluginService.register({
             beforeDraw: function (chart, easing) {
             if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
-                var ctx = chart.chart.ctx;
-
-                ctx.save();
-                ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
-                ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
-                ctx.restore();
+                    var ctx = chart.chart.ctx;
+                    ctx.save();
+                    ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
+                    ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+                    ctx.restore();
                 }
             }
         });

@@ -1,5 +1,6 @@
 ﻿@model SeasonSettingsViewModel
-@{ViewData["Title"] = "Season";}
+
+@{ ViewData["Title"] = "Season"; }
 
 <div class="d-inline-block mb-1">
     <h1>Settings</h1>
@@ -8,39 +9,55 @@
     <div>
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SeasonNumber" class="control-label float-left">Year</label>
-                <input asp-for="SeasonNumber" class="form-control" />
-                <span asp-validation-for="SeasonNumber" class="text-danger"></span>
+            <div class="flex-row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="SeasonNumber" class="control-label float-left">Year</label>
+                        <input asp-for="SeasonNumber" class="form-control" />
+                        <span asp-validation-for="SeasonNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="QualyBonus" class="control-label float-left">Grid bonus</label>
+                        <input asp-for="QualyBonus" class="form-control" />
+                        <span asp-validation-for="QualyBonus" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PolePoints" class="control-label float-left">Points for pole</label>
+                        <input asp-for="PolePoints" class="form-control" />
+                        <span asp-validation-for="PolePoints" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PitMin" class="control-label float-left">Pitstop minimum</label>
+                        <input asp-for="PitMin" class="form-control" />
+                        <span asp-validation-for="PitMin" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="QualificationRNG" class="control-label float-left">Maximum RNG in Qualifications</label>
+                        <input asp-for="QualificationRNG" class="form-control" />
+                        <span asp-validation-for="QualificationRNG" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="QualificationRemainingDriversQ2" class="control-label float-left">Drivers in Q2</label>
+                        <input asp-for="QualificationRemainingDriversQ2" class="form-control" />
+                        <span asp-validation-for="QualificationRemainingDriversQ2" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="QualificationRemainingDriversQ3" class="control-label float-left">Drivers in Q3</label>
+                        <input asp-for="QualificationRemainingDriversQ3" class="form-control" />
+                        <span asp-validation-for="QualificationRemainingDriversQ3" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PitMax" class="control-label float-left">Pitstop maximum</label>
+                        <input asp-for="PitMax" class="form-control" />
+                        <span asp-validation-for="PitMax" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="QualificationRNG" class="control-label float-left">Maximum RNG in Qualifications</label>
-                <input asp-for="QualificationRNG" class="form-control" />
-                <span asp-validation-for="QualificationRNG" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="QualificationRemainingDriversQ2" class="control-label float-left">Drivers in Q2</label>
-                <input asp-for="QualificationRemainingDriversQ2" class="form-control" />
-                <span asp-validation-for="QualificationRemainingDriversQ2" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="QualificationRemainingDriversQ3" class="control-label float-left">Drivers in Q3</label>
-                <input asp-for="QualificationRemainingDriversQ3" class="form-control" />
-                <span asp-validation-for="QualificationRemainingDriversQ3" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="QualyBonus" class="control-label float-left">Grid bonus</label>
-                <input asp-for="QualyBonus" class="form-control" />
-                <span asp-validation-for="QualyBonus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PolePoints" class="control-label float-left">Points for pole</label>
-                <input asp-for="PolePoints" class="form-control" />
-                <span asp-validation-for="PolePoints" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn fullwidth mb-2" />
-                <a asp-action="SetPoints" asp-route-id="@Model.SeasonId" class="btn fullwidth">Setup points</a>
+            <div class="form-group col">
+                <input type="submit" value="Save" class="btn mb-2" />
+                <a asp-action="SetPoints" asp-route-id="@Model.SeasonId" class="btn">Setup points</a>
             </div>
         </form>
     </div>

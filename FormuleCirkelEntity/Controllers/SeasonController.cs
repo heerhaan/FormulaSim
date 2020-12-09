@@ -292,6 +292,8 @@ namespace FormuleCirkelEntity.Controllers
                 season.QualificationRemainingDriversQ2 = settingsModel.QualificationRemainingDriversQ2;
                 season.QualificationRemainingDriversQ3 = settingsModel.QualificationRemainingDriversQ3;
                 season.QualyBonus = settingsModel.QualyBonus;
+                season.PitMin = settingsModel.PitMin;
+                season.PitMax = settingsModel.PitMax;
                 season.PolePoints = settingsModel.PolePoints;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
