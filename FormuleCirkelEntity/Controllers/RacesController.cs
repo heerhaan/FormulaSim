@@ -378,7 +378,7 @@ namespace FormuleCirkelEntity.Controllers
                 _resultGenerator.UpdateStintResult(stintResult, stint, result, currentTeam, race.Weather, trackSpec, driverResults.Count, season.QualyBonus, season.PitMin, season.PitMax);
                 
                 // Driver isn't running anymore, which indicates that he DNFed
-                if (stintResult.StintStatus != StintStatus.Running)
+                if (stintResult.StintStatus == StintStatus.DriverDNF || stintResult.StintStatus == StintStatus.ChassisDNF)
                 {
                     // RNG to determine the type of DNF.
                     int dnfvalue = rng.Next(1, 26);

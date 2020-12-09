@@ -21,6 +21,7 @@ namespace FormuleCirkelEntity.Models
         Concept = 0,
         Running = 1,
         DriverDNF = 2,
-        ChassisDNF = 3
+        ChassisDNF = 3,
+        Pitstop = 4
     }
 }

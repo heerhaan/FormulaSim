@@ -82,6 +82,10 @@
                                 {
                                     <span>@stintResult.Result.ToString()</span>
                                 }
+                                else if (stintResult.StintStatus == StintStatus.Pitstop)
+                                {
+                                    <span style="color:red;">@stintResult.Result.ToString()</span>
+                                }
                                 else { <span>-</span> }
                             </td>
                         }
@@ -239,11 +243,12 @@
                 if (stintResult.StintStatus == 1) {
                     row.querySelector("td[data-field='stintResult-" + stintResult.Number + "']").innerText = stintResult.Result;
                 }
+                else if (stintResult.StintStatus == 4) {
+                    row.querySelector("td[data-field='stintResult-" + stintResult.Number + "']").innerHTML = "<span style='color: red;'>" + stintResult.Result + "</span>";
+                }
                 else {
                     row.querySelector("td[data-field='stintResult-" + stintResult.Number + "']").innerText = "-";
                 }
-                console.log(stintResult);
-                console.log(idx);
             });
             if (driverResult.Position > @Model.MaxPos) {
                 row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'></td>";

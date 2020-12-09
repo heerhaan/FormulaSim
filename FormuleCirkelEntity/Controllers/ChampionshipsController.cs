@@ -10,8 +10,6 @@ using FormuleCirkelEntity.Validation;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using FluentValidation;
-using FluentValidation.Results;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -104,15 +102,16 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(c => c.AgeDevRanges)
                 .Include(c => c.SkillDevRanges)
                 .SingleAsync(ch => ch.ChampionshipId == setDevModel.ChampionshipId);
+            
             // This if-structure makes it so that we are going to apply all those darn age dev ranges to the code!
             if (setDevModel.AgeValueKey.Count > 0)
             {
+                // Empties the dev ranges for age so we can put in some new ages (owo)
+                _context.MinMaxDevRange.RemoveRange(championship.AgeDevRanges);
                 // If somehow the order of the keys is messed up then it will return the page with an error
                 if (!CheckIfListIsInOrder(setDevModel.AgeValueKey))
                     return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = "Error: Age list isn't in order!" });
 
-                // Empties the dev ranges for age so we can put in some new ages (owo)
-                championship.AgeDevRanges.Clear();
                 // Loops through all the key values which assumes that the age value, min dev and max dev lists are of the same length
                 for (int i = 0; i < setDevModel.AgeValueKey.Count; i++)
                 {
@@ -140,12 +139,12 @@ namespace FormuleCirkelEntity.Controllers
             // Applies the same process for the skill values
             if (setDevModel.SkillValueKey.Count > 0)
             {
+                // Clear the existing list of skill ranges so they can be filled the right way again (uwu)
+                _context.MinMaxDevRange.RemoveRange(championship.SkillDevRanges);
                 // Ensures the keys are in order
                 if (!CheckIfListIsInOrder(setDevModel.SkillValueKey))
                     return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = "Error: Skill list wasn't in order!" });
 
-                // Clear the existing list of skill ranges so they can be filled the right way again (uwu)
-                championship.SkillDevRanges.Clear();
                 // Internally cries a bit because the code is so ugly
                 for (int i = 0; i < setDevModel.SkillValueKey.Count; i++)
                 {
@@ -166,7 +165,6 @@ namespace FormuleCirkelEntity.Controllers
                             errString += $"{failure.ErrorMessage}\n";
                         return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = $"Error: {errString}" });
                     }
-
                     // Validator didn't trigger so this line can be added to the ranges
                     championship.SkillDevRanges.Add(newSkillRange);
                 }

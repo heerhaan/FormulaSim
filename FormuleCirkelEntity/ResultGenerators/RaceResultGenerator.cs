@@ -80,7 +80,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 }
             }
 
-            if (stintResult.StintStatus == StintStatus.Running)
+            if (stintResult.StintStatus == StintStatus.Running || stintResult.StintStatus == StintStatus.Pitstop)
             {
                 // Add one because Random.Next() has an exclusive upper bound.
                 int result = _rng.Next((stint.RNGMinimum + driverResult.MinRNG), (stint.RNGMaximum + weatherRNG + driverResult.MaxRNG) + 1);
@@ -92,8 +92,8 @@ namespace FormuleCirkelEntity.ResultGenerators
 
                 if (stint.ApplyPitstop)
                 {
-                    // Temporary since pitstops should also be settable
                     result += _rng.Next(pitMin, pitMax);
+                    stintResult.StintStatus = StintStatus.Pitstop;
                 }
 
                 if (stint.ApplyDriverLevel)
