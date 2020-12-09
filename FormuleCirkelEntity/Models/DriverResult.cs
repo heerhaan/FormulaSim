@@ -22,7 +22,7 @@ namespace FormuleCirkelEntity.Models
         [EnumDataType(typeof(DSQCause))]
         public DSQCause DSQCause { get; set; }
 
-        public IDictionary<int, int?> StintResults { get; } = new Dictionary<int, int?>();
+        public IList<StintResult> StintResults { get; } = new List<StintResult>();
 
         // Modifiers for this race that apply every stint || maybe rethink, change or remove this since this is a bit weird
         public int QualyMod { get; set; }
@@ -40,7 +40,12 @@ namespace FormuleCirkelEntity.Models
         public Race Race { get; set; }
     }
 
-    public enum Status { Finished, DNF, DSQ }
+    public enum Status 
+    { 
+        Finished = 0,
+        DNF = 1,
+        DSQ = 2
+    }
 
     public enum DNFCause
     {

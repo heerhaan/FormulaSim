@@ -82,7 +82,7 @@ namespace FormuleCirkelEntity.Controllers
 
             if(lastracemodel != null)
             {
-                var stintlist = lastracemodel.Stints.Values.ToList();
+                var stintlist = lastracemodel.Stints;
                 var race = _raceBuilder
                 .InitializeRace(track, season)
                 .AddModifiedStints(stintlist)
@@ -121,14 +121,16 @@ namespace FormuleCirkelEntity.Controllers
             // Finds the last time track was used and uses same stintsetup as then
             var lastracemodel = _context.Races
                 .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
+                .Include(r => r.Stints)
                 .Include(r => r.Track)
                 .ToList()
                 .LastOrDefault(lr => lr.Track.Id == trackId);
 
             if (lastracemodel != null)
             {
-                var stintlist = lastracemodel.Stints.Values.ToList();
-                model.RaceStints = stintlist;
+                var stintlist = lastracemodel.Stints;
+                foreach (var stint in stintlist)
+                    model.RaceStints.Add(stint);
             }
 
             var track = _context.Tracks.SingleOrDefault(m => m.Id == trackId);
@@ -144,18 +146,17 @@ namespace FormuleCirkelEntity.Controllers
             if (raceModel == null)
                 return NotFound();
 
-            var track = _context.Tracks.SingleOrDefault(m => m.Id == raceModel.TrackId);
+            var track = await _context.Tracks
+                .SingleOrDefaultAsync(m => m.Id == raceModel.TrackId);
 
             var season = await _context.Seasons
                 .Include(s => s.Races)
                 .Include(s => s.Drivers)
                 .SingleOrDefaultAsync(s => s.SeasonId == raceModel.SeasonId);
 
-            IList<Stint> stints = raceModel.RaceStints;
-
             var race = _raceBuilder
                 .InitializeRace(track, season)
-                .AddModifiedStints(stints)
+                .AddModifiedStints(raceModel.RaceStints)
                 .GetResultAndRefresh();
 
             race.Weather = Helpers.RandomWeather();
@@ -168,6 +169,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Race(int raceId)
         {
             Race race = await _context.Races
+                .Include(r => r.Stints)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             Season currentSeason = await _context.Seasons
@@ -176,6 +178,7 @@ namespace FormuleCirkelEntity.Controllers
             var drivers = await _context.DriverResults
                 .Where(dr => dr.RaceId == raceId)
                 .IgnoreQueryFilters()
+                .Include(dr => dr.StintResults)
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
                 .Include(dr => dr.SeasonDriver.SeasonTeam)
@@ -211,6 +214,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var race = await _context.Races
                 .IgnoreQueryFilters()
+                .Include(r => r.Stints)
                 .Include(r => r.Season)
                 .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
@@ -246,8 +250,10 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RaceStart(int id, int raceId)
         {
             var race = await _context.Races
+                .Include(r => r.Stints)
                 .Include(r => r.Season.Drivers)
                 .Include(r => r.DriverResults)
+                    .ThenInclude(r => r.StintResults)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             if (!race.DriverResults.Any())
@@ -303,6 +309,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var race = await _context.Races
                 .Include(r => r.Season)
+                .Include(r => r.Stints)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             var drivers = await _context.DriverResults
@@ -333,74 +340,83 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AdvanceStint(int raceId)
         {
             var race = await _context.Races
-                .Include(r => r.Season)
-                .Include(r => r.Track)
-                .Include(r => r.DriverResults)
-                    .ThenInclude(res => res.SeasonDriver.Driver)
-                .Include(r => r.DriverResults)
-                    .ThenInclude(res => res.SeasonDriver.SeasonTeam.Team)
-                .Include(r => r.DriverResults)
-                    .ThenInclude(res => res.SeasonDriver.SeasonTeam.Engine)
+                .Include(r => r.Stints)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
+
+            var driverResults = await _context.DriverResults
+                .Where(dr => dr.RaceId == raceId)
+                .Include(dr => dr.StintResults)
+                .Include(dr => dr.SeasonDriver)
+                .ToListAsync();
+
+            var season = await _context.Seasons
+                .AsNoTracking()
+                .FirstAsync(s => s.SeasonId == race.SeasonId);
+
+            var teams = await _context.SeasonTeams
+                .AsNoTracking()
+                .Where(st => st.SeasonId == season.SeasonId)
+                .Include(st => st.Team)
+                .Include(st => st.Engine)
+                .ToListAsync();
+
+            var trackSpec = _context.Tracks
+                .Find(race.TrackId).Specification;
 
             if (race.StintProgress == race.Stints.Count)
                 return BadRequest();
 
             race.StintProgress++;
-            var stint = race.Stints[race.StintProgress];
-            var track = race.Track;
+            var stint = race.Stints.Single(s => s.Number == race.StintProgress);
 
             // Calculate results for all drivers who have not been DSQ'd or DNF'd.
-            foreach (var result in race.DriverResults.Where(d => d.Status == Status.Finished))
+            foreach (var result in driverResults.Where(d => d.Status == Status.Finished))
             {
-                var stintResult = _resultGenerator.GetStintResult(result, stint, track, race);
+                var stintResult = result.StintResults.Single(sr => sr.Number == race.StintProgress);
+                var currentTeam = teams.First(t => t.SeasonTeamId == result.SeasonDriver.SeasonTeamId);
+
+                _resultGenerator.UpdateStintResult(stintResult, stint, result, currentTeam, race.Weather, trackSpec, driverResults.Count, season.QualyBonus, season.PitMin, season.PitMax);
                 
-                // A null or -1000 result indicates a non-finish.
-                if (stintResult == null || stintResult.Value == -1000)
+                // Driver isn't running anymore, which indicates that he DNFed
+                if (stintResult.StintStatus != StintStatus.Running)
                 {
                     // RNG to determine the type of DNF.
                     int dnfvalue = rng.Next(1, 26);
                     if (dnfvalue == 25)
                     {
                         result.Status = Status.DSQ;
-                        result.DSQCause = Helpers.RandomDSQCause(stintResult.HasValue);
+                        stintResult.Result += -2000;
+                        if (stintResult.StintStatus == StintStatus.DriverDNF)
+                            result.DSQCause = Helpers.RandomDriverDSQ();
+                        else
+                            result.DSQCause = Helpers.RandomChassisDSQ();
                     } 
                     else
                     {
                         result.Status = Status.DNF;
-                        result.DNFCause = Helpers.RandomDNFCause(stintResult.HasValue);
+                        stintResult.Result += -1000;
+                        if (stintResult.StintStatus == StintStatus.DriverDNF)
+                            result.DNFCause = Helpers.RandomDriverDNF();
+                        else
+                            result.DNFCause = Helpers.RandomChassisDNF();
                     }
-                    if (stintResult.HasValue)
-                        stintResult = null;
                 }
-
-                result.StintResults.Add(race.StintProgress, stintResult);
-                result.Points = result.StintResults.Sum(sr => sr.Value ?? -999);
-                if (result.DSQCause != DSQCause.None)
-                    result.Points += -999;
+                // It sums the score of all stintresults of a driver, could maybe also just add the current score up
+                result.Points = result.StintResults.Sum(sr => sr.Result);
             }
 
-            var positionsList = RaceResultGenerator.GetPositionsBasedOnRelativePoints(race.DriverResults);
+            RaceResultGenerator.GetPositionsBasedOnRelativePoints(driverResults, race.StintProgress);
 
-            foreach (var result in race.DriverResults)
-            {
-                result.Position = positionsList.OrderedResults[result.DriverResultId];
-                result.Points = positionsList.DriverResults.SingleOrDefault(dr => dr.SeasonDriverId == result.SeasonDriverId).Points;
-            }
-
-            _context.UpdateRange(race.DriverResults);
+            _context.Update(race);
+            _context.UpdateRange(driverResults);
             await _context.SaveChangesAsync();
 
-            // Clean up unneeded large reference properties to prevent them from being serialized and sent over HTTP.
-            race.Season = null;
-            race.Track = null;
-            race.Stints.Clear();
-            foreach(var dr in race.DriverResults)
+            // Clear unneeded references so they won't be serialized and sent over
+            foreach(var dr in driverResults)
             {
                 dr.SeasonDriver = null;
-                dr.Race = null;
             }
-            return new JsonResult(race, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
+            return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
         [HttpPost("Season/{id}/[Controller]/{raceId}/getResults")]
@@ -409,6 +425,7 @@ namespace FormuleCirkelEntity.Controllers
             var driverResults = _context.DriverResults
                 .IgnoreQueryFilters()
                 .Where(res => res.RaceId == raceId)
+                .Include(res => res.StintResults)
                 .Include(res => res.SeasonDriver.Driver)
                 .Include(res => res.SeasonDriver.SeasonTeam.Team)
                 .OrderBy(res => res.SeasonDriver.SeasonTeam.Team.Abbreviation)
@@ -422,26 +439,28 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> FinishRace(int seasonId, int raceId)
         {
             var race = await _context.Races
-                .Include(r => r.Season)
-                .Include(r => r.DriverResults)
-                    .ThenInclude(dr => dr.SeasonDriver)
-                        .ThenInclude(sd => sd.SeasonTeam)
-                .Include(r => r.DriverResults)
-                    .ThenInclude(dr => dr.SeasonDriver)
-                        .ThenInclude(sd => sd.Driver)
-                .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == seasonId);
 
-            foreach (var result in race.DriverResults)
+            var driverResults = await _context.DriverResults
+                .Where(dr => dr.RaceId == raceId)
+                .Include(dr => dr.SeasonDriver)
+                    .ThenInclude(sd => sd.SeasonTeam)
+                .ToListAsync();
+
+            var season = await _context.Seasons
+                .AsNoTracking()
+                .FirstAsync(s => s.SeasonId == seasonId);
+
+            foreach (var result in driverResults)
             {
                 int points = 0;
-                if (result.Position <= race.Season.PointsPerPosition.Keys.Max() && result.Status == Status.Finished)
+                if (result.Position <= season.PointsPerPosition.Keys.Max() && result.Status == Status.Finished)
                 {
-                    points = race.Season.PointsPerPosition[result.Position].Value;
+                    points = season.PointsPerPosition[result.Position].Value;
                 }
                 if (result.Grid == 1)
                 {
-                    points += race.Season.PolePoints;
+                    points += season.PolePoints;
                 }
                 result.SeasonDriver.Points += points;
                 result.SeasonDriver.SeasonTeam.Points += points;
@@ -450,8 +469,7 @@ namespace FormuleCirkelEntity.Controllers
 
             race.RaceState = RaceState.Finished;
             _context.Update(race);
-            _context.Update(race.Track);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("DriverStandings", "Home");
         }
@@ -583,114 +601,52 @@ namespace FormuleCirkelEntity.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Return(int? id, int? raceId)
+        public async Task<IActionResult> Return(int seasonId, int raceId)
         {
-            if (id == null || raceId == null)
-            {
-                return BadRequest();
-            }
-            var resultcontext = _context.DriverResults;
+            var race = await _context.Races
+                .SingleAsync(r => r.RaceId == raceId);
 
-            List<Qualification> qualyresult = _context.Qualification
+            var previousRace = await _context.Races
+                .AsNoTracking()
+                .Include(r => r.DriverResults)
+                .FirstOrDefaultAsync(r => r.SeasonId == seasonId && r.Round == (race.Round - 1));
+
+            var qualyresults = await _context.Qualification
                 .Where(q => q.RaceId == raceId)
+                .ToListAsync();
+
+            var seasonResults = await _context.DriverResults
+                .Where(d => d.Race.SeasonId == seasonId)
+                .ToListAsync();
+
+            var raceResults = seasonResults
+                .Where(sr => sr.RaceId == raceId)
                 .ToList();
 
-            List<DriverResult> driverResults = resultcontext
-                .Where(d => d.RaceId == raceId)
-                .ToList();
-
-            var currentSeasonResults = resultcontext.Where(d => d.SeasonDriver.SeasonId == id)
-                .Include(c => c.Race)
-                .ToList();
-
-            var race = _context.Races.Single(r => r.RaceId == raceId);
-
-            List<Qualification> qualifications = new List<Qualification>();
             //Adds results from Qualification to Grid in DriverResults (Penalties may be applied here too)
-            foreach (Qualification result in qualyresult)
+            foreach (Qualification result in qualyresults)
             {
-                DriverResult driver = driverResults.Single(d => d.RaceId == result.RaceId &&
-                    d.SeasonDriverId == result.DriverId);
-
-                DriverResult lastDriverResult = currentSeasonResults.OrderBy(s => s.Race.Round)
-                    .LastOrDefault(d => d.SeasonDriverId == result.DriverId && d.Race.RaceState == RaceState.Finished);
+                DriverResult driver = raceResults.Single(d => d.SeasonDriverId == result.DriverId);
 
                 result.PenaltyPosition = result.Position;
-                // Checks if a driver should get a penalty
-                if (lastDriverResult != null)
+                if (previousRace != null)
                 {
-                    // If the driver was disqualified, then he will always start last.
-                    if (lastDriverResult.Status == Status.DSQ)
-                    {
-                        result.PenaltyPosition += 99;
-                        switch (lastDriverResult.DSQCause)
-                        {
-                            case DSQCause.Illegal:
-                                driver.PenaltyReason = "Illegal car in last race.";
-                                break;
-                            case DSQCause.Fuel:
-                                driver.PenaltyReason = "Exceeded fuel limits last race.";
-                                break;
-                            case DSQCause.Dangerous:
-                                driver.PenaltyReason = "Dangerous driving last race.";
-                                break;
-                        }
-                    }
-                    else if (lastDriverResult.Status == Status.DNF)
-                    {
-                        switch (lastDriverResult.DNFCause)
-                        {
-                            case DNFCause.Collision:
-                                int random = rng.Next(1, 6);
-                                if (random < 3)
-                                {
-                                    result.PenaltyPosition += 3.2;
-                                    driver.PenaltyReason = "+3 grid penalty for causing a collision.";
-                                }
-                                break;
-                            case DNFCause.Accident:
-                                int amountAccidents = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Accident && d.SeasonDriverId == driver.SeasonDriverId).Count());
-                                if (amountAccidents > 2)
-                                {
-                                    result.PenaltyPosition += 5.3;
-                                    driver.PenaltyReason = "+5 grid penalty for excessive amount of accidents";
-                                }
-                                break;
-                            case DNFCause.Engine:
-                                int amountEngines = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Engine && d.SeasonDriverId == driver.SeasonDriverId).Count());
-                                if (amountEngines > 2)
-                                {
-                                    result.PenaltyPosition += 10.9;
-                                    driver.PenaltyReason = "+10 grid penalty for excessive engines used";
-                                }
-                                break;
-                            case DNFCause.Electrics:
-                                int amountElectrics = (currentSeasonResults.Where(d => d.DNFCause == DNFCause.Electrics && d.SeasonDriverId == driver.SeasonDriverId).Count());
-                                if (amountElectrics > 1)
-                                {
-                                    result.PenaltyPosition += 5.1;
-                                    driver.PenaltyReason = "+5 penalty for excessive electrics used";
-                                }
-                                break;
-                        }
-                    }
+                    DriverResult lastDriverResult = previousRace.DriverResults.FirstOrDefault(dr => dr.SeasonDriverId == result.DriverId);
+                    // Checks if a driver should get a penalty
+                    SetDriverPenalty(lastDriverResult, driver, result, seasonResults);
                 }
-                qualifications.Add(result);
             }
 
             // Orders the qualifications after applying penalties to positions, then assigns the grid position to it
             int assignedPosition = 1;
 
-            foreach (var result in qualifications.OrderBy(q => q.PenaltyPosition))
+            foreach (var result in qualyresults.OrderBy(q => q.PenaltyPosition))
             {
-                DriverResult driver = driverResults.Single(d => d.RaceId == result.RaceId &&
-                    d.SeasonDriverId == result.DriverId);
-
+                DriverResult driver = raceResults.Single(d => d.SeasonDriverId == result.DriverId);
                 if (driver == null)
                 {
                     return StatusCode(500);
                 }
-
                 driver.Grid = assignedPosition;
                 driver.Position = assignedPosition;
 
@@ -699,10 +655,74 @@ namespace FormuleCirkelEntity.Controllers
 
             race.RaceState = RaceState.Race;
             _context.Update(race);
-            _context.UpdateRange(driverResults);
-            _context.SaveChanges();
+            _context.UpdateRange(raceResults);
+            await _context.SaveChangesAsync();
 
-            return RedirectToAction("RaceWeekend", new { id, raceId });
+            return RedirectToAction("RaceWeekend", new { id = seasonId, raceId });
+        }
+
+        private void SetDriverPenalty(DriverResult lastDriverResult, DriverResult driver, 
+            Qualification result, List<DriverResult> seasonResults)
+        {
+            if (lastDriverResult != null)
+            {
+                // If the driver was disqualified, then he will always start last.
+                if (lastDriverResult.Status == Status.DSQ)
+                {
+                    result.PenaltyPosition += 99;
+                    switch (lastDriverResult.DSQCause)
+                    {
+                        case DSQCause.Illegal:
+                            driver.PenaltyReason = "Illegal car in last race.";
+                            break;
+                        case DSQCause.Fuel:
+                            driver.PenaltyReason = "Exceeded fuel limits last race.";
+                            break;
+                        case DSQCause.Dangerous:
+                            driver.PenaltyReason = "Dangerous driving last race.";
+                            break;
+                    }
+                }
+                else if (lastDriverResult.Status == Status.DNF)
+                {
+                    var currentDriverSeasonResults = seasonResults.Where(sr => sr.SeasonDriverId == result.DriverId);
+                    switch (lastDriverResult.DNFCause)
+                    {
+                        case DNFCause.Collision:
+                            int random = rng.Next(1, 6);
+                            if (random < 3)
+                            {
+                                result.PenaltyPosition += 3.2;
+                                driver.PenaltyReason = "+3 grid penalty for causing a collision.";
+                            }
+                            break;
+                        case DNFCause.Accident:
+                            int amountAccidents = (currentDriverSeasonResults.Where(d => d.DNFCause == DNFCause.Accident).Count());
+                            if (amountAccidents > 2)
+                            {
+                                result.PenaltyPosition += 5.3;
+                                driver.PenaltyReason = "+5 grid penalty for excessive amount of accidents";
+                            }
+                            break;
+                        case DNFCause.Engine:
+                            int amountEngines = (currentDriverSeasonResults.Where(d => d.DNFCause == DNFCause.Engine).Count());
+                            if (amountEngines > 2)
+                            {
+                                result.PenaltyPosition += 10.9;
+                                driver.PenaltyReason = "+10 grid penalty for excessive engines used";
+                            }
+                            break;
+                        case DNFCause.Electrics:
+                            int amountElectrics = (currentDriverSeasonResults.Where(d => d.DNFCause == DNFCause.Electrics).Count());
+                            if (amountElectrics > 1)
+                            {
+                                result.PenaltyPosition += 5.1;
+                                driver.PenaltyReason = "+5 penalty for excessive electrics used";
+                            }
+                            break;
+                    }
+                }
+            }
         }
 
         [Authorize(Roles = "Admin")]

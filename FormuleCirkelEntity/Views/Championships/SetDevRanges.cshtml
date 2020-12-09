@@ -30,18 +30,18 @@
                             @if (Model.SkillValueKey[i] != 9999)
                             {
                                 <tr>
-                                    <td><input name="SkillValueKey" type="number" value="@Model.SkillValueKey[i]" /></td>
-                                    <td><input name="SkillMinDev" type="number" value="@Model.SkillMinDev[i]" /></td>
-                                    <td><input name="SkillMaxDev" type="number" value="@Model.SkillMaxDev[i]" /></td>
+                                    <td><input name="SkillValueKey" type="number" value="@Model.SkillValueKey[i]" class="form-control" /></td>
+                                    <td><input name="SkillMinDev" type="number" value="@Model.SkillMinDev[i]" class="form-control" /></td>
+                                    <td><input name="SkillMaxDev" type="number" value="@Model.SkillMaxDev[i]" class="form-control" /></td>
                                     <td><button type="button" class="btn fullwidth delete">Delete</button></td>
                                 </tr>
                             }
                             else
                             {
                                 <tr>
-                                    <td><input name="SkillValueKey" type="number" value="@Model.SkillValueKey[i]" readonly /></td>
-                                    <td><input name="SkillMinDev" type="number" value="@Model.SkillMinDev[i]" /></td>
-                                    <td><input name="SkillMaxDev" type="number" value="@Model.SkillMaxDev[i]" /></td>
+                                    <td><input name="SkillValueKey" type="number" value="@Model.SkillValueKey[i]" class="form-control" readonly /></td>
+                                    <td><input name="SkillMinDev" type="number" value="@Model.SkillMinDev[i]" class="form-control" /></td>
+                                    <td><input name="SkillMaxDev" type="number" value="@Model.SkillMaxDev[i]" class="form-control" /></td>
                                     <td>Required</td>
                                 </tr>
                             }
@@ -65,18 +65,18 @@
                             @if (Model.AgeValueKey[i] != 9999)
                             {
                                 <tr>
-                                    <td><input name="AgeValueKey" type="number" value="@Model.AgeValueKey[i]" readonly /></td>
-                                    <td><input name="AgeMinDev" type="number" value="@Model.AgeMinDev[i]" /></td>
-                                    <td><input name="AgeMaxDev" type="number" value="@Model.AgeMaxDev[i]" /></td>
+                                    <td><input name="AgeValueKey" type="number" value="@Model.AgeValueKey[i]" class="form-control" /></td>
+                                    <td><input name="AgeMinDev" type="number" value="@Model.AgeMinDev[i]" class="form-control" /></td>
+                                    <td><input name="AgeMaxDev" type="number" value="@Model.AgeMaxDev[i]" class="form-control" /></td>
                                     <td><button type="button" class="btn fullwidth delete">Delete</button></td>
                                 </tr>
                             }
                             else
                             {
                                 <tr>
-                                    <td><input name="AgeValueKey" type="number" value="@Model.AgeValueKey[i]" /></td>
-                                    <td><input name="AgeMinDev" type="number" value="@Model.AgeMinDev[i]" /></td>
-                                    <td><input name="AgeMaxDev" type="number" value="@Model.AgeMaxDev[i]" /></td>
+                                    <td><input name="AgeValueKey" type="number" value="@Model.AgeValueKey[i]" class="form-control" readonly/></td>
+                                    <td><input name="AgeMinDev" type="number" value="@Model.AgeMinDev[i]" class="form-control" /></td>
+                                    <td><input name="AgeMaxDev" type="number" value="@Model.AgeMaxDev[i]" class="form-control" /></td>
                                     <td>Required</td>
                                 </tr>
                             }
@@ -100,33 +100,33 @@
 <div>
     <table id="newskill" style="display:none;">
         <tr>
-            <td><input name="SkillValueKey" type="number" /></td>
-            <td><input name="SkillMinDev" type="number" /></td>
-            <td><input name="SkillMaxDev" type="number" /></td>
+            <td><input name="SkillValueKey" type="number" class="form-control" /></td>
+            <td><input name="SkillMinDev" type="number" class="form-control" /></td>
+            <td><input name="SkillMaxDev" type="number" class="form-control" /></td>
             <td><button type="button" class="btn fullwidth delete">Delete</button></td>
         </tr>
     </table>
     <table id="newmaxskill" style="display:none;">
         <tr>
-            <td><input name="SkillValueKey" type="number" value="9999" readonly /></td>
-            <td><input name="SkillMinDev" type="number" /></td>
-            <td><input name="SkillMaxDev" type="number" /></td>
+            <td><input name="SkillValueKey" type="number" value="9999" class="form-control" readonly /></td>
+            <td><input name="SkillMinDev" type="number" class="form-control" /></td>
+            <td><input name="SkillMaxDev" type="number" class="form-control" /></td>
             <td>Required</td>
         </tr>
     </table>
     <table id="newage" style="display:none;">
         <tr>
-            <td><input name="AgeValueKey" type="number" /></td>
-            <td><input name="AgeMinDev" type="number" /></td>
-            <td><input name="AgeMaxDev" type="number" /></td>
+            <td><input name="AgeValueKey" type="number" class="form-control" /></td>
+            <td><input name="AgeMinDev" type="number" class="form-control" /></td>
+            <td><input name="AgeMaxDev" type="number" class="form-control" /></td>
             <td><button type="button" class="btn fullwidth delete">Delete</button></td>
         </tr>
     </table>
     <table id="newmaxage" style="display:none;">
         <tr>
-            <td><input name="AgeValueKey" type="number" value="9999" readonly /></td>
-            <td><input name="AgeMinDev" type="number" /></td>
-            <td><input name="AgeMaxDev" type="number" /></td>
+            <td><input name="AgeValueKey" type="number" value="9999" class="form-control" readonly /></td>
+            <td><input name="AgeMinDev" type="number" class="form-control" /></td>
+            <td><input name="AgeMaxDev" type="number" class="form-control" /></td>
             <td>Required</td>
         </tr>
     </table>

@@ -33,8 +33,8 @@
                     <th class="fullborder">Grid</th>
                     @foreach (var stint in Model.Race.Stints)
                     {
-                        <th class="fullborder" data-field="stintResultHeader-@stint.Key">
-                            @stint.Key
+                        <th class="fullborder" data-field="stintResultHeader-@stint.Number">
+                            @stint.Number
                         </th>
                     }
                     <th class="fullborder" data-field="pointsTotal">Score</th>
@@ -76,17 +76,19 @@
                         </td>
                         @foreach (var stint in Model.Race.Stints)
                         {
-                            var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
-                            if (stintResult.Equals(default(KeyValuePair<int, int?>)))
-                            {
-                                stintResult = new KeyValuePair<int, int?>(stint.Key, null);
-                            }
-                            <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
+                            var stintResult = driverResult.StintResults.First(res => res.Number == stint.Number);
+                            <td data-field="stintResult-@stintResult.Number">
+                                @if (stintResult.StintStatus == StintStatus.Running)
+                                {
+                                    <span>@stintResult.Result.ToString()</span>
+                                }
+                                else { <span>-</span> }
+                            </td>
                         }
                         @if (driverResult.Status == Status.DNF)
                         {
                             <td data-field="pointsTotal"><span class="badge result-dnf nofullwidth">DNF</span></td>
-                            <td data-field="dnfCause"><i>@driverResult.DNFCause</i></td>
+                            <td data-field="dnfCause"><b>@driverResult.DNFCause</b></td>
 
                         }
                         else if (driverResult.Status == Status.DSQ)
@@ -148,7 +150,7 @@
 </div>
 
 <script>
-    var progress = @Model.Race.StintProgress;
+    const raceLen = @(Model.Race.Stints.Count);
     const pointsPosition = @(Json.Serialize(Model.PointsPerPosition));
 
     const table = document.querySelector('#results');
@@ -206,8 +208,7 @@
     ];
 
     function processStintResponse(res) {
-        progress = res.StintProgress;
-        res.DriverResults.forEach((driverResult, idx) => {
+        res.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
 
             if (driverResult.Status == 1) {
@@ -234,9 +235,15 @@
             else {
                 row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + gridChange + " </span>";
             }
-            Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
-                let stintResult = driverResult.StintResults[stintKey];
-                row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);
+            driverResult.StintResults.forEach((stintResult, idx) => {
+                if (stintResult.StintStatus == 1) {
+                    row.querySelector("td[data-field='stintResult-" + stintResult.Number + "']").innerText = stintResult.Result;
+                }
+                else {
+                    row.querySelector("td[data-field='stintResult-" + stintResult.Number + "']").innerText = "-";
+                }
+                console.log(stintResult);
+                console.log(idx);
             });
             if (driverResult.Position > @Model.MaxPos) {
                 row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'></td>";
@@ -320,25 +327,18 @@
         ctx.height = 250;
         ctx.getContext('2d');
         var driversets = [];
-        var stints = progress;
 
         $(res).each(function (driverKey, driverValue) {
             var stintresults = [];
-            let total = 0;
+            // First enters the grid position of the driver as their starting point
             stintresults.push(driverValue.Grid);
-            for (i = 0; i <= stints; i++) {
-                stintresults.push(0);
+            // Gets the stintresults and first orders them by their stint number
+            var stintsToLoop = driverValue.StintResults.sort((a, b) => (a.Number > b.Number) ? 1 : ((b.Number > a.Number) ? -1 : 0));
+            // Loop through the sorted stints and add the position they had during that respective stint to the stintresults
+            for (index = 0; index < stintsToLoop.length; ++index) {
+                stintresults.push(stintsToLoop[index].Position);
             }
-            for (var key in driverValue.StintResults) {
-                if (!driverValue.StintResults.hasOwnProperty(key)) continue;
-                var obj = driverValue.StintResults[key];
-                if (obj == null) {
-                    obj = 0;
-                    total = 0;
-                }
-                total = total + obj;
-                stintresults[key] = total;
-            }
+            // Dataset object of one driver which is used for the graph
             var driverDataset = {
                 label: driverValue.SeasonDriver.Driver.Name,
                 backgroundColor: driverValue.SeasonDriver.SeasonTeam.Accent,
@@ -352,23 +352,10 @@
             }
             driversets.push(driverDataset);
         });
-
-        for (i = 0; i <= stints; i++) {
-            if (i === 0) continue;
-            driversets.sort(function (a, b) {
-                return (a.data[i] != null) - (b.data[i] != null) || b.data[i] - a.data[i];
-            });
-            let position = 1;
-            driversets.forEach(function (result) {
-                result.data[i] = position;
-                position = position + 1;
-            });
-        }
-
         driversets.sort((a, b) => (a.teamName > b.teamName) ? 1 : -1);
-        var stintlabels = [];
 
-        for (i = 0; i <= stints; i++) {
+        var stintlabels = [];
+        for (i = 0; i <= raceLen; i++) {
             var stringstint = i;
             stintlabels.push(stringstint);
         }
@@ -376,12 +363,11 @@
         Chart.pluginService.register({
             beforeDraw: function (chart, easing) {
             if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
-                var ctx = chart.chart.ctx;
-
-                ctx.save();
-                ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
-                ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
-                ctx.restore();
+                    var ctx = chart.chart.ctx;
+                    ctx.save();
+                    ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
+                    ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+                    ctx.restore();
                 }
             }
         });

@@ -292,6 +292,8 @@ namespace FormuleCirkelEntity.Controllers
                 season.QualificationRemainingDriversQ2 = settingsModel.QualificationRemainingDriversQ2;
                 season.QualificationRemainingDriversQ3 = settingsModel.QualificationRemainingDriversQ3;
                 season.QualyBonus = settingsModel.QualyBonus;
+                season.PitMin = settingsModel.PitMin;
+                season.PitMax = settingsModel.PitMax;
                 season.PolePoints = settingsModel.PolePoints;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
@@ -367,7 +369,6 @@ namespace FormuleCirkelEntity.Controllers
             return View(unregisteredTeams);
         }
 
-        // Page underneath is slow
         [Authorize(Roles = "Admin")]
         [Route("[Controller]/{id}/Teams/Add/{globalTeamId}")]
         public async Task<IActionResult> AddTeam(int? id, int? globalTeamId)
@@ -380,7 +381,6 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var engines = await _context.Engines
-                .Where(e => e.Archived == false)
                 .Select(t => new { t.Id, t.Name })
                 .ToListAsync();
 
@@ -394,11 +394,8 @@ namespace FormuleCirkelEntity.Controllers
             };
 
             // Adds last previous used values from team as default
-            var lastTeam = _context.SeasonTeams
-                .Include(st => st.Team)
-                .ToList()
-                .OrderBy(st => st.SeasonTeamId)
-                .LastOrDefault(s => s.Team.Id == globalTeamId);
+            var allSeasonTeams = await _context.SeasonTeams.ToListAsync();
+            var lastTeam = allSeasonTeams.LastOrDefault(lt => lt.TeamId == globalTeamId);
 
             if (lastTeam != null)
             {
@@ -417,7 +414,6 @@ namespace FormuleCirkelEntity.Controllers
             return View("AddOrUpdateTeam", seasonTeam);
         }
 
-        // Page underneath is slow
         [Authorize(Roles = "Admin")]
         [HttpPost("[Controller]/{id}/Teams/Add/{globalTeamId}")]
         public async Task<IActionResult> AddTeam(int id, int? globalTeamId, [Bind] SeasonTeam seasonTeam)
@@ -427,6 +423,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
+
             var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
 
             if (season is null || globalTeam is null || seasonTeam is null)
@@ -553,11 +550,10 @@ namespace FormuleCirkelEntity.Controllers
 
         [Authorize(Roles = "Admin")]
         [Route("[Controller]/{id}/Drivers/Add/{globalDriverId}")]
-        public async Task<IActionResult> AddDriver(int? id, int? globalDriverId)
+        public async Task<IActionResult> AddDriver(int id, int globalDriverId)
         {
             var season = await _context.Seasons
                 .Include(s => s.Teams)
-                    .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
 
@@ -578,9 +574,9 @@ namespace FormuleCirkelEntity.Controllers
             };
 
             // Adds last previous used values from driver as default
-            var lastDriver = _context.SeasonDrivers
-                .AsEnumerable()
-                .LastOrDefault(s => s.DriverId == globalDriverId);
+            var allSeasonDrivers = await _context.SeasonDrivers.ToListAsync();
+            var lastDriver = allSeasonDrivers
+                .LastOrDefault(ld => ld.DriverId == globalDriverId);
 
             if (lastDriver != null)
             {
@@ -600,9 +596,7 @@ namespace FormuleCirkelEntity.Controllers
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
                 .Include(s => s.Drivers)
-                    .ThenInclude(d => d.Driver)
                 .Include(s => s.Teams)
-                    .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
 
@@ -641,7 +635,6 @@ namespace FormuleCirkelEntity.Controllers
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
                 .Include(s => s.Drivers)
-                    .ThenInclude(d => d.Driver)
                 .Include(s => s.Teams)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var driver = season.Drivers.SingleOrDefault(d => d.SeasonDriverId == driverId);
@@ -665,7 +658,6 @@ namespace FormuleCirkelEntity.Controllers
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
                 .Include(s => s.Drivers)
-                    .ThenInclude(d => d.Driver)
                 .Include(s => s.Teams)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var driver = season.Drivers.SingleOrDefault(d => d.SeasonDriverId == driverId);

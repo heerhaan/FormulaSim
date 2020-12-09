@@ -47,9 +47,8 @@ namespace FormuleCirkelEntity.Controllers
             if (seasons.Any(s => s.State == SeasonState.Progress))
             {
                 var currentSeason = seasons
-                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
-                .OrderBy(s => s.SeasonStart)
-                .FirstOrDefault();
+                    .Where(s => s.State == SeasonState.Progress)
+                    .FirstOrDefault();
 
                 var drivers = _context.SeasonDrivers
                     .IgnoreQueryFilters()
@@ -235,8 +234,7 @@ namespace FormuleCirkelEntity.Controllers
             if (seasons.Any(s => s.State == SeasonState.Progress))
             {
                 var currentSeason = seasons
-                    .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
-                    .OrderBy(s => s.SeasonStart)
+                    .Where(s => s.State == SeasonState.Progress)
                     .FirstOrDefault();
 
                 var rounds = _context.Races
@@ -349,14 +347,13 @@ namespace FormuleCirkelEntity.Controllers
             if(seasons.Any(s => s.State == SeasonState.Progress))
             {
                 var currentSeason = seasons
-                .Where(s => s.SeasonStart != null && s.State == SeasonState.Progress)
+                .Where(s => s.State == SeasonState.Progress)
                 .Include(r => r.Races)
-                .OrderBy(s => s.SeasonStart)
                 .FirstOrDefault();
 
                 var nextrace = currentSeason.Races
                     .OrderBy(r => r.Round)
-                    .FirstOrDefault(r => r.StintProgress == 0);
+                    .FirstOrDefault(r => r.RaceState != RaceState.Finished);
 
                 if (nextrace == null)
                 {

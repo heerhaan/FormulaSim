@@ -100,7 +100,10 @@ namespace FormuleCirkelEntity.Controllers
             if (setDevModel is null)
                 return NotFound();
 
-            var championship = await _context.Championships.SingleAsync(ch => ch.ChampionshipId == setDevModel.ChampionshipId);
+            var championship = await _context.Championships
+                .Include(c => c.AgeDevRanges)
+                .Include(c => c.SkillDevRanges)
+                .SingleAsync(ch => ch.ChampionshipId == setDevModel.ChampionshipId);
             // This if-structure makes it so that we are going to apply all those darn age dev ranges to the code!
             if (setDevModel.AgeValueKey.Count > 0)
             {
@@ -130,7 +133,6 @@ namespace FormuleCirkelEntity.Controllers
                             errString += $"{failure.ErrorMessage}\n";
                         return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = $"Error: {errString}" });
                     }
-
                     // Validator didn't trigger so this line can be added to the ranges
                     championship.AgeDevRanges.Add(newAgeRange);
                 }
@@ -141,7 +143,7 @@ namespace FormuleCirkelEntity.Controllers
                 // Ensures the keys are in order
                 if (!CheckIfListIsInOrder(setDevModel.SkillValueKey))
                     return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = "Error: Skill list wasn't in order!" });
-                
+
                 // Clear the existing list of skill ranges so they can be filled the right way again (uwu)
                 championship.SkillDevRanges.Clear();
                 // Internally cries a bit because the code is so ugly

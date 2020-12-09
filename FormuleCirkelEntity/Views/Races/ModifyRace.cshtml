@@ -15,16 +15,14 @@
             </div>
 
             <div class="row justify-content-between mb-1">
-                <div class="btn-group">
-                    <button type="button" id="add" class="btn">Add Stint</button>
-                    <button type="button" id="addpit" class="btn">Add Pit</button>
-                </div>
+                <button type="button" id="add" class="btn">Add Stint</button>
                 <button type="submit" class="btn submit">Save</button>
             </div>
 
             <table id="racestints" class="ctable standings-border fullborder fullwidth">
                 <thead>
                     <tr>
+                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="It for pitstop, ya??">Pitstop</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventDriverSkill>Driver skill</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventTeamChassis>Chassis</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventEnginePower>Engine</th>
@@ -43,6 +41,9 @@
                         <tr>
                             <td>
                                 <input type="hidden" name="RaceStints.Index" value="@i">
+                                @Html.CheckBoxFor(m => m.RaceStints[i].ApplyPitstop)
+                            </td>
+                            <td>
                                 @Html.CheckBoxFor(m => m.RaceStints[i].ApplyDriverLevel)
                             </td>
                             <td>
@@ -82,6 +83,9 @@
             <tr>
                 <td>
                     <input type="hidden" name="RaceStints.Index" value="%">
+                    <input name="RaceStints[#].ApplyPitstop" type="checkbox" value="true" checked>
+                </td>
+                <td>
                     <input name="RaceStints[#].ApplyDriverLevel" type="checkbox" value="true" checked>
                 </td>
                 <td>
@@ -103,46 +107,10 @@
                     <input name="RaceStints[#].ApplyReliability" type="checkbox" value="true" checked>
                 </td>
                 <td>
-                    <input class="form-control" name="RaceStints[#].RNGMinimum" type="text" value="0">
+                    <input class="form-control" name="RaceStints[#].RNGMinimum" type="text" value="10">
                 </td>
                 <td>
-                    <input class="form-control" name="RaceStints[#].RNGMaximum" type="text" value="25">
-                </td>
-                <td>
-                    <button type="button" class="btn fullwidth delete">Delete</button>
-                </td>
-            </tr>
-        </table>
-
-        <table id="newpit" style="display:none;">
-            <tr>
-                <td>
-                    <input type="hidden" name="RaceStints.Index" value="%">
-                    <input name="RaceStints[#].ApplyDriverLevel" type="checkbox" value="true">
-                </td>
-                <td>
-                    <input name="RaceStints[#].ApplyChassisLevel" type="checkbox" value="true">
-                </td>
-                <td>
-                    <input name="RaceStints[#].ApplyEngineLevel" type="checkbox" value="true">
-                </td>
-                <td>
-                    <input name="RaceStints[#].ApplyTireLevel" type="checkbox" value="true">
-                </td>
-                <td>
-                    <input name="RaceStints[#].ApplyTireWear" type="checkbox" value="true">
-                </td>
-                <td>
-                    <input name="RaceStints[#].ApplyQualifyingBonus" type="checkbox" value="true">
-                </td>
-                <td>
-                    <input name="RaceStints[#].ApplyReliability" type="checkbox" value="true">
-                </td>
-                <td>
-                    <input class="form-control" name="RaceStints[#].RNGMinimum" type="text" value="-12">
-                </td>
-                <td>
-                    <input class="form-control" name="RaceStints[#].RNGMaximum" type="text" value="-5">
+                    <input class="form-control" name="RaceStints[#].RNGMaximum" type="text" value="40">
                 </td>
                 <td>
                     <button type="button" class="btn fullwidth delete">Delete</button>
@@ -155,19 +123,10 @@
     var form = $('form');
     var table = $('#racestints tbody');
     var newrow = $('#newrow');
-    var newpit = $('#newpit');
 
     $('#add').click(function () {
         var index = (new Date()).getTime();
         var clone = newrow.find('tr').clone();
-        clone.html($(clone).html().replace(/\[#\]/g, '[' + index + ']'));
-        clone.html($(clone).html().replace(/"%"/g, '"' + index + '"'));
-        table.append(clone);
-    });
-
-    $('#addpit').click(function () {
-        var index = (new Date()).getTime();
-        var clone = newpit.find('tr').clone();
         clone.html($(clone).html().replace(/\[#\]/g, '[' + index + ']'));
         clone.html($(clone).html().replace(/"%"/g, '"' + index + '"'));
         table.append(clone);

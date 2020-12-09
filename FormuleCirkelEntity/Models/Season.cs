@@ -25,6 +25,8 @@ namespace FormuleCirkelEntity.Models
         public int QualificationRemainingDriversQ3 { get; set; }
         public int QualificationRNG { get; set; }
         public int QualyBonus { get; set; }
+        public int PitMin { get; set; }
+        public int PitMax { get; set; }
         public IDictionary<int, int?> PointsPerPosition { get; } = new Dictionary<int, int?>();
         public int PolePoints { get; set; }
 
