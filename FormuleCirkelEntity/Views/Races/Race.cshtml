@@ -287,7 +287,7 @@
         $("#results tbody tr").each(function (index, row) {
             let score = row.querySelector("td[data-field='pointsTotal']").innerText;
             if (score != "DNF" && score != "DSQ") {
-                let gap = "+" + ((leaderscore - score) * 0.27).toFixed(2);
+                let gap = "+" + ((leaderscore - score) * 0.43).toFixed(2);
                 if (gap == "+0.00" && leaderapplied == false) {
                     gap = "Leader";
                     leaderapplied = true;
