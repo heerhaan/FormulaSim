@@ -1,0 +1,48 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Strategy>
+
+@{
+    ViewData["Title"] = "Strategies";
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
+}
+
+<div class="d-inline-block">
+    <h1>Strategies</h1>
+
+    <div class="flex-row justify-content-between index-btns">
+        @if (isAdmin)
+        {
+            <a asp-action="StrategyCreate" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+        }
+    </div>
+
+    <table class="ctable fullborder fullwidth min-width-index-table">
+        <thead class="fullborder">
+            <tr>
+                <td>Length</td>
+                <td>Tyres</td>
+                <td>Edit</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>@item.RaceLen</td>
+                <td>
+                    @foreach (var tyre in item.Tyres.OrderBy(t => t.StintNumberApplied))
+                    {
+                        <span class="badge font-size-default" style="background-color:@tyre.Tyre.TyreColour;">
+                            S@(tyre.StintNumberApplied) - @tyre.Tyre.TyreName
+                        </span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="StrategyCreate" asp-route-id="@item.StrategyId">
+                        <i class="fas fa-wrench fa-2x"></i>
+                    </a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

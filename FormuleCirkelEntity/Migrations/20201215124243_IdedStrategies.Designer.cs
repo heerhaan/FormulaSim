@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20201215124243_IdedStrategies")]
+    partial class IdedStrategies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,9 +95,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("ChassisRelMod")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CurrTyreId")
-                        .HasColumnType("int");
-
                     b.Property<int>("DNFCause")
                         .HasColumnType("int");
 
@@ -150,12 +149,7 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("StrategyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TyreLife")
-                        .HasColumnType("int");
-
                     b.HasKey("DriverResultId");
-
-                    b.HasIndex("CurrTyreId");
 
                     b.HasIndex("RaceId");
 
@@ -598,6 +592,9 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("StintStatus")
                         .HasColumnType("int");
 
+                    b.Property<int>("TyreLife")
+                        .HasColumnType("int");
+
                     b.HasKey("StintResultId");
 
                     b.HasIndex("DriverResultId");
@@ -971,11 +968,6 @@ namespace FormuleCirkelEntity.Migrations
 
             modelBuilder.Entity("FormuleCirkelEntity.Models.DriverResult", b =>
                 {
-                    b.HasOne("FormuleCirkelEntity.Models.Tyre", "CurrTyre")
-                        .WithMany()
-                        .HasForeignKey("CurrTyreId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("FormuleCirkelEntity.Models.Race", "Race")
                         .WithMany("DriverResults")
                         .HasForeignKey("RaceId")

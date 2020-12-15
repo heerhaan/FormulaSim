@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20201213224056_RaceStrategies")]
+    partial class RaceStrategies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,9 +95,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("ChassisRelMod")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CurrTyreId")
-                        .HasColumnType("int");
-
                     b.Property<int>("DNFCause")
                         .HasColumnType("int");
 
@@ -117,13 +116,7 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("MaxRNG")
                         .HasColumnType("int");
 
-                    b.Property<int>("MaxTyreWear")
-                        .HasColumnType("int");
-
                     b.Property<int>("MinRNG")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinTyreWear")
                         .HasColumnType("int");
 
                     b.Property<string>("PenaltyReason")
@@ -147,21 +140,11 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("StrategyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TyreLife")
-                        .HasColumnType("int");
-
                     b.HasKey("DriverResultId");
-
-                    b.HasIndex("CurrTyreId");
 
                     b.HasIndex("RaceId");
 
                     b.HasIndex("SeasonDriverId");
-
-                    b.HasIndex("StrategyId");
 
                     b.ToTable("DriverResults");
                 });
@@ -394,6 +377,9 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("Skill")
                         .HasColumnType("int");
 
+                    b.Property<int>("Tires")
+                        .HasColumnType("int");
+
                     b.HasKey("SeasonDriverId");
 
                     b.HasIndex("DriverId");
@@ -551,10 +537,19 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<bool>("ApplyEngineLevel")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("ApplyPitstop")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("ApplyQualifyingBonus")
                         .HasColumnType("bit");
 
                     b.Property<bool>("ApplyReliability")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ApplyTireLevel")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ApplyTireWear")
                         .HasColumnType("bit");
 
                     b.Property<int>("Number")
@@ -598,26 +593,14 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("StintStatus")
                         .HasColumnType("int");
 
+                    b.Property<int>("TyreLife")
+                        .HasColumnType("int");
+
                     b.HasKey("StintResultId");
 
                     b.HasIndex("DriverResultId");
 
                     b.ToTable("StintResults");
-                });
-
-            modelBuilder.Entity("FormuleCirkelEntity.Models.Strategy", b =>
-                {
-                    b.Property<int>("StrategyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("RaceLen")
-                        .HasColumnType("int");
-
-                    b.HasKey("StrategyId");
-
-                    b.ToTable("Strategies");
                 });
 
             modelBuilder.Entity("FormuleCirkelEntity.Models.Team", b =>
@@ -741,13 +724,7 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int?>("EngineRacePace")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MaxTyreWear")
-                        .HasColumnType("int");
-
                     b.Property<int?>("MaximumRNG")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MinTyreWear")
                         .HasColumnType("int");
 
                     b.Property<int?>("MinimumRNG")
@@ -768,62 +745,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasKey("TraitId");
 
                     b.ToTable("Traits");
-                });
-
-            modelBuilder.Entity("FormuleCirkelEntity.Models.Tyre", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("MaxWear")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinWear")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Pace")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StintLen")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TyreColour")
-                        .HasColumnType("nvarchar(7)")
-                        .HasMaxLength(7);
-
-                    b.Property<string>("TyreName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tyres");
-                });
-
-            modelBuilder.Entity("FormuleCirkelEntity.Models.TyreStrategy", b =>
-                {
-                    b.Property<int>("TyreStrategyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("StintNumberApplied")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StrategyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TyreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TyreStrategyId");
-
-                    b.HasIndex("StrategyId");
-
-                    b.HasIndex("TyreId");
-
-                    b.ToTable("TyreStrategies");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -971,11 +892,6 @@ namespace FormuleCirkelEntity.Migrations
 
             modelBuilder.Entity("FormuleCirkelEntity.Models.DriverResult", b =>
                 {
-                    b.HasOne("FormuleCirkelEntity.Models.Tyre", "CurrTyre")
-                        .WithMany()
-                        .HasForeignKey("CurrTyreId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("FormuleCirkelEntity.Models.Race", "Race")
                         .WithMany("DriverResults")
                         .HasForeignKey("RaceId")
@@ -985,12 +901,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasOne("FormuleCirkelEntity.Models.SeasonDriver", "SeasonDriver")
                         .WithMany("DriverResults")
                         .HasForeignKey("SeasonDriverId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FormuleCirkelEntity.Models.Strategy", "Strategy")
-                        .WithMany()
-                        .HasForeignKey("StrategyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -1141,21 +1051,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasOne("FormuleCirkelEntity.Models.Trait", "Trait")
                         .WithMany("TrackTraits")
                         .HasForeignKey("TraitId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FormuleCirkelEntity.Models.TyreStrategy", b =>
-                {
-                    b.HasOne("FormuleCirkelEntity.Models.Strategy", "Strategy")
-                        .WithMany("Tyres")
-                        .HasForeignKey("StrategyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FormuleCirkelEntity.Models.Tyre", "Tyre")
-                        .WithMany("Strategies")
-                        .HasForeignKey("TyreId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

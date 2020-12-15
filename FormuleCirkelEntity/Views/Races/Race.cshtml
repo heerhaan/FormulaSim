@@ -31,6 +31,7 @@
                     <th class="fullborder">Team</th>
                     <th class="fullborder">PWR</th>
                     <th class="fullborder">Grid</th>
+                    <th class="fullborder">Tyre</th>
                     @foreach (var stint in Model.Race.Stints)
                     {
                         <th class="fullborder" data-field="stintResultHeader-@stint.Number">
@@ -74,6 +75,7 @@
                                 <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@gridChange</span>
                             }
                         </td>
+                        <td data-field="tyre">@driverResult.TyreLife</td>
                         @foreach (var stint in Model.Race.Stints)
                         {
                             var stintResult = driverResult.StintResults.First(res => res.Number == stint.Number);
@@ -228,6 +230,7 @@
                 row.querySelector("td[data-field='dnfCause']").innerText = "-";
             }
 
+            row.querySelector("td[data-field='tyre']").innerText = driverResult.TyreLife;
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
             let gridChange = (driverResult.Grid - driverResult.Position);
             if (gridChange > 0) {

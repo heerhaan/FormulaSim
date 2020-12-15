@@ -582,7 +582,6 @@ namespace FormuleCirkelEntity.Controllers
             {
                 seasonDriver.Skill = lastDriver.Skill;
                 seasonDriver.Reliability = lastDriver.Reliability;
-                seasonDriver.Tires = lastDriver.Tires;
                 seasonDriver.DriverStatus = lastDriver.DriverStatus;
             }
 
@@ -670,7 +669,6 @@ namespace FormuleCirkelEntity.Controllers
                 driver.SeasonTeamId = updatedDriver.SeasonTeamId;
                 driver.Reliability = updatedDriver.Reliability;
                 driver.Skill = updatedDriver.Skill;
-                driver.Tires = updatedDriver.Tires;
                 driver.DriverStatus = updatedDriver.DriverStatus;
                 driver.Dropped = false;
                 _context.Update(driver);

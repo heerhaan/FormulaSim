@@ -68,13 +68,10 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Pitstop</th>
                     <th>Driver</th>
                     <th class="tcc-crew"><span>Chassis</span></th>
                     <th class="tcc-chassis"><span>Engine</span></th>
                     <th>Qualy bonus</th>
-                    <th>Tire bonus</th>
-                    <th>Tire wear</th>
                     <th>Reliability</th>
                     <th>RNG min.</th>
                     <th>RNG max.</th>
@@ -85,14 +82,6 @@
                 {
                 <tr>
                     <td class="alt-font">@stint.Number</td>
-                    @if (stint.ApplyPitstop)
-                    {
-                        <td class="result-points">✓</td>
- }
-                    else
-                    {
-                        <td></td>
-}
                     @if (stint.ApplyDriverLevel)
                     {
                         <td class="result-points">✓</td>
@@ -100,7 +89,7 @@
                     else
                     {
                         <td></td>
-}
+                    }
                     @if (stint.ApplyChassisLevel)
                     {
                         <td class="result-points">✓</td>
@@ -118,22 +107,6 @@
                         <td></td>
                     }
                     @if (stint.ApplyQualifyingBonus)
-                    {
-                        <td class="result-points">✓</td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    @if (stint.ApplyTireLevel)
-                    {
-                        <td class="result-points">✓</td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                    @if (stint.ApplyTireWear)
                     {
                         <td class="result-points">✓</td>
                     }
