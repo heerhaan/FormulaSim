@@ -22,12 +22,9 @@
             <table id="racestints" class="ctable standings-border fullborder fullwidth">
                 <thead>
                     <tr>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title="It for pitstop, ya??">Pitstop</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventDriverSkill>Driver skill</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventTeamChassis>Chassis</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventEnginePower>Engine</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventTireBonus>Tire bonus</th>
-                        <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventTireWear>Tire wear</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventQualyBonus>Qualifying bonus</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventReliability>Reliability</th>
                         <th class="w-10" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipStintEventLowerRng>@Html.DisplayNameFor(s => s.RaceStints.FirstOrDefault().RNGMinimum)</th>
@@ -41,9 +38,6 @@
                         <tr>
                             <td>
                                 <input type="hidden" name="RaceStints.Index" value="@i">
-                                @Html.CheckBoxFor(m => m.RaceStints[i].ApplyPitstop)
-                            </td>
-                            <td>
                                 @Html.CheckBoxFor(m => m.RaceStints[i].ApplyDriverLevel)
                             </td>
                             <td>
@@ -51,12 +45,6 @@
                             </td>
                             <td>
                                 @Html.CheckBoxFor(m => m.RaceStints[i].ApplyEngineLevel)
-                            </td>
-                            <td>
-                                @Html.CheckBoxFor(m => m.RaceStints[i].ApplyTireLevel)
-                            </td>
-                            <td>
-                                @Html.CheckBoxFor(m => m.RaceStints[i].ApplyTireWear)
                             </td>
                             <td>
                                 @Html.CheckBoxFor(m => m.RaceStints[i].ApplyQualifyingBonus)
@@ -83,9 +71,6 @@
             <tr>
                 <td>
                     <input type="hidden" name="RaceStints.Index" value="%">
-                    <input name="RaceStints[#].ApplyPitstop" type="checkbox" value="true" checked>
-                </td>
-                <td>
                     <input name="RaceStints[#].ApplyDriverLevel" type="checkbox" value="true" checked>
                 </td>
                 <td>
@@ -93,12 +78,6 @@
                 </td>
                 <td>
                     <input name="RaceStints[#].ApplyEngineLevel" type="checkbox" value="true" checked>
-                </td>
-                <td>
-                    <input name="RaceStints[#].ApplyTireLevel" type="checkbox" value="true">
-                </td>
-                <td>
-                    <input name="RaceStints[#].ApplyTireWear" type="checkbox" value="true">
                 </td>
                 <td>
                     <input name="RaceStints[#].ApplyQualifyingBonus" type="checkbox" value="true">

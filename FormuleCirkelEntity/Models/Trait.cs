@@ -27,12 +27,17 @@ namespace FormuleCirkelEntity.Models
         public int? ChassisReliability { get; set; }
         // The value that impacts the reliablity of the driver.
         public int? DriverReliability { get; set; }
-        // Impacts the upper value of the maximum amount of possible dev for drivers/teams or RNG per stint for tracks.
+        // Impacts the maximum amount of wear a tyre can have
+        public int? MaxTyreWear { get; set; }
+        // Impacts the minimum amount of wear a tyre can have
+        public int? MinTyreWear { get; set; }
+        // Impacts the upper value of RNG generated in stints
         public int? MaximumRNG { get; set; }
-        // Impacts the lower value of the minimum amount of possible dev for drivers/teams or RNG per stint for tracks.
+        // Impacts the lower value of RNG generated in stints
         public int? MinimumRNG { get; set; }
         // Determines if the trait is still in use in the application.
         public bool Archived { get; set; }
+
         public IList<DriverTrait> DriverTraits { get; } = new List<DriverTrait>();
         public IList<TeamTrait> TeamTraits { get; } = new List<TeamTrait>();
         public IList<TrackTrait> TrackTraits { get; } = new List<TrackTrait>();

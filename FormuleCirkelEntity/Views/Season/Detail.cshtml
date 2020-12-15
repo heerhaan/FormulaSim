@@ -52,7 +52,6 @@
                     <th>Driver</th>
                     <th>Skill</th>
                     <th>Reliability</th>
-                    <th>Tire</th>
                 @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
                 {
                     <th>Edit</th>
@@ -80,7 +79,6 @@
                     </td>
                     <td>@driver.Skill</td>
                     <td>@driver.Reliability</td>
-                    <td><span class="badge tire font-size-default">@(driver.Tires.ToString()[0])</span></td>
                 @if (Model.Season.State == SeasonState.Progress && isAdmin || Model.Season.State == SeasonState.Draft && isAdmin)
                 {
                     <td>

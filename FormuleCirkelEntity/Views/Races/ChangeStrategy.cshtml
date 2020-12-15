@@ -1,0 +1,39 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Strategy>
+
+@{ 
+    ViewData["Title"] = "Change strat";
+}
+
+<div class="d-inline-block">
+    <table class="ctable fullborder fullwidth min-width-index-table">
+        <thead class="fullborder">
+            <tr>
+                <td>Length</td>
+                <td>Tyres</td>
+                <td>Edit</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.RaceLen</td>
+                    <td>
+                        @foreach (var tyre in item.Tyres)
+                        {
+                            <span style="background-color:@tyre.Tyre.TyreColour">S@(tyre.StintNumberApplied) - @tyre.Tyre.TyreName</span>
+                        }
+                    </td>
+                    <td>
+                        <form method="post">
+                            <input type="hidden" name="driverId" value="@ViewBag.driverId" />
+                            <input type="hidden" name="raceId" value="@ViewBag.raceId" />
+                            <input type="hidden" name="strategyId" value="@item.StrategyId" />
+                            <button type="submit" class="btn btn-sm">Select</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

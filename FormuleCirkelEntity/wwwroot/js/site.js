@@ -56,7 +56,7 @@ function returnRandomMan() {
     return man[n];
 }
 
-
+// Array of all countries with id and their name
 var isoCountries = [
 	{
 		"id": "AF",

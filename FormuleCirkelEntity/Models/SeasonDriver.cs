@@ -10,8 +10,6 @@ namespace FormuleCirkelEntity.Models
         public int SeasonDriverId { get; set; }
         public int Skill { get; set; }
         public int Reliability { get; set; }
-        [EnumDataType(typeof(Tire))]
-        public Tire Tires { get; set; }
         [EnumDataType(typeof(DriverStatus))]
         public DriverStatus DriverStatus { get; set; }
         public bool Dropped { get; set; }
@@ -29,8 +27,6 @@ namespace FormuleCirkelEntity.Models
 
         public IList<DriverResult> DriverResults { get; } = new List<DriverResult>();
     }
-
-    public enum Tire { Hards, Softs }
 
     public enum DriverStatus { First, None, Second }
 }

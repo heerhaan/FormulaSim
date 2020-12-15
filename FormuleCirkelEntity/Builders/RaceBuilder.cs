@@ -59,7 +59,6 @@ namespace FormuleCirkelEntity.Builders
                 ApplyDriverLevel = true,
                 ApplyEngineLevel = true,
                 ApplyQualifyingBonus = true,
-                ApplyTireLevel = true,
                 RNGMinimum = 10,
                 RNGMaximum = 35
             };
@@ -72,7 +71,6 @@ namespace FormuleCirkelEntity.Builders
         {
             Stint stint = new Stint()
             {
-                ApplyPitstop = true,
                 RNGMinimum = 10,
                 RNGMaximum = 40
             };
@@ -86,7 +84,6 @@ namespace FormuleCirkelEntity.Builders
             Stint stint = new Stint()
             {
                 ApplyReliability = true,
-                ApplyTireWear = true,
                 RNGMinimum = 10,
                 RNGMaximum = 45
             };

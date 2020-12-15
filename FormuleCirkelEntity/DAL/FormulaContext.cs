@@ -34,6 +34,9 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<DriverTrait> DriverTraits { get; set; }
         public DbSet<TeamTrait> TeamTraits { get; set; }
         public DbSet<TrackTrait> TrackTraits { get; set; }
+        public DbSet<Tyre> Tyres { get; set; }
+        public DbSet<Strategy> Strategies { get; set; }
+        public DbSet<TyreStrategy> TyreStrategies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -48,7 +51,7 @@ namespace FormuleCirkelEntity.DAL
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
-
+            // Modify entities
             builder.Entity<Track>()
                 .Property(t => t.LengthKM);
             builder.Entity<Season>()
@@ -62,6 +65,9 @@ namespace FormuleCirkelEntity.DAL
                 .HasKey(tt => new { tt.TeamId, tt.TraitId });
             builder.Entity<TrackTrait>()
                 .HasKey(tr => new { tr.TrackId, tr.TraitId });
+
+            // Applies seed data
+            //builder.SeedFormula();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

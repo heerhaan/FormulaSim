@@ -9,6 +9,7 @@ namespace FormuleCirkelEntity.Models
         public int Number { get; set; }
         public int Position { get; set; }
         public int Result { get; set; }
+        
         [EnumDataType(typeof(StintStatus))]
         public StintStatus StintStatus { get; set; }
 
