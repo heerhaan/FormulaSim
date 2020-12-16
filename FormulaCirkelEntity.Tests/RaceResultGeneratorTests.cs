@@ -1,6 +1,5 @@
 using FormuleCirkelEntity.Utility;
 using FormuleCirkelEntity.Models;
-using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -47,31 +46,6 @@ namespace FormulaCirkelEntity.Tests
 
             // Assert
             Assert.Equal(expected, qualifyingBonus);
-        }
-
-        class StaticRandom : Random
-        {
-            readonly int _staticValue;
-
-            public StaticRandom(int staticValue)
-            {
-                _staticValue = staticValue;
-            }
-
-            public override int Next()
-            {
-                return _staticValue;
-            }
-
-            public override int Next(int maxValue)
-            {
-                return Next();
-            }
-
-            public override int Next(int minValue, int maxValue)
-            {
-                return Next();
-            }
         }
     }
 }

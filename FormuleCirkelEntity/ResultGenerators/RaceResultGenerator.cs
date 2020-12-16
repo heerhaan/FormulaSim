@@ -37,8 +37,8 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             // Applies the increased or decreased odds for the specific track.
             double engineWeatherMultiplier = 1;
-            int tireWeatherBonus = 0;
-            int tireWeatherWear = 0;
+            //int tireWeatherBonus = 0;
+            //int tireWeatherWear = 0;
 
             int weatherRNG = 0;
             int weatherDNF = 0;
@@ -49,11 +49,11 @@ namespace FormuleCirkelEntity.ResultGenerators
             switch (weather)
             {
                 case Weather.Sunny:
-                    tireWeatherWear += 4;
+                    //tireWeatherWear += 4;
                     engineWeatherMultiplier = 0.9;
                     break;
                 case Weather.Overcast:
-                    tireWeatherBonus += 2;
+                    //tireWeatherBonus += 2;
                     engineWeatherMultiplier = 1.1;
                     break;
                 case Weather.Rain:
@@ -167,11 +167,6 @@ namespace FormuleCirkelEntity.ResultGenerators
             result += Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(driver.SeasonTeam), track.Specification.ToString());
             result += _rng.Next(0, (qualyRNG + 1));
             return result;
-        }
-
-        private void ApplyTyreWear()
-        {
-
         }
 
         /// <summary>

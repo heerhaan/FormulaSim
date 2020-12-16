@@ -568,7 +568,6 @@ namespace FormuleCirkelEntity.Controllers
 
         [Authorize(Roles = "Admin")]
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying/Update")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>")]
         public async Task<IActionResult> UpdateQualifying(int id, int raceId, string source, bool secondRun)
         {
             if (string.IsNullOrWhiteSpace(source))
@@ -812,8 +811,7 @@ namespace FormuleCirkelEntity.Controllers
             var race = await _context.Races
                 .Include(r => r.Season)
                     .ThenInclude(s => s.Races)
-                .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id)
-                ;
+                .SingleOrDefaultAsync(r => r.RaceId == raceId && r.SeasonId == id);
 
             if (race == null)
                 return NotFound();

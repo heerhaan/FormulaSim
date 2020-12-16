@@ -42,6 +42,7 @@ namespace FormuleCirkelEntity.Builders
 
         public RaceBuilder AddModifiedStints(IList<Stint> settings)
         {
+            if (settings is null) { return null; }
             int stintNr = 0;
             foreach (var stint in settings)
             {
