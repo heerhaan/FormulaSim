@@ -116,8 +116,8 @@
 
 <script>
     function randomDriver() {
-        var drivers = @(Json.Serialize(Model.Select(d => d.Id)));
-        const randomId = drivers[Math.floor(Math.random() * drivers.length)];
+        var drivers = @(Json.Serialize(ViewBag.driverIds));
+        let randomId = drivers[Math.floor(Math.random() * drivers.length)];
         window.location.href = '/Drivers/Traits/' + randomId;
     }
 </script>

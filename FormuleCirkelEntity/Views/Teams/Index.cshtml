@@ -96,9 +96,8 @@
 
 <script>
     function randomTeam() {
-        var teams = @(Json.Serialize(Model.Select(te => te.Id)));
-        const randomId = teams[Math.floor(Math.random() * teams.length)];
-
+        var teams = @(Json.Serialize(ViewBag.teamIds));
+        let randomId = teams[Math.floor(Math.random() * teams.length)];
         window.location.href = '/Teams/Traits/' + randomId;
     }
 </script>

@@ -37,6 +37,7 @@ namespace FormuleCirkelEntity.Controllers
             else
                 ViewBag.ownedteams = new List<Team>();
 
+            ViewBag.teamIds = await _context.Teams.Select(t => t.Id).ToListAsync();
             return base.Index().Result;
         }
 

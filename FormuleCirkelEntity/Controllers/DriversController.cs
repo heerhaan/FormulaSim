@@ -38,6 +38,8 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
                 ViewBag.owneddrivers = new List<Driver>();
+
+            ViewBag.driverIds = await _context.Drivers.Select(d => d.Id).ToListAsync();
             return base.Index().Result;
         }
 
