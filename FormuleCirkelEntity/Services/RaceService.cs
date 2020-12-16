@@ -7,6 +7,57 @@ namespace FormuleCirkelEntity.Services
 {
     public static class RaceService
     {
+        private static readonly Random rng = new Random();
+
+        public static void AddSeasonDriversToRace(Race race, IEnumerable<SeasonDriver> drivers)
+        {
+            // Check if given parameters aren't null
+            if (race is null || drivers is null) throw new NullReferenceException();
+
+            foreach (var driver in drivers)
+            {
+                DriverResult driverResult = new DriverResult { SeasonDriver = driver };
+                foreach (var stint in race.Stints)
+                {
+                    StintResult driverStint = new StintResult
+                    {
+                        StintStatus = StintStatus.Concept,
+                        Number = stint.Number
+                    };
+                    driverResult.StintResults.Add(driverStint);
+                }
+                race.DriverResults.Add(driverResult);
+            }
+        }
+
+        // Sets the driverresults for all drivers for one race
+        public static void SetDriverResultsOnRace(
+            Race race, 
+            List<DriverTrait> driverTraits, 
+            List<TeamTrait> teamTraits, 
+            List<TrackTrait> trackTraits,
+            List<SeasonTeam> seasonTeams,
+            List<Strategy> strategies)
+        {
+            foreach (var driverRes in race.DriverResults)
+            {
+                // Gets the traits from the driver in the loop and sets them
+                var thisDriverTraits = driverTraits.Where(drt => drt.DriverId == driverRes.SeasonDriver.DriverId);
+                RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
+                // Gets the seasonteam of the driver in the loop
+                var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
+                // Gets the traits from the team of the driver in the loop and sets them
+                var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
+                RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
+                // Sets the traits from the track to the driver in the loop
+                RaceService.SetTrackTraitMods(driverRes, trackTraits);
+
+                // Set a random strategy
+                int stratIndex = rng.Next(0, strategies.Count);
+                RaceService.SetRandomStrategy(driverRes, strategies[stratIndex]);
+            }
+        }
+
         public static void SetDriverTraitMods(DriverResult driver, IEnumerable<DriverTrait> driverTraits)
         {
             // Null-check, since I don't like warnings

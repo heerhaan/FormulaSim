@@ -10,7 +10,7 @@ namespace FormuleCirkelEntity.Services
     public interface IDriverService
     {
         Task<Driver> GetDriverByIdAsync(int id);
-        IQueryable<Driver> GetDrivers();
+        IQueryable<Driver> GetDriversQuery();
         Task<bool> AddDriverAsync(Driver driver);
         Task<bool> ModifyDriverAsync(Driver driver);
         Task<bool> ArchiveDriverAsync(int id);
@@ -30,7 +30,7 @@ namespace FormuleCirkelEntity.Services
             return await _context.Drivers.FindAsync(id);
         }
 
-        public IQueryable<Driver> GetDrivers()
+        public IQueryable<Driver> GetDriversQuery()
         {
             return _context.Drivers;
         }

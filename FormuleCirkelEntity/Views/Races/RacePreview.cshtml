@@ -148,11 +148,7 @@
     </div>
 
     <div class="flex-row justify-content-between">
-        <form asp-action="RacePreview">
-            <div class="form-group">
-                <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn" />
-            </div>
-        </form>
+        <a asp-action="RaceWeekend" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" class="btn">Raceweekend</a>
         <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
     </div>
 

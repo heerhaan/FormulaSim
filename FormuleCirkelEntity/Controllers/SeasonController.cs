@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
 using FormuleCirkelEntity.Utility;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,8 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class SeasonController : FormulaController
     {
+        private static readonly Random rng = new Random();
+
         public SeasonController(FormulaContext context, 
             UserManager<SimUser> userManager)
             : base(context, userManager)
@@ -139,9 +142,10 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Start(int? id)
+        public async Task<IActionResult> Start(int seasonId)
         {
-            var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
+            // First sets a few settings of the season
+            var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == seasonId);
             if (season is null)
                 return NotFound();
 
@@ -149,23 +153,66 @@ namespace FormuleCirkelEntity.Controllers
             season.State = SeasonState.Progress;
             if (season.PointsPerPosition.Count == 0)
             {
-                // Default assigned points per position
-                season.PointsPerPosition.Add(1, 25);
-                season.PointsPerPosition.Add(2, 18);
-                season.PointsPerPosition.Add(3, 15);
-                season.PointsPerPosition.Add(4, 12);
-                season.PointsPerPosition.Add(5, 10);
-                season.PointsPerPosition.Add(6, 8);
-                season.PointsPerPosition.Add(7, 6);
-                season.PointsPerPosition.Add(8, 5);
-                season.PointsPerPosition.Add(9, 4);
-                season.PointsPerPosition.Add(10, 3);
-                season.PointsPerPosition.Add(11, 2);
-                season.PointsPerPosition.Add(12, 1);
+                SeasonService.AddDefaultPoints(season);
             }
             _context.Update(season);
+            // From here on it's all about setting the driver results for each race, NEEDS TO BE TESTED THOROUGHLY
+            var driverTraits = await _context.DriverTraits
+                .Include(drt => drt.Trait)
+                .ToListAsync();
+            var teamTraits = await _context.TeamTraits
+                .Include(ttr => ttr.Trait)
+                .ToListAsync();
+            var trackTraits = await _context.TrackTraits
+                .Include(tet => tet.Trait)
+                .ToListAsync();
+            var seasonTeams = await _context.SeasonTeams
+                .Where(st => st.SeasonId == seasonId)
+                .ToListAsync();
+            // Get all the possible strategies for this race
+            var strategies = await _context.Strategies
+                .Include(s => s.Tyres)
+                    .ThenInclude(t => t.Tyre)
+                .ToListAsync();
+            // Get all the races from this season
+            var races = await _context.Races
+                .Where(r => r.SeasonId == seasonId)
+                .Include(r => r.Stints)
+                .Include(r => r.Season.Drivers)
+                .Include(r => r.DriverResults)
+                    .ThenInclude(r => r.StintResults)
+                .ToListAsync();
+
+            foreach (var race in races)
+            {
+                RaceService.AddSeasonDriversToRace(race, race.Season.Drivers);
+
+                var raceStrategies = strategies.Where(s => s.RaceLen == race.Stints.Count).ToList();
+                var raceTrackTraits = trackTraits.Where(t => t.TrackId == race.TrackId).ToList();
+                // If the length is zero then creates a list consisting of the single, default strategy
+                if (!raceStrategies.Any())
+                    raceStrategies = strategies.Where(s => s.StrategyId == 1).ToList();
+                // Iterate through the created driverresults so that the modifications can also be set
+                foreach (var driverRes in race.DriverResults)
+                {
+                    // Gets the traits from the driver in the loop and sets them
+                    var thisDriverTraits = driverTraits.Where(drt => drt.DriverId == driverRes.SeasonDriver.DriverId);
+                    RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
+                    // Gets the seasonteam of the driver in the loop
+                    var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
+                    // Gets the traits from the team of the driver in the loop and sets them
+                    var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
+                    RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
+                    // Sets the traits from the track to the driver in the loop
+                    RaceService.SetTrackTraitMods(driverRes, raceTrackTraits);
+                    // Set a random strategy
+                    int stratIndex = rng.Next(0, raceStrategies.Count);
+                    RaceService.SetRandomStrategy(driverRes, raceStrategies[stratIndex]);
+                }
+                _context.DriverResults.AddRange(race.DriverResults);
+            }
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Detail), new { id });
+            return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
 
         [Authorize(Roles = "Admin")]
