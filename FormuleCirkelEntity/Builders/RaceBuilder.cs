@@ -104,8 +104,7 @@ namespace FormuleCirkelEntity.Builders
         public RaceBuilder AddDrivers(IEnumerable<SeasonDriver> drivers)
         {
             // Check if given parameters aren't null
-            if (drivers is null)
-                throw new NullReferenceException();
+            if (drivers is null) throw new NullReferenceException();
 
             foreach (var driver in drivers)
             {

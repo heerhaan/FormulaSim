@@ -13,15 +13,12 @@ namespace FormuleCirkelEntity.Models
         [EnumDataType(typeof(DriverStatus))]
         public DriverStatus DriverStatus { get; set; }
         public bool Dropped { get; set; }
-
         public int Points { get; set; }
 
         public int DriverId { get; set; }
         public Driver Driver { get; set; }
-
         public int SeasonTeamId { get; set; }
         public SeasonTeam SeasonTeam { get; set; }
-
         public int SeasonId { get; set; }
         public Season Season { get; set; }
 
