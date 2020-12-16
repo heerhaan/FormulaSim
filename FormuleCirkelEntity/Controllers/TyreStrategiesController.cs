@@ -95,7 +95,7 @@ namespace FormuleCirkelEntity.Controllers
             }
             else
             {
-                var viewmodel = new CreateStrategyModel(strategy.StrategyId ,strategy.RaceLen, strategy.Tyres, tyres);
+                var viewmodel = new CreateStrategyModel(strategy.StrategyId, strategy.RaceLen, strategy.Tyres, tyres);
                 return View(viewmodel);
             }
         }

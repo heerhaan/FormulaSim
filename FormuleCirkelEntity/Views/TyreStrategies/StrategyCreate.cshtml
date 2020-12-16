@@ -5,7 +5,7 @@
 }
 
 <div class="d-inline-block">
-    <h1>Strategy</h1>
+    <h1>Strategy : [@Html.DisplayFor(m => m.RaceLen)]</h1>
     <table class="ctable fullborder min-width-index-table">
         <thead>
             <tr>
@@ -19,7 +19,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var tyre in Model.StrategyTyres)
+            @foreach (var tyre in Model.StrategyTyres.OrderBy(t => t.StintNumberApplied))
             {
                 <tr>
                     <td>@tyre.StintNumberApplied</td>
@@ -35,7 +35,8 @@
             }
         </tbody>
     </table>
-
+    <hr />
+    <h2>Tyre selection</h2>
     <table class="ctable fullborder min-width-index-table">
         <thead>
             <tr>
@@ -56,20 +57,22 @@
                     <td>@tyre.Pace</td>
                     <td>@tyre.MaxWear</td>
                     <td>@tyre.MinWear</td>
-                    <td class="w-60">
+                    <td class="w-50">
                         <form method="POST">
                             <input type="hidden" name="strategyId" value="@Model.StrategyId" />
                             <input type="hidden" name="tyreId" value="@tyre.Id" />
                             <div class="col">
-                                <div class="form-group">
-                                    <label>Applies in stint no.</label>
-                                    <input type="number" class="form-control" name="applyNum" value="@(1 + Model.RaceLen)" />
+                                <div class="form-group flex-row">
+                                    <label class="col-6 mt-auto mb-auto">Applies in stint no.</label>
+                                    <input type="number" class="form-control col-6" name="applyNum" value="@(1 + Model.RaceLen)" />
+                                </div>
+                                <div class="form-group flex-row">
+                                    <label class="col-6 mt-auto mb-auto">Racelength of strategy</label>
+                                    <input type="number" class="form-control col-6" name="raceLen" value="@(Model.RaceLen + tyre.StintLen)" />
                                 </div>
                                 <div class="form-group">
-                                    <label>Racelength of strategy</label>
-                                    <input type="number" class="form-control" name="raceLen" value="@(Model.RaceLen + tyre.StintLen)" />
+                                    <input type="submit" class="btn fullwidth" value="Add" />
                                 </div>
-                                <input type="submit" class="btn fullwidth" value="Add" />
                             </div>
                         </form>
                     </td>

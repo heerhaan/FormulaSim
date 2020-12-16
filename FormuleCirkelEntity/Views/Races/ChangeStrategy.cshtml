@@ -18,10 +18,12 @@
             {
                 <tr>
                     <td>@item.RaceLen</td>
-                    <td>
+                    <td class="text-left">
                         @foreach (var tyre in item.Tyres)
                         {
-                            <span style="background-color:@tyre.Tyre.TyreColour">S@(tyre.StintNumberApplied) - @tyre.Tyre.TyreName</span>
+                            <span class="badge font-size-default" style="background-color:@tyre.Tyre.TyreColour;">
+                                S@(tyre.StintNumberApplied) - @tyre.Tyre.TyreName
+                            </span>                        
                         }
                     </td>
                     <td>

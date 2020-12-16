@@ -75,7 +75,11 @@
                                 <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@gridChange</span>
                             }
                         </td>
-                        <td data-field="tyre">@driverResult.TyreLife</td>
+                        <td data-field="tyre">
+                            <span class="badge" style="background-color:@(driverResult.CurrTyre.TyreColour);">
+                                [@driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper()] @driverResult.TyreLife
+                            </span>
+                        </td>
                         @foreach (var stint in Model.Race.Stints)
                         {
                             var stintResult = driverResult.StintResults.First(res => res.Number == stint.Number);
@@ -230,7 +234,7 @@
                 row.querySelector("td[data-field='dnfCause']").innerText = "-";
             }
 
-            row.querySelector("td[data-field='tyre']").innerText = driverResult.TyreLife;
+            row.querySelector("td[data-field='tyre']").innerHTML = "<span class='badge' style='background-color:" + driverResult.CurrTyre.TyreColour + ";'>[" + driverResult.CurrTyre.TyreName.substring(0, 1) + "] " + driverResult.TyreLife + "</span>";
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
             let gridChange = (driverResult.Grid - driverResult.Position);
             if (gridChange > 0) {

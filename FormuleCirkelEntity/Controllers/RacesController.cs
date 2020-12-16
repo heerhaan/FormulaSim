@@ -178,6 +178,7 @@ namespace FormuleCirkelEntity.Controllers
             var drivers = await _context.DriverResults
                 .Where(dr => dr.RaceId == raceId)
                 .IgnoreQueryFilters()
+                .Include(dr => dr.CurrTyre)
                 .Include(dr => dr.StintResults)
                 .Include(dr => dr.SeasonDriver)
                     .ThenInclude(sd => sd.Driver)
@@ -288,7 +289,11 @@ namespace FormuleCirkelEntity.Controllers
                         .ToListAsync();
                     // If the length is zero then creates a list consisting of the single, default strategy
                     if (strategies.Count == 0)
-                        strategies = await _context.Strategies.Where(s => s.StrategyId == 1).ToListAsync();
+                        strategies = await _context.Strategies
+                            .Where(s => s.StrategyId == 1)
+                            .Include(s => s.Tyres)
+                                .ThenInclude(t => t.Tyre)
+                            .ToListAsync();
                     foreach (var driverRes in race.DriverResults)
                     {
                         // Gets the traits from the driver in the loop and sets them
@@ -414,6 +419,7 @@ namespace FormuleCirkelEntity.Controllers
             var driverResults = await _context.DriverResults
                 .Where(dr => dr.RaceId == raceId)
                 .Include(dr => dr.StintResults)
+                .Include(dr => dr.CurrTyre)
                 .Include(dr => dr.Strategy)
                     .ThenInclude(dr => dr.Tyres)
                     .ThenInclude(dr => dr.Tyre)

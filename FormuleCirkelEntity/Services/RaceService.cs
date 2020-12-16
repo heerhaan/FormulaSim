@@ -78,6 +78,7 @@ namespace FormuleCirkelEntity.Services
             if (driverRes is null || strategy is null) { throw new NullReferenceException(); }
 
             var currentTyre = strategy.Tyres.Single(t => t.StintNumberApplied == 1).Tyre;
+            driverRes.Strategy = strategy;
             driverRes.CurrTyre = currentTyre;
             driverRes.TyreLife = currentTyre.Pace;
         }

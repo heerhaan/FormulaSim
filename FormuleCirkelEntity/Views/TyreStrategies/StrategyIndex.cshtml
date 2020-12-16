@@ -28,7 +28,7 @@
             {
             <tr>
                 <td>@item.RaceLen</td>
-                <td>
+                <td class="text-left">
                     @foreach (var tyre in item.Tyres.OrderBy(t => t.StintNumberApplied))
                     {
                         <span class="badge font-size-default" style="background-color:@tyre.Tyre.TyreColour;">

@@ -221,6 +221,7 @@ namespace FormuleCirkelEntity.Controllers
             if (race == null)
                 return NotFound();
 
+            var stints = await _context.Stints.Where(s => s.RaceId == race.RaceId).ToListAsync();
             season.Races.Remove(race);
             int round = 0;
             foreach (var seasonRace in season.Races.OrderBy(r => r.Round))
@@ -229,6 +230,7 @@ namespace FormuleCirkelEntity.Controllers
                 seasonRace.Round = round;
             }
 
+            _context.RemoveRange(stints);
             _context.Remove(race);
             _context.Update(season);
             await _context.SaveChangesAsync();
@@ -657,9 +659,12 @@ namespace FormuleCirkelEntity.Controllers
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
                 .Include(s => s.Drivers)
+                    .ThenInclude(d => d.Driver)
                 .Include(s => s.Teams)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var driver = season.Drivers.SingleOrDefault(d => d.SeasonDriverId == driverId);
+
+            var driver = season.Drivers
+                .SingleOrDefault(d => d.SeasonDriverId == driverId);
 
             if (season is null || driver is null || updatedDriver is null)
                 return NotFound();
