@@ -16,11 +16,10 @@ namespace FormuleCirkelEntity.ResultGenerators
         }
 
         /// <summary>
-        /// Gets the points result of a single <see cref="Stint"/>, with any enabled <see cref="Stint"/> modifiers applied.
+        /// Gets the points result of a single <see cref="StintResult"/>, with any enabled <see cref="StintResult"/> modifiers applied.
         /// </summary>
         /// <param name="driverResult">The partial <see cref="DriverResult"/> from which to derive certain modifiers.</param>
         /// <param name="stint">The <see cref="Stint"/> supplying the modifiers to use.</param>
-        /// <returns>A <see cref="int"/> points value, or <see cref="int.MinValue"/> if a DNF result occured.</returns>
         public void UpdateStintResult(StintResult stintResult,
             Stint stint,
             DriverResult driverResult,
@@ -135,6 +134,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             }
         }
 
+        // Performs reliability check on a chassis, returns -1 if the check fails and 1 if it succeeds
         public int GetChassisReliabilityResult(int reliability, int additionalDNF)
         {
             var reliabilityScore = reliability + additionalDNF;
@@ -154,6 +154,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             return reliabilityScore.CompareTo(reliabilityCheckValue);
         }
 
+        // Calculate a score generated in qualifying
         public int GetQualifyingResult(SeasonDriver driver, int qualyRNG, Track track, int qualypace)
         {
             if (driver is null || track is null)

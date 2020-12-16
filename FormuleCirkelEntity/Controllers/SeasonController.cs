@@ -98,6 +98,7 @@ namespace FormuleCirkelEntity.Controllers
 
             var lastSeason = _context.Seasons
                 .Include(s => s.Races)
+                    .ThenInclude(r => r.Stints)
                 .Include(s => s.Championship)
                 .ToList()
                 .LastOrDefault(s => s.State == SeasonState.Finished && s.ChampionshipId == season.ChampionshipId);

@@ -76,6 +76,7 @@ namespace FormuleCirkelEntity.Controllers
             // Finds the last time track was used and uses same stintsetup as then
             var lastracemodel = _context.Races
                 .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
+                .Include(r => r.Stints)
                 .Include(r => r.Track)
                 .ToList()
                 .LastOrDefault(lr => lr.Track.Id == track.Id);
