@@ -30,31 +30,23 @@ namespace FormuleCirkelEntity.Services
             }
         }
 
-        // Sets the driverresults for all drivers for one race
-        public static void SetDriverResultsOnRace(
-            Race race, 
-            List<DriverTrait> driverTraits, 
-            List<TeamTrait> teamTraits, 
-            List<TrackTrait> trackTraits,
-            List<SeasonTeam> seasonTeams,
-            List<Strategy> strategies)
+        public static void AddRacesToSeasonDriver(SeasonDriver driver, IEnumerable<Race> races)
         {
-            foreach (var driverRes in race.DriverResults)
-            {
-                // Gets the traits from the driver in the loop and sets them
-                var thisDriverTraits = driverTraits.Where(drt => drt.DriverId == driverRes.SeasonDriver.DriverId);
-                RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
-                // Gets the seasonteam of the driver in the loop
-                var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
-                // Gets the traits from the team of the driver in the loop and sets them
-                var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
-                RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
-                // Sets the traits from the track to the driver in the loop
-                RaceService.SetTrackTraitMods(driverRes, trackTraits);
+            if (driver is null || races is null) throw new NullReferenceException();
 
-                // Set a random strategy
-                int stratIndex = rng.Next(0, strategies.Count);
-                RaceService.SetRandomStrategy(driverRes, strategies[stratIndex]);
+            foreach (var race in races)
+            {
+                DriverResult driverResult = new DriverResult { SeasonDriver = driver };
+                foreach (var stint in race.Stints)
+                {
+                    StintResult driverStint = new StintResult
+                    {
+                        StintStatus = StintStatus.Concept,
+                        Number = stint.Number
+                    };
+                    driverResult.StintResults.Add(driverStint);
+                }
+                driver.DriverResults.Add(driverResult);
             }
         }
 

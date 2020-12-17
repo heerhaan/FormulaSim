@@ -272,6 +272,16 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(tet => tet.Trait)
                 .ToListAsync();
 
+            // Check for drivers which are dropped and remove them from the driverresults
+            var droppedDrivers = drivers
+                .Where(dr => dr.SeasonDriver.Dropped)
+                .ToList();
+            if (droppedDrivers.Any())
+            {
+                _context.RemoveRange(droppedDrivers.SelectMany(dr => dr.StintResults));
+                _context.RemoveRange(droppedDrivers);
+                await _context.SaveChangesAsync();
+            }
             // Checks if the user is authenticated and sends the list of owned team id's if that's the case
             // Other wise assigns an empty int list to prevent a nullreference in the view
             if (User.Identity.IsAuthenticated)
@@ -478,15 +488,14 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Season/{id}/[Controller]/{raceId}/Qualifying")]
-        public IActionResult Qualifying(int id, int raceId)
+        public async Task<IActionResult> Qualifying(int id, int raceId)
         {
-            var race = _context.Races.Single(r => r.RaceId == raceId);
+            var race = await _context.Races.SingleAsync(r => r.RaceId == raceId);
 
-            race.RaceState = RaceState.Qualifying;
             _context.Update(race);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            var season = _context.Seasons.Single(s => s.SeasonId == id);
+            var season = await _context.Seasons.SingleAsync(s => s.SeasonId == id);
             ViewBag.race = race;
             ViewBag.season = season;
             return View();
@@ -663,8 +672,10 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction("RaceWeekend", new { id = seasonId, raceId });
         }
 
-        private void SetDriverPenalty(DriverResult lastDriverResult, DriverResult driver, 
-            Qualification result, List<DriverResult> seasonResults)
+        private void SetDriverPenalty(DriverResult lastDriverResult,
+            DriverResult driver, 
+            Qualification result,
+            List<DriverResult> seasonResults)
         {
             if (lastDriverResult != null)
             {

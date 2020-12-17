@@ -156,6 +156,7 @@ namespace FormuleCirkelEntity.Controllers
                 SeasonService.AddDefaultPoints(season);
             }
             _context.Update(season);
+
             // From here on it's all about setting the driver results for each race, NEEDS TO BE TESTED THOROUGHLY
             var driverTraits = await _context.DriverTraits
                 .Include(drt => drt.Trait)
@@ -684,6 +685,7 @@ namespace FormuleCirkelEntity.Controllers
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
                 .Include(s => s.Drivers)
+                    .ThenInclude(sd => sd.Driver)
                 .Include(s => s.Teams)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var driver = season.Drivers.SingleOrDefault(d => d.SeasonDriverId == driverId);
@@ -706,13 +708,18 @@ namespace FormuleCirkelEntity.Controllers
         {
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
-                .Include(s => s.Drivers)
-                    .ThenInclude(d => d.Driver)
                 .Include(s => s.Teams)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            var driver = season.Drivers
-                .SingleOrDefault(d => d.SeasonDriverId == driverId);
+            var races = await _context.Races
+                .AsNoTracking()
+                .Where(r => r.SeasonId == id && r.RaceState == RaceState.Concept)
+                .Include(r => r.Stints)
+                .ToListAsync();
+
+            var driver = await _context.SeasonDrivers
+                .Include(sd => sd.Driver)
+                .SingleOrDefaultAsync(d => d.SeasonDriverId == driverId);
 
             if (season is null || driver is null || updatedDriver is null)
                 return NotFound();
@@ -723,7 +730,8 @@ namespace FormuleCirkelEntity.Controllers
                 driver.Reliability = updatedDriver.Reliability;
                 driver.Skill = updatedDriver.Skill;
                 driver.DriverStatus = updatedDriver.DriverStatus;
-                driver.Dropped = false;
+                if (driver.Dropped)
+                    driver.Dropped = false;
                 _context.Update(driver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
@@ -743,10 +751,10 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> PenaltyList(int id)
         {
             var drivers = await _context.SeasonDrivers
+                .Where(s => s.SeasonId == id)
                 .Include(s => s.DriverResults)
                 .Include(s => s.Driver)
-                .Include(s => s.SeasonTeam)
-                .Where(s => s.SeasonId == id)
+                .Include(s => s.SeasonTeam)               
                 .OrderBy(s => s.SeasonTeam.Name)
                 .ToListAsync();
 
@@ -966,7 +974,9 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Driver/Drop/{driverId}")]
         public async Task<IActionResult> DropDriverFromTeam(int seasonId, int driverId)
         {
-            var driver = await _context.SeasonDrivers.SingleOrDefaultAsync(sd => sd.SeasonDriverId == driverId);
+            var driver = await _context.SeasonDrivers
+                .SingleOrDefaultAsync(sd => sd.SeasonDriverId == driverId);
+
             if (driver is null)
                 return NotFound();
 
