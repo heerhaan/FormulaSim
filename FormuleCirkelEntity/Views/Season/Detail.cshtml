@@ -123,6 +123,7 @@
                     <th data-field="name">Name</th>
                     <th data-field="round">Round</th>
                     <th data-field="specification">Spec</th>
+                    <th data-field="stintcount">Stints</th>
                     <th>Race</th>
                 @if (Model.Season.State == SeasonState.Draft && isAdmin)
                 {
@@ -141,6 +142,7 @@
                     <td data-field="name">@race.Name</td>
                     <td data-field="round">@race.Round</td>
                     <td data-field="specification">@race.Track.Specification</td>
+                    <td data-field="stintcount">@race.Stints.Count</td>
                     <td>
                         <a asp-controller="Races" asp-action="RacePreview" asp-route-id="@Model.Season.SeasonId" asp-route-raceId="@race.RaceId">
                             <i class="fas @(race.RaceState == RaceState.Finished ? "fa-search" : "fa-flag-checkered") fa-2x"></i>

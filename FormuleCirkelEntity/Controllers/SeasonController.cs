@@ -187,6 +187,8 @@ namespace FormuleCirkelEntity.Controllers
                 .IgnoreQueryFilters()
                 .Include(s => s.Races)
                     .ThenInclude(r => r.Track)
+                .Include(s => s.Races)
+                    .ThenInclude(r => r.Stints)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             var drivers = await _context.SeasonDrivers
@@ -309,16 +311,13 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> SetPoints(int id)
         {
             var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
-            List<int> points = new List<int>();
-            foreach (var value in season.PointsPerPosition.Values)
-                points.Add(value.Value);
-
             var model = new SeasonSetPointsModel
             {
                 SeasonId = id,
-                SeasonNumber = season.SeasonNumber,
-                Points = points
+                SeasonNumber = season.SeasonNumber
             };
+            foreach (var value in season.PointsPerPosition.Values)
+                model.Points.Add(value.Value);
 
             return View(model);
         }
@@ -637,6 +636,7 @@ namespace FormuleCirkelEntity.Controllers
             // Get and validate URL parameter objects.
             var season = await _context.Seasons
                 .Include(s => s.Drivers)
+                    .ThenInclude(s => s.Driver)
                 .Include(s => s.Teams)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
             var driver = season.Drivers.SingleOrDefault(d => d.SeasonDriverId == driverId);
