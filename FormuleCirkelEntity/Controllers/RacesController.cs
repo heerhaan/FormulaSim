@@ -415,6 +415,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             var race = await _context.Races
                 .Include(r => r.Stints)
+                .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             var driverResults = await _context.DriverResults
@@ -438,9 +439,6 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(st => st.Engine)
                 .ToListAsync();
 
-            var trackSpec = _context.Tracks
-                .Find(race.TrackId).Specification;
-
             if (race.StintProgress == race.Stints.Count)
                 return BadRequest();
 
@@ -453,7 +451,7 @@ namespace FormuleCirkelEntity.Controllers
                 var stintResult = result.StintResults.Single(sr => sr.Number == race.StintProgress);
                 var currentTeam = teams.First(t => t.SeasonTeamId == result.SeasonDriver.SeasonTeamId);
 
-                _resultGenerator.UpdateStintResult(stintResult, stint, result, currentTeam, race.Weather, trackSpec, driverResults.Count, season.QualyBonus, season.PitMin, season.PitMax);
+                _resultGenerator.UpdateStintResult(stintResult, stint, result, currentTeam, race.Weather, race.Track.Specification, driverResults.Count, season.QualyBonus, season.PitMin, season.PitMax);
                 
                 // Driver isn't running anymore, which indicates that he DNFed
                 if (stintResult.StintStatus == StintStatus.DriverDNF || stintResult.StintStatus == StintStatus.ChassisDNF)
@@ -493,6 +491,7 @@ namespace FormuleCirkelEntity.Controllers
             foreach(var dr in driverResults)
             {
                 dr.SeasonDriver = null;
+                dr.Strategy = null;
             }
             return new JsonResult(driverResults, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }

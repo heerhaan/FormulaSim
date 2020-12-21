@@ -99,7 +99,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 // Current status tells us the driver is still running so we apply some of the wear to the tyre
                 if (stintResult.StintStatus == StintStatus.Running)
                 {
-                    driverResult.TyreLife = _rng.Next((driverResult.CurrTyre.MaxWear + driverResult.MaxTyreWear),(driverResult.CurrTyre.MinWear + driverResult.MinTyreWear));
+                    driverResult.TyreLife += _rng.Next((driverResult.CurrTyre.MaxWear + driverResult.MaxTyreWear),(driverResult.CurrTyre.MinWear + driverResult.MinTyreWear));
                 }
                 // Current status tells us there is a pitstop so calculate pitstop RNG over the result
                 else if (stintResult.StintStatus == StintStatus.Pitstop)
