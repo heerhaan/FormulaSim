@@ -13,17 +13,15 @@ namespace FormuleCirkelEntity.Models
         public int Points { get; set; }
         public int Position { get; set; }
         public int Grid { get; set; }
+        public int TyreLife { get; set; }
+        public Tyre CurrTyre { get; set; }
         public string PenaltyReason { get; set; }
-
         [EnumDataType(typeof(Status))]
         public Status Status { get; set; }
         [EnumDataType(typeof(DNFCause))]
         public DNFCause DNFCause { get; set; }
         [EnumDataType(typeof(DSQCause))]
         public DSQCause DSQCause { get; set; }
-
-        public IDictionary<int, int?> StintResults { get; } = new Dictionary<int, int?>();
-
         // Modifiers for this race that apply every stint || maybe rethink, change or remove this since this is a bit weird
         public int QualyMod { get; set; }
         public int DriverRacePace { get; set; }
@@ -33,14 +31,25 @@ namespace FormuleCirkelEntity.Models
         public int MaxRNG { get; set; }
         public int DriverRelMod { get; set; }
         public int ChassisRelMod { get; set; }
+        public int MaxTyreWear { get; set; }
+        public int MinTyreWear { get; set; }
 
         public int SeasonDriverId { get; set; }
         public SeasonDriver SeasonDriver { get; set; }
         public int RaceId { get; set; }
         public Race Race { get; set; }
+        public int StrategyId { get; set; }
+        public Strategy Strategy { get; set; }
+
+        public IList<StintResult> StintResults { get; } = new List<StintResult>();
     }
 
-    public enum Status { Finished, DNF, DSQ }
+    public enum Status 
+    { 
+        Finished = 0,
+        DNF = 1,
+        DSQ = 2
+    }
 
     public enum DNFCause
     {

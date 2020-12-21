@@ -31,7 +31,7 @@
                 {
                     <tr>
                         <td><label class="table-count"></label></td>
-                        <td><input name="Points" type="number" value="@point"/></td>
+                        <td><input name="Points" type="number" class="form-control" value="@point"/></td>
                         <td><button type="button" class="btn fullwidth delete">Delete</button></td>
                     </tr>
                 }
@@ -39,8 +39,8 @@
         </table>
     }
 
-    <a asp-action="Settings" asp-route-id="@Model.SeasonId" class="float-left">
-        <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+    <a asp-action="Settings" asp-route-id="@Model.SeasonId" class="btn float-left">
+        <i class="fas fa-arrow-alt-circle-left"></i> Back
     </a>
 
     <table id="newpoint" style="display:none;">

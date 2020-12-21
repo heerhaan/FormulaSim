@@ -59,9 +59,9 @@
     </table>
     <button id="save" class="btn fullwidth">Save</button>
 
-    <div class="row justify-content-between mb-1">
-        <a asp-action="Detail" asp-route-id="@Model.SeasonId">
-            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+    <div class="flex-row justify-content-between mb-1">
+        <a class="btn" asp-action="Detail" asp-route-id="@Model.SeasonId">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
         </a>
         <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
     </div>

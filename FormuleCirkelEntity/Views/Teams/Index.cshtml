@@ -7,7 +7,6 @@
     var pageNumber = (int)ViewData["pageNumber"];
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
-    List<Team> userOwnedTeams = ViewBag.ownedteams;
     bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
@@ -52,7 +51,7 @@
                         <i class="fas fa-signal fa-2x"></i>
                     </a>
                 </td>
-            @if (userOwnedTeams.Contains(item) || isAdmin)
+            @if (isAdmin)
             {
                 <td>
                     <a asp-action="TeamTraits" asp-route-id="@item.Id">
@@ -96,9 +95,8 @@
 
 <script>
     function randomTeam() {
-        var teams = @(Json.Serialize(Model.Select(te => te.Id)));
-        const randomId = teams[Math.floor(Math.random() * teams.length)];
-
-        window.location.href = '/Traits/' + randomId;
+        var teams = @(Json.Serialize(ViewBag.teamIds));
+        let randomId = teams[Math.floor(Math.random() * teams.length)];
+        window.location.href = '/Teams/Traits/' + randomId;
     }
 </script>

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.MinMaxDevRange>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="ctable fullborder fullwidth min-width-index-table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ValueKey)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinDev)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaxDev)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValueKey)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MinDev)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxDev)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MinMaxDevId">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.MinMaxDevId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

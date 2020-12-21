@@ -8,12 +8,8 @@ namespace FormuleCirkelEntity.ViewModels
 {
     public class SeasonSetPointsModel
     {
-        public SeasonSetPointsModel()
-        {
-            Points = new List<int>();
-        }
         public int SeasonId { get; set; }
         public int SeasonNumber { get; set; }
-        public List<int> Points { get; set; }
+        public List<int> Points { get; } = new List<int>();
     }
 }

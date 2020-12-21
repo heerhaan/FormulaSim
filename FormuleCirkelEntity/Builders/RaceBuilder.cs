@@ -36,15 +36,18 @@ namespace FormuleCirkelEntity.Builders
         public RaceBuilder AddDefaultStints()
         {
             return AddDefaultStartStint()
-                .AddDefaultPitstopStint()
+                .AddDefaultMiddleStint()
                 .AddDefaultCloseStint();
         }
 
         public RaceBuilder AddModifiedStints(IList<Stint> settings)
         {
+            if (settings is null) { return null; }
+            int stintNr = 0;
             foreach (var stint in settings)
             {
-                _race.Stints.Add(_race.Stints.Count + 1, stint);
+                stint.Number = ++stintNr;
+                _race.Stints.Add(stint);
             }
             return this;
         }
@@ -57,24 +60,23 @@ namespace FormuleCirkelEntity.Builders
                 ApplyDriverLevel = true,
                 ApplyEngineLevel = true,
                 ApplyQualifyingBonus = true,
-                ApplyTireLevel = true,
-                RNGMinimum = 0,
-                RNGMaximum = 25
+                RNGMinimum = 10,
+                RNGMaximum = 35
             };
 
-            _race.Stints.Add(_race.Stints.Count + 1, stint);
+            _race.Stints.Add(stint);
             return this;
         }
 
-        public RaceBuilder AddDefaultPitstopStint()
+        public RaceBuilder AddDefaultMiddleStint()
         {
             Stint stint = new Stint()
             {
-                RNGMinimum = -12,
-                RNGMaximum = -5
+                RNGMinimum = 10,
+                RNGMaximum = 40
             };
 
-            _race.Stints.Add(_race.Stints.Count + 1, stint);
+            _race.Stints.Add(stint);
             return this;
         }
 
@@ -83,12 +85,11 @@ namespace FormuleCirkelEntity.Builders
             Stint stint = new Stint()
             {
                 ApplyReliability = true,
-                ApplyTireWear = true,
-                RNGMinimum = 0,
-                RNGMaximum = 35
+                RNGMinimum = 10,
+                RNGMaximum = 45
             };
 
-            _race.Stints.Add(_race.Stints.Count + 1, stint);
+            _race.Stints.Add(stint);
             return this;
         }
 
@@ -103,8 +104,7 @@ namespace FormuleCirkelEntity.Builders
         public RaceBuilder AddDrivers(IEnumerable<SeasonDriver> drivers)
         {
             // Check if given parameters aren't null
-            if (drivers is null)
-                throw new NullReferenceException();
+            if (drivers is null) throw new NullReferenceException();
 
             foreach (var driver in drivers)
             {
@@ -113,6 +113,15 @@ namespace FormuleCirkelEntity.Builders
                     continue;
 
                 DriverResult driverResult = new DriverResult { SeasonDriver = driver };
+                foreach (var stint in _race.Stints)
+                {
+                    StintResult driverStint = new StintResult
+                    {
+                        StintStatus = StintStatus.Concept,
+                        Number = stint.Number
+                    };
+                    driverResult.StintResults.Add(driverStint);
+                }
                 _race.DriverResults.Add(driverResult);
             }
             return this;

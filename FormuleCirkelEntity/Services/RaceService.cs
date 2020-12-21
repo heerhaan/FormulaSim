@@ -1,6 +1,7 @@
 ﻿using FormuleCirkelEntity.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FormuleCirkelEntity.Services
 {
@@ -8,6 +9,8 @@ namespace FormuleCirkelEntity.Services
     {
         public static void SetDriverTraitMods(DriverResult driver, IEnumerable<DriverTrait> driverTraits)
         {
+            // Null-check, since I don't like warnings
+            if (driver is null || driverTraits is null) { throw new NullReferenceException(); }
             // Loops through all the traits a driver may have and adds them to the driverresult modifiers
             foreach (var trait in driverTraits)
             {
@@ -17,6 +20,8 @@ namespace FormuleCirkelEntity.Services
 
         public static void SetTeamTraitMods(DriverResult driver, IEnumerable<TeamTrait> teamTraits)
         {
+            // Null-check, since I don't like warnings
+            if (driver is null || teamTraits is null) { throw new NullReferenceException(); }
             // Loops through all the traits the team of a driver may have and adds them to the driverresult modifiers
             foreach (var trait in teamTraits)
             {
@@ -26,6 +31,8 @@ namespace FormuleCirkelEntity.Services
 
         public static void SetTrackTraitMods(DriverResult driver, List<TrackTrait> trackTraits)
         {
+            // Null-check, since I don't like warnings
+            if (driver is null || trackTraits is null) { throw new NullReferenceException(); }
             // Loops through all the traits a track may have and adds them to the driverresult modifiers
             foreach (var trait in trackTraits)
             {
@@ -58,6 +65,22 @@ namespace FormuleCirkelEntity.Services
 
             if (trait.MinimumRNG.HasValue)
                 driver.MinRNG += trait.MinimumRNG.Value;
+
+            if (trait.MaxTyreWear.HasValue)
+                driver.MaxTyreWear += trait.MaxTyreWear.Value;
+
+            if (trait.MinTyreWear.HasValue)
+                driver.MinTyreWear += trait.MinTyreWear.Value;
+        }
+
+        public static void SetRandomStrategy(DriverResult driverRes, Strategy strategy)
+        {
+            if (driverRes is null || strategy is null) { throw new NullReferenceException(); }
+
+            var currentTyre = strategy.Tyres.Single(t => t.StintNumberApplied == 1).Tyre;
+            driverRes.Strategy = strategy;
+            driverRes.CurrTyre = currentTyre;
+            driverRes.TyreLife = currentTyre.Pace;
         }
     }
 }

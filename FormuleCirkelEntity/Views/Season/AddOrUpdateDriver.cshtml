@@ -1,5 +1,5 @@
 ﻿@model FormuleCirkelEntity.Models.SeasonDriver
-@{ViewData["Title"] = "Edit driver";}
+@{ViewData["Title"] = "Mod driver";}
 
 <div class="d-inline-block">
     <h1>Season @Model.Season.SeasonNumber</h1>
@@ -26,12 +26,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="Tires" class="control-label float-left"></label>
-                <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipSeasonDriverTireType></i>
-                @Html.DropDownListFor(model => model.Tires, new SelectList(Enum.GetValues(typeof(Tire))), new { @class = "form-control" })
-                <span asp-validation-for="Tires" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="SeasonTeamId" class="control-label float-left">Team</label>
                 <select asp-for="SeasonTeamId" class="form-control" asp-items="ViewBag.teams"></select>
             </div>
@@ -47,8 +41,8 @@
         </form>
 
         <div class="float-left">
-            <a asp-action="Detail" asp-route-id="@ViewBag.seasonId">
-                <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+            <a class="btn" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+                <i class="fas fa-arrow-alt-circle-left"></i> Back
             </a>
         </div>
     </div>

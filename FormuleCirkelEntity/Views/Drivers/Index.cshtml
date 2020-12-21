@@ -7,7 +7,6 @@
     var pageNumber = (int)ViewData["pageNumber"];
     var backPage = pageNumber >= 1 ? pageNumber - 1 : 1;
     var nextPage = pageNumber <= pageCount ? pageNumber + 1 : pageCount;
-    List<Driver> userOwned = ViewBag.owneddrivers;
     bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
@@ -76,9 +75,8 @@
                     </td>
                 }
                 else { <td></td> }
-                @if (userOwned.Contains(item) || isAdmin)
+                @if (isAdmin)
                 {
-
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id">
                             <i class="fas fa-wrench fa-2x"></i>
@@ -116,8 +114,8 @@
 
 <script>
     function randomDriver() {
-        var drivers = @(Json.Serialize(Model.Select(d => d.Id)));
-        const randomId = drivers[Math.floor(Math.random() * drivers.length)];
-        window.location.href = '/Traits/' + randomId;
+        var drivers = @(Json.Serialize(ViewBag.driverIds));
+        let randomId = drivers[Math.floor(Math.random() * drivers.length)];
+        window.location.href = '/Drivers/Traits/' + randomId;
     }
 </script>

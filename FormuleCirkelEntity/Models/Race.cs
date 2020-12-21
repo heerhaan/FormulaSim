@@ -7,22 +7,6 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Models
 {
-    public enum RaceState
-    {
-        Concept = 0,
-        Qualifying = 1,
-        Race = 2,
-        Finished = 3
-    }
-
-    public enum Weather
-    {
-        Sunny = 0,
-        Overcast = 1,
-        Rain = 2,
-        Storm = 3
-    }
-
     public class Race
     {
         [Key]
@@ -42,7 +26,23 @@ namespace FormuleCirkelEntity.Models
         public int SeasonId { get; set; }
         public Season Season { get; set; }
 
-        public IDictionary<int, Stint> Stints { get; } = new Dictionary<int, Stint>();
+        public IList<Stint> Stints { get; } = new List<Stint>();
         public IList<DriverResult> DriverResults { get; } = new List<DriverResult>();
+    }
+
+    public enum RaceState
+    {
+        Concept = 0,
+        Qualifying = 1,
+        Race = 2,
+        Finished = 3
+    }
+
+    public enum Weather
+    {
+        Sunny = 0,
+        Overcast = 1,
+        Rain = 2,
+        Storm = 3
     }
 }

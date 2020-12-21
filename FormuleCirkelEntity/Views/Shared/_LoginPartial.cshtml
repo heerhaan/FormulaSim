@@ -7,19 +7,23 @@
 <div class="ml-auto">
 @if (SignInManager.IsSignedIn(User))
 {
-    <span class="mr-2">Hello @UserManager.GetUserName(User)!</span>
-    <div class="btn-group">
-        <a id="manage" class="btn" asp-controller="Accounts" asp-action="Index">Profile</a>
-        <form id="logoutForm" class="form-inline" asp-controller="Accounts" asp-action="Logout" method="post">
-            <button id="logout" type="submit" class="btn">Logout</button>
-        </form>
+    <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Welcome @UserManager.GetUserName(User)
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" asp-controller="Accounts" asp-action="Index">Profile</a>
+            <form id="logoutForm" class="form-inline" asp-controller="Accounts" asp-action="Logout" method="post">
+                <input type="submit" class="dropdown-item" value="Logout"/>
+            </form>
+        </div>
     </div>
 }
 else
 {
     <div class="btn-group">
-        <a class="btn" id="register" asp-controller="Accounts" asp-action="Register">Register</a>
-        <a class="btn" id="login" asp-controller="Accounts" asp-action="Login">Login</a>
+        <a class="btn btn-sm" id="register" asp-controller="Accounts" asp-action="Register">Register</a>
+        <a class="btn btn-sm" id="login" asp-controller="Accounts" asp-action="Login">Login</a>
     </div>
 }
 </div>

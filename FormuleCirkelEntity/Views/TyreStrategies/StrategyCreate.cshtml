@@ -1,0 +1,83 @@
+﻿@model FormuleCirkelEntity.ViewModels.CreateStrategyModel
+
+@{ 
+    ViewData["Title"] = "Create strategy";
+}
+
+<div class="d-inline-block">
+    <h1>Strategy : [@Html.DisplayFor(m => m.RaceLen)]</h1>
+    <table class="ctable fullborder min-width-index-table">
+        <thead>
+            <tr>
+                <td>Applied in</td>
+                <td>Stint length</td>
+                <td>Tyre</td>
+                <td>Pace</td>
+                <td>Max. wear</td>
+                <td>Min. wear</td>
+                <td>Remove</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tyre in Model.StrategyTyres.OrderBy(t => t.StintNumberApplied))
+            {
+                <tr>
+                    <td>@tyre.StintNumberApplied</td>
+                    <td>@tyre.Tyre.StintLen</td>
+                    <td style="background-color:@tyre.Tyre.TyreColour">@tyre.Tyre.TyreName</td>
+                    <td>@tyre.Tyre.Pace</td>
+                    <td>@tyre.Tyre.MaxWear</td>
+                    <td>@tyre.Tyre.MinWear</td>
+                    <td>
+                        <a asp-action="RemoveTyreStrategy" asp-route-tyreStratId="@tyre.TyreStrategyId" asp-route-strategyId="@Model.StrategyId" class="btn fullwidth">Remove</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+    <h2>Tyre selection</h2>
+    <table class="ctable fullborder min-width-index-table">
+        <thead>
+            <tr>
+                <td>Stint length</td>
+                <td>Tyre</td>
+                <td>Pace</td>
+                <td>Max. wear</td>
+                <td>Min. wear</td>
+                <td>Add</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tyre in Model.Tyres)
+            {
+                <tr>
+                    <td>@tyre.StintLen</td>
+                    <td style="background-color:@tyre.TyreColour">@tyre.TyreName</td>
+                    <td>@tyre.Pace</td>
+                    <td>@tyre.MaxWear</td>
+                    <td>@tyre.MinWear</td>
+                    <td class="w-50">
+                        <form method="POST">
+                            <input type="hidden" name="strategyId" value="@Model.StrategyId" />
+                            <input type="hidden" name="tyreId" value="@tyre.Id" />
+                            <div class="col">
+                                <div class="form-group flex-row">
+                                    <label class="col-6 mt-auto mb-auto">Applies in stint no.</label>
+                                    <input type="number" class="form-control col-6" name="applyNum" value="@(1 + Model.RaceLen)" />
+                                </div>
+                                <div class="form-group flex-row">
+                                    <label class="col-6 mt-auto mb-auto">Racelength of strategy</label>
+                                    <input type="number" class="form-control col-6" name="raceLen" value="@(Model.RaceLen + tyre.StintLen)" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" class="btn fullwidth" value="Add" />
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

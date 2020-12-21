@@ -31,7 +31,7 @@
                         <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
-                        <a asp-controller="Tracks" asp-action="RemoveTrait" asp-route-trackId="@Model.Team.Id" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
+                        <a asp-controller="Teams" asp-action="RemoveTeamTrait" asp-route-teamId="@Model.Team.Id" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
                     </td>
                 </tr>
             }
@@ -76,8 +76,8 @@
     </table>
 
     <div class="float-left">
-        <a asp-action="Index">
-            <i class="fas fa-arrow-alt-circle-left fa-2x"></i>
+        <a class="btn" asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
         </a>
     </div>
 </div>

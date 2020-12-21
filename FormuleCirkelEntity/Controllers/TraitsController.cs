@@ -52,7 +52,7 @@ namespace FormuleCirkelEntity.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace,Archived")] Trait trait)
+        public async Task<IActionResult> Create([Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace,MaxTyreWear,MinTyreWear,Archived")] Trait trait)
         {
             if (ModelState.IsValid)
             {
@@ -80,7 +80,7 @@ namespace FormuleCirkelEntity.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Modify(int id, [Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace")] Trait trait)
+        public async Task<IActionResult> Modify(int id, [Bind("TraitId,Name,TraitGroup,TraitDescription,QualyPace,DriverRacePace,ChassisRacePace,ChassisReliability,DriverReliability,MaximumRNG,MinimumRNG,EngineRacePace,MaxTyreWear,MinTyreWear")] Trait trait)
         {
             if (trait is null || id != trait.TraitId)
                 return NotFound();

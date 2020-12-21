@@ -30,16 +30,7 @@ namespace FormuleCirkelEntity.Controllers
         [SortResult(nameof(Driver.Name)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            // Checks if the user is authenticated and sends the list of owned team id's if that's the case
-            // Other wise assigns an empty int list to prevent a nullreference in the view
-            if (User.Identity.IsAuthenticated)
-            {
-                SimUser simuser = await _userManager.GetUserAsync(User);
-                ViewBag.owneddrivers = simuser.Drivers;
-            }
-            else
-                ViewBag.owneddrivers = new List<Driver>();
-
+            ViewBag.driverIds = await _context.Drivers.Select(d => d.Id).ToListAsync();
             return base.Index().Result;
         }
 

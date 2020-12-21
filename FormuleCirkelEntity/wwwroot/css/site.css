@@ -122,6 +122,10 @@ i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
+.list-space li {
+    margin-bottom: 5px;
+}
+
 /* Styling for the in-season pages */
 .nav-tabs {
     border-bottom: none;
@@ -186,7 +190,19 @@ dl.inline-flex {
 }
 
 .bigger-text {
-    font-size: 1.2REM;
+    font-size: 1.2rem;
+}
+
+.custom-badge {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 85%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
 }
 
 .flex-col {

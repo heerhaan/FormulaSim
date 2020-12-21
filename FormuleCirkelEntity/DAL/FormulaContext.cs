@@ -24,14 +24,19 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Track> Tracks { get; set; }
+        public DbSet<Stint> Stints { get; set; }
         public DbSet<SeasonTeam> SeasonTeams { get; set; }
         public DbSet<SeasonDriver> SeasonDrivers { get; set; }
         public DbSet<DriverResult> DriverResults { get; set; }
+        public DbSet<StintResult> StintResults { get; set; }
         public DbSet<Qualification> Qualification { get; set; }
         public DbSet<Trait> Traits { get; set; }
         public DbSet<DriverTrait> DriverTraits { get; set; }
         public DbSet<TeamTrait> TeamTraits { get; set; }
         public DbSet<TrackTrait> TrackTraits { get; set; }
+        public DbSet<Tyre> Tyres { get; set; }
+        public DbSet<Strategy> Strategies { get; set; }
+        public DbSet<TyreStrategy> TyreStrategies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -46,22 +51,9 @@ namespace FormuleCirkelEntity.DAL
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
-
-            builder.Entity<Engine>()
-                .HasIndex(e => e.Name)
-                .IsUnique();
+            // Modify entities
             builder.Entity<Track>()
                 .Property(t => t.LengthKM);
-            builder.Entity<Race>()
-                .Property(r => r.Stints)
-                .HasConversion(
-                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
-                    json => JsonConvert.DeserializeObject<Dictionary<int, Stint>>(json) ?? new Dictionary<int, Stint>());
-            builder.Entity<DriverResult>()
-                .Property(r => r.StintResults)
-                .HasConversion(
-                    dictionary => JsonConvert.SerializeObject(dictionary, Formatting.None),
-                    json => JsonConvert.DeserializeObject<Dictionary<int, int?>>(json) ?? new Dictionary<int, int?>());
             builder.Entity<Season>()
                 .Property(p => p.PointsPerPosition)
                 .HasConversion(
@@ -73,6 +65,9 @@ namespace FormuleCirkelEntity.DAL
                 .HasKey(tt => new { tt.TeamId, tt.TraitId });
             builder.Entity<TrackTrait>()
                 .HasKey(tr => new { tr.TrackId, tr.TraitId });
+
+            // Applies seed data
+            //builder.SeedFormula();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -156,6 +151,8 @@ namespace FormuleCirkelEntity.DAL
             return builder.Model.GetEntityTypes()
                 .Where(et => typeof(IArchivable).IsAssignableFrom(et.ClrType));
         }
+
+        public DbSet<FormuleCirkelEntity.Models.MinMaxDevRange> MinMaxDevRange { get; set; }
 
         #endregion
     }

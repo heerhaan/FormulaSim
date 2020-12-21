@@ -73,7 +73,7 @@
     <button id="generateq2" class="btn float-left w-25">Start Q2!</button>
     <button id="generateq3" class="btn float-left w-25">Start Q3!</button>
 
-    <form asp-action="Return" asp-route-id="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
+    <form asp-action="Return" asp-route-seasonId="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
         <div class="form-group">
             <input type="submit" value="Finish!" class="btn float-left w-25" />
         </div>

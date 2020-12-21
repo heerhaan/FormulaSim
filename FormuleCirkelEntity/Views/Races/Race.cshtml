@@ -31,10 +31,11 @@
                     <th class="fullborder">Team</th>
                     <th class="fullborder">PWR</th>
                     <th class="fullborder">Grid</th>
+                    <th class="fullborder">Tyre</th>
                     @foreach (var stint in Model.Race.Stints)
                     {
-                        <th class="fullborder" data-field="stintResultHeader-@stint.Key">
-                            @stint.Key
+                        <th class="fullborder" data-field="stintResultHeader-@stint.Number">
+                            @stint.Number
                         </th>
                     }
                     <th class="fullborder" data-field="pointsTotal">Score</th>
@@ -50,13 +51,13 @@
                     int gridChange = (driverResult.Grid - driverResult.Position);
                     <tr data-obj-id="@driverResult.SeasonDriverId">
                         <td data-field="position"><b class="alt-font">@driverResult.Position</b></td>
-                        <td data-field="driverNumber"><span class="badge badge-team fullwidth font-size-default" 
+                        <td data-field="driverNumber"><span class="custom-badge badge-team fullwidth font-size-default" 
                                                             style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
                             @driverResult.SeasonDriver.Driver.DriverNumber</span></td>
                         <td class="text-left" data-field="driverName"><span class="ml-cel result-click" style="cursor:pointer;"><span class="flag flag-@(driverResult.SeasonDriver.Driver.Country) ff-sm flag-margin"></span>
                             @driverResult.SeasonDriver.Driver.Name
                               </span></td>
-                        <td data-field="teamName"><span class="badge badge-team fullwidth font-size-default" 
+                        <td data-field="teamName"><span class="custom-badge badge-team fullwidth font-size-default" 
                                                         style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
                             @driverResult.SeasonDriver.SeasonTeam.Name</span></td>
                         <td data-field="pwr" class='alt-font' style="width:23px;font-size:0.7rem;">@(Model.Power[driverResult.Position - 1])</td>
@@ -74,24 +75,35 @@
                                 <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@gridChange</span>
                             }
                         </td>
+                        <td data-field="tyre">
+                            <span class="custom-badge" style="background-color:@(driverResult.CurrTyre.TyreColour);">
+                                [@driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper()] @driverResult.TyreLife
+                            </span>
+                        </td>
                         @foreach (var stint in Model.Race.Stints)
                         {
-                            var stintResult = driverResult.StintResults.SingleOrDefault(res => res.Key == stint.Key);
-                            if (stintResult.Equals(default(KeyValuePair<int, int?>)))
-                            {
-                                stintResult = new KeyValuePair<int, int?>(stint.Key, null);
-                            }
-                            <td data-field="stintResult-@stintResult.Key">@(stintResult.Value == null ? "-" : stintResult.Value.ToString())</td>
+                            var stintResult = driverResult.StintResults.First(res => res.Number == stint.Number);
+                            <td data-field="stintResult-@stintResult.Number">
+                                @if (stintResult.StintStatus == StintStatus.Running)
+                                {
+                                    <span>@stintResult.Result.ToString()</span>
+                                }
+                                else if (stintResult.StintStatus == StintStatus.Pitstop)
+                                {
+                                    <span style="color:red;">@stintResult.Result.ToString()</span>
+                                }
+                                else { <span>-</span> }
+                            </td>
                         }
                         @if (driverResult.Status == Status.DNF)
                         {
-                            <td data-field="pointsTotal"><span class="badge result-dnf nofullwidth">DNF</span></td>
-                            <td data-field="dnfCause"><i>@driverResult.DNFCause</i></td>
+                            <td data-field="pointsTotal"><span class="custom-badge result-dnf nofullwidth">DNF</span></td>
+                            <td data-field="dnfCause"><b>@driverResult.DNFCause</b></td>
 
                         }
                         else if (driverResult.Status == Status.DSQ)
                         {
-                            <td data-field="pointsTotal"><span class="badge badge-dsq nofullwidth">DSQ</span></td>
+                            <td data-field="pointsTotal"><span class="custom-badge badge-dsq nofullwidth">DSQ</span></td>
                             <td data-field="dnfCause"><b>@driverResult.DSQCause</b></td>
                         }
                         else
@@ -148,7 +160,7 @@
 </div>
 
 <script>
-    var progress = @Model.Race.StintProgress;
+    const raceLen = @(Model.Race.Stints.Count);
     const pointsPosition = @(Json.Serialize(Model.PointsPerPosition));
 
     const table = document.querySelector('#results');
@@ -206,16 +218,15 @@
     ];
 
     function processStintResponse(res) {
-        progress = res.StintProgress;
-        res.DriverResults.forEach((driverResult, idx) => {
+        res.forEach((driverResult, idx) => {
             let row = tableBody.querySelector("tr[data-obj-id='" + driverResult.SeasonDriverId + "']");
 
             if (driverResult.Status == 1) {
-                row.querySelector("td[data-field='pointsTotal']").innerHTML = "<span class='badge result-dnf nofullwidth'>DNF</span>";
+                row.querySelector("td[data-field='pointsTotal']").innerHTML = "<span class='custom-badge result-dnf nofullwidth'>DNF</span>";
                 row.querySelector("td[data-field='dnfCause']").innerHTML = "<i>" + DNFCauses[driverResult.DNFCause] + "</i>";
             }
             else if (driverResult.Status == 2) {
-                row.querySelector("td[data-field='pointsTotal']").innerHTML = "<span class='badge badge-dsq nofullwidth'>DSQ</span>";
+                row.querySelector("td[data-field='pointsTotal']").innerHTML = "<span class='custom-badge badge-dsq nofullwidth'>DSQ</span>";
                 row.querySelector("td[data-field='dnfCause']").innerHTML = "<b>" + DSQCauses[driverResult.DSQCause] + "</b>";
             }
             else {
@@ -223,6 +234,7 @@
                 row.querySelector("td[data-field='dnfCause']").innerText = "-";
             }
 
+            row.querySelector("td[data-field='tyre']").innerHTML = "<span class='custom-badge' style='background-color:" + driverResult.CurrTyre.TyreColour + ";'>[" + driverResult.CurrTyre.TyreName.substring(0, 1) + "] " + driverResult.TyreLife + "</span>";
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
             let gridChange = (driverResult.Grid - driverResult.Position);
             if (gridChange > 0) {
@@ -234,9 +246,16 @@
             else {
                 row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + gridChange + " </span>";
             }
-            Object.getOwnPropertyNames(driverResult.StintResults).forEach((stintKey) => {
-                let stintResult = driverResult.StintResults[stintKey];
-                row.querySelector("td[data-field='stintResult-" + stintKey + "']").innerText = resultOrMissing(stintResult);
+            driverResult.StintResults.forEach((stintResult, idx) => {
+                if (stintResult.StintStatus == 1) {
+                    row.querySelector("td[data-field='stintResult-" + stintResult.Number + "']").innerText = stintResult.Result;
+                }
+                else if (stintResult.StintStatus == 4) {
+                    row.querySelector("td[data-field='stintResult-" + stintResult.Number + "']").innerHTML = "<span style='color: red;'>" + stintResult.Result + "</span>";
+                }
+                else {
+                    row.querySelector("td[data-field='stintResult-" + stintResult.Number + "']").innerText = "-";
+                }
             });
             if (driverResult.Position > @Model.MaxPos) {
                 row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'></td>";
@@ -275,7 +294,7 @@
         $("#results tbody tr").each(function (index, row) {
             let score = row.querySelector("td[data-field='pointsTotal']").innerText;
             if (score != "DNF" && score != "DSQ") {
-                let gap = "+" + ((leaderscore - score) * 0.27).toFixed(2);
+                let gap = "+" + ((leaderscore - score) * 0.43).toFixed(2);
                 if (gap == "+0.00" && leaderapplied == false) {
                     gap = "Leader";
                     leaderapplied = true;
@@ -320,25 +339,18 @@
         ctx.height = 250;
         ctx.getContext('2d');
         var driversets = [];
-        var stints = progress;
 
         $(res).each(function (driverKey, driverValue) {
             var stintresults = [];
-            let total = 0;
+            // First enters the grid position of the driver as their starting point
             stintresults.push(driverValue.Grid);
-            for (i = 0; i <= stints; i++) {
-                stintresults.push(0);
+            // Gets the stintresults and first orders them by their stint number
+            var stintsToLoop = driverValue.StintResults.sort((a, b) => (a.Number > b.Number) ? 1 : ((b.Number > a.Number) ? -1 : 0));
+            // Loop through the sorted stints and add the position they had during that respective stint to the stintresults
+            for (index = 0; index < stintsToLoop.length; ++index) {
+                stintresults.push(stintsToLoop[index].Position);
             }
-            for (var key in driverValue.StintResults) {
-                if (!driverValue.StintResults.hasOwnProperty(key)) continue;
-                var obj = driverValue.StintResults[key];
-                if (obj == null) {
-                    obj = 0;
-                    total = 0;
-                }
-                total = total + obj;
-                stintresults[key] = total;
-            }
+            // Dataset object of one driver which is used for the graph
             var driverDataset = {
                 label: driverValue.SeasonDriver.Driver.Name,
                 backgroundColor: driverValue.SeasonDriver.SeasonTeam.Accent,
@@ -352,23 +364,10 @@
             }
             driversets.push(driverDataset);
         });
-
-        for (i = 0; i <= stints; i++) {
-            if (i === 0) continue;
-            driversets.sort(function (a, b) {
-                return (a.data[i] != null) - (b.data[i] != null) || b.data[i] - a.data[i];
-            });
-            let position = 1;
-            driversets.forEach(function (result) {
-                result.data[i] = position;
-                position = position + 1;
-            });
-        }
-
         driversets.sort((a, b) => (a.teamName > b.teamName) ? 1 : -1);
-        var stintlabels = [];
 
-        for (i = 0; i <= stints; i++) {
+        var stintlabels = [];
+        for (i = 0; i <= raceLen; i++) {
             var stringstint = i;
             stintlabels.push(stringstint);
         }
@@ -376,12 +375,11 @@
         Chart.pluginService.register({
             beforeDraw: function (chart, easing) {
             if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
-                var ctx = chart.chart.ctx;
-
-                ctx.save();
-                ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
-                ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
-                ctx.restore();
+                    var ctx = chart.chart.ctx;
+                    ctx.save();
+                    ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
+                    ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+                    ctx.restore();
                 }
             }
         });

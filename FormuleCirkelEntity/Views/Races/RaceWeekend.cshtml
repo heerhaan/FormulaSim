@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "RaceWeekend";
+    List<Driver> userOwned = ViewBag.owneddrivers;
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
@@ -14,10 +16,11 @@
                     <td>Nr.</td>
                     <td>Driver</td>
                     <td>Team</td>
-                    <td>Tire</td>
                     <td>Penalty</td>
                     <td>Driver traits</td>
                     <td>Team traits</td>
+                    <td>Strategy</td>
+                    <td>Change</td>
                 </tr>
             </thead>
             <tbody>
@@ -38,9 +41,6 @@
                                 <span class="flag flag-@(driver.SeasonDriver.SeasonTeam.Team.Country) ff-sm flag-margin"></span>@driver.SeasonDriver.SeasonTeam.Name
                             </span>
                         </td>
-                        <td>
-                            <span class="badge tire font-size-default">@(driver.SeasonDriver.Tires.ToString()[0])</span>
-                        </td>
                         @if (driver.PenaltyReason == null)
                         {
                             <td></td>
@@ -59,6 +59,20 @@
                             @foreach (var trait in driver.SeasonDriver.SeasonTeam.Team.TeamTraits)
                             {
                                 <b class="alt-font small">[@trait.Trait.Name]</b>
+                            }
+                        </td>
+                        <td>
+                            @foreach (var strat in driver.Strategy.Tyres)
+                            {
+                                <span class="badge" style="background-color:@(strat.Tyre.TyreColour);">
+                                    @(strat.Tyre.TyreName.Substring(0, 1).ToUpper())
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            @if (userOwned.Contains(driver.SeasonDriver.Driver) || isAdmin)
+                            {
+                                <a asp-action="ChangeStrategy" asp-route-driverId="@driver.DriverResultId" asp-route-raceId="@Model.Race.RaceId" class="btn btn-sm">Strategy</a>
                             }
                         </td>
                     </tr>

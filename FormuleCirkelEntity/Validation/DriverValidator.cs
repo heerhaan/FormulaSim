@@ -8,7 +8,7 @@ namespace FormuleCirkelEntity.Models.ModelValidation
     {
         public DriverValidator()
         {
-            RuleFor(d => d.DriverNumber).NotEmpty().WithMessage("Number of driver is required!");
+            RuleFor(d => d.DriverNumber).NotEmpty().WithMessage("Number of driver is piemel!");
             RuleFor(d => d.Name).NotEmpty().WithMessage("Name of driver is required!");
             RuleFor(d => d.Abbreviation).NotEmpty().WithMessage("Abbreviation is required!");
         }
