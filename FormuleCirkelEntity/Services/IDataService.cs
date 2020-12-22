@@ -11,10 +11,11 @@ namespace FormuleCirkelEntity.Services
 {
     public interface IDataService<T> where T : ModelBase
     {
-        IQueryable<T> GetEntities();
-        Task<IEnumerable<T>> GetAllEntities();
-        Task<T> GetEntity(int id);
-        Task<T> GetAnyEntity(int id);
+        IQueryable<T> GetQueryable();
+        Task<IList<T>> GetEntities();
+        Task<IList<T>> GetEntitiesUnfiltered();
+        Task<T> GetEntityById(int id);
+        Task<T> GetEntityByIdUnfiltered(int id);
         Task<T> FirstOrDefault(Expression<Func<T, bool>> predicate);
         Task Add(T entity);
         void Update(T entity);
@@ -33,29 +34,37 @@ namespace FormuleCirkelEntity.Services
             Data = _context.Set<T>();
         }
 
-        public IQueryable<T> GetEntities()
+        public IQueryable<T> GetQueryable()
         {
             return Data;
         }
 
-        public async Task<IEnumerable<T>> GetAllEntities()
+        public async Task<IList<T>> GetEntities()
         {
-            return await Data.IgnoreQueryFilters().ToListAsync();
+            var items = await Data.AsNoTracking().ToListAsync();
+            return items;
         }
 
-        public async Task<T> GetEntity(int id)
+        public async Task<IList<T>> GetEntitiesUnfiltered()
         {
-            return await Data.FindAsync(id);
+            var items = await Data.IgnoreQueryFilters().AsNoTracking().ToListAsync();
+            return items;
         }
 
-        public async Task<T> GetAnyEntity(int id)
+        public async Task<T> GetEntityById(int id)
         {
-            return await Data.IgnoreQueryFilters().FirstOrDefaultAsync(res => res.Id == id);
+            var item = await Data.AsNoTracking().FirstOrDefaultAsync(res => res.Id == id);
+            return item;
+        }
+
+        public async Task<T> GetEntityByIdUnfiltered(int id)
+        {
+            return await Data.IgnoreQueryFilters().AsNoTracking().FirstOrDefaultAsync(res => res.Id == id);
         }
 
         public async Task<T> FirstOrDefault(Expression<Func<T, bool>> predicate)
         {
-            return await Data.FirstOrDefaultAsync(predicate);
+            return await Data.AsNoTracking().FirstOrDefaultAsync(predicate);
         }
 
         public async Task Add(T entity)
@@ -65,15 +74,21 @@ namespace FormuleCirkelEntity.Services
 
         public void Update(T entity)
         {
-            _context.Update(entity);
+            Data.Update(entity);
         }
 
         public void Archive(T entity)
         {
+            // First check if entity is archived or not, based on that either archive or unarchive the entity
             if (entity is IArchivable archivable && archivable.Archived)
+            {
                 _context.Restore(archivable);
+                Update(entity);
+            }
             else
+            {
                 _context.Remove(entity);
+            } 
         }
 
         public async Task SaveChangesAsync()

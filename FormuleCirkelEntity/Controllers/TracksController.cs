@@ -34,7 +34,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> TrackTraits(int id)
         {
             // Finds the selected track by it's id
-            Track track = await DataService.GetEntity(id);
+            Track track = await DataService.GetEntityById(id);
             // Finds the traits used by the given track and returns a list of it
             List<Trait> trackTraits = await _context.TrackTraits
                 .Where(trt => trt.TrackId == id)
@@ -66,7 +66,7 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TrackTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Track track = await DataService.GetEntity(id);
+            Track track = await DataService.GetEntityById(id);
             Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (track is null || trait is null)
@@ -101,13 +101,12 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("Archived")]
-        public IActionResult ArchivedTracks()
+        public async Task<IActionResult> ArchivedTracks()
         {
-            List<Track> tracks = _context.Tracks
-                .IgnoreQueryFilters()
+            var tracks = await DataService.GetQueryable()
                 .Where(t => t.Archived)
                 .OrderBy(t => t.Location)
-                .ToList();
+                .ToListAsync();
 
             return View(tracks);
         }

@@ -41,7 +41,7 @@ namespace FormuleCirkelEntity.Controllers
             var stats = new TeamStatsModel();
 
             // Finds the team corresponding to the given id
-            var team = await DataService.GetAnyEntity(id.Value);
+            var team = await DataService.GetEntityByIdUnfiltered(id.Value);
             // Only take seasons from the championship that is currently in use
             var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
@@ -128,7 +128,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> TeamTraits(int id)
         {
-            Team team = await DataService.GetEntity(id);
+            Team team = await DataService.GetEntityById(id);
 
             List<Trait> teamTraits = await _context.TeamTraits
                 .Where(ttr => ttr.TeamId == id)
@@ -156,7 +156,7 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TeamTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Team team = await DataService.GetEntity(id);
+            Team team = await DataService.GetEntityById(id);
             Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (team is null || trait is null)

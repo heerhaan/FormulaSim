@@ -35,7 +35,15 @@ namespace FormuleCirkelEntity.DAL
                 }
             );
             // Connects the default strategy with the default grooved tyre
-            modelBuilder.Entity<TyreStrategy>().HasData(new TyreStrategy { TyreStrategyId = 1, StrategyId = 1, TyreId = 1, StintNumberApplied = 1 });
+            modelBuilder.Entity<TyreStrategy>().HasData(
+                new TyreStrategy 
+                { 
+                    TyreStrategyId = 1, 
+                    StrategyId = 1, 
+                    TyreId = 1, 
+                    StintNumberApplied = 1 
+                }
+            );
         }
     }
 }

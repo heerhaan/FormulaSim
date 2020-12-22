@@ -31,7 +31,7 @@ namespace FormuleCirkelEntity.Controllers
         [SortResult, PagedResult]
         public virtual async Task<IActionResult> Index()
         {
-            return await AsTask(View(DataService.GetEntities()));
+            return await AsTask(View(DataService.GetQueryable()));
         }
 
         [Authorize(Roles = "Admin")]
@@ -50,6 +50,7 @@ namespace FormuleCirkelEntity.Controllers
             newObject.Id = default(int);
             if(!ModelState.IsValid)
                 return View("Modify", newObject);
+
             await DataService.Add(newObject);
             await DataService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -60,8 +61,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int? id)
         {
-            T updatingObject = await DataService.GetEntity(id.Value);
-
+            T updatingObject = await DataService.GetEntityById(id.Value);
             if(updatingObject == null)
                 return NotFound();
 
@@ -95,7 +95,7 @@ namespace FormuleCirkelEntity.Controllers
             if(id == null)
                 return NotFound();
 
-            var item = await DataService.GetAnyEntity(id.Value);
+            var item = await DataService.GetEntityByIdUnfiltered(id.Value);
 
             if(item == null)
                 return NotFound();
@@ -109,7 +109,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var objectToDelete = await DataService.GetAnyEntity(id);
+            var objectToDelete = await DataService.GetEntityByIdUnfiltered(id);
             if(objectToDelete == null)
                 return NotFound();
 

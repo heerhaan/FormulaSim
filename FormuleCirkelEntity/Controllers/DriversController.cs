@@ -30,7 +30,8 @@ namespace FormuleCirkelEntity.Controllers
         [SortResult(nameof(Driver.Name)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            ViewBag.driverIds = await _context.Drivers.Select(d => d.Id).ToListAsync();
+            var drivers = await DataService.GetEntities();
+            ViewBag.driverIds = drivers.Select(d => d.Id);
             return base.Index().Result;
         }
 
@@ -43,7 +44,7 @@ namespace FormuleCirkelEntity.Controllers
             var stats = new DriverStatsModel();
 
             // Prepares table items for ViewModel
-            var driver = await DataService.GetAnyEntity(id.Value);
+            var driver = await DataService.GetEntityByIdUnfiltered(id.Value);
             var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
                 .Include(s => s.Drivers)
@@ -123,7 +124,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> DriverTraits(int id)
         {
-            Driver driver = await DataService.GetEntity(id);
+            Driver driver = await DataService.GetEntityById(id);
 
             List<Trait> driverTraits = await _context.DriverTraits
                 .Where(drt => drt.DriverId == id)
@@ -151,7 +152,7 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Driver driver = await DataService.GetEntity(id);
+            Driver driver = await DataService.GetEntityById(id);
             Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (driver is null || trait is null)
@@ -259,6 +260,7 @@ namespace FormuleCirkelEntity.Controllers
 
             return driverDict;
         }
+
         // Underneath should be added to the service eventually
         [Route("Archived")]
         public IActionResult ArchivedDrivers()

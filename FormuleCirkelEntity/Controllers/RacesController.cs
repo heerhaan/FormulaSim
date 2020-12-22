@@ -482,7 +482,6 @@ namespace FormuleCirkelEntity.Controllers
             }
 
             RaceResultGenerator.GetPositionsBasedOnRelativePoints(driverResults, race.StintProgress);
-
             _context.Update(race);
             _context.UpdateRange(driverResults);
             await _context.SaveChangesAsync();
