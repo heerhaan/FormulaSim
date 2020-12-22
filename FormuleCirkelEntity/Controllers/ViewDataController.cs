@@ -16,21 +16,22 @@ namespace FormuleCirkelEntity.Controllers
         where T : ModelBase, new()
     {
         protected PagingHelper PagingHelper { get; }
-        protected DbSet<T> Data { get; }
+        protected IDataService<T> DataService { get; }
 
         protected ViewDataController(FormulaContext context, 
             UserManager<SimUser> userManager, 
-            PagingHelper pagingHelper)
+            PagingHelper pagingHelper,
+            IDataService<T> dataService)
             : base(context, userManager)
         {
             PagingHelper = pagingHelper;
-            Data = _context.Set<T>();
+            DataService = dataService;
         }
 
         [SortResult, PagedResult]
         public virtual async Task<IActionResult> Index()
         {
-            return await AsTask(View(Data));
+            return await AsTask(View(DataService.GetQueryable()));
         }
 
         [Authorize(Roles = "Admin")]
@@ -49,8 +50,9 @@ namespace FormuleCirkelEntity.Controllers
             newObject.Id = default(int);
             if(!ModelState.IsValid)
                 return View("Modify", newObject);
-            _context.Add(newObject);
-            await _context.SaveChangesAsync();
+
+            await DataService.Add(newObject);
+            await DataService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -59,8 +61,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int? id)
         {
-            T updatingObject = await Data.FindAsync(id);
-
+            T updatingObject = await DataService.GetEntityById(id.Value);
             if(updatingObject == null)
                 return NotFound();
 
@@ -78,11 +79,11 @@ namespace FormuleCirkelEntity.Controllers
             if(!ModelState.IsValid)
                 return View("Modify", updatedObject);
 
-            if(!await Data.AnyAsync(obj => obj.Id == id))
+            if(await DataService.FirstOrDefault(res => res.Id == id) is null)
                 return NotFound();
 
-            _context.Update(updatedObject);
-            await _context.SaveChangesAsync();
+            DataService.Update(updatedObject);
+            await DataService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -94,7 +95,7 @@ namespace FormuleCirkelEntity.Controllers
             if(id == null)
                 return NotFound();
 
-            var item = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
+            var item = await DataService.GetEntityByIdUnfiltered(id.Value);
 
             if(item == null)
                 return NotFound();
@@ -108,16 +109,12 @@ namespace FormuleCirkelEntity.Controllers
         [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var objectToDelete = await Data.IgnoreQueryFilters().FindAsync(id);
+            var objectToDelete = await DataService.GetEntityByIdUnfiltered(id);
             if(objectToDelete == null)
                 return NotFound();
 
-            if(objectToDelete is IArchivable archivable && archivable.Archived)
-                _context.Restore(archivable);
-            else
-                _context.Remove(objectToDelete);
-
-            await _context.SaveChangesAsync();
+            DataService.Archive(objectToDelete);
+            await DataService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

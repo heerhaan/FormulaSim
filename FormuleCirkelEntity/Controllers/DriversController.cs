@@ -1,4 +1,9 @@
-﻿using FormuleCirkelEntity.DAL;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Extensions;
 using FormuleCirkelEntity.Filters;
 using FormuleCirkelEntity.Models;
@@ -8,11 +13,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -21,15 +21,17 @@ namespace FormuleCirkelEntity.Controllers
     {
         public DriversController(FormulaContext context, 
             UserManager<SimUser> userManager, 
-            PagingHelper pagingHelper)
-            : base(context, userManager, pagingHelper)
+            PagingHelper pagingHelper,
+            IDataService<Driver> dataService)
+            : base(context, userManager, pagingHelper, dataService)
         {
         }
 
         [SortResult(nameof(Driver.Name)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            ViewBag.driverIds = await _context.Drivers.Select(d => d.Id).ToListAsync();
+            var drivers = await DataService.GetEntities();
+            ViewBag.driverIds = drivers.Select(d => d.Id);
             return base.Index().Result;
         }
 
@@ -42,7 +44,7 @@ namespace FormuleCirkelEntity.Controllers
             var stats = new DriverStatsModel();
 
             // Prepares table items for ViewModel
-            var driver = await Data.IgnoreQueryFilters().FindAsync(id ?? 0);
+            var driver = await DataService.GetEntityByIdUnfiltered(id.Value);
             var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
                 .Include(s => s.Drivers)
@@ -122,8 +124,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> DriverTraits(int id)
         {
-            Driver driver = await Data
-                .FirstAsync(dr => dr.Id == id);
+            Driver driver = await DataService.GetEntityById(id);
 
             List<Trait> driverTraits = await _context.DriverTraits
                 .Where(drt => drt.DriverId == id)
@@ -151,7 +152,7 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Driver driver = await Data.FirstAsync(d => d.Id == id);
+            Driver driver = await DataService.GetEntityById(id);
             Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (driver is null || trait is null)
@@ -168,16 +169,20 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{driverId}")]
         public async Task<IActionResult> RemoveDriverTrait(int driverId, int traitId)
         {
-            Driver driver = await Data.Include(dr => dr.DriverTraits).FirstAsync(dr => dr.Id == driverId);
-            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
+            Driver driver = await _context.Drivers
+                .Include(dr => dr.DriverTraits)
+                .FirstAsync(dr => dr.Id == driverId);
+            Trait trait = await _context.Traits
+                .FirstAsync(tr => tr.TraitId == traitId);
 
             if (driver == null || trait == null)
                 return NotFound();
 
-            DriverTrait removetrait = driver.DriverTraits.First(drt => drt.TraitId == traitId);
+            DriverTrait removetrait = driver.DriverTraits
+                .First(drt => drt.TraitId == traitId);
+
             _context.Remove(removetrait);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(DriverTraits), new { id = driverId });
         }
 
@@ -256,10 +261,16 @@ namespace FormuleCirkelEntity.Controllers
             return driverDict;
         }
 
+        // Underneath should be added to the service eventually
         [Route("Archived")]
         public IActionResult ArchivedDrivers()
         {
-            var drivers = Data.IgnoreQueryFilters().Where(d => d.Archived).OrderBy(d => d.Name).ToList();
+            var drivers = _context.Drivers
+                .IgnoreQueryFilters()
+                .Where(d => d.Archived)
+                .OrderBy(d => d.Name)
+                .ToList();
+
             return View(drivers);
         }
 
