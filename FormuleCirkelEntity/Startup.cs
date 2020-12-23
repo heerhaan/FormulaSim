@@ -86,6 +86,7 @@ namespace FormuleCirkelEntity
             services.AddSingleton(new Random());
             // Scoped services
             services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
+            services.AddScoped(typeof(IDriverService), typeof(DriverService));
             // Custom services related to [fill in]
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();

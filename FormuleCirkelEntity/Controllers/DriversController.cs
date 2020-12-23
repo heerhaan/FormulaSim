@@ -19,18 +19,21 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class DriversController : ViewDataController<Driver>
     {
+        private readonly IDriverService _driverService;
         public DriversController(FormulaContext context, 
             UserManager<SimUser> userManager, 
             PagingHelper pagingHelper,
-            IDataService<Driver> dataService)
+            IDriverService dataService)
             : base(context, userManager, pagingHelper, dataService)
         {
+            _driverService = dataService;
         }
 
         [SortResult(nameof(Driver.Name)), PagedResult]
         public override async Task<IActionResult> Index()
         {
             var drivers = await DataService.GetEntities();
+            _driverService.Pee();
             ViewBag.driverIds = drivers.Select(d => d.Id);
             return base.Index().Result;
         }

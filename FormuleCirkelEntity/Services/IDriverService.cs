@@ -6,17 +6,12 @@ using FormuleCirkelEntity.Models;
 
 namespace FormuleCirkelEntity.Services
 {
-    public interface IDriverService
+    public interface IDriverService : IDataService<Driver>
     {
     }
 
-    public class DriverService : IDriverService
+    public class DriverService : DataService<Driver>, IDriverService
     {
-        private readonly FormulaContext _context;
-
-        public DriverService(FormulaContext context)
-        {
-            _context = context;
-        }
+        public DriverService(FormulaContext context) : base(context) { }
     }
 }
