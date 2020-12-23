@@ -129,7 +129,9 @@
     </div>
 
     <div class="flex-row justify-content-between">
-        <button class="btn" onclick="takeScreenshot('#graphic', '.screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn" onclick="takeScreenshot('#graphic', '.screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+            <i class="fas fa-image fa-2x"></i>
+        </button>
         <button class="btn" onclick="redrawChart()"><i class="fas fa-chart-bar fa-2x mt-auto"></i></button>
     </div>
 
@@ -294,7 +296,7 @@
         $("#results tbody tr").each(function (index, row) {
             let score = row.querySelector("td[data-field='pointsTotal']").innerText;
             if (score != "DNF" && score != "DSQ") {
-                let gap = "+" + ((leaderscore - score) * 0.43).toFixed(2);
+                let gap = "+" + ((leaderscore - score) * 0.37).toFixed(2);
                 if (gap == "+0.00" && leaderapplied == false) {
                     gap = "Leader";
                     leaderapplied = true;

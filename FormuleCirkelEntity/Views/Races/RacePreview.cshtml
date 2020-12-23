@@ -153,7 +153,9 @@
                 <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn" />
             </div>
         </form>
-        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+            <i class="fas fa-image fa-2x"></i>
+        </button>
     </div>
 
     <div id="screenshot"></div>

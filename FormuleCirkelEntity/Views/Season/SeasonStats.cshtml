@@ -74,7 +74,9 @@
         <a class="btn" asp-action="Index">
             <i class="fas fa-arrow-alt-circle-left"></i> Back
         </a>
-        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+            <i class="fas fa-image fa-2x"></i>
+        </button>
     </div>
 
     <div id="screenshot"></div>

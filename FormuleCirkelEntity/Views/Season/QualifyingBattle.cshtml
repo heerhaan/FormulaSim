@@ -7,7 +7,7 @@
 <div class="d-inline-block">
     <h1>Qualifying battles</h1>
     <hr />
-    <table class="ctable fullborder fullwidth min-width-index-table">
+    <table id="graphic" class="ctable fullborder fullwidth min-width-index-table">
         <thead class="fullborder">
             <tr>
                 <th>Team</th>
@@ -16,22 +16,28 @@
         <tbody>
             @foreach (var team in Model.Teams)
             {
-            bool first = true;
-            <tr style="height:50px;">
-                <td style="background-color:@(team.Colour);color:@(team.Accent);" class="text-left">
-                    <span class="pl-1 pr-1">
-                        <span class="flag flag-@(team.Team.Country) ff-sm flag-margin"></span>@team.Name
-                    </span>
-                </td>
-                @foreach (var driver in team.SeasonDrivers)
-                {
-                    @if (!first) { <td> - </td> }
-                    <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.Driver.Country) ff-sm flag-margin"></span>@driver.Driver.Name</span></td>
-                    <td class="bigger-text">@Model.QualyBattles[driver.SeasonDriverId]</td>
-                    first = false;
-                }
-            </tr>
+                bool first = true;
+                <tr style="height:50px;">
+                    <td style="background-color:@(team.Colour);color:@(team.Accent);" class="text-left">
+                        <span class="pl-1 pr-1">
+                            <span class="flag flag-@(team.Team.Country) ff-sm flag-margin"></span>@team.Name
+                        </span>
+                    </td>
+                    @foreach (var driver in team.SeasonDrivers)
+                    {
+                        @if (!first)
+                        {
+                            <td> - </td>
+}
+                        <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.Driver.Country) ff-sm flag-margin"></span>@driver.Driver.Name</span></td>
+                        <td class="bigger-text">@Model.QualyBattles[driver.SeasonDriverId]</td>
+                        first = false;
+                    }
+                </tr>
             }
         </tbody>
     </table>
+    <button class="btn float-left" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+        <i class="fas fa-image fa-2x"></i>
+    </button>
 </div>
