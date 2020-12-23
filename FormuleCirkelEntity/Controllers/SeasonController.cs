@@ -330,6 +330,10 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             var season = await _context.Seasons.SingleAsync(s => s.SeasonId == model.SeasonId);
+            // Clear the dictionary if it contains any values
+            if (season.PointsPerPosition.Any())
+                season.PointsPerPosition.Clear();
+
             Dictionary<int, int?> pairs = new Dictionary<int, int?>();
             int position = 1;
             foreach (var points in model.Points)

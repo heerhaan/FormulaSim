@@ -25,7 +25,7 @@ namespace FormuleCirkelEntity.Services
 
     public class DataService<T> : IDataService<T> where T : ModelBase
     {
-        private FormulaContext _context;
+        private readonly FormulaContext _context;
         private DbSet<T> Data { get; }
 
         public DataService(FormulaContext context)
