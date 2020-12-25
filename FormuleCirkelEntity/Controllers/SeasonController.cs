@@ -113,6 +113,8 @@ namespace FormuleCirkelEntity.Controllers
                 season.QualificationRNG = lastSeason.QualificationRNG;
                 season.QualyBonus = lastSeason.QualyBonus;
                 season.SeasonNumber = (lastSeason.SeasonNumber + 1);
+                season.PitMax = lastSeason.PitMax;
+                season.PitMin = lastSeason.PitMin;
 
                 // Adds the previous season races if there aren't any added yet.
                 if (season.Races.Count == 0)
@@ -344,6 +346,8 @@ namespace FormuleCirkelEntity.Controllers
 
             foreach (var pair in pairs)
                 season.PointsPerPosition.Add(pair);
+
+            _context.Update(season);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Settings), new { id = model.SeasonId });
         }

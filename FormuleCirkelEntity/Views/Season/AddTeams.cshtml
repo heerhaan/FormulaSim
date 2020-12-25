@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<FormuleCirkelEntity.Models.Team>
 @{ViewData["Title"] = "Add teams";}
 
-<div class="d-inline-block w-50">
+<div class="d-inline-block">
     <h3>Unregistered teams</h3>
 
-    <table class="ctable fullborder fullwidth">
+    <table class="ctable fullborder min-width-index-table">
         <thead class="fullborder">
             <tr>
                 <th>Name</th>
@@ -15,13 +15,16 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Abbreviation)</td>
+                    <td class="text-left">
+                        <span class="flag flag-@(item.Country) ff-sm flag-margin"></span>
+                        @Html.DisplayFor(modelItem => item.Abbreviation)
+                    </td>
                     <td><a asp-action="AddTeam" asp-route-id="@ViewBag.seasonId" asp-route-globalTeamId="@item.Id" class="btn fullwidth">Add</a></td>
                 </tr>
             }
         </tbody>
     </table>
     <a class="btn float-left" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
-        <i class="fas fa-arrow-alt-circle-left"></i>
+        <i class="fas fa-arrow-alt-circle-left"></i> Back
     </a>
 </div>

@@ -159,6 +159,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             DriverTrait newTrait = new DriverTrait { Driver = driver, Trait = trait };
+            DataService.Update(driver);
             await _context.AddAsync(newTrait);
             await _context.SaveChangesAsync();
 
@@ -277,10 +278,10 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("SaveBiography")]
         public async Task<IActionResult> SaveBiography(int id, string biography)
         {
-            var driver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == id);
+            var driver = await DataService.GetEntityById(id);
             driver.Biography = biography;
-            _context.Drivers.Update(driver);
-            await _context.SaveChangesAsync();
+            DataService.Update(driver);
+            await DataService.SaveChangesAsync();
             return RedirectToAction("Stats", new { id });
         }
     }

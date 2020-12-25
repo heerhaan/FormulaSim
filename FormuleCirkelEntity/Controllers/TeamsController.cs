@@ -163,9 +163,10 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             TeamTrait newTrait = new TeamTrait { Team = team, Trait = trait };
+
+            DataService.Update(team);
             await _context.AddAsync(newTrait);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(TeamTraits), new { id });
         }
 
