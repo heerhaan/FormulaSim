@@ -44,7 +44,8 @@ namespace FormuleCirkelEntity.Services
 
         public async Task<Season> GetSeasonById(int id)
         {
-            var item = await Data.AsNoTracking().FirstOrDefaultAsync(res => res.SeasonId == id);
+            var item = await Data.AsNoTracking()
+                .FirstOrDefaultAsync(res => res.SeasonId == id);
             return item;
         }
 

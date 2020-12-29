@@ -10,40 +10,34 @@ using FormuleCirkelEntity.Validation;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using FormuleCirkelEntity.Services;
 
 namespace FormuleCirkelEntity.Controllers
 {
     public class ChampionshipsController : FormulaController
     {
+        private readonly IChampionshipService _champService;
         public ChampionshipsController(FormulaContext context, 
-            UserManager<SimUser> userManager)
+            UserManager<SimUser> userManager,
+            IChampionshipService service)
             : base(context, userManager)
-        { }
+        {
+            _champService = service;
+        }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Championships.ToListAsync());
+            return View(await _champService.GetChampionships());
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Index([Bind("ChampionshipId")] Championship champ)
+        public async Task<IActionResult> Index(int championshipId)
         {
-            if (champ == null)
-                return NotFound();
-
             // Activates the current championship and ensures the rest is deactivated
-            var championships = await _context.Championships.ToListAsync();
-            foreach (var championship in championships)
-            {
-                if (championship.ChampionshipId == champ.ChampionshipId)
-                    championship.ActiveChampionship = true;
-                else
-                    championship.ActiveChampionship = false;
-            }
-            _context.UpdateRange(championships);
+            var championship = await _champService.GetChampionshipById(championshipId);
+            await _champService.ActivateChampionship(championship);
             await _context.SaveChangesAsync();
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -61,17 +55,8 @@ namespace FormuleCirkelEntity.Controllers
 
             if (ModelState.IsValid)
             {
-                var championships = await _context.Championships.ToListAsync();
-                foreach (var item in championships)
-                {
-                    item.ActiveChampionship = false;
-                }
-                _context.UpdateRange(championships);
-
-                championship.ActiveChampionship = true;
-                _context.Add(championship);
+                await _champService.ActivateChampionship(championship);
                 await _context.SaveChangesAsync();
-
                 return RedirectToAction("Index", "Home");
             }
             return View(championship);
