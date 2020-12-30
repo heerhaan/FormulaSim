@@ -51,10 +51,10 @@ namespace FormuleCirkelEntity.Controllers
 
             // Prepares table items for ViewModel
             var driver = await _drivers.GetEntityByIdUnfiltered(id);
-            var seasons = _context.Seasons
+            var seasons = await _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
                 .Include(s => s.Drivers)
-                .ToList();
+                .ToListAsync();
 
             // Basic information about the driver
             stats.DriverId = driver.Id;
@@ -95,34 +95,18 @@ namespace FormuleCirkelEntity.Controllers
             stats.MechanicalCount = results.Where(r => r.DNFCause == DNFCause.Brakes || r.DNFCause == DNFCause.Clutch || r.DNFCause == DNFCause.Electrics ||
                 r.DNFCause == DNFCause.Exhaust || r.DNFCause == DNFCause.Hydraulics || r.DNFCause == DNFCause.Wheel).Count();
 
-            var seasondriver = _context
-                .SeasonDrivers
+            var seasondriver = await _context.SeasonDrivers
                 .Where(s => s.Driver.Id == id)
                 .Include(s => s.SeasonTeam)
                     .Where(st => st.Season.Championship.ActiveChampionship)
                 .Include(s => s.SeasonTeam)
                     .ThenInclude(t => t.Team)
-                .ToList();
+                .ToListAsync();
 
             stats.Teams = seasondriver.Select(s => s.SeasonTeam.Team).Distinct().ToList();
-
-            // Calculates the amount of WDCs a driver might have.
-            int championships = 0;
-            foreach(var season in seasons)
-            {
-                var winner = season.Drivers
-                    .OrderByDescending(dr => dr.Points)
-                    .FirstOrDefault();
-
-                if (winner != null)
-                {
-                    if (winner.DriverId == id)
-                    {
-                        championships++;
-                    }
-                }
-            }
-            stats.WDCCount = championships;
+            // Calculates the amount of WDCs a driver might have
+            var driverChampions = _drivers.GetDriverChampionsIds(seasons);
+            stats.WDCCount = driverChampions.Where(s => s == id).Count();
 
             return View(stats);
         }
