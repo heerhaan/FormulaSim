@@ -89,41 +89,52 @@ namespace FormuleCirkelEntity.Services
             await _context.SaveChangesAsync();
         }
 
-        public static void SetDriverTraitMods(DriverResult driver, IEnumerable<DriverTrait> driverTraits)
+        public static void SetDriverTraitMods(DriverResult driver, IEnumerable<DriverTrait> driverTraits, Weather weather)
         {
             // Null-check, since I don't like warnings
             if (driver is null || driverTraits is null) { throw new NullReferenceException(); }
             // Loops through all the traits a driver may have and adds them to the driverresult modifiers
             foreach (var trait in driverTraits)
             {
-                SetIndividualTraitMod(driver, trait.Trait);
+                SetIndividualTraitMod(driver, trait.Trait, weather);
             }
         }
 
-        public static void SetTeamTraitMods(DriverResult driver, IEnumerable<TeamTrait> teamTraits)
+        public static void SetTeamTraitMods(DriverResult driver, IEnumerable<TeamTrait> teamTraits, Weather weather)
         {
             // Null-check, since I don't like warnings
             if (driver is null || teamTraits is null) { throw new NullReferenceException(); }
             // Loops through all the traits the team of a driver may have and adds them to the driverresult modifiers
             foreach (var trait in teamTraits)
             {
-                SetIndividualTraitMod(driver, trait.Trait);
+                SetIndividualTraitMod(driver, trait.Trait, weather);
             }
         }
 
-        public static void SetTrackTraitMods(DriverResult driver, List<TrackTrait> trackTraits)
+        public static void SetTrackTraitMods(DriverResult driver, List<TrackTrait> trackTraits, Weather weather)
         {
             // Null-check, since I don't like warnings
             if (driver is null || trackTraits is null) { throw new NullReferenceException(); }
             // Loops through all the traits a track may have and adds them to the driverresult modifiers
             foreach (var trait in trackTraits)
             {
-                SetIndividualTraitMod(driver, trait.Trait);
+                SetIndividualTraitMod(driver, trait.Trait, weather);
             }
         }
 
-        private static void SetIndividualTraitMod(DriverResult driver, Trait trait)
+        private static void SetIndividualTraitMod(DriverResult driver, Trait trait, Weather weather)
         {
+            // Checks if we currenly are dealing with wet weather
+            bool isWet = (weather == Weather.Rain || weather == Weather.Storm);
+            if (trait.WetWeatherPace.HasValue)
+            {
+                // WetWeatherPace being filled indicates that this is a wet weather trait, so if it isn't wet the rest of the method isn't ran
+                if (isWet)
+                    driver.DriverRacePace += trait.WetWeatherPace.Value;
+                else
+                    return;
+            }
+
             if (trait.QualyPace.HasValue)
                 driver.QualyMod += trait.QualyPace.Value;
 

@@ -42,6 +42,11 @@
                     <input asp-for="EngineRacePace" class="form-control" />
                     <span asp-validation-for="EngineRacePace" class="text-danger"></span>
                 </div>
+                <div class="form-group w-75 ml-auto mr-auto">
+                    <label asp-for="WetWeatherPace" class="control-label float-left">Wet weather pace</label>
+                    <input asp-for="WetWeatherPace" class="form-control" />
+                    <span asp-validation-for="WetWeatherPace" class="text-danger"></span>
+                </div>
             </div>
             <div class="w-50">
                 <div class="float-right">
@@ -78,7 +83,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group w-75 ml-auto mr-auto">
+        <div class="form-group w-100 ml-auto mr-auto">
             <label asp-for="TraitDescription" class="control-label float-left">Description</label>
             <input asp-for="TraitDescription" class="form-control" />
             <span asp-validation-for="TraitDescription" class="text-danger"></span>

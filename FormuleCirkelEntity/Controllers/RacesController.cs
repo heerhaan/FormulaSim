@@ -275,14 +275,14 @@ namespace FormuleCirkelEntity.Controllers
                     {
                         // Gets the traits from the driver in the loop and sets them
                         var thisDriverTraits = driverTraits.Where(drt => drt.DriverId == driverRes.SeasonDriver.DriverId);
-                        RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
+                        RaceService.SetDriverTraitMods(driverRes, thisDriverTraits, race.Weather);
                         // Gets the seasonteam of the driver in the loop
                         var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
                         // Gets the traits from the team of the driver in the loop and sets them
                         var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
-                        RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
+                        RaceService.SetTeamTraitMods(driverRes, thisTeamTraits, race.Weather);
                         // Sets the traits from the track to the driver in the loop
-                        RaceService.SetTrackTraitMods(driverRes, trackTraits);
+                        RaceService.SetTrackTraitMods(driverRes, trackTraits, race.Weather);
 
                         // Set a random strategy
                         int stratIndex = rng.Next(0, strategies.Count);
