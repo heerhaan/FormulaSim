@@ -8,19 +8,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FormuleCirkelEntity.Services;
 
 namespace FormuleCirkelEntity.Controllers
 {
     public class TyreStrategiesController : FormulaController
     {
+        private readonly ITyreStrategyService _tyreStrats;
         public TyreStrategiesController(FormulaContext context,
-            UserManager<SimUser> userManager)
+            UserManager<SimUser> userManager,
+            ITyreStrategyService tyreStrategyService)
             : base(context, userManager)
-        { }
+        {
+            _tyreStrats = tyreStrategyService;
+        }
 
         public async Task<IActionResult> TyreIndex()
         {
-            var tyres = await _context.Tyres.ToListAsync();
+            var tyres = await _tyreStrats.GetTyres();
             return View(tyres);
         }
 
@@ -35,7 +40,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tyre);
+                await _tyreStrats.AddTyre(tyre);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(TyreIndex));
             }
@@ -44,10 +49,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> TyreEdit(int id)
         {
-            var tyre = await _context.Tyres.FindAsync(id);
-            if (tyre == null)
-                return NotFound();
-
+            var tyre = await _tyreStrats.GetTyreById(id);
             return View(tyre);
         }
 
@@ -62,7 +64,7 @@ namespace FormuleCirkelEntity.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Update(tyre);
+                _tyreStrats.UpdateTyre(tyre);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(TyreIndex));
             }
@@ -71,23 +73,14 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> StrategyIndex()
         {
-            var strategies = await _context.Strategies
-                .Include(s => s.Tyres)
-                    .ThenInclude(st => st.Tyre)
-                .OrderBy(s => s.RaceLen)
-                .ToListAsync();
+            var strategies = await _tyreStrats.GetStrategies(true, true);
             return View(strategies);
         }
 
         public async Task<IActionResult> StrategyCreate(int id = 0)
         {
-            var tyres = await _context.Tyres
-                .OrderBy(t => t.StintLen)
-                .ToListAsync();
-            var strategy = await _context.Strategies
-                .Include(s => s.Tyres)
-                    .ThenInclude(st => st.Tyre)
-                .SingleOrDefaultAsync(s => s.StrategyId == id);
+            var tyres = await _tyreStrats.GetTyres(true);
+            var strategy = await _tyreStrats.GetStrategyById(id, true);
             if (strategy is null)
             {
                 var viewmodel = new CreateStrategyModel(0, 0, null, tyres);
@@ -104,8 +97,8 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StrategyCreate(int strategyId, int tyreId, int raceLen, int applyNum)
         {
-            var _strategy = await _context.Strategies.FirstOrDefaultAsync(s => s.StrategyId == strategyId);
-            var tyre = await _context.Tyres.FindAsync(tyreId);
+            var _strategy = await _tyreStrats.GetStrategyById(strategyId);
+            var tyre = await _tyreStrats.GetTyreById(tyreId);
             if (tyre is null)
                 return NotFound();
 
@@ -116,29 +109,25 @@ namespace FormuleCirkelEntity.Controllers
                 {
                     RaceLen = raceLen
                 };
-                await _context.AddAsync(strategy);
+                await _tyreStrats.AddStrategy(strategy);
             }
             else
             {
                 strategy = _strategy;
                 strategy.RaceLen = raceLen;
-                _context.Update(strategy);
+                _tyreStrats.UpdateStrategy(strategy);
             }
 
-            TyreStrategy tyreStrategy = new TyreStrategy { Strategy = strategy, Tyre = tyre, StintNumberApplied = applyNum };
-            await _context.AddAsync(tyreStrategy);
+             _tyreStrats.UpdateTyre(tyre);
+            await _tyreStrats.AddTyreToStrategy(strategy, tyre, applyNum);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(StrategyCreate), new { id = strategy.StrategyId });
         }
 
         public async Task<IActionResult> RemoveTyreStrategy(int tyreStratId, int strategyId)
         {
-            TyreStrategy tyreToRemove = await _context.TyreStrategies.FindAsync(tyreStratId);
-
-            if (tyreToRemove is null)
-                return NotFound();
-
-            _context.Remove(tyreToRemove);
+            var tyreStrat = await _tyreStrats.GetTyreStratById(tyreStratId);
+            _tyreStrats.RemoveTyreFromStrategy(tyreStrat);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(StrategyCreate), new { id = strategyId });
         }

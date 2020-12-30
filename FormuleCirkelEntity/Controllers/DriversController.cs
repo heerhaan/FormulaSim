@@ -19,36 +19,42 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class DriversController : ViewDataController<Driver>
     {
+        private readonly IDriverService _drivers;
+        private readonly ITraitService _traits;
+        private readonly ISeasonService _seasons;
+
         public DriversController(FormulaContext context, 
-            UserManager<SimUser> userManager, 
+            UserManager<SimUser> userManager,
             PagingHelper pagingHelper,
-            IDataService<Driver> dataService)
+            IDriverService dataService,
+            ISeasonService seasonService,
+            ITraitService traitService)
             : base(context, userManager, pagingHelper, dataService)
         {
+            _drivers = dataService;
+            _seasons = seasonService;
+            _traits = traitService;
         }
 
         [SortResult(nameof(Driver.Name)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            var drivers = await DataService.GetEntities();
+            var drivers = await _drivers.GetEntities();
             ViewBag.driverIds = drivers.Select(d => d.Id);
             return base.Index().Result;
         }
 
         [Route("Stats/{id}")]
-        public async Task<IActionResult> Stats(int? id)
+        public async Task<IActionResult> Stats(int id)
         {
-            if (id is null)
-                return NotFound();
-
             var stats = new DriverStatsModel();
 
             // Prepares table items for ViewModel
-            var driver = await DataService.GetEntityByIdUnfiltered(id.Value);
-            var seasons = _context.Seasons
+            var driver = await _drivers.GetEntityByIdUnfiltered(id);
+            var seasons = await _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
                 .Include(s => s.Drivers)
-                .ToList();
+                .ToListAsync();
 
             // Basic information about the driver
             stats.DriverId = driver.Id;
@@ -89,34 +95,18 @@ namespace FormuleCirkelEntity.Controllers
             stats.MechanicalCount = results.Where(r => r.DNFCause == DNFCause.Brakes || r.DNFCause == DNFCause.Clutch || r.DNFCause == DNFCause.Electrics ||
                 r.DNFCause == DNFCause.Exhaust || r.DNFCause == DNFCause.Hydraulics || r.DNFCause == DNFCause.Wheel).Count();
 
-            var seasondriver = _context
-                .SeasonDrivers
+            var seasondriver = await _context.SeasonDrivers
                 .Where(s => s.Driver.Id == id)
                 .Include(s => s.SeasonTeam)
                     .Where(st => st.Season.Championship.ActiveChampionship)
                 .Include(s => s.SeasonTeam)
                     .ThenInclude(t => t.Team)
-                .ToList();
+                .ToListAsync();
 
             stats.Teams = seasondriver.Select(s => s.SeasonTeam.Team).Distinct().ToList();
-
-            // Calculates the amount of WDCs a driver might have.
-            int championships = 0;
-            foreach(var season in seasons)
-            {
-                var winner = season.Drivers
-                    .OrderByDescending(dr => dr.Points)
-                    .FirstOrDefault();
-
-                if (winner != null)
-                {
-                    if (winner.DriverId == id)
-                    {
-                        championships++;
-                    }
-                }
-            }
-            stats.WDCCount = championships;
+            // Calculates the amount of WDCs a driver might have
+            var driverChampions = _drivers.GetDriverChampionsIds(seasons);
+            stats.WDCCount = driverChampions.Where(s => s == id).Count();
 
             return View(stats);
         }
@@ -124,19 +114,10 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> DriverTraits(int id)
         {
-            Driver driver = await DataService.GetEntityById(id);
-
-            List<Trait> driverTraits = await _context.DriverTraits
-                .Where(drt => drt.DriverId == id)
-                .Select(drt => drt.Trait)
-                .ToListAsync();
-
-            List<Trait> traits = _context.Traits
-                .AsNoTracking()
-                .AsEnumerable()
-                .Where(tr => tr.TraitGroup == TraitGroup.Driver && !driverTraits.Any(drt => drt.TraitId == tr.TraitId))
-                .OrderBy(tr => tr.Name)
-                .ToList();
+            var driver = await _drivers.GetEntityById(id);
+            var driverTraits = await _traits.GetTraitsFromDriver(id);
+            var usedTraitIds = driverTraits.Select(drt => drt.TraitId).ToList();
+            var traits = await _traits.GetUnusedTraitsFromEntity(TraitGroup.Driver, usedTraitIds);
 
             var viewmodel = new DriverTraitsModel
             {
@@ -152,17 +133,16 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Driver driver = await DataService.GetEntityById(id);
-            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
+            Driver driver = await _drivers.GetEntityById(id);
+            Trait trait = await _traits.GetTraitById(traitId);
 
             if (driver is null || trait is null)
                 return NotFound();
-
-            DriverTrait newTrait = new DriverTrait { Driver = driver, Trait = trait };
-            DataService.Update(driver);
-            await _context.AddAsync(newTrait);
+                
+            await _traits.AddTraitToDriver(driver, trait);
+            _drivers.Update(driver);
+            _traits.Update(trait);
             await _context.SaveChangesAsync();
-
             return RedirectToAction(nameof(DriverTraits), new { id });
         }
 
@@ -170,19 +150,15 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{driverId}")]
         public async Task<IActionResult> RemoveDriverTrait(int driverId, int traitId)
         {
-            Driver driver = await _context.Drivers
-                .Include(dr => dr.DriverTraits)
-                .FirstAsync(dr => dr.Id == driverId);
-            Trait trait = await _context.Traits
-                .FirstAsync(tr => tr.TraitId == traitId);
+            Driver driver = await _drivers.GetEntityById(driverId);
+            Trait trait = await _traits.GetTraitById(traitId);
 
             if (driver == null || trait == null)
                 return NotFound();
 
-            DriverTrait removetrait = driver.DriverTraits
-                .First(drt => drt.TraitId == traitId);
-
-            _context.Remove(removetrait);
+            await _traits.RemoveTraitFromDriver(driver, trait);
+            _drivers.Update(driver);
+            _traits.Update(trait);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(DriverTraits), new { id = driverId });
         }
@@ -262,26 +238,18 @@ namespace FormuleCirkelEntity.Controllers
             return driverDict;
         }
 
-        // Underneath should be added to the service eventually
         [Route("Archived")]
-        public IActionResult ArchivedDrivers()
+        public async Task<IActionResult> ArchivedDrivers()
         {
-            var drivers = _context.Drivers
-                .IgnoreQueryFilters()
-                .Where(d => d.Archived)
-                .OrderBy(d => d.Name)
-                .ToList();
-
+            var drivers = await _drivers.GetArchivedDrivers();
             return View(drivers);
         }
 
         [HttpPost("SaveBiography")]
         public async Task<IActionResult> SaveBiography(int id, string biography)
         {
-            var driver = await DataService.GetEntityById(id);
-            driver.Biography = biography;
-            DataService.Update(driver);
-            await DataService.SaveChangesAsync();
+            await _drivers.SaveBio(id, biography);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Stats", new { id });
         }
     }

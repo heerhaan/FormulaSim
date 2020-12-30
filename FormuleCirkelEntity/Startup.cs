@@ -86,6 +86,14 @@ namespace FormuleCirkelEntity
             services.AddSingleton(new Random());
             // Scoped services
             services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
+            services.AddScoped(typeof(IChampionshipService), typeof(ChampionshipService));
+            services.AddScoped(typeof(IDriverService), typeof(DriverService));
+            services.AddScoped(typeof(IEngineService), typeof(EngineService));
+            services.AddScoped(typeof(ITeamService), typeof(TeamService));
+            services.AddScoped(typeof(ITrackService), typeof(TrackService));
+            services.AddScoped(typeof(ISeasonService), typeof(SeasonService));
+            services.AddScoped(typeof(ITraitService), typeof(TraitService));
+            services.AddScoped(typeof(ITyreStrategyService), typeof(TyreStrategyService));
             // Custom services related to [fill in]
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();

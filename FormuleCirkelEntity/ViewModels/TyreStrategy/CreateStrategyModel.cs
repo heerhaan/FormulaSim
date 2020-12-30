@@ -9,7 +9,7 @@ namespace FormuleCirkelEntity.ViewModels
     public class CreateStrategyModel
     {
         public CreateStrategyModel() { }
-        public CreateStrategyModel(int strategyId, int raceLen, IList<TyreStrategy> strats, List<Tyre> tyres)
+        public CreateStrategyModel(int strategyId, int raceLen, IList<TyreStrategy> strats, IList<Tyre> tyres)
         {
             StrategyId = strategyId;
             RaceLen = raceLen;
