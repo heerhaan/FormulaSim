@@ -29,14 +29,14 @@
                     <tr>
                         <td><b class="alt-font">@driver.Grid</b></td>
                         <td>
-                            <span class="badge badge-team fullwidth font-size-default"
+                            <span class="custom-badge badge-team fullwidth font-size-default"
                                   style="background-color:@(driver.SeasonDriver.SeasonTeam.Colour);color:@(driver.SeasonDriver.SeasonTeam.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Accent);">
                                 @driver.SeasonDriver.Driver.DriverNumber
                             </span>
                         </td>
                         <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.SeasonDriver.Driver.Country) ff-sm flag-margin"></span>@driver.SeasonDriver.Driver.Name</span></td>
                         <td>
-                            <span class="badge badge-team text-left fullwidth font-size-default"
+                            <span class="custom-badge badge-team text-left fullwidth font-size-default"
                                   style="background-color:@(driver.SeasonDriver.SeasonTeam.Colour);color:@(driver.SeasonDriver.SeasonTeam.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Accent);">
                                 <span class="flag flag-@(driver.SeasonDriver.SeasonTeam.Team.Country) ff-sm flag-margin"></span>@driver.SeasonDriver.SeasonTeam.Name
                             </span>
@@ -47,7 +47,7 @@
                         }
                         else
                         {
-                            <td><span class="badge badge-dsq fullwidth">@(driver.PenaltyReason)</span></td>
+                            <td><span class="custom-badge badge-dsq fullwidth">@(driver.PenaltyReason)</span></td>
                         }
                         <td>
                             @foreach (var trait in driver.SeasonDriver.Driver.DriverTraits)
@@ -64,7 +64,7 @@
                         <td>
                             @foreach (var strat in driver.Strategy.Tyres)
                             {
-                                <span class="badge" style="background-color:@(strat.Tyre.TyreColour);">
+                                <span class="custom-badge" style="background-color:@(strat.Tyre.TyreColour);">
                                     @(strat.Tyre.TyreName.Substring(0, 1).ToUpper())
                                 </span>
                             }
@@ -95,10 +95,3 @@
 
     <div id="screenshot"></div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        $(".tire:contains('H')").css("background-color", "darkorange");
-        $(".tire:contains('S')").css("background-color", "darkred");
-    });
-</script>

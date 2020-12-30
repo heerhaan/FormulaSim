@@ -18,14 +18,14 @@ namespace FormuleCirkelEntity.Services
         Task<IList<Strategy>> GetStrategies(bool ordered = false, bool includeTyres = false);
         Task<Tyre> GetTyreById(int id);
         Task<Strategy> GetStrategyById(int id, bool includeTyres = false);
-        Task<TyreStrategy> GetTyreStratById(int id);
+        Task<TyreStrategy> GetTyreStratById(int id, bool includeTyresAndStrat = false);
         Task<Tyre> FirstOrDefaultTyre(Expression<Func<Tyre, bool>> predicate);
         Task AddTyre(Tyre tyre);
         Task AddStrategy(Strategy strategy);
         void UpdateTyre(Tyre tyre);
         void UpdateStrategy(Strategy strategy);
         Task AddTyreToStrategy(Strategy strategy, Tyre tyre, int applyNum);
-        void RemoveTyreFromStrategy(TyreStrategy strat);
+        void RemoveTyreFromStrategy(TyreStrategy strat, Strategy strategy);
         Task SaveChangesAsync();
     }
 
@@ -86,9 +86,12 @@ namespace FormuleCirkelEntity.Services
             return item;
         }
 
-        public async Task<TyreStrategy> GetTyreStratById(int id)
+        public async Task<TyreStrategy> GetTyreStratById(int id, bool includeTyresAndStrat = false)
         {
+            // Returns the tyrestrategy object, if a true bool is given then it includes the corresponding tyre and strategy
             var item = await _context.TyreStrategies
+                .If(includeTyresAndStrat, res => res.Include(tr => tr.Strategy))
+                .If(includeTyresAndStrat, res => res.Include(tr => tr.Tyre))
                 .FirstOrDefaultAsync(res => res.TyreStrategyId == id);
             return item;
         }
@@ -118,18 +121,23 @@ namespace FormuleCirkelEntity.Services
         {
             StratData.Update(strategy);
         }
-
+        /// TyreStrategy adds a new strategy option to an existing possible strategy for a race
+        /// <param name="applyNum">Int value that represents in which stint the new strategy option is applied</param>
         public async Task AddTyreToStrategy(Strategy strategy, Tyre tyre, int applyNum)
         {
             TyreStrategy newStrat = new TyreStrategy { Strategy = strategy, Tyre = tyre, StintNumberApplied = applyNum };
             await _context.AddAsync(newStrat);
         }
 
-        public void RemoveTyreFromStrategy(TyreStrategy strat)
+        public void RemoveTyreFromStrategy(TyreStrategy strat, Strategy strategy)
         {
+            if (strat is null || strategy is null) { throw new NullReferenceException(); }
+            // Subtract the usable length of the tyre from the total length of the strategy
+            strategy.RaceLen -= strat.Tyre.StintLen;
+            // Then the tyrestrategy object can be fully deleted
             _context.Remove(strat);
         }
-
+        // TBD
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

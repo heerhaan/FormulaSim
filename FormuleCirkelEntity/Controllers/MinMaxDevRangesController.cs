@@ -67,7 +67,7 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("MinMaxDevId,ValueKey,MinDev,MaxDev")] MinMaxDevRange minMaxDevRange)
         {
-            if (id != minMaxDevRange.MinMaxDevId)
+            if (minMaxDevRange is null || id != minMaxDevRange.MinMaxDevId)
             {
                 return NotFound();
             }

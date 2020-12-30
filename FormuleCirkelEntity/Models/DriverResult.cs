@@ -22,17 +22,17 @@ namespace FormuleCirkelEntity.Models
         public DNFCause DNFCause { get; set; }
         [EnumDataType(typeof(DSQCause))]
         public DSQCause DSQCause { get; set; }
-        // Modifiers for this race that apply every stint || maybe rethink, change or remove this since this is a bit weird
-        public int QualyMod { get; set; }
-        public int DriverRacePace { get; set; }
-        public int ChassisRacePace { get; set; }
-        public int EngineRacePace { get; set; }
-        public int MinRNG { get; set; }
-        public int MaxRNG { get; set; }
-        public int DriverRelMod { get; set; }
-        public int ChassisRelMod { get; set; }
-        public int MaxTyreWear { get; set; }
-        public int MinTyreWear { get; set; }
+        // Underneath is TBD
+        public int QualyMod { get; set; }           // Result of all trait modifiers
+        public int DriverRacePace { get; set; }     // Result of all trait modifiers
+        public int ChassisRacePace { get; set; }    // Result of all trait modifiers
+        public int EngineRacePace { get; set; }     // Result of all trait modifiers
+        public int MinRNG { get; set; }             // Result of all trait modifiers
+        public int MaxRNG { get; set; }             // Result of all trait modifiers
+        public int DriverRelMod { get; set; }       // Result of all trait modifiers
+        public int ChassisRelMod { get; set; }      // Result of all trait modifiers
+        public int MaxTyreWear { get; set; }        // Result of all trait modifiers
+        public int MinTyreWear { get; set; }        // Result of all trait modifiers
 
         public int SeasonDriverId { get; set; }
         public SeasonDriver SeasonDriver { get; set; }

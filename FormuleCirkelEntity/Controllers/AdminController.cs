@@ -8,6 +8,7 @@ using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -19,9 +20,14 @@ namespace FormuleCirkelEntity.Controllers
             : base(context, userManager)
         { }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(_userManager.Users.ToList());
+            // Get the users, albeit not through the usermanager because of wanting to use Includes
+            var users = await _context.Users
+                .Include(res => res.Drivers)
+                .Include(res => res.Teams)
+                .ToListAsync();
+            return View(users);
         }
 
         public ViewResult Create() => View();
@@ -33,7 +39,9 @@ namespace FormuleCirkelEntity.Controllers
             {
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
+                {
                     return RedirectToAction("Index");
+                }
                 else
                 {
                     foreach (var error in result.Errors)
@@ -46,9 +54,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Modify(string userId)
         {
             var simuser = await _userManager.FindByIdAsync(userId);
-            if (simuser is null)
-                return NotFound();
-
+            if (simuser is null) { return NotFound(); }
             return View(simuser);
         }
 
@@ -65,7 +71,9 @@ namespace FormuleCirkelEntity.Controllers
                     Errors(result);
             }
             else
+            {
                 ModelState.AddModelError("", "User couldn't be found");
+            }
 
             return View("Index");
         }

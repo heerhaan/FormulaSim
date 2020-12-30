@@ -51,7 +51,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([Bind]LoginModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model != null)
             {
                 SimUser user = await _userManager.FindByNameAsync(model.Username);
                 // This doesn't count login failures towards account lockout
@@ -242,7 +242,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordModel resetPasswordModel)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || resetPasswordModel is null)
             {
                 return View();
             }

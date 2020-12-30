@@ -126,8 +126,10 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> RemoveTyreStrategy(int tyreStratId, int strategyId)
         {
-            var tyreStrat = await _tyreStrats.GetTyreStratById(tyreStratId);
-            _tyreStrats.RemoveTyreFromStrategy(tyreStrat);
+            var strategy = await _tyreStrats.GetStrategyById(strategyId);
+            var tyreStrat = await _tyreStrats.GetTyreStratById(tyreStratId, true);
+            _tyreStrats.RemoveTyreFromStrategy(tyreStrat, strategy);
+            _tyreStrats.UpdateStrategy(strategy);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(StrategyCreate), new { id = strategyId });
         }
