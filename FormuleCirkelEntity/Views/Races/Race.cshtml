@@ -20,7 +20,7 @@
     }
 
     <div id="graphic" class="flex-row">
-        <h1>@Model.Race.Name</h1>
+        <h1>@Html.DisplayFor(model => model.Year) - Round @Html.DisplayFor(model => model.Race.Round) - @Model.Race.Name</h1>
         <i id="weather" class="ml-auto fas"></i>
         <table id="results" class="ctable fullborder fullwidth">
             <thead>
@@ -76,8 +76,8 @@
                             }
                         </td>
                         <td data-field="tyre">
-                            <span class="custom-badge" style="background-color:@(driverResult.CurrTyre.TyreColour);">
-                                [@driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper()] @driverResult.TyreLife
+                            <span class="custom-badge" style="background-color:@Html.DisplayText(driverResult.CurrTyre.TyreColour);">
+                                [@Html.DisplayText(driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper())] @driverResult.TyreLife
                             </span>
                         </td>
                         @foreach (var stint in Model.Race.Stints)

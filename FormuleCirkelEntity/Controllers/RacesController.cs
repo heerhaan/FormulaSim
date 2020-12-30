@@ -202,6 +202,7 @@ namespace FormuleCirkelEntity.Controllers
                 DriverResults = drivers,
                 Power = power,
                 SeasonId = currentSeason.SeasonId,
+                Year = currentSeason.SeasonNumber,
                 SeasonState = currentSeason.State,
                 PointsPerPosition = currentSeason.PointsPerPosition,
                 MaxPos = currentSeason.PointsPerPosition.Keys.Max(),
