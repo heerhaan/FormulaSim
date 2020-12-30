@@ -89,6 +89,7 @@ namespace FormuleCirkelEntity
             services.AddScoped(typeof(IChampionshipService), typeof(ChampionshipService));
             services.AddScoped(typeof(IDriverService), typeof(DriverService));
             services.AddScoped(typeof(IEngineService), typeof(EngineService));
+            services.AddScoped(typeof(IRaceService), typeof(RaceService));
             services.AddScoped(typeof(ITeamService), typeof(TeamService));
             services.AddScoped(typeof(ITrackService), typeof(TrackService));
             services.AddScoped(typeof(ISeasonService), typeof(SeasonService));

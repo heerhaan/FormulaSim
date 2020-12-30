@@ -1,12 +1,88 @@
-﻿using FormuleCirkelEntity.Models;
+﻿using FormuleCirkelEntity.DAL;
+using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Extensions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Services
 {
-    public static class RaceService
+    public interface IRaceService
     {
+        IQueryable<Race> GetRaceQuery();
+        Task<IList<Race>> GetRacesAsync();
+        Task<Race> GetRaceByIdAsync(int id, bool withStints = false);
+        Task<Race> FirstOrDefaultAsync(Expression<Func<Race, bool>> predicate);
+        Task AddAsync(Race race);
+        void Update(Race race);
+        Task<Race> GetLastRace(int championshipId, int trackId);
+        Task SaveChangesAsync();
+    }
+
+    public class RaceService : IRaceService
+    {
+        private readonly FormulaContext _context;
+        private DbSet<Race> Data { get; }
+
+        public RaceService(FormulaContext context)
+        {
+            _context = context;
+            Data = _context.Set<Race>();
+        }
+
+        public IQueryable<Race> GetRaceQuery()
+        {
+            return Data;
+        }
+
+        public async Task<IList<Race>> GetRacesAsync()
+        {
+            var races = await Data.AsNoTracking().ToListAsync();
+            return races;
+        }
+
+        public async Task<Race> GetRaceByIdAsync(int id, bool withStints = false)
+        {
+            var race = await Data.AsNoTracking()
+                .If(withStints, res => res.Include(r => r.Stints))
+                .FirstOrDefaultAsync(res => res.RaceId == id);
+            return race;
+        }
+
+        public async Task<Race> FirstOrDefaultAsync(Expression<Func<Race, bool>> predicate)
+        {
+            return await Data.AsNoTracking().FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task AddAsync(Race race)
+        {
+            await Data.AddAsync(race);
+        }
+
+        public void Update(Race race)
+        {
+            Data.Update(race);
+        }
+
+        public async Task<Race> GetLastRace(int championshipId, int trackId)
+        {
+            var lastRace = await Data
+                .AsNoTracking()
+                .Where(r => r.Season.ChampionshipId == championshipId && r.TrackId == trackId)
+                .Include(r => r.Stints)
+                .Include(r => r.Track)
+                .LastOrDefaultAsync();
+            return lastRace;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
         public static void SetDriverTraitMods(DriverResult driver, IEnumerable<DriverTrait> driverTraits)
         {
             // Null-check, since I don't like warnings
