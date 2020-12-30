@@ -6,7 +6,6 @@
 
 <div class="d-inline-block w-60">
     <h1>Team reliability</h1>
-
     <div class="flex-row mb-1">
         <div>
             <button id="develop" class="btn">Develop</button>
@@ -14,7 +13,6 @@
             <input id="max" class="input-style fullheight" type="number" placeholder="Max. RNG" />
         </div>
     </div>
-
     <table id="graphic" class="ctable fullborder fullwidth">
         <thead class="fullborder">
             <tr>
@@ -48,14 +46,14 @@
         </tbody>
     </table>
     <button id="save" class="btn fullwidth">Save</button>
-
     <div class="flex-row justify-content-between">
         <a class="btn" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
             <i class="fas fa-arrow-alt-circle-left"></i> Back
         </a>
-        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+            <i class="fas fa-image fa-2x"></i>
+        </button>
     </div>
-
     <div id="screenshot"></div>
 </div>
 
@@ -79,7 +77,6 @@
 
                 number = (number + 1);
             });
-
             $("#save").show();
         });
 
@@ -95,7 +92,6 @@
 
                 number = (number + 1);
             });
-
             $.ajax({
                 type: "POST",
                 url: "/Season/SaveTeamReliabilityDev",

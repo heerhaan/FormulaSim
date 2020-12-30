@@ -38,8 +38,12 @@
         </tbody>
     </table>
 
-    <div class="row justify-content-between mb-1">
-        <h3>Add traits</h3>
+    <h3>Add traits</h3>
+    <div class="flex-row justify-content-between mb-1">
+        <form method="POST">
+            <input id="randomInput" type="hidden" name="traitId" />
+            <input id="randomSubmit" type="submit" class="btn fullwidth" value="Random" />
+        </form>
         <a asp-controller="Traits" asp-action="Create" class="btn">New trait</a>
     </div>
     <table class="ctable fullborder fullwidth">
@@ -81,3 +85,16 @@
         </a>
     </div>
 </div>
+
+<script>
+    window.onload = function () {
+        var traits = @(Json.Serialize(Model.Traits.Select(t => t.TraitId)));
+        if (traits.length == 0) {
+            document.getElementById("randomSubmit").style.display = "none";
+        }
+        else {
+            const randomId = traits[Math.floor(Math.random() * traits.length)];
+            document.getElementById("randomInput").value = randomId;
+        }
+    }
+</script>

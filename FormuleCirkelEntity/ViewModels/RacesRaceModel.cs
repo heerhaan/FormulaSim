@@ -12,6 +12,7 @@ namespace FormuleCirkelEntity.ViewModels
         public IList<DriverResult> DriverResults { get; set; }
         public IList<int> Power { get; set; }
         public int SeasonId { get; set; }
+        public int Year { get; set; }
         public SeasonState SeasonState { get; set; }
         public IDictionary<int, int?> PointsPerPosition { get; set; }
         public int MaxPos { get; set; }

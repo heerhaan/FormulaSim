@@ -20,7 +20,7 @@
                     <span asp-validation-for="Reliability" class="text-danger"></span>
                 </div>
                 <div class="col-2">
-                    <button type="button" class="btn" onclick="reldev()" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipSeasonDriverRandomRelRoll>
+                    <button type="button" class="btn" onclick="reldev()" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipSeasonDriverRandomRelRoll">
                         <i class="fas fa-dice"></i>
                     </button>
                 </div>
@@ -31,7 +31,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DriverStatus" class="control-label float-left">Status in team</label>
-                <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title=@Constants.ToolTipSeasonDriverTeamStatus></i>
+                <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipSeasonDriverTeamStatus"></i>
                 @Html.DropDownListFor(model => model.DriverStatus, new SelectList(Enum.GetValues(typeof(DriverStatus))), new { @class = "form-control" })
                 <span asp-validation-for="DriverStatus" class="text-danger"></span>
             </div>

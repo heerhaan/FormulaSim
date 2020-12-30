@@ -130,7 +130,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeAccount(ChangeAccountModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || model is null)
             {
                 return View();
             }

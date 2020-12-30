@@ -138,7 +138,7 @@ namespace FormuleCirkelEntity.Controllers
 
             if (driver is null || trait is null)
                 return NotFound();
-
+                
             await _traits.AddTraitToDriver(driver, trait);
             _drivers.Update(driver);
             _traits.Update(trait);

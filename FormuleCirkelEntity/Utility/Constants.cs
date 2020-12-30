@@ -22,7 +22,6 @@
         public static string ToolTipStintEventLowerRng { get { return "Lowest possible RNG for a stint"; } }
         public static string ToolTipStintEventUpperRng { get { return "Highest possible RNG for a stint"; } }
         public static string ToolTipSeasonDriverRandomRelRoll { get { return "RNG for this roll is between 90 and 98"; } }
-        public static string ToolTipSeasonDriverTireType { get { return "Soft tires get +10 when tyre bonus applies in stint but will get [-20 to 0] RNG when tyre wear applies."; } } 
         public static string ToolTipSeasonDriverTeamStatus { get { return "First drivers swaps positions with their second driver if one position behind. Also gives +2/-2 to chassis."; } }
     }
 }

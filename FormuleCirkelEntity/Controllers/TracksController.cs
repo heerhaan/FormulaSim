@@ -73,6 +73,7 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             TrackTrait newTrait = new TrackTrait { Track = track, Trait = trait };
+            DataService.Update(track);
             await _context.AddAsync(newTrait);
             await _context.SaveChangesAsync();
 
