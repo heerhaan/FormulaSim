@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace FormuleCirkelEntity.Services
     {
         IQueryable<Season> GetSeasonsQuery();
         Task<IList<Season>> GetSeasons();
-        Task<Season> GetSeasonById(int id);
+        Task<Season> GetSeasonById(int id, bool withRace = false, bool withDriver = false);
         Task<Season> FirstOrDefault(Expression<Func<Season, bool>> predicate);
         Task Add(Season season);
         void Update(Season season);
@@ -42,11 +43,13 @@ namespace FormuleCirkelEntity.Services
             return seasons;
         }
 
-        public async Task<Season> GetSeasonById(int id)
+        public async Task<Season> GetSeasonById(int id, bool withRace = false, bool withDriver = false)
         {
-            var item = await Data.AsNoTracking()
+            var season = await Data.AsNoTracking()
+                .If(withRace, res => res.Include(s => s.Races))
+                .If(withDriver, res => res.Include(s => s.Drivers))
                 .FirstOrDefaultAsync(res => res.SeasonId == id);
-            return item;
+            return season;
         }
 
         public async Task<Season> FirstOrDefault(Expression<Func<Season, bool>> predicate)

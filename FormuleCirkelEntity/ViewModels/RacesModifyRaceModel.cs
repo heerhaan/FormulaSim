@@ -10,6 +10,7 @@ namespace FormuleCirkelEntity.ViewModels
     {
         public int SeasonId { get; set; }
         public int TrackId { get; set; }
+        public string TrackName { get; set; }
         public IList<Stint> RaceStints { get; } = new List<Stint>();
     }
 }

@@ -20,40 +20,43 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class RacesController : FormulaController
     {
+        private readonly IRaceService _raceService;
+        private readonly ISeasonService _seasonService;
+        private readonly ITrackService _trackService;
         private readonly RaceResultGenerator _resultGenerator;
         private readonly RaceBuilder _raceBuilder;
         private static readonly Random rng = new Random();
 
         public RacesController(FormulaContext context, 
-            UserManager<SimUser> userManager, 
+            UserManager<SimUser> userManager,
+            IRaceService raceService,
+            ISeasonService seasonService,
+            ITrackService trackService,
             RaceResultGenerator raceResultGenerator, 
             RaceBuilder raceBuilder)
             : base(context, userManager)
         {
+            _raceService = raceService;
+            _seasonService = seasonService;
+            _trackService = trackService;
             _resultGenerator = raceResultGenerator;
             _raceBuilder = raceBuilder;
         }
 
+        // [ADVICE]: Consider developing a viewmodel for this method
         [Authorize(Roles = "Admin")]
         [Route("Season/{id}/[Controller]/Add/")]
-        public async Task<IActionResult> AddTracks(int? id)
+        public async Task<IActionResult> AddTracks(int id)
         {
-            var season = await _context.Seasons
-                .AsNoTracking()
-                .Include(s => s.Races)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
-
+            // Gets the current season and returns a "wow cant see shizzle" when it isnt found
+            var season = await _seasonService.GetSeasonById(id, true);
             if (season == null)
                 return NotFound();
 
             var existingTrackIds = season.Races
                 .Select(r => r.TrackId)
                 .ToList();
-            var unusedTracks = _context.Tracks
-                .Where(t => !existingTrackIds.Contains(t.Id))
-                .OrderBy(t => t.Location)
-                .OrderBy(t => t.Location)
-                .ToList();
+            var unusedTracks = await _trackService.GetUnusedTracks(existingTrackIds);
 
             ViewBag.seasonId = id;
             return View(unusedTracks);
@@ -61,82 +64,57 @@ namespace FormuleCirkelEntity.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("Season/{id}/[Controller]/Add/")]
-        public async Task<IActionResult> AddTracks(int? id, [Bind("TrackId")] int trackId)
+        public async Task<IActionResult> AddTracks(int id, [Bind("TrackId")] int trackId)
         {
-            var track = await _context.Tracks.SingleOrDefaultAsync(m => m.Id == trackId);
-
-            var season = await _context.Seasons
-                .Include(s => s.Races)
-                .Include(s => s.Drivers)
-                .SingleOrDefaultAsync(s => s.SeasonId == id);
-
+            var track = await _trackService.GetEntityById(trackId);
+            var season = await _seasonService.GetSeasonById(id, true, true);
             if (track == null || season == null)
                 return NotFound();
 
             // Finds the last time track was used and uses same stintsetup as then
-            var lastracemodel = _context.Races
-                .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
-                .Include(r => r.Stints)
-                .Include(r => r.Track)
-                .ToList()
-                .LastOrDefault(lr => lr.Track.Id == track.Id);
-
+            var lastracemodel = await _raceService.GetLastRace(season.ChampionshipId, trackId);
+            Race race;
             if(lastracemodel != null)
             {
                 var stintlist = lastracemodel.Stints;
-                var race = _raceBuilder
-                .InitializeRace(track, season)
-                .AddModifiedStints(stintlist)
-                .GetResultAndRefresh();
-
-                race.Weather = Helpers.RandomWeather();
-                season.Races.Add(race);
-                await _context.SaveChangesAsync();
+                race = _raceBuilder
+                    .InitializeRace(track, season)
+                    .AddModifiedStints(stintlist)
+                    .GetResultAndRefresh();
             }
             else
             {
-                var race = _raceBuilder
-                .InitializeRace(track, season)
-                .AddDefaultStints()
-                .GetResultAndRefresh();
-
-                race.Weather = Helpers.RandomWeather();
-                season.Races.Add(race);
-                await _context.SaveChangesAsync();
+                race = _raceBuilder
+                    .InitializeRace(track, season)
+                    .AddDefaultStints()
+                    .GetResultAndRefresh();
             }
-            
+
+            season.Races.Add(race);
+            _seasonService.Update(season);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(AddTracks), new { id });
         }
 
         [Authorize(Roles = "Admin")]
-        public IActionResult ModifyRace(int id, int trackId)
+        public async Task<IActionResult> ModifyRace(int id, int trackId)
         {
+            var season = await _seasonService.GetSeasonById(id);
+            var track = await _trackService.GetEntityById(trackId);
             var model = new RacesModifyRaceModel
             {
                 SeasonId = id,
-                TrackId = trackId
+                TrackId = trackId,
+                TrackName = track.Name,
             };
-
-            var season = _context.Seasons.SingleOrDefault(s => s.SeasonId == id);
-
-            // Finds the last time track was used and uses same stintsetup as then
-            var lastracemodel = _context.Races
-                .Where(r => r.Season.ChampionshipId == season.ChampionshipId)
-                .Include(r => r.Stints)
-                .Include(r => r.Track)
-                .ToList()
-                .LastOrDefault(lr => lr.Track.Id == trackId);
-
+            // Finds the last time track was used and uses same stintsetup as then if it exists
+            var lastracemodel = await _raceService.GetLastRace(season.ChampionshipId, trackId);
             if (lastracemodel != null)
             {
                 var stintlist = lastracemodel.Stints;
                 foreach (var stint in stintlist)
                     model.RaceStints.Add(stint);
             }
-
-            var track = _context.Tracks.SingleOrDefault(m => m.Id == trackId);
-            ViewBag.trackname = track.Name;
-
             return View(model);
         }
 
@@ -144,24 +122,20 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> ModifyRace(RacesModifyRaceModel raceModel)
         {
+            // Those gosh darn warnings against checking for nulls, but here we are
             if (raceModel == null)
                 return NotFound();
 
-            var track = await _context.Tracks
-                .SingleOrDefaultAsync(m => m.Id == raceModel.TrackId);
-
-            var season = await _context.Seasons
-                .Include(s => s.Races)
-                .Include(s => s.Drivers)
-                .SingleOrDefaultAsync(s => s.SeasonId == raceModel.SeasonId);
-
+            var track = await _trackService.GetEntityById(raceModel.TrackId);
+            var season = await _seasonService.GetSeasonById(raceModel.SeasonId, true, true);
+            // Add the created stints to the racebuilder so the race is correctly set up
             var race = _raceBuilder
                 .InitializeRace(track, season)
                 .AddModifiedStints(raceModel.RaceStints)
                 .GetResultAndRefresh();
 
-            race.Weather = Helpers.RandomWeather();
             season.Races.Add(race);
+            _seasonService.Update(season);
             await _context.SaveChangesAsync();
             return RedirectToAction("AddTracks", new { id = raceModel.SeasonId });
         }
@@ -169,16 +143,13 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Season/{id}/[Controller]/{raceId}")]
         public async Task<IActionResult> Race(int raceId)
         {
-            Race race = await _context.Races
-                .Include(r => r.Stints)
-                .SingleOrDefaultAsync(r => r.RaceId == raceId);
-
-            Season currentSeason = await _context.Seasons
-                .SingleOrDefaultAsync(s => s.SeasonId == race.SeasonId);
-
-            var drivers = await _context.DriverResults
-                .Where(dr => dr.RaceId == raceId)
+            var race = await _raceService.GetRaceByIdAsync(raceId, true);
+            var trackSpec = await _trackService.GetTrackSpecification(race.TrackId);
+            var currentSeason = await _seasonService.GetSeasonById(race.SeasonId);
+            var queryDrivers = _raceService.GetDriverResultQuery();
+            var drivers = await queryDrivers
                 .IgnoreQueryFilters()
+                .Where(dr => dr.RaceId == raceId)
                 .Include(dr => dr.CurrTyre)
                 .Include(dr => dr.StintResults)
                 .Include(dr => dr.SeasonDriver)
@@ -187,31 +158,35 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(st => st.Engine)
                 .OrderBy(dr => dr.Position)
                 .ToListAsync();
-
-            Track track = _context.Tracks.SingleOrDefault(t => t.Id == race.TrackId);
-            IList<int> power = new List<int>();
+            // Racetitle is created from the year, round number and name of the race. Eventually gets added to the viewmodel
+            string raceTitle = $"{currentSeason.SeasonNumber} - Round {race.Round} - {race.Name}";
+            RacesRaceModel viewmodel = new RacesRaceModel
+            {
+                RaceId = raceId,
+                SeasonId = currentSeason.SeasonId,
+                Weather = race.Weather.ToString(),
+                PointsPerPosition = currentSeason.PointsPerPosition,
+                MaxPos = currentSeason.PointsPerPosition.Keys.Max(),
+                CountDrivers = drivers.Count,
+                FullRaceTitle = raceTitle,
+                ShowRaceButtons = (race.RaceState == RaceState.Race),
+                IsAdmin = User.IsInRole(Constants.RoleAdmin)
+            };
+            // Fills the driverResults in the viewmodel and adds the total power ranking of the driver too
             foreach (var driver in drivers)
             {
                 int modifiers = (driver.DriverRacePace + driver.ChassisRacePace + driver.EngineRacePace);
-                power.Add(Helpers.GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
+                viewmodel.DriverResults.Add(driver);
+                viewmodel.Power.Add(Helpers.GetPowerDriver(driver.SeasonDriver, modifiers, trackSpec.ToString()));
             }
-
-            RacesRaceModel viewmodel = new RacesRaceModel
-            {
-                Race = race,
-                DriverResults = drivers,
-                Power = power,
-                SeasonId = currentSeason.SeasonId,
-                Year = currentSeason.SeasonNumber,
-                SeasonState = currentSeason.State,
-                PointsPerPosition = currentSeason.PointsPerPosition,
-                MaxPos = currentSeason.PointsPerPosition.Keys.Max(),
-                CountDrivers = drivers.Count
-            };
+            // Adds the stints of the race to the viewmodel
+            foreach (var stint in race.Stints)
+                viewmodel.RaceStints.Add(stint);
 
             return View(viewmodel);
         }
         
+        // [ADVICE]: Why isn't a viewmodel used here?
         [Route("Season/{id}/[Controller]/{raceId}/Preview")]
         public async Task<IActionResult> RacePreview(int raceId)
         {
@@ -300,14 +275,14 @@ namespace FormuleCirkelEntity.Controllers
                     {
                         // Gets the traits from the driver in the loop and sets them
                         var thisDriverTraits = driverTraits.Where(drt => drt.DriverId == driverRes.SeasonDriver.DriverId);
-                        RaceService.SetDriverTraitMods(driverRes, thisDriverTraits);
+                        RaceService.SetDriverTraitMods(driverRes, thisDriverTraits, race.Weather);
                         // Gets the seasonteam of the driver in the loop
                         var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
                         // Gets the traits from the team of the driver in the loop and sets them
                         var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
-                        RaceService.SetTeamTraitMods(driverRes, thisTeamTraits);
+                        RaceService.SetTeamTraitMods(driverRes, thisTeamTraits, race.Weather);
                         // Sets the traits from the track to the driver in the loop
-                        RaceService.SetTrackTraitMods(driverRes, trackTraits);
+                        RaceService.SetTrackTraitMods(driverRes, trackTraits, race.Weather);
 
                         // Set a random strategy
                         int stratIndex = rng.Next(0, strategies.Count);
@@ -333,8 +308,8 @@ namespace FormuleCirkelEntity.Controllers
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
             var drivers = await _context.DriverResults
-                .Where(dr => dr.RaceId == raceId)
                 .IgnoreQueryFilters()
+                .Where(dr => dr.RaceId == raceId)
                 .Include(dr => dr.Strategy)
                     .ThenInclude(dr => dr.Tyres)
                     .ThenInclude(dr => dr.Tyre)

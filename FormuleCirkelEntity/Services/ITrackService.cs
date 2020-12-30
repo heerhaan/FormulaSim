@@ -11,6 +11,8 @@ namespace FormuleCirkelEntity.Services
     public interface ITrackService : IDataService<Track>
     {
         Task<IList<Track>> GetArchivedTracks();
+        Task<IList<Track>> GetUnusedTracks(List<int> usedTrackIds);
+        Task<Specification> GetTrackSpecification(int trackId);
     }
 
     public class TrackService : DataService<Track>, ITrackService
@@ -27,6 +29,22 @@ namespace FormuleCirkelEntity.Services
                 .ToListAsync();
 
             return tracks;
+        }
+
+        public async Task<IList<Track>> GetUnusedTracks(List<int> usedTrackIds)
+        {
+            var tracks = await Data
+                .AsNoTracking()
+                .Where(t => !usedTrackIds.Contains(t.Id))
+                .OrderBy(t => t.Location)
+                .ToListAsync();
+            return tracks;
+        }
+
+        public async Task<Specification> GetTrackSpecification(int trackId)
+        {
+            var track = await Data.AsNoTracking().FirstOrDefaultAsync(res => res.Id == trackId);
+            return track.Specification;
         }
     }
 }

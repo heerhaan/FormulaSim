@@ -1,4 +1,5 @@
 ﻿using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Utility;
 using GuardNet;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace FormuleCirkelEntity.Builders
             _race.Track = track;
             _race.Season = season;
             _race.Round = season.Races.Count + 1;
+            _race.Weather = Helpers.RandomWeather();
             return this;
         }
 

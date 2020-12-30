@@ -27,6 +27,8 @@ namespace FormuleCirkelEntity.Models
         public int? ChassisReliability { get; set; }
         // The value that impacts the reliablity of the driver
         public int? DriverReliability { get; set; }
+        // Value which get's added when the current weather effect is either wet or storm
+        public int? WetWeatherPace { get; set; }
         // Impacts the maximum amount of wear a tyre can have
         public int? MaxTyreWear { get; set; }
         // Impacts the minimum amount of wear a tyre can have
