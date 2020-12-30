@@ -107,7 +107,7 @@ namespace FormuleCirkelEntity.Controllers
                 TrackId = trackId,
                 TrackName = track.Name,
             };
-            // Finds the last time track was used and uses same stintsetup as then
+            // Finds the last time track was used and uses same stintsetup as then if it exists
             var lastracemodel = await _raceService.GetLastRace(season.ChampionshipId, trackId);
             if (lastracemodel != null)
             {
@@ -144,12 +144,12 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Race(int raceId)
         {
             var race = await _raceService.GetRaceByIdAsync(raceId, true);
-
+            var trackSpec = await _trackService.GetTrackSpecification(race.TrackId);
             var currentSeason = await _seasonService.GetSeasonById(race.SeasonId);
-
-            var drivers = await _context.DriverResults
-                .Where(dr => dr.RaceId == raceId)
+            var queryDrivers = _raceService.GetDriverResultQuery();
+            var drivers = await queryDrivers
                 .IgnoreQueryFilters()
+                .Where(dr => dr.RaceId == raceId)
                 .Include(dr => dr.CurrTyre)
                 .Include(dr => dr.StintResults)
                 .Include(dr => dr.SeasonDriver)
@@ -158,27 +158,30 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(st => st.Engine)
                 .OrderBy(dr => dr.Position)
                 .ToListAsync();
-
-            var track = await _trackService.GetEntityById(race.TrackId);
-            IList<int> power = new List<int>();
+            // Racetitle is created from the year, round number and name of the race. Eventually gets added to the viewmodel
+            string raceTitle = $"{currentSeason.SeasonNumber} - Round {race.Round} - {race.Name}";
+            RacesRaceModel viewmodel = new RacesRaceModel
+            {
+                RaceId = raceId,
+                SeasonId = currentSeason.SeasonId,
+                Weather = race.Weather.ToString(),
+                PointsPerPosition = currentSeason.PointsPerPosition,
+                MaxPos = currentSeason.PointsPerPosition.Keys.Max(),
+                CountDrivers = drivers.Count,
+                FullRaceTitle = raceTitle,
+                ShowRaceButtons = (race.RaceState == RaceState.Race),
+                IsAdmin = User.IsInRole(Constants.RoleAdmin)
+            };
+            // Fills the driverResults in the viewmodel and adds the total power ranking of the driver too
             foreach (var driver in drivers)
             {
                 int modifiers = (driver.DriverRacePace + driver.ChassisRacePace + driver.EngineRacePace);
-                power.Add(Helpers.GetPowerDriver(driver.SeasonDriver, modifiers, track.Specification.ToString()));
+                viewmodel.DriverResults.Add(driver);
+                viewmodel.Power.Add(Helpers.GetPowerDriver(driver.SeasonDriver, modifiers, trackSpec.ToString()));
             }
-
-            RacesRaceModel viewmodel = new RacesRaceModel
-            {
-                Race = race,
-                DriverResults = drivers,
-                Power = power,
-                SeasonId = currentSeason.SeasonId,
-                Year = currentSeason.SeasonNumber,
-                SeasonState = currentSeason.State,
-                PointsPerPosition = currentSeason.PointsPerPosition,
-                MaxPos = currentSeason.PointsPerPosition.Keys.Max(),
-                CountDrivers = drivers.Count
-            };
+            // Adds the stints of the race to the viewmodel
+            foreach (var stint in race.Stints)
+                viewmodel.RaceStints.Add(stint);
 
             return View(viewmodel);
         }

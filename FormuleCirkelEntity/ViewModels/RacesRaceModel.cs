@@ -8,14 +8,17 @@ namespace FormuleCirkelEntity.ViewModels
 {
     public class RacesRaceModel
     {
-        public Race Race { get; set; }
-        public IList<DriverResult> DriverResults { get; set; }
-        public IList<int> Power { get; set; }
+        public int RaceId { get; set; }
         public int SeasonId { get; set; }
-        public int Year { get; set; }
-        public SeasonState SeasonState { get; set; }
+        public string Weather { get; set; }
         public IDictionary<int, int?> PointsPerPosition { get; set; }
         public int MaxPos { get; set; }
         public int CountDrivers { get; set; }
+        public string FullRaceTitle { get; set; }
+        public bool ShowRaceButtons { get; set; }
+        public bool IsAdmin { get; set; }
+        public IList<Stint> RaceStints { get; } = new List<Stint>();
+        public IList<DriverResult> DriverResults { get; } = new List<DriverResult>();
+        public IList<int> Power { get; } = new List<int>();
     }
 }

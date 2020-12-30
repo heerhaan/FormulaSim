@@ -19,6 +19,7 @@ namespace FormuleCirkelEntity.Services
         Task AddAsync(Race race);
         void Update(Race race);
         Task<Race> GetLastRace(int championshipId, int trackId);
+        IQueryable<DriverResult> GetDriverResultQuery();
         Task SaveChangesAsync();
     }
 
@@ -76,6 +77,11 @@ namespace FormuleCirkelEntity.Services
                 .Include(r => r.Track)
                 .LastOrDefaultAsync();
             return lastRace;
+        }
+
+        public IQueryable<DriverResult> GetDriverResultQuery()
+        {
+            return _context.DriverResults;
         }
 
         public async Task SaveChangesAsync()

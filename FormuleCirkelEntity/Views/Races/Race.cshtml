@@ -1,26 +1,22 @@
 ﻿@model FormuleCirkelEntity.ViewModels.RacesRaceModel
 @{
     ViewData["Title"] = "Race";
-    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block">
-    @if (Model.SeasonState == SeasonState.Progress)
-    {
-        <div class="flex-row justify-content-between">
-            @if (Model.Race.RaceState == RaceState.Race && isAdmin)
-            {
-                <a class="btn w-25" onclick="advanceStint()">Next stint</a>
+    <div class="flex-row justify-content-between">
+        @if (Model.ShowRaceButtons && Model.IsAdmin)
+        {
+            <a class="btn w-25" onclick="advanceStint()">Next stint</a>
 
-                <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.Race.RaceId)" id="finish" class="w-25">
-                    <input type="submit" value="Finish" class="btn fullwidth" />
-                </form>
-            }
-        </div>
-    }
+            <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish" class="w-25">
+                <input type="submit" value="Finish" class="btn fullwidth" />
+            </form>
+        }
+    </div>
 
     <div id="graphic" class="flex-row">
-        <h1>@Html.DisplayFor(model => model.Year) - Round @Html.DisplayFor(model => model.Race.Round) - @Model.Race.Name</h1>
+        <h1>@Html.DisplayFor(model => model.FullRaceTitle)</h1>
         <i id="weather" class="ml-auto fas"></i>
         <table id="results" class="ctable fullborder fullwidth">
             <thead>
@@ -32,7 +28,7 @@
                     <th class="fullborder">PWR</th>
                     <th class="fullborder">Grid</th>
                     <th class="fullborder">Tyre</th>
-                    @foreach (var stint in Model.Race.Stints)
+                    @foreach (var stint in Model.RaceStints)
                     {
                         <th class="fullborder" data-field="stintResultHeader-@stint.Number">
                             @stint.Number
@@ -76,21 +72,21 @@
                             }
                         </td>
                         <td data-field="tyre">
-                            <span class="custom-badge" style="background-color:@Html.DisplayText(driverResult.CurrTyre.TyreColour);">
-                                [@Html.DisplayText(driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper())] @driverResult.TyreLife
+                            <span class="custom-badge" style="background-color:@driverResult.CurrTyre.TyreColour;">
+                                [@driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper()] @driverResult.TyreLife
                             </span>
                         </td>
-                        @foreach (var stint in Model.Race.Stints)
+                        @foreach (var stint in Model.RaceStints)
                         {
                             var stintResult = driverResult.StintResults.First(res => res.Number == stint.Number);
                             <td data-field="stintResult-@stintResult.Number">
                                 @if (stintResult.StintStatus == StintStatus.Running)
                                 {
-                                    <span>@stintResult.Result.ToString()</span>
+                                    <span>@stintResult.Result</span>
                                 }
                                 else if (stintResult.StintStatus == StintStatus.Pitstop)
                                 {
-                                    <span style="color:red;">@stintResult.Result.ToString()</span>
+                                    <span style="color:red;">@stintResult.Result</span>
                                 }
                                 else { <span>-</span> }
                             </td>
@@ -162,7 +158,7 @@
 </div>
 
 <script>
-    const raceLen = @(Model.Race.Stints.Count);
+    const raceLen = @(Model.RaceStints.Count);
     const pointsPosition = @(Json.Serialize(Model.PointsPerPosition));
 
     const table = document.querySelector('#results');
@@ -173,7 +169,7 @@
     $(function () {
         // Appends the correct icon for the corresponding weather for the race
         var weatherclass = "";
-        switch ("@Model.Race.Weather") {
+        switch ("@Model.Weather") {
             case "Sunny":
                 weatherclass = "fa-sun fa-2x";
                 break;
@@ -276,7 +272,7 @@
     }
 
     function advanceStint() {
-        fetch("/Season/@Model.SeasonId/Races/@Model.Race.RaceId/Advance", { method: "POST" })
+        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/Advance", { method: "POST" })
             .then(response => response.json())
             .then(result => processStintResponse(result));
     }
@@ -395,7 +391,7 @@
             options: {
                 title: {
                     display: true,
-                    text: '@Model.Race.Name',
+                    text: '@Model.FullRaceTitle',
                     fontColor: '#e6e6e6'
                 },
                 tooltips: {
@@ -470,7 +466,7 @@
     }
 
     function getCurrentResults() {
-        fetch("/Season/@Model.SeasonId/Races/@Model.Race.RaceId/getResults", { method: "POST" })
+        fetch("/Season/@Model.SeasonId/Races/@Model.RaceId/getResults", { method: "POST" })
             .then(response => response.json())
             .then(result => drawRaceChart(result));
     }
