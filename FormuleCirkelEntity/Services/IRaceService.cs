@@ -75,7 +75,8 @@ namespace FormuleCirkelEntity.Services
                 .Where(r => r.Season.ChampionshipId == championshipId && r.TrackId == trackId)
                 .Include(r => r.Stints)
                 .Include(r => r.Track)
-                .LastOrDefaultAsync();
+                .OrderByDescending(r => r.RaceId)
+                .FirstOrDefaultAsync();
             return lastRace;
         }
 
