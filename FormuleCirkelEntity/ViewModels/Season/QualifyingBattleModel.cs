@@ -7,5 +7,6 @@ namespace FormuleCirkelEntity.ViewModels
     {
         public Dictionary<int, int> QualyBattles { get; set; }
         public IEnumerable<SeasonTeam> Teams { get; set; }
+        public int SeasonId { get; set; }
     }
 }

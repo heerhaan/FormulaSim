@@ -28,7 +28,7 @@
                         @if (!first)
                         {
                             <td> - </td>
-}
+                        }
                         <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.Driver.Country) ff-sm flag-margin"></span>@driver.Driver.Name</span></td>
                         <td class="bigger-text">@Model.QualyBattles[driver.SeasonDriverId]</td>
                         first = false;
@@ -37,7 +37,13 @@
             }
         </tbody>
     </table>
-    <button class="btn float-left" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
-        <i class="fas fa-image fa-2x"></i>
-    </button>
+    <div class="flex-row justify-content-between mb-1">
+        <a class="btn" asp-action="Detail" asp-route-id="@Model.SeasonId">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+            <i class="fas fa-image fa-2x"></i>
+        </button>
+    </div>
+    <div id="screenshot"></div>
 </div>

@@ -943,18 +943,21 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> QualifyingBattle(int seasonId)
         {
             var races = await _context.Races
+                .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == seasonId)
                 .Include(r => r.DriverResults)
                 .ToListAsync();
 
             var drivers = await _context.SeasonDrivers
+                .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == seasonId)
                 .Select(sd => sd.SeasonDriverId)
                 .ToListAsync();
 
             var teams = await _context.SeasonTeams
+                .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == seasonId)
                 .Include(st => st.SeasonDrivers)
@@ -981,7 +984,7 @@ namespace FormuleCirkelEntity.Controllers
                     Battles[qualyWinner.SeasonDriverId] += 1;
                 }
             }
-            return View(new QualifyingBattleModel { QualyBattles = Battles, Teams = teams });
+            return View(new QualifyingBattleModel { QualyBattles = Battles, Teams = teams, SeasonId = seasonId });
         }
     }
 

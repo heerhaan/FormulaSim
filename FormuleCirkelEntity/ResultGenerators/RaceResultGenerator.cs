@@ -83,7 +83,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             {
                 // Add one because Random.Next() has an exclusive upper bound.
                 int result = _rng.Next((stint.RNGMinimum + driverResult.MinRNG), (stint.RNGMaximum + weatherRNG + driverResult.MaxRNG) + 1);
-                
+                // In here we loop through the strategy of the driver to see if it is time for a pitstop
                 foreach (var tyreStrat in driverResult.Strategy.Tyres.OrderBy(t => t.StintNumberApplied))
                 {
                     // The value for the tyre in iteration matches the current stint number, so it is time for a pitstop
@@ -94,18 +94,15 @@ namespace FormuleCirkelEntity.ResultGenerators
                         stintResult.StintStatus = StintStatus.Pitstop;
                     }
                 }
-                // Deals with the tyre wear for this driver and changes tyres if it is needed
-                result += driverResult.TyreLife;
-                // Current status tells us the driver is still running so we apply some of the wear to the tyre
-                if (stintResult.StintStatus == StintStatus.Running)
-                {
-                    driverResult.TyreLife += _rng.Next((driverResult.CurrTyre.MaxWear + driverResult.MaxTyreWear),(driverResult.CurrTyre.MinWear + driverResult.MinTyreWear));
-                }
                 // Current status tells us there is a pitstop so calculate pitstop RNG over the result
-                else if (stintResult.StintStatus == StintStatus.Pitstop)
+                if (stintResult.StintStatus == StintStatus.Pitstop)
                 {
                     result += _rng.Next(pitMin, pitMax + 1);
                 }
+                // Deals with the tyre wear for this driver and changes tyres if it is needed
+                result += driverResult.TyreLife;
+                // Current status tells us the driver is still running so we apply some of the wear to the tyre
+                driverResult.TyreLife += _rng.Next((driverResult.CurrTyre.MaxWear + driverResult.MaxTyreWear), (driverResult.CurrTyre.MinWear + driverResult.MinTyreWear));               
 
                 // Applies the qualifying bonus based on the amount of drivers for the current stint
                 if (stint.ApplyQualifyingBonus)
@@ -192,7 +189,8 @@ namespace FormuleCirkelEntity.ResultGenerators
                     if (index != 0)
                     {
                         var aboveDriver = driverResults[(index - 1)];
-                        if (driver.SeasonDriver.SeasonTeam == aboveDriver.SeasonDriver.SeasonTeam)
+                        if (driver.SeasonDriver.SeasonTeamId == aboveDriver.SeasonDriver.SeasonTeamId 
+                            && aboveDriver.SeasonDriver.DriverStatus == DriverStatus.Second)
                         {
                             int firstDriverPoints = driver.Points;
                             driver.Points = aboveDriver.Points;
@@ -204,12 +202,12 @@ namespace FormuleCirkelEntity.ResultGenerators
 
             // Quickly sort all the driverResults again
             driverResults.Sort((l, r) => -1 * l.Points.CompareTo(r.Points));
-            int position = 0;
+            int position = 1;
             foreach (var result in driverResults)
             {
-                position++;
                 result.Position = position;
                 result.StintResults.Single(sr => sr.Number == stintProgress).Position = position;
+                position++;
             }
         }
     }
