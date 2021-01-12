@@ -187,7 +187,7 @@ var isoCountries = [
 		"text": "Burkina Faso"
 	},
 	{
-		"id": "BU",
+		"id": "BI",
 		"text": "Burundi"
 	},
 	{
@@ -313,10 +313,6 @@ var isoCountries = [
 	{
 		"id": "EU",
 		"text": "Europe"
-	},
-	{
-		"id": "FK",
-		"text": "Falkland Islands"
 	},
 	{
 		"id": "FO",
@@ -723,7 +719,7 @@ var isoCountries = [
 		"text": "Rwanda"
 	},
 	{
-		"id": "re",
+		"id": "RE",
 		"text": "Réunion"
 	},
 	{
