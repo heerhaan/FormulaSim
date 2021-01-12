@@ -10,10 +10,15 @@ namespace FormuleCirkelEntity.Models
         public int SeasonDriverId { get; set; }
         public int Skill { get; set; }
         public int Reliability { get; set; }
+        // Defines if a driver has #1, #2 or neutral status in a team
         [EnumDataType(typeof(DriverStatus))]
         public DriverStatus DriverStatus { get; set; }
+        // Defines if a driver is dropped from his team at this moment
         public bool Dropped { get; set; }
+        // How many championship points the driver has scored over the season
         public int Points { get; set; }
+        // Used to determine the placed position of a driver after sorting to points
+        public double HiddenPoints { get; set; }
 
         public int DriverId { get; set; }
         public Driver Driver { get; set; }

@@ -57,6 +57,7 @@ namespace FormuleCirkelEntity.Controllers
                     .Include(s => s.Driver)
                     .Include(s => s.SeasonTeam)
                     .OrderByDescending(s => s.Points)
+                        .ThenByDescending(s => s.HiddenPoints)
                     .ToList();
 
                 var rounds = _context.Races

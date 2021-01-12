@@ -514,6 +514,14 @@ namespace FormuleCirkelEntity.Controllers
                 {
                     points += season.PolePoints;
                 }
+                if (result.Status == Status.Finished)
+                {
+                    // Base value is a 1 with 19 zeroes
+                    double baseVal = 10000000000000000000;
+                    double divider = (Math.Pow(10, result.Position)) / 10;
+                    double hiddenPoint = baseVal / divider;
+                    result.SeasonDriver.HiddenPoints += hiddenPoint;
+                }
                 result.SeasonDriver.Points += points;
                 result.SeasonDriver.SeasonTeam.Points += points;
                 _context.UpdateRange(result.SeasonDriver, result.SeasonDriver.SeasonTeam);
@@ -522,7 +530,6 @@ namespace FormuleCirkelEntity.Controllers
             race.RaceState = RaceState.Finished;
             _context.Update(race);
             await _context.SaveChangesAsync();
-
             return RedirectToAction("DriverStandings", "Home");
         }
 
