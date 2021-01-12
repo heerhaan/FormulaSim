@@ -15,28 +15,28 @@
         }
     </div>
 
-    <div id="graphic" class="flex-row">
+    <div id="graphic" class="flex-row justify-content-center">
         <h1>@Html.DisplayFor(model => model.FullRaceTitle)</h1>
         <i id="weather" class="ml-auto fas"></i>
-        <table id="results" class="ctable fullborder fullwidth">
+        <table id="results" class="ctable fullborder">
             <thead>
                 <tr>
-                    <th class="fullborder" data-field="position">Pos.</th>
-                    <th class="fullborder">Nr.</th>
-                    <th class="fullborder">Name</th>
-                    <th class="fullborder">Team</th>
-                    <th class="fullborder">PWR</th>
-                    <th class="fullborder">Grid</th>
-                    <th class="fullborder">Tyre</th>
+                    <th class="fullborder th-sm" data-field="position">Pos.</th>
+                    <th class="fullborder th-sm">Nr.</th>
+                    <th class="fullborder th-lg">Name</th>
+                    <th class="fullborder th-xl">Team</th>
+                    <th class="fullborder th-sm">PWR</th>
+                    <th class="fullborder th-sm">Grid</th>
+                    <th class="fullborder th-sm">Tyre</th>
                     @foreach (var stint in Model.RaceStints)
                     {
-                        <th class="fullborder" data-field="stintResultHeader-@stint.Number">
+                        <th class="fullborder th-sm" data-field="stintResultHeader-@stint.Number">
                             @stint.Number
                         </th>
                     }
-                    <th class="fullborder" data-field="pointsTotal">Score</th>
-                    <th class="fullborder">Gap</th>
-                    <th class="fullborder">Pts.</th>
+                    <th class="fullborder th-sm" data-field="pointsTotal">Score</th>
+                    <th class="fullborder th-md">Gap</th>
+                    <th class="fullborder th-sm">Pts.</th>
                     <th style="display:none;"></th>
                     <th style="display:none;"></th>
                 </tr>
@@ -50,7 +50,7 @@
                         <td data-field="driverNumber"><span class="custom-badge badge-team fullwidth font-size-default" 
                                                             style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
                             @driverResult.SeasonDriver.Driver.DriverNumber</span></td>
-                        <td class="text-left" data-field="driverName"><span class="ml-cel result-click" style="cursor:pointer;"><span class="flag flag-@(driverResult.SeasonDriver.Driver.Country) ff-sm flag-margin"></span>
+                        <td class="text-left" data-field="driverName"><span class="ml-cel result-click" style="cursor:pointer;"><span data-field="driverFlag" class="flag flag-@(driverResult.SeasonDriver.Driver.Country) ff-sm flag-margin"></span>
                             @driverResult.SeasonDriver.Driver.Name
                               </span></td>
                         <td data-field="teamName"><span class="custom-badge badge-team fullwidth font-size-default" 
@@ -72,7 +72,7 @@
                             }
                         </td>
                         <td data-field="tyre">
-                            <span class="custom-badge" style="background-color:@driverResult.CurrTyre.TyreColour;">
+                            <span class="custom-badge fullwidth" style="background-color:@driverResult.CurrTyre.TyreColour;">
                                 [@driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper()] @driverResult.TyreLife
                             </span>
                         </td>
@@ -141,7 +141,10 @@
             <div id="divider"></div>
 
             <div id="details">
-                <div id="name">Firstname Lastname</div>
+                <div class="flex-row">
+                    <div id="name">Firstname Lastname</div>
+                    <div id="flag" class="flag flag-JR ff-xl"></div>
+                </div>
                 <div id="team">Racing Team</div>
             </div>
 
@@ -232,7 +235,7 @@
                 row.querySelector("td[data-field='dnfCause']").innerText = "-";
             }
 
-            row.querySelector("td[data-field='tyre']").innerHTML = "<span class='custom-badge' style='background-color:" + driverResult.CurrTyre.TyreColour + ";'>[" + driverResult.CurrTyre.TyreName.substring(0, 1) + "] " + driverResult.TyreLife + "</span>";
+            row.querySelector("td[data-field='tyre']").innerHTML = "<span class='custom-badge badge-tyre' style='background-color:" + driverResult.CurrTyre.TyreColour + ";'>[" + driverResult.CurrTyre.TyreName.substring(0, 1) + "] " + driverResult.TyreLife + "</span>";
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
             let gridChange = (driverResult.Grid - driverResult.Position);
             if (gridChange > 0) {
@@ -307,11 +310,12 @@
         var row = $(this).closest("tr");
         var position = row.find("td[data-field='position']").text();
         var name = row.find("td[data-field='driverName']").text();
+        var flag = row.find("span[data-field='driverFlag']").attr('class').split(' ')[1];
         var number = row.find("td[data-field='driverNumber']").text();
         var team = row.find("td[data-field='fullTeamName']").text();
         var tla = row.find("td[data-field='abbreviation']").text();
         var colour = row.find("td[data-field='teamName']").find("span").css("background-color");
-        var dnf = row.find("td[data-field='dnfCause']").text();
+        var dnf = row.find("td[data-field='pointsTotal']").text();
 
         if (name == $('#name').text()) {
             colour = row.find("td[data-field='teamName']").find("span").css("color");
@@ -319,14 +323,14 @@
 
         $('#position').text(position);
         $('#name').text(name);
+        $('#flag').removeClass('flag-JR');
+        $('#flag').addClass(flag);
         $('#tla').text(tla);
         $('#team').text(team);
         $('#number').text(number);
         $('#divider').css('background-color', colour);
         $('#extra').css('color', colour);
-        if (dnf !== "-") {
-            $('#position').removeClass('eliminated');
-        } else {
+        if (dnf !== "DNF" || dnf !== "DSQ") {
             $('#position').removeClass('eliminated');
         }
         takeScreenshot("#formulaGraphic", "#resultScreenshot");
@@ -460,9 +464,9 @@
         });
 
         let legends = chart.legend.legendItems;
-            legends.forEach(function (e) {
-                [e.fillStyle, e.strokeStyle] = [e.strokeStyle, e.fillStyle];
-            });
+        legends.forEach(function (e) {
+            [e.fillStyle, e.strokeStyle] = [e.strokeStyle, e.fillStyle];
+        });
     }
 
     function getCurrentResults() {
@@ -530,6 +534,11 @@
                 font-size: 2.5em;
                 margin-top: -18px;
                 font-family: "Formula1 Display";
+            }
+
+            #formulaGraphic #details #flag {
+                margin-top: -2px;
+                margin-left: 5px;
             }
 
             #formulaGraphic #details #team {

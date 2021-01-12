@@ -724,13 +724,13 @@ namespace FormuleCirkelEntity.Controllers
                     switch (lastDriverResult.DSQCause)
                     {
                         case DSQCause.Illegal:
-                            driver.PenaltyReason = "Illegal car in last race.";
+                            driver.PenaltyReason = "Illegal car";
                             break;
                         case DSQCause.Fuel:
-                            driver.PenaltyReason = "Exceeded fuel limits last race.";
+                            driver.PenaltyReason = "Exceeded fuel limits";
                             break;
                         case DSQCause.Dangerous:
-                            driver.PenaltyReason = "Dangerous driving last race.";
+                            driver.PenaltyReason = "Dangerous driving";
                             break;
                     }
                 }
@@ -744,7 +744,7 @@ namespace FormuleCirkelEntity.Controllers
                             if (random < 3)
                             {
                                 result.PenaltyPosition += 3.2;
-                                driver.PenaltyReason = "+3 grid penalty for causing a collision.";
+                                driver.PenaltyReason = "+3 penalty - collission";
                             }
                             break;
                         case DNFCause.Accident:
@@ -752,7 +752,7 @@ namespace FormuleCirkelEntity.Controllers
                             if (amountAccidents > 2)
                             {
                                 result.PenaltyPosition += 5.3;
-                                driver.PenaltyReason = "+5 grid penalty for excessive amount of accidents";
+                                driver.PenaltyReason = "+5 penalty - accidents";
                             }
                             break;
                         case DNFCause.Engine:
@@ -760,7 +760,7 @@ namespace FormuleCirkelEntity.Controllers
                             if (amountEngines > 2)
                             {
                                 result.PenaltyPosition += 10.9;
-                                driver.PenaltyReason = "+10 grid penalty for excessive engines used";
+                                driver.PenaltyReason = "+10 penalty - engine";
                             }
                             break;
                         case DNFCause.Electrics:
@@ -768,7 +768,7 @@ namespace FormuleCirkelEntity.Controllers
                             if (amountElectrics > 1)
                             {
                                 result.PenaltyPosition += 5.1;
-                                driver.PenaltyReason = "+5 penalty for excessive electrics used";
+                                driver.PenaltyReason = "+5 penalty - electrics";
                             }
                             break;
                     }

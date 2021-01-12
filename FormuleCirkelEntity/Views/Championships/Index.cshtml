@@ -32,10 +32,17 @@
                             <i class="fas fa-cog fa-2x"></i>
                         </a></td>
                     <td>
-                        <form method="POST">
-                            <input type="hidden" name="championshipId" value="@item.ChampionshipId" />
-                            <input type="submit" class="btn fullwidth mt-1 mb-1" value="Activate" />
-                        </form>
+                        @if (item.ActiveChampionship)
+                        {
+                            <span>Activated</span>
+                        }
+                        else
+                        {
+                            <form method="POST">
+                                <input type="hidden" name="championshipId" value="@item.ChampionshipId" />
+                                <input type="submit" class="btn fullwidth mt-1 mb-1" value="Activate" />
+                            </form>
+                        }
                     </td>
                 </tr>
             }

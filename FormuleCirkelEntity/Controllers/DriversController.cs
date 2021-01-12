@@ -52,6 +52,7 @@ namespace FormuleCirkelEntity.Controllers
             // Prepares table items for ViewModel
             var driver = await _drivers.GetEntityByIdUnfiltered(id);
             var seasons = await _context.Seasons
+                .AsNoTracking()
                 .Where(s => s.Championship.ActiveChampionship)
                 .Include(s => s.Drivers)
                 .ToListAsync();
@@ -60,13 +61,15 @@ namespace FormuleCirkelEntity.Controllers
             stats.DriverId = driver.Id;
             stats.DriverName = driver.Name;
             stats.DriverNumber = driver.DriverNumber;
+            stats.DriverCountry = driver.Country;
             stats.DriverBio = driver.Biography;
 
             // Count of the types of race finishes the driver had
-            var results = _context.DriverResults
+            var results = await _context.DriverResults
+                .AsNoTracking()
                 .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver)
-                .ToList();
+                .ToListAsync();
 
             stats.StartCount = results.Count;
             stats.WinCount = results.Where(r => r.Position == 1).Count();

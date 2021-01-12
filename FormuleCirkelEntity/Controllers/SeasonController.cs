@@ -947,6 +947,7 @@ namespace FormuleCirkelEntity.Controllers
                 .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == seasonId)
                 .Include(r => r.DriverResults)
+                    .ThenInclude(dr => dr.SeasonDriver)
                 .ToListAsync();
 
             var drivers = await _context.SeasonDrivers

@@ -249,6 +249,26 @@ dl.inline-flex {
             min-width: 1em;
         }
 
+.th-sm {
+    width: 3rem;
+}
+
+.th-md {
+    width: 6rem;
+}
+
+.th-lg {
+    width: 15rem;
+}
+
+.th-xl {
+    width: 30rem;
+}
+
+.txt-lg {
+    font-size: 1.1rem;
+}
+
 /* Modifications for the Bootstrap badges */
 .badge-team {
     border: 1px solid white;

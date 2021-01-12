@@ -11,8 +11,8 @@ namespace FormuleCirkelEntity.Validation
     {
         public MinMaxDevValidator()
         {
-            RuleFor(min => min.MinDev).LessThan(max => max.MaxDev);
-            RuleFor(max => max.MaxDev).LessThan(9999);
+            RuleFor(range => range.MinDev).LessThan(range => range.MaxDev);
+            RuleFor(range => range.MaxDev).LessThan(9999);
         }
 
         public static ValidationResult ValidateMinMax(MinMaxDevRange checkVal)

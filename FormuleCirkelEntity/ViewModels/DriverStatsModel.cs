@@ -10,6 +10,7 @@ namespace FormuleCirkelEntity.ViewModels
         public int DriverId { get; set; }
         public string DriverName { get; set; }
         public int DriverNumber { get; set; }
+        public string DriverCountry { get; set; }
         public string DriverBio { get; set; }
         public IEnumerable<Team> Teams { get; set; }
 
