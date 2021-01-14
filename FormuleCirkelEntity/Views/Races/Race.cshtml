@@ -14,10 +14,11 @@
             </form>
         }
     </div>
-
-    <div id="graphic" class="flex-row justify-content-center">
-        <h1>@Html.DisplayFor(model => model.FullRaceTitle)</h1>
-        <i id="weather" class="ml-auto fas"></i>
+    <div id="graphic">
+        <div class="flex-row justify-content-between">
+            <h1>@Html.DisplayFor(model => model.FullRaceTitle)</h1>
+            <i id="weather" class="ml-auto fas"></i>
+        </div>
         <table id="results" class="ctable fullborder">
             <thead>
                 <tr>
@@ -123,38 +124,31 @@
             </tbody>
         </table>
     </div>
-
     <div class="flex-row justify-content-between">
         <button class="btn" onclick="takeScreenshot('#graphic', '.screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
             <i class="fas fa-image fa-2x"></i>
         </button>
         <button class="btn" onclick="redrawChart()"><i class="fas fa-chart-bar fa-2x mt-auto"></i></button>
     </div>
-
     <div class="screenshot"></div>
-
     <div id="resultScreenshot"></div>
-
     <div style="overflow: hidden; height: 0;">
         <div id="formulaGraphic">
             <div id="position">0</div>
             <div id="divider"></div>
-
             <div id="details">
                 <div class="flex-row">
                     <div id="name">Firstname Lastname</div>
-                    <div id="flag" class="flag flag-JR ff-xl"></div>
+                    <div id="flag" class="ff-xl flag flag-JR"></div>
                 </div>
                 <div id="team">Racing Team</div>
             </div>
-
             <div id="extra">
                 <div id="number">0</div>
                 <div id="tla">LAS</div>
             </div>
         </div>
     </div>
-
     <div id="raceChartWrap">
         <canvas id="raceChart"></canvas>
     </div>
@@ -234,9 +228,9 @@
                 row.querySelector("td[data-field='pointsTotal']").innerText = driverResult.Points;
                 row.querySelector("td[data-field='dnfCause']").innerText = "-";
             }
-
             row.querySelector("td[data-field='tyre']").innerHTML = "<span class='custom-badge badge-tyre' style='background-color:" + driverResult.CurrTyre.TyreColour + ";'>[" + driverResult.CurrTyre.TyreName.substring(0, 1) + "] " + driverResult.TyreLife + "</span>";
             row.querySelector("td[data-field='position']").innerText = driverResult.Position;
+
             let gridChange = (driverResult.Grid - driverResult.Position);
             if (gridChange > 0) {
                 row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-up' style='color:green;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + gridChange + " </span>";
@@ -260,7 +254,8 @@
             });
             if (driverResult.Position > @Model.MaxPos) {
                 row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'></td>";
-            } else {
+            }
+            else {
                 row.querySelector("td[data-field='points']").innerHTML = "<td data-field='points'><b class='alt-font'>" + pointsPosition[driverResult.Position] + "</b></td>";
             }
         });
@@ -315,22 +310,26 @@
         var team = row.find("td[data-field='fullTeamName']").text();
         var tla = row.find("td[data-field='abbreviation']").text();
         var colour = row.find("td[data-field='teamName']").find("span").css("background-color");
-        var dnf = row.find("td[data-field='pointsTotal']").text();
+        var dnf = row.find("td[data-field='pointsTotal']").find("span").text();
 
         if (name == $('#name').text()) {
             colour = row.find("td[data-field='teamName']").find("span").css("color");
         }
-
+        var flagToRemove = $('#flag').attr('class').split(' ')[2];
         $('#position').text(position);
         $('#name').text(name);
-        $('#flag').removeClass('flag-JR');
+        $('#flag').removeClass(flagToRemove);
         $('#flag').addClass(flag);
         $('#tla').text(tla);
         $('#team').text(team);
         $('#number').text(number);
         $('#divider').css('background-color', colour);
         $('#extra').css('color', colour);
-        if (dnf !== "DNF" || dnf !== "DSQ") {
+
+        if (dnf == "DNF" || dnf == "DSQ") {
+            $('#position').addClass('eliminated');
+        }
+        else {
             $('#position').removeClass('eliminated');
         }
         takeScreenshot("#formulaGraphic", "#resultScreenshot");

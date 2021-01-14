@@ -737,7 +737,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Where(s => s.SeasonId == id && s.Dropped == false)
                 .Include(t => t.SeasonTeam)
                 .Include(d => d.Driver)
-                .OrderBy(s => s.SeasonTeam.Name)
+                .OrderBy(s => s.SeasonTeam.Team.Abbreviation)
                 .ToListAsync();
 
             return View(viewmodel);
@@ -945,7 +945,7 @@ namespace FormuleCirkelEntity.Controllers
             var races = await _context.Races
                 .AsNoTracking()
                 .IgnoreQueryFilters()
-                .Where(r => r.SeasonId == seasonId)
+                .Where(r => r.SeasonId == seasonId && r.RaceState == RaceState.Finished)
                 .Include(r => r.DriverResults)
                     .ThenInclude(dr => dr.SeasonDriver)
                 .ToListAsync();

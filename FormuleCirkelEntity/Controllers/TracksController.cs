@@ -105,6 +105,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> ArchivedTracks()
         {
             var tracks = await DataService.GetQueryable()
+                .IgnoreQueryFilters()
                 .Where(t => t.Archived)
                 .OrderBy(t => t.Location)
                 .ToListAsync();

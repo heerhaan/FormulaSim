@@ -103,7 +103,7 @@ namespace FormuleCirkelEntity
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env, UserManager<SimUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -123,6 +123,8 @@ namespace FormuleCirkelEntity
 
             app.UseAuthentication();
             app.UseAuthorization();
+            // Seeds the default roles and a default admin account to the database if either lacks them
+            DataInitializer.SeedData(userManager, roleManager);
 
             app.UseEndpoints(endpoints =>
             {

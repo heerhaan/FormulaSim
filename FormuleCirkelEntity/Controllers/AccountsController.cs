@@ -54,6 +54,12 @@ namespace FormuleCirkelEntity.Controllers
             if (ModelState.IsValid && model != null)
             {
                 SimUser user = await _userManager.FindByNameAsync(model.Username);
+                if (user is null)
+                {
+                    _logger.LogInformation("Unknown username attempted to log-in");
+                    ModelState.AddModelError(string.Empty, "Username doesn't exist.");
+                    return View();
+                }
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
@@ -67,7 +73,7 @@ namespace FormuleCirkelEntity.Controllers
                 else
                 {
                     _logger.LogInformation("User failed to log in.");
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Password was incorrect.");
                     return View();
                 }
             }

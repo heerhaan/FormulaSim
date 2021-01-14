@@ -1,15 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using FormuleCirkelEntity.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.DAL
 {
     public static class ModelBuilderExtensions
     {
-        public static void SeedFormula(this ModelBuilder modelBuilder)
+        public static void SeedStrategy(this ModelBuilder modelBuilder)
         {
             if (modelBuilder is null) return;
 
@@ -28,22 +25,10 @@ namespace FormuleCirkelEntity.DAL
             );
             // Creates a default strategy
             modelBuilder.Entity<Strategy>().HasData(
-                new Strategy
-                {
-                    StrategyId = 1,
-                    RaceLen = 20
-                }
-            );
+                new Strategy { StrategyId = 1, RaceLen = 20 });
             // Connects the default strategy with the default grooved tyre
             modelBuilder.Entity<TyreStrategy>().HasData(
-                new TyreStrategy 
-                { 
-                    TyreStrategyId = 1, 
-                    StrategyId = 1, 
-                    TyreId = 1, 
-                    StintNumberApplied = 1 
-                }
-            );
+                new TyreStrategy() { TyreStrategyId = 1, StrategyId = 1, TyreId = 1, StintNumberApplied = 1 });
         }
     }
 }
