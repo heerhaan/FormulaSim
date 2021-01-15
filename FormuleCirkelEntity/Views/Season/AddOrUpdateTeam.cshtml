@@ -38,14 +38,14 @@
                         <div class="col-10">
                             <label asp-for="Reliability" class="control-label float-left"></label>
                             <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                               title="Every reliability roll will be between 0 and 100. If the roll is higher than the drivers reliablity value then it causes a DNF."></i>
+                               title="@Constants.ToolTipTeamReliability"></i>
                             <input asp-for="Reliability" id="relbox" class="form-control" />
                             <span asp-validation-for="Reliability" class="text-danger"></span>
                         </div>
                         <div class="col-2">
                             <button type="button" class="btn" onclick="reldev()">
                                 <i class="fas fa-dice" data-toggle="tooltip" data-placement="right"
-                                   title="RNG for this roll is between 94 and 100"></i>
+                                   title="RNG for this roll is between 92 and 98"></i>
                             </button>
                         </div>
                     </div>
@@ -55,8 +55,7 @@
                     </div>
                 </div>
                 <div class="col-4">
-                    <h4>Specifications</h4><i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
-                                              title="Specific values that get added to the chassis when the track matches the specification."></i>
+                    <h4>Specifications</h4><i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipTeamSpecification"></i>
                     <div class="form-group">
                         <label asp-for="Topspeed" class="control-label float-left"></label>
                         <input asp-for="Topspeed" class="form-control" />
@@ -89,7 +88,7 @@
 
 <script>
     function reldev() {
-        var newdev = Math.floor((Math.random() * 7) + 94);
+        var newdev = Math.floor((Math.random() * 7) + 92);
         $('#relbox').val(newdev);
     }
 </script>

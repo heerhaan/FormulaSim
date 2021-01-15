@@ -75,7 +75,7 @@ namespace FormuleCirkelEntity
                 // Cookie settings
                 options.Cookie.Name = "FormulaCookie";
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromHours(2);
+                options.ExpireTimeSpan = TimeSpan.FromHours(3);
 
                 options.LoginPath = "/Accounts/Login";
                 options.AccessDeniedPath = "/Accounts/AccessDenied";

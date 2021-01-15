@@ -271,7 +271,7 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Route("[Controller]/{id}/Settings")]
-        public async Task<IActionResult> Settings(int id)
+        public async Task<IActionResult> Settings(int id, string statusmessage = null)
         {
             var season = await _context.Seasons
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -279,6 +279,7 @@ namespace FormuleCirkelEntity.Controllers
             if (season is null)
                 return NotFound();
 
+            ViewBag.statusmessage = statusmessage;
             return View(new SeasonSettingsViewModel(season));
         }
 
@@ -303,7 +304,7 @@ namespace FormuleCirkelEntity.Controllers
                 season.PitMax = settingsModel.PitMax;
                 season.PolePoints = settingsModel.PolePoints;
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
+                return RedirectToAction(nameof(Settings), new { id = season.SeasonId, statusmessage = "Settings succesfully saved" });
             }
 
             return View(settingsModel);

@@ -23,5 +23,15 @@
         public static string ToolTipStintEventUpperRng { get { return "Highest possible RNG for a stint"; } }
         public static string ToolTipSeasonDriverRandomRelRoll { get { return "RNG for this roll is between 90 and 98"; } }
         public static string ToolTipSeasonDriverTeamStatus { get { return "First drivers swaps positions with their second driver if one position behind. Also gives +2/-2 to chassis."; } }
+        public static string ToolTipSeasonSettingsYear { get { return "Represents the year this season takes place in"; } }
+        public static string ToolTipSeasonSettingsPolePoints { get { return "How many points are given for qualifying in 1st position"; } }
+        public static string ToolTipSeasonSettingsPitMin { get { return "The lowest possible value for a pitstop, has to be less than the maximum pitstop value and should also be a negative value"; } }
+        public static string ToolTipSeasonSettingsPitMax { get { return "The highest possible value for a pitstop, has to be more than the minimum pitstop value and should also be a negative value"; } }
+        public static string ToolTipSeasonSettingsQualyRng { get { return "Maximum RNG value that can be achieved during the qualifications with the lower value being 0"; } }
+        public static string ToolTipSeasonSettingsQualyQ2 { get { return "The amount of drivers that get to participate in the 2nd qualifying session"; } }
+        public static string ToolTipSeasonSettingsQualyQ3 { get { return "The amount of drivers that get to participate in the 3rd qualifying session"; } }
+        public static string ToolTipSeasonSettingsQualyBonus { get { return "How many bonus points each position on the starting grid gets over the last qualified driver"; } }
+        public static string ToolTipTeamReliability { get { return "Every reliability roll will be between 0 and 100. If the roll is higher than the drivers reliablity value then it causes a DNF"; } }
+        public static string ToolTipTeamSpecification { get { return "Specific values that get added to the chassis when the track matches the specification"; } }
     }
 }
