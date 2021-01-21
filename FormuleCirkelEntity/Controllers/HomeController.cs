@@ -1,7 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
 using FormuleCirkelEntity.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -61,6 +61,7 @@ namespace FormuleCirkelEntity.Controllers
                     .ToList();
 
                 var rounds = _context.Races
+                    .IgnoreQueryFilters()
                     .Where(r => r.SeasonId == currentSeason.SeasonId)
                     .Include(r => r.Track)
                     .OrderBy(r => r.Round)
@@ -133,6 +134,7 @@ namespace FormuleCirkelEntity.Controllers
                 .ToList();
 
             var rounds = _context.Races
+                .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == currentSeason.SeasonId)
                 .Include(r => r.Track)
                 .OrderBy(r => r.Round)
@@ -239,6 +241,7 @@ namespace FormuleCirkelEntity.Controllers
                     .FirstOrDefault();
 
                 var rounds = _context.Races
+                    .IgnoreQueryFilters()
                     .Where(r => r.SeasonId == currentSeason.SeasonId)
                     .Include(r => r.Track)
                     .OrderBy(r => r.Round)
@@ -326,6 +329,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("[Controller]/{seasonId}/GetTeamGraphData")]
         public IActionResult GetTeamGraphData(int seasonId)
         {
+            // wordt niet meer gebruikt
             var season = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId);
             if (season == null)
                 return null;
@@ -341,18 +345,15 @@ namespace FormuleCirkelEntity.Controllers
             return new JsonResult(graphData, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
-        public IActionResult NextRace()
+        public async Task<IActionResult> NextRace()
         {
-            var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship);
-
-            if(seasons.Any(s => s.State == SeasonState.Progress))
-            {
-                var currentSeason = seasons
-                .Where(s => s.State == SeasonState.Progress)
+            var season = await _context.Seasons
                 .Include(r => r.Races)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync(s => s.Championship.ActiveChampionship && s.State == SeasonState.Progress);
 
-                var nextrace = currentSeason.Races
+            if(season != null)
+            {
+                var nextrace = season.Races
                     .OrderBy(r => r.Round)
                     .FirstOrDefault(r => r.RaceState != RaceState.Finished);
 
@@ -362,7 +363,7 @@ namespace FormuleCirkelEntity.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("RacePreview", "Races", new { id = currentSeason.SeasonId, raceId = nextrace.RaceId });
+                    return RedirectToAction("RacePreview", "Races", new { id = season.SeasonId, raceId = nextrace.RaceId });
                 }
             }
             else

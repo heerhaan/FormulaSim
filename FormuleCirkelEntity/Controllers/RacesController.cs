@@ -191,27 +191,35 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> RacePreview(int raceId)
         {
             var race = await _context.Races
+                .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Include(r => r.Stints)
                 .Include(r => r.Season)
-                .Include(r => r.Track)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
+            var track = await _trackService.GetEntityById(race.TrackId);
+
             var trackTraits = await _context.TrackTraits
+                .AsNoTracking()
                 .Where(trt => trt.TrackId == race.TrackId)
-                .Include(trt => trt.Trait)
+                .Select(trt => trt.Trait)
                 .ToListAsync();
 
-            ViewBag.favourites = Favourites(race);
-            ViewBag.tracktraits = trackTraits;
+            var strategies = await _context.Strategies
+                .AsNoTracking()
+                .Where(s => s.RaceLen == race.Stints.Count)
+                .Include(s => s.Tyres)
+                    .ThenInclude(t => t.Tyre)
+                .ToListAsync();
 
-            return View(race);
+            return View(new RacePreviewModel(race, track, trackTraits, strategies, Favourites(race)));
         }
 
         // Gets the three favourites for that race.
         private List<SeasonTeam> Favourites(Race race)
         {
             var teams = _context.SeasonTeams
+                .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(st => st.SeasonId == race.SeasonId)
                 .Include(st => st.Team)

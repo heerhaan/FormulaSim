@@ -1,15 +1,14 @@
-﻿@model FormuleCirkelEntity.Models.Race
+﻿@model FormuleCirkelEntity.ViewModels.RacePreviewModel
 
 @{
     ViewData["Title"] = "Preview";
     int minRNGMod = 0;
     int maxRNGMod = 0;
-    List<TrackTrait> trackTraits = ViewBag.tracktraits;
 }
 
 <div class="d-inline-block">
     <div id="graphic">
-        <h1>Preview of the @Html.DisplayFor(model => model.Name) GP</h1>
+        <h1>Preview of the @Html.DisplayFor(model => model.Race.Name) GP</h1>
 
         <div class="mt-4">
             <dl class="flex-row text-left">
@@ -17,7 +16,7 @@
                     Round:
                 </dt>
                 <dd class="col-3">
-                    @Html.DisplayFor(model => model.Round)
+                    @Html.DisplayFor(model => model.Race.Round)
                 </dd>
                 <dt class="col-3">
                     Location:
@@ -48,20 +47,41 @@
                     Weather:
                 </dt>
                 <dd class="col-3">
-                    @Html.DisplayFor(model => model.Weather)
+                    @Html.DisplayFor(model => model.Race.Weather)
                     <span><i id="weather"></i></span>
                 </dd>
             </dl>
-
-            <h4 class="text-left">Traits</h4>
-            <ul class="text-left" style="line-height: 150%;">
-                @foreach (var trait in trackTraits)
-                {
-                    <li><b>@trait.Trait.Name:</b>  @trait.Trait.TraitDescription</li>
-                    if (trait.Trait.MinimumRNG.HasValue) { minRNGMod += trait.Trait.MinimumRNG.Value; }
-                    if (trait.Trait.MaximumRNG.HasValue) { maxRNGMod += trait.Trait.MaximumRNG.Value; }
-                }
-            </ul>
+            <div class="flex-row">
+                <div class="col-9">
+                    <h4 class="text-left">Traits</h4>
+                    <ul class="text-left" style="line-height: 150%;">
+                        @foreach (var trait in Model.TrackTraits)
+                        {
+                            <li><b>@trait.Name:</b>  @trait.TraitDescription</li>
+                            if (trait.MinimumRNG.HasValue) { minRNGMod += trait.MinimumRNG.Value; }
+                            if (trait.MaximumRNG.HasValue) { maxRNGMod += trait.MaximumRNG.Value; }
+                        }
+                    </ul>
+                </div>
+                <div class="col-3">
+                    <div class="float-right">
+                        <h4 class="text-left">Strategies</h4>
+                        <ul class="text-left" style="line-height: 150%;">
+                            @foreach (var strategy in Model.Strategies)
+                            {
+                                <li>
+                                    @foreach (var tyre in strategy.Tyres)
+                                    {
+                                        <span class="custom-badge" style="background-color:@(tyre.Tyre.TyreColour)">
+                                            @(tyre.Tyre.TyreName)
+                                        </span>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <table class="ctable fullborder fullwidth table-prev">
@@ -78,7 +98,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var stint in Model.Stints)
+                @foreach (var stint in Model.Race.Stints)
                 {
                 <tr>
                     <td class="alt-font">@stint.Number</td>
@@ -136,7 +156,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var team in ViewBag.favourites)
+                @foreach (var team in Model.Favourites)
                 {
                     <tr>
                         <td style="background-color:@(team.Colour);color:@(team.Accent);">@(team.Principal)</td>
@@ -150,7 +170,7 @@
     <div class="flex-row justify-content-between">
         <form asp-action="RacePreview">
             <div class="form-group">
-                <input asp-action="RaceStart" asp-route-id="@Model.SeasonId" asp-route-raceId="@Model.RaceId" type="submit" value="Raceweekend" class="btn" />
+                <input asp-action="RaceStart" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" type="submit" value="Raceweekend" class="btn" />
             </div>
         </form>
         <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
@@ -159,14 +179,12 @@
     </div>
 
     <div id="screenshot"></div>
-
-    @Html.Raw(TempData["msg"])
 </div>
 
 <script>
     $(function () {
         var weatherclass = "";
-        switch ("@Model.Weather") {
+        switch ("@Model.Race.Weather") {
             case "Sunny":
                 weatherclass = "fas fa-sun";
                 break;

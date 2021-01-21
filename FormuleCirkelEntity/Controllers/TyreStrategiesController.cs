@@ -129,7 +129,7 @@ namespace FormuleCirkelEntity.Controllers
             var strategy = await _tyreStrats.GetStrategyById(strategyId);
             var tyreStrat = await _tyreStrats.GetTyreStratById(tyreStratId, true);
             _tyreStrats.RemoveTyreFromStrategy(tyreStrat, strategy);
-            _tyreStrats.UpdateStrategy(strategy);
+            //_tyreStrats.UpdateStrategy(strategy); For some reason this works now
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(StrategyCreate), new { id = strategyId });
         }

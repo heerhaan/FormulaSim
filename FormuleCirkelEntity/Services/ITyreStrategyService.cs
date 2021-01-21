@@ -24,6 +24,7 @@ namespace FormuleCirkelEntity.Services
         Task AddStrategy(Strategy strategy);
         void UpdateTyre(Tyre tyre);
         void UpdateStrategy(Strategy strategy);
+        void UpdateTyreStrategy(TyreStrategy tyreStrategy);
         Task AddTyreToStrategy(Strategy strategy, Tyre tyre, int applyNum);
         void RemoveTyreFromStrategy(TyreStrategy strat, Strategy strategy);
         Task SaveChangesAsync();
@@ -79,7 +80,8 @@ namespace FormuleCirkelEntity.Services
 
         public async Task<Strategy> GetStrategyById(int id, bool includeTyres = false)
         {
-            var item = await StratData.AsNoTracking()
+            var item = await StratData
+                .AsNoTracking()
                 .If(includeTyres, res => res.Include(ty => ty.Tyres)
                     .ThenInclude(ty => ty.Tyre))
                 .FirstOrDefaultAsync(res => res.StrategyId == id);
@@ -90,6 +92,7 @@ namespace FormuleCirkelEntity.Services
         {
             // Returns the tyrestrategy object, if a true bool is given then it includes the corresponding tyre and strategy
             var item = await _context.TyreStrategies
+                .AsNoTracking()
                 .If(includeTyresAndStrat, res => res.Include(tr => tr.Strategy))
                 .If(includeTyresAndStrat, res => res.Include(tr => tr.Tyre))
                 .FirstOrDefaultAsync(res => res.TyreStrategyId == id);
@@ -121,6 +124,11 @@ namespace FormuleCirkelEntity.Services
         {
             StratData.Update(strategy);
         }
+
+        public void UpdateTyreStrategy(TyreStrategy tyreStrategy)
+        {
+            _context.Update(tyreStrategy);
+        }
         /// TyreStrategy adds a new strategy option to an existing possible strategy for a race
         /// <param name="applyNum">Int value that represents in which stint the new strategy option is applied</param>
         public async Task AddTyreToStrategy(Strategy strategy, Tyre tyre, int applyNum)
@@ -137,7 +145,6 @@ namespace FormuleCirkelEntity.Services
             // Then the tyrestrategy object can be fully deleted
             _context.Remove(strat);
         }
-        // TBD
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
