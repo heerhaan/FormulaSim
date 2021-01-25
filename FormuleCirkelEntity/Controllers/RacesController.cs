@@ -212,11 +212,11 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(t => t.Tyre)
                 .ToListAsync();
 
-            return View(new RacePreviewModel(race, track, trackTraits, strategies, Favourites(race)));
+            return View(new RacePreviewModel(race, track, trackTraits, strategies, Favourites(race, track.Specification.ToString())));
         }
 
         // Gets the three favourites for that race.
-        private List<SeasonTeam> Favourites(Race race)
+        private List<SeasonTeam> Favourites(Race race, string trackspec)
         {
             var teams = _context.SeasonTeams
                 .AsNoTracking()
@@ -225,7 +225,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(st => st.Team)
                 .Include(st => st.Engine)
                 .AsEnumerable()
-                .OrderByDescending(st => (st.Chassis + st.Engine.Power + Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(st), race.Track.Specification.ToString())))
+                .OrderByDescending(st => (st.Chassis + st.Engine.Power + Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(st), trackspec)))
                 .Take(3)
                 .ToList();
 

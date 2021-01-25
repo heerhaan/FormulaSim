@@ -67,7 +67,7 @@ namespace FormuleCirkelEntity.DAL
                 .HasKey(tr => new { tr.TrackId, tr.TraitId });
 
             // Applies seeded data for strategy and tyre, which are required
-            builder.SeedStrategy();
+            //builder.SeedStrategy();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

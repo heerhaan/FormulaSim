@@ -1,4 +1,13 @@
-﻿/* General styling */
+﻿/* Fonts */
+@font-face {
+    font-family: "Formula1-Regular";
+    src: url('../fonts/Formula1-Regular.ttf')
+}
+@font-face {
+    font-family: "Source Sans Pro";
+    src: url('../fonts/SourceSansPro-Regular.ttf')
+}
+/* General styling */
 * {
     margin: 0;
     padding: 0;
@@ -30,7 +39,7 @@ main {
 }
 
 h1 {
-    font-family: 'Formula1 Display';
+    font-family: 'Formula1-Regular';
 }
 
 a.navbar-brand {
