@@ -15,8 +15,8 @@ For complete information visit: www.freakflagsprite.com
     position: relative;
     vertical-align: middle;
     box-sizing: content-box;
-    border: 1px solid;
 }
+
 .flag-CH,
 .flag-NP {box-shadow: none!important}
 .flag-DZ {background-position:center 0.2287%}

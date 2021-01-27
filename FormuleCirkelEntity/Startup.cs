@@ -21,6 +21,7 @@ namespace FormuleCirkelEntity
     {
         public Startup(IHostEnvironment environment)
         {
+            if (environment is null) { throw new NullReferenceException(); }
             var builder = new ConfigurationBuilder()
                 .SetBasePath(environment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
