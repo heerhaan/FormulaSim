@@ -19,14 +19,13 @@ namespace FormuleCirkelEntity.Services
 
         public async Task<IList<Engine>> GetArchivedEngines()
         {
-            var engines = await Data
+            return await Data
                 .IgnoreQueryFilters()
                 .AsNoTracking()
                 .Where(res => res.Archived)
                 .OrderBy(res => res.Name)
-                .ToListAsync();
-
-            return engines;
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace FormuleCirkelEntity.Services
 
         public async Task<IList<Championship>> GetChampionships()
         {
-            var championship = await Data.AsNoTracking().ToListAsync();
+            var championship = await Data.AsNoTracking().ToListAsync().ConfigureAwait(false);
             return championship;
         }
 
@@ -51,18 +51,19 @@ namespace FormuleCirkelEntity.Services
             var item = await Data.AsNoTracking()
                 .If(includeRanges, res => res.Include(c => c.AgeDevRanges))
                 .If(includeRanges, res => res.Include(c => c.SkillDevRanges))
-                .FirstOrDefaultAsync(res => res.ChampionshipId == id);
+                .FirstOrDefaultAsync(res => res.ChampionshipId == id)
+                .ConfigureAwait(false);
             return item;
         }
 
         public async Task<Championship> FirstOrDefault(Expression<Func<Championship, bool>> predicate)
         {
-            return await Data.AsNoTracking().FirstOrDefaultAsync(predicate);
+            return await Data.AsNoTracking().FirstOrDefaultAsync(predicate).ConfigureAwait(false);
         }
 
         public async Task Add(Championship championship)
         {
-            await Data.AddAsync(championship);
+            await Data.AddAsync(championship).ConfigureAwait(false);
         }
 
         public void Update(Championship championship)
@@ -74,7 +75,7 @@ namespace FormuleCirkelEntity.Services
         {
             if (championship is null) { throw new NullReferenceException(); }
             // First find and de-activate the other championships
-            var otherChamps = await Data.Where(c => c.ActiveChampionship).ToListAsync();
+            var otherChamps = await Data.Where(c => c.ActiveChampionship).ToListAsync().ConfigureAwait(false);
             foreach (var champ in otherChamps)
                 champ.ActiveChampionship = false;
 
@@ -139,7 +140,7 @@ namespace FormuleCirkelEntity.Services
 
         public async Task SaveChangesAsync()
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Index(string statusmessage = null)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -44,7 +44,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Login()
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAwait(false);
             return View();
         }
 
@@ -53,7 +53,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (ModelState.IsValid && model != null)
             {
-                SimUser user = await _userManager.FindByNameAsync(model.Username);
+                SimUser user = await _userManager.FindByNameAsync(model.Username).ConfigureAwait(false);
                 if (user is null)
                 {
                     _logger.LogInformation("Unknown username attempted to log-in");
@@ -62,12 +62,17 @@ namespace FormuleCirkelEntity.Controllers
                 }
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(
+                    user.UserName,
+                    model.Password,
+                    model.RememberMe,
+                    lockoutOnFailure: false)
+                    .ConfigureAwait(false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
                     user.LastLogin = DateTime.Now;
-                    await _userManager.UpdateAsync(user);
+                    await _userManager.UpdateAsync(user).ConfigureAwait(false);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -84,7 +89,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _signInManager.SignOutAsync().ConfigureAwait(false);
             _logger.LogInformation("User logged out.");
             return View();
         }
@@ -100,12 +105,12 @@ namespace FormuleCirkelEntity.Controllers
             if (ModelState.IsValid && registerModel != null)
             {
                 var user = new SimUser { UserName = registerModel.Username, Email = registerModel.Email, LastLogin = DateTime.Now };
-                var result = await _userManager.CreateAsync(user, registerModel.Password);
+                var result = await _userManager.CreateAsync(user, registerModel.Password).ConfigureAwait(false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    _ = await _userManager.AddToRoleAsync(user, Constants.RoleGuest);
-                    await _signInManager.SignInAsync(user, isPersistent: true);
+                    _ = await _userManager.AddToRoleAsync(user, Constants.RoleGuest).ConfigureAwait(false);
+                    await _signInManager.SignInAsync(user, isPersistent: true).ConfigureAwait(false);
                     return RedirectToAction("Index", "Home", new { message = $"Registration was succesful.\nWelcome {registerModel.Username}!" });
                 }
                 foreach (var error in result.Errors)
@@ -119,7 +124,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> ChangeAccount()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -141,13 +146,13 @@ namespace FormuleCirkelEntity.Controllers
                 return View();
             }
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changeNameResult = await _userManager.SetUserNameAsync(user, model.Username);
+            var changeNameResult = await _userManager.SetUserNameAsync(user, model.Username).ConfigureAwait(false);
             if (!changeNameResult.Succeeded)
             {
                 foreach (var error in changeNameResult.Errors)
@@ -155,7 +160,7 @@ namespace FormuleCirkelEntity.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            var changeEmailResult = await _userManager.SetEmailAsync(user, model.Email);
+            var changeEmailResult = await _userManager.SetEmailAsync(user, model.Email).ConfigureAwait(false);
             if (!changeEmailResult.Succeeded)
             {
                 foreach (var error in changeEmailResult.Errors)
@@ -166,7 +171,7 @@ namespace FormuleCirkelEntity.Controllers
             // Checks if user also requested a password change
             if (!String.IsNullOrEmpty(model.NewPassword))
             {
-                var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword).ConfigureAwait(false);
                 if (!changePasswordResult.Succeeded)
                 {
                     foreach (var error in changePasswordResult.Errors)
@@ -185,7 +190,7 @@ namespace FormuleCirkelEntity.Controllers
                 };
                 return View(viewModel);
             }
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(user).ConfigureAwait(false);
             _logger.LogInformation("User changed their password successfully.");
             return RedirectToAction("Index", new { statusmessage = "Your password has been changed." });
         }
@@ -196,9 +201,10 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordModel forgotPasswordModel)
+        public IActionResult ForgotPassword(string feature = "Sorry, this feature is not implemented yet")
         {
-            return RedirectToAction("Index", "Home", new { message = "Sorry, this feature is not implemented yet" });
+            // Used to be async and had a parameter ForgotPasswordModel forgotPasswordModel
+            return RedirectToAction("Index", "Home", new { message = feature });
             /*
             if (ModelState.IsValid)
             {
@@ -253,14 +259,14 @@ namespace FormuleCirkelEntity.Controllers
                 return View();
             }
 
-            var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email);
+            var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email).ConfigureAwait(false);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Code, resetPasswordModel.Password);
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Code, resetPasswordModel.Password).ConfigureAwait(false);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation");

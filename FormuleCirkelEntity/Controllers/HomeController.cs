@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Services;
 using FormuleCirkelEntity.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,23 +16,35 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class HomeController : FormulaController
     {
-        public HomeController(FormulaContext context, 
-            UserManager<SimUser> userManager)
-            : base(context, userManager)
-        { }
+        private readonly IChampionshipService _championships;
+        private readonly ISeasonService _seasons;
+        private readonly IRaceService _races;
 
-        public IActionResult Index(string message = null)
+        public HomeController(FormulaContext context,
+            UserManager<SimUser> userManager,
+            IChampionshipService championshipService,
+            ISeasonService seasonService,
+            IRaceService raceService)
+            : base(context, userManager)
+        {
+            _championships = championshipService;
+            _seasons = seasonService;
+            _races = raceService;
+        }
+
+        public async Task<IActionResult> Index(string message = null)
         {
             bool championship = false;
             string name = "Formula";
-            if (_context.Championships.Any())
+            var championships = await _championships.GetChampionships().ConfigureAwait(false);
+            if (championships.Count > 0)
             {
                 championship = true;
-                var champname = _context.Championships.FirstOrDefault(c => c.ActiveChampionship);
+                var champname = championships.FirstOrDefault(c => c.ActiveChampionship);
                 name = champname.ChampionshipName;
             }
 
-            HomeViewModel viewModel = new HomeViewModel
+            var viewModel = new HomeViewModel
             {
                 ChampionshipName = name,
                 Message = message,

@@ -23,7 +23,7 @@ namespace FormuleCirkelEntity.Controllers
         private readonly ITraitService _traits;
         private readonly ISeasonService _seasons;
 
-        public DriversController(FormulaContext context, 
+        public DriversController(FormulaContext context,
             UserManager<SimUser> userManager,
             PagingHelper pagingHelper,
             IDriverService dataService,
@@ -39,7 +39,7 @@ namespace FormuleCirkelEntity.Controllers
         [SortResult(nameof(Driver.Name)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            var drivers = await _drivers.GetEntities();
+            var drivers = await _drivers.GetEntities().ConfigureAwait(false);
             ViewBag.driverIds = drivers.Select(d => d.Id);
             return base.Index().Result;
         }
@@ -50,12 +50,8 @@ namespace FormuleCirkelEntity.Controllers
             var stats = new DriverStatsModel();
 
             // Prepares table items for ViewModel
-            var driver = await _drivers.GetEntityByIdUnfiltered(id);
-            var seasons = await _context.Seasons
-                .AsNoTracking()
-                .Where(s => s.Championship.ActiveChampionship)
-                .Include(s => s.Drivers)
-                .ToListAsync();
+            var driver = await _drivers.GetEntityByIdUnfiltered(id).ConfigureAwait(false);
+            var seasons = await _seasons.GetSeasons(true, true).ConfigureAwait(false);
 
             // Basic information about the driver
             stats.DriverId = driver.Id;
@@ -72,12 +68,12 @@ namespace FormuleCirkelEntity.Controllers
                 .ToListAsync();
 
             stats.StartCount = results.Count;
-            stats.WinCount = results.Where(r => r.Position == 1).Count();
-            stats.SecondCount = results.Where(r => r.Position == 2).Count();
-            stats.ThirdCount = results.Where(r => r.Position == 3).Count();
-            stats.PoleCount = results.Where(r => r.Grid == 1).Count();
-            stats.DNFCount = results.Where(r => r.Status == Status.DNF).Count();
-            stats.DSQCount = results.Where(r => r.Status == Status.DSQ).Count();
+            stats.WinCount = results.Count(r => r.Position == 1);
+            stats.SecondCount = results.Count(r => r.Position == 2);
+            stats.ThirdCount = results.Count(r => r.Position == 3);
+            stats.PoleCount = results.Count(r => r.Grid == 1);
+            stats.DNFCount = results.Count(r => r.Status == Status.DNF);
+            stats.DSQCount = results.Count(r => r.Status == Status.DSQ);
 
             // Calculate point finishes
             int pointCount = 0;
@@ -85,18 +81,18 @@ namespace FormuleCirkelEntity.Controllers
             {
                 var current = results.Where(r => r.SeasonDriver.SeasonId == season.SeasonId);
                 var pointsMax = season.PointsPerPosition.Keys.Max();
-                pointCount += (current.Where(dr => dr.Position > 3 && dr.Position <= pointsMax).Count());
+                pointCount += (current.Count(dr => dr.Position > 3 && dr.Position <= pointsMax));
             }
 
             // Apply point finishes and subtract others to form outside point finishes
             stats.PointFinishCount = pointCount;
             stats.OutsideCount = (stats.StartCount - stats.WinCount - stats.SecondCount - stats.ThirdCount - pointCount - stats.DNFCount - stats.DSQCount);
             // Count of the sort of non-finishes a driver had
-            stats.AccidentCount = results.Where(r => r.DNFCause == DNFCause.Accident || r.DNFCause == DNFCause.Puncture).Count();
-            stats.ContactCount = results.Where(r => r.DNFCause == DNFCause.Damage || r.DNFCause == DNFCause.Collision).Count();
-            stats.EngineCount = results.Where(r => r.DNFCause == DNFCause.Engine).Count();
-            stats.MechanicalCount = results.Where(r => r.DNFCause == DNFCause.Brakes || r.DNFCause == DNFCause.Clutch || r.DNFCause == DNFCause.Electrics ||
-                r.DNFCause == DNFCause.Exhaust || r.DNFCause == DNFCause.Hydraulics || r.DNFCause == DNFCause.Wheel).Count();
+            stats.AccidentCount = results.Count(r => r.DNFCause == DNFCause.Accident || r.DNFCause == DNFCause.Puncture);
+            stats.ContactCount = results.Count(r => r.DNFCause == DNFCause.Damage || r.DNFCause == DNFCause.Collision);
+            stats.EngineCount = results.Count(r => r.DNFCause == DNFCause.Engine);
+            stats.MechanicalCount = results.Count(r => r.DNFCause == DNFCause.Brakes || r.DNFCause == DNFCause.Clutch || r.DNFCause == DNFCause.Electrics ||
+                r.DNFCause == DNFCause.Exhaust || r.DNFCause == DNFCause.Hydraulics || r.DNFCause == DNFCause.Wheel);
 
             var seasondriver = await _context.SeasonDrivers
                 .Where(s => s.Driver.Id == id)
@@ -109,7 +105,7 @@ namespace FormuleCirkelEntity.Controllers
             stats.Teams = seasondriver.Select(s => s.SeasonTeam.Team).Distinct().ToList();
             // Calculates the amount of WDCs a driver might have
             var driverChampions = _drivers.GetDriverChampionsIds(seasons);
-            stats.WDCCount = driverChampions.Where(s => s == id).Count();
+            stats.WDCCount = driverChampions.Count(s => s == id);
 
             return View(stats);
         }
@@ -117,10 +113,10 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> DriverTraits(int id)
         {
-            var driver = await _drivers.GetEntityById(id);
-            var driverTraits = await _traits.GetTraitsFromDriver(id);
+            var driver = await _drivers.GetEntityById(id).ConfigureAwait(false);
+            var driverTraits = await _traits.GetTraitsFromDriver(id).ConfigureAwait(false);
             var usedTraitIds = driverTraits.Select(drt => drt.TraitId).ToList();
-            var traits = await _traits.GetUnusedTraitsFromEntity(TraitGroup.Driver, usedTraitIds);
+            var traits = await _traits.GetUnusedTraitsFromEntity(TraitGroup.Driver, usedTraitIds).ConfigureAwait(false);
 
             var viewmodel = new DriverTraitsModel
             {
@@ -136,16 +132,16 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Driver driver = await _drivers.GetEntityById(id);
-            Trait trait = await _traits.GetTraitById(traitId);
+            Driver driver = await _drivers.GetEntityById(id).ConfigureAwait(false);
+            Trait trait = await _traits.GetTraitById(traitId).ConfigureAwait(false);
 
             if (driver is null || trait is null)
                 return NotFound();
-                
-            await _traits.AddTraitToDriver(driver, trait);
+
+            await _traits.AddTraitToDriver(driver, trait).ConfigureAwait(false);
             _drivers.Update(driver);
             _traits.Update(trait);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return RedirectToAction(nameof(DriverTraits), new { id });
         }
 
@@ -153,16 +149,16 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{driverId}")]
         public async Task<IActionResult> RemoveDriverTrait(int driverId, int traitId)
         {
-            Driver driver = await _drivers.GetEntityById(driverId);
-            Trait trait = await _traits.GetTraitById(traitId);
+            Driver driver = await _drivers.GetEntityById(driverId).ConfigureAwait(false);
+            Trait trait = await _traits.GetTraitById(traitId).ConfigureAwait(false);
 
             if (driver == null || trait == null)
                 return NotFound();
 
-            await _traits.RemoveTraitFromDriver(driver, trait);
+            await _traits.RemoveTraitFromDriver(driver, trait).ConfigureAwait(false);
             _drivers.Update(driver);
             _traits.Update(trait);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return RedirectToAction(nameof(DriverTraits), new { id = driverId });
         }
 
@@ -190,11 +186,11 @@ namespace FormuleCirkelEntity.Controllers
             {
                 var winner = season.Drivers
                     .OrderByDescending(sd => sd.Points)
-                    .FirstOrDefault()
+                    .FirstOrDefault()?
                     .Driver;
 
                 if (driverTitles.ContainsKey(winner))
-                    driverTitles[winner] += 1;
+                    driverTitles[winner]++;
                 else
                     driverTitles.Add(winner, 1);
             }
@@ -230,29 +226,27 @@ namespace FormuleCirkelEntity.Controllers
         // Generic helper method to get the right dictionary with the given selector
         private static Dictionary<Driver, int> GetDriverLeaderlistDict(List<IGrouping<Driver, DriverResult>> drivers, Func<DriverResult, int> selector)
         {
-            Dictionary<Driver, int> driverDict = drivers
+            return drivers
                 .Select(t => new { t.Key, Sum = t.Sum(selector) })
                 .AsEnumerable()
                 .Select(t => new KeyValuePair<Driver, int>(t.Key, t.Sum))
                 .OrderByDescending(res => res.Value)
                 .Take(10)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            return driverDict;
         }
 
         [Route("Archived")]
         public async Task<IActionResult> ArchivedDrivers()
         {
-            var drivers = await _drivers.GetArchivedDrivers();
+            var drivers = await _drivers.GetArchivedDrivers().ConfigureAwait(false);
             return View(drivers);
         }
 
         [HttpPost("SaveBiography")]
         public async Task<IActionResult> SaveBiography(int id, string biography)
         {
-            await _drivers.SaveBio(id, biography);
-            await _context.SaveChangesAsync();
+            await _drivers.SaveBio(id, biography).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return RedirectToAction("Stats", new { id });
         }
     }

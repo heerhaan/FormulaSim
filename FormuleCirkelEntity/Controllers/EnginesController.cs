@@ -14,29 +14,27 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class EnginesController : ViewDataController<Engine>
     {
-        public EnginesController(FormulaContext context, 
-            UserManager<SimUser> userManager, 
+        private readonly IEngineService _engines;
+
+        public EnginesController(FormulaContext context,
+            UserManager<SimUser> userManager,
             PagingHelper pagingHelper,
-            IDataService<Engine> dataService)
+            IEngineService dataService)
             : base(context, userManager, pagingHelper, dataService)
-        { }
+        {
+            _engines = dataService;
+        }
 
         [SortResult(nameof(Engine.Name)), PagedResult]
-        public override async Task<IActionResult> Index()
+        public override Task<IActionResult> Index()
         {
-            return base.Index().Result;
+            return Task.FromResult(base.Index().Result);
         }
 
         [Route("Archived")]
-        public IActionResult ArchivedEngines()
+        public async Task<IActionResult> ArchivedEngines()
         {
-            List<Engine> engines = _context.Engines
-                .IgnoreQueryFilters()
-                .Where(e => e.Archived)
-                .OrderBy(e => e.Name)
-                .ToList();
-
-            return View(engines);
+            return View(await _engines.GetArchivedEngines().ConfigureAwait(false));
         }
     }
 }
