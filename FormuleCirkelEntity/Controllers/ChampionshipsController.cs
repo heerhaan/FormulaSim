@@ -23,7 +23,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _champService.GetChampionships().ConfigureAwait(false));
+            return View(await _champService.GetChampionships());
         }
 
         [Authorize(Roles = "Admin")]
@@ -31,9 +31,9 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Index(int championshipId)
         {
             // Activates the current championship and ensures the rest is deactivated
-            var championship = await _champService.GetChampionshipById(championshipId).ConfigureAwait(false);
-            await _champService.ActivateChampionship(championship).ConfigureAwait(false);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            var championship = await _champService.GetChampionshipById(championshipId);
+            await _champService.ActivateChampionship(championship);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
         }
 
@@ -51,8 +51,8 @@ namespace FormuleCirkelEntity.Controllers
 
             if (ModelState.IsValid)
             {
-                await _champService.ActivateChampionship(championship).ConfigureAwait(false);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await _champService.ActivateChampionship(championship);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
             }
             return View(championship);
@@ -61,7 +61,7 @@ namespace FormuleCirkelEntity.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SetDevRanges(int id, string statusmessage = null)
         {
-            var championship = await _champService.GetChampionshipById(id, true).ConfigureAwait(false);
+            var championship = await _champService.GetChampionshipById(id, true);
             if (championship is null)
                 return NotFound();
 
@@ -76,7 +76,7 @@ namespace FormuleCirkelEntity.Controllers
             if (setDevModel is null)
                 return NotFound();
 
-            var championship = await _champService.GetChampionshipById(setDevModel.ChampionshipId, true).ConfigureAwait(false);
+            var championship = await _champService.GetChampionshipById(setDevModel.ChampionshipId, true);
 
             // This if-structure makes it so that we are going to apply all those darn age dev ranges to the code!
             if (setDevModel.AgeValueKey.Count > 0)
@@ -109,7 +109,7 @@ namespace FormuleCirkelEntity.Controllers
                 }
             }
             _champService.Update(championship);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = "Dev ranges succesfully set!" });
         }
     }

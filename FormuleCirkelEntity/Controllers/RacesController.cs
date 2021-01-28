@@ -27,12 +27,12 @@ namespace FormuleCirkelEntity.Controllers
         private readonly RaceBuilder _raceBuilder;
         private static readonly Random rng = new Random();
 
-        public RacesController(FormulaContext context, 
+        public RacesController(FormulaContext context,
             UserManager<SimUser> userManager,
             IRaceService raceService,
             ISeasonService seasonService,
             ITrackService trackService,
-            RaceResultGenerator raceResultGenerator, 
+            RaceResultGenerator raceResultGenerator,
             RaceBuilder raceBuilder)
             : base(context, userManager)
         {
@@ -66,7 +66,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("Season/{id}/[Controller]/Add/")]
         public async Task<IActionResult> AddTracks(int id, [Bind("TrackId")] int trackId)
         {
-            var track = await _trackService.GetEntityById(trackId);
+            var track = await _trackService.GetTrackById(trackId);
             var season = await _seasonService.GetSeasonById(id, true, true);
             if (track == null || season == null)
                 return NotFound();
@@ -100,7 +100,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> ModifyRace(int id, int trackId)
         {
             var season = await _seasonService.GetSeasonById(id);
-            var track = await _trackService.GetEntityById(trackId);
+            var track = await _trackService.GetTrackById(trackId);
             var model = new RacesModifyRaceModel
             {
                 SeasonId = id,
@@ -126,7 +126,7 @@ namespace FormuleCirkelEntity.Controllers
             if (raceModel == null)
                 return NotFound();
 
-            var track = await _trackService.GetEntityById(raceModel.TrackId);
+            var track = await _trackService.GetTrackById(raceModel.TrackId);
             var season = await _seasonService.GetSeasonById(raceModel.SeasonId, true, true);
             // Add the created stints to the racebuilder so the race is correctly set up
             var race = _raceBuilder
@@ -197,7 +197,7 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(r => r.Season)
                 .SingleOrDefaultAsync(r => r.RaceId == raceId);
 
-            var track = await _trackService.GetEntityById(race.TrackId);
+            var track = await _trackService.GetTrackById(race.TrackId);
 
             var trackTraits = await _context.TrackTraits
                 .AsNoTracking()

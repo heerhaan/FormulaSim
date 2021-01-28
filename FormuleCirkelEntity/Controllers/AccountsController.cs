@@ -32,7 +32,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Index(string statusmessage = null)
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -44,7 +44,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Login()
         {
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme).ConfigureAwait(false);
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
             return View();
         }
 
@@ -53,7 +53,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (ModelState.IsValid && model != null)
             {
-                SimUser user = await _userManager.FindByNameAsync(model.Username).ConfigureAwait(false);
+                SimUser user = await _userManager.FindByNameAsync(model.Username);
                 if (user is null)
                 {
                     _logger.LogInformation("Unknown username attempted to log-in");
@@ -67,12 +67,12 @@ namespace FormuleCirkelEntity.Controllers
                     model.Password,
                     model.RememberMe,
                     lockoutOnFailure: false)
-                    .ConfigureAwait(false);
+                    ;
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
                     user.LastLogin = DateTime.Now;
-                    await _userManager.UpdateAsync(user).ConfigureAwait(false);
+                    await _userManager.UpdateAsync(user);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -89,7 +89,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync().ConfigureAwait(false);
+            await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
             return View();
         }
@@ -105,12 +105,12 @@ namespace FormuleCirkelEntity.Controllers
             if (ModelState.IsValid && registerModel != null)
             {
                 var user = new SimUser { UserName = registerModel.Username, Email = registerModel.Email, LastLogin = DateTime.Now };
-                var result = await _userManager.CreateAsync(user, registerModel.Password).ConfigureAwait(false);
+                var result = await _userManager.CreateAsync(user, registerModel.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    _ = await _userManager.AddToRoleAsync(user, Constants.RoleGuest).ConfigureAwait(false);
-                    await _signInManager.SignInAsync(user, isPersistent: true).ConfigureAwait(false);
+                    _ = await _userManager.AddToRoleAsync(user, Constants.RoleGuest);
+                    await _signInManager.SignInAsync(user, isPersistent: true);
                     return RedirectToAction("Index", "Home", new { message = $"Registration was succesful.\nWelcome {registerModel.Username}!" });
                 }
                 foreach (var error in result.Errors)
@@ -124,7 +124,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> ChangeAccount()
         {
-            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
+            var user = await _userManager.GetUserAsync(User);
             if (user is null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -146,13 +146,13 @@ namespace FormuleCirkelEntity.Controllers
                 return View();
             }
 
-            var user = await _userManager.GetUserAsync(User).ConfigureAwait(false);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changeNameResult = await _userManager.SetUserNameAsync(user, model.Username).ConfigureAwait(false);
+            var changeNameResult = await _userManager.SetUserNameAsync(user, model.Username);
             if (!changeNameResult.Succeeded)
             {
                 foreach (var error in changeNameResult.Errors)
@@ -160,7 +160,7 @@ namespace FormuleCirkelEntity.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            var changeEmailResult = await _userManager.SetEmailAsync(user, model.Email).ConfigureAwait(false);
+            var changeEmailResult = await _userManager.SetEmailAsync(user, model.Email);
             if (!changeEmailResult.Succeeded)
             {
                 foreach (var error in changeEmailResult.Errors)
@@ -171,7 +171,7 @@ namespace FormuleCirkelEntity.Controllers
             // Checks if user also requested a password change
             if (!String.IsNullOrEmpty(model.NewPassword))
             {
-                var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword).ConfigureAwait(false);
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (!changePasswordResult.Succeeded)
                 {
                     foreach (var error in changePasswordResult.Errors)
@@ -190,7 +190,7 @@ namespace FormuleCirkelEntity.Controllers
                 };
                 return View(viewModel);
             }
-            await _signInManager.RefreshSignInAsync(user).ConfigureAwait(false);
+            await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
             return RedirectToAction("Index", new { statusmessage = "Your password has been changed." });
         }
@@ -259,14 +259,14 @@ namespace FormuleCirkelEntity.Controllers
                 return View();
             }
 
-            var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email).ConfigureAwait(false);
+            var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Code, resetPasswordModel.Password).ConfigureAwait(false);
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Code, resetPasswordModel.Password);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation");

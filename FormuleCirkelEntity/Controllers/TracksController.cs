@@ -16,12 +16,14 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class TracksController : ViewDataController<Track>
     {
+        private readonly ITrackService _tracks;
         public TracksController(FormulaContext context, 
             UserManager<SimUser> userManager, 
             PagingHelper pagingHelper,
-            IDataService<Track> dataService)
+            ITrackService dataService)
             : base(context, userManager, pagingHelper, dataService)
         {
+            _tracks = dataService;
         }
 
         [SortResult(nameof(Track.Location)), PagedResult]
@@ -29,12 +31,74 @@ namespace FormuleCirkelEntity.Controllers
         {
             return base.Index().Result;
         }
-        
+
+        [Authorize(Roles = "Admin")]
+        [Route("{id}")]
+        [HttpErrorsToPagesRedirect]
+        public virtual async Task<IActionResult> Edit(int? id)
+        {
+            var updatingObject = await _tracks.GetTrackById(id.Value);
+            if (updatingObject == null)
+                return NotFound();
+
+            return View("Modify", updatingObject);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{id}")]
+        [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
+        public virtual async Task<IActionResult> Edit(int id, Track updatedObject)
+        {
+            updatedObject.Id = id;
+
+            if (!ModelState.IsValid)
+                return View("Modify", updatedObject);
+
+            if (await _tracks.FirstOrDefault(res => res.Id == id) is null)
+                return NotFound();
+
+            _tracks.Update(updatedObject);
+            await _tracks.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [Route("Delete/{id}")]
+        [HttpErrorsToPagesRedirect]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var item = await _tracks.GetTrackById(id.Value, true);
+
+            if (item == null)
+                return NotFound();
+
+            return View(item);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Delete/{id}")]
+        [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var objectToDelete = await _tracks.GetTrackById(id, true);
+            if (objectToDelete == null)
+                return NotFound();
+
+            _tracks.Archive(objectToDelete);
+            await _tracks.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
         [Route("Traits/{id}")]
         public async Task<IActionResult> TrackTraits(int id)
         {
             // Finds the selected track by it's id
-            Track track = await DataService.GetEntityById(id);
+            Track track = await _tracks.GetTrackById(id);
             // Finds the traits used by the given track and returns a list of it
             List<Trait> trackTraits = await _context.TrackTraits
                 .Where(trt => trt.TrackId == id)
@@ -66,7 +130,7 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TrackTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Track track = await DataService.GetEntityById(id);
+            Track track = await _tracks.GetTrackById(id);
             Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (track is null || trait is null)

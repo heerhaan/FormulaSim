@@ -10,84 +10,62 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Services
 {
-    public interface IRaceService
+    public interface IRaceService : IDataService<Race>
     {
-        IQueryable<Race> GetRaceQuery();
         Task<IList<Race>> GetRacesAsync();
         Task<Race> GetRaceByIdAsync(int id, bool withStints = false);
-        Task<Race> FirstOrDefaultAsync(Expression<Func<Race, bool>> predicate);
-        Task AddAsync(Race race);
-        void Update(Race race);
+        Task<List<Race>> GetOrderedRaces(int seasonId, bool withTrack = false);
+        Race FindNextRace(Season season);
         Task<Race> GetLastRace(int championshipId, int trackId);
         IQueryable<DriverResult> GetDriverResultQuery();
-        Task SaveChangesAsync();
     }
 
-    public class RaceService : IRaceService
+    public class RaceService : DataService<Race>, IRaceService
     {
-        private readonly FormulaContext _context;
-        private DbSet<Race> Data { get; }
-
-        public RaceService(FormulaContext context)
-        {
-            _context = context;
-            Data = _context.Set<Race>();
-        }
-
-        public IQueryable<Race> GetRaceQuery()
-        {
-            return Data;
-        }
+        public RaceService(FormulaContext context) : base(context) { }
 
         public async Task<IList<Race>> GetRacesAsync()
         {
-            var races = await Data.AsNoTracking().ToListAsync();
-            return races;
+            return await Data.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<List<Race>> GetOrderedRaces(int seasonId, bool withTrack = false)
+        {
+            return await Data.IgnoreQueryFilters().AsNoTracking()
+                .Where(res => res.SeasonId == seasonId)
+                .If(withTrack, res => res.Include(r => r.Track))
+                .OrderBy(res => res.Round)
+                .ToListAsync();
         }
 
         public async Task<Race> GetRaceByIdAsync(int id, bool withStints = false)
         {
-            var race = await Data.AsNoTracking()
+            return await Data.AsNoTracking()
                 .If(withStints, res => res.Include(r => r.Stints))
                 .FirstOrDefaultAsync(res => res.RaceId == id);
-            return race;
         }
 
-        public async Task<Race> FirstOrDefaultAsync(Expression<Func<Race, bool>> predicate)
+        public Race FindNextRace(Season season)
         {
-            return await Data.AsNoTracking().FirstOrDefaultAsync(predicate);
-        }
-
-        public async Task AddAsync(Race race)
-        {
-            await Data.AddAsync(race);
-        }
-
-        public void Update(Race race)
-        {
-            Data.Update(race);
+            if (season is null) { return null; }
+            return season.Races
+                .OrderBy(res => res.Round)
+                .FirstOrDefault(res => res.RaceState != RaceState.Finished);
         }
 
         public async Task<Race> GetLastRace(int championshipId, int trackId)
         {
-            var lastRace = await Data
-                .AsNoTracking()
+            return await Data.AsNoTracking()
                 .Where(r => r.Season.ChampionshipId == championshipId && r.TrackId == trackId)
                 .Include(r => r.Stints)
                 .Include(r => r.Track)
                 .OrderByDescending(r => r.RaceId)
                 .FirstOrDefaultAsync();
-            return lastRace;
         }
 
         public IQueryable<DriverResult> GetDriverResultQuery()
         {
-            return _context.DriverResults;
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
+            return Context.DriverResults;
         }
 
         public static void SetDriverTraitMods(DriverResult driver, IEnumerable<DriverTrait> driverTraits, Weather weather)

@@ -18,9 +18,9 @@
             <a asp-action="Create" class="btn mr-auto">
                 <i class="fas fa-plus"></i><span class="ml-1">New</span>
             </a>
-            <button class="btn" onclick="randomDriver()">
+            <a asp-action="DriverTraits" asp-route-id="@ViewBag.driverId" class="btn">
                 <i class="fas fa-dice"></i> Driver trait
-            </button>
+            </a>
         }
         <a asp-action="Leaderlists" class="btn">
             <i class="fas fa-signal"></i><span class="ml-1">Leaderlist</span>
@@ -111,11 +111,3 @@
         </ul>
     </nav>
 </div>
-
-<script>
-    function randomDriver() {
-        var drivers = @(Json.Serialize(ViewBag.driverIds));
-        let randomId = drivers[Math.floor(Math.random() * drivers.length)];
-        window.location.href = '/Drivers/Traits/' + randomId;
-    }
-</script>

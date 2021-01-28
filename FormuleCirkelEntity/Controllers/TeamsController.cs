@@ -18,12 +18,15 @@ namespace FormuleCirkelEntity.Controllers
     [Route("[controller]")]
     public class TeamsController : ViewDataController<Team>
     {
-        public TeamsController(FormulaContext context, 
-            UserManager<SimUser> userManager, 
+        private readonly ITeamService _teams;
+        public TeamsController(FormulaContext context,
+            UserManager<SimUser> userManager,
             PagingHelper pagingHelper,
-            IDataService<Team> dataService)
+            ITeamService dataService)
             : base(context, userManager, pagingHelper, dataService)
-        { }
+        {
+            _teams = dataService;
+        }
 
         [SortResult(nameof(Team.Abbreviation)), PagedResult]
         public override async Task<IActionResult> Index()
@@ -32,16 +35,75 @@ namespace FormuleCirkelEntity.Controllers
             return base.Index().Result;
         }
 
-        [Route("Stats/{id}")]
-        public async Task<IActionResult> Stats(int? id)
+        [Authorize(Roles = "Admin")]
+        [Route("{id}")]
+        [HttpErrorsToPagesRedirect]
+        public virtual async Task<IActionResult> Edit(int? id)
         {
-            if (id is null)
+            var updatingObject = await _teams.GetTeamById(id.Value);
+            if (updatingObject == null)
                 return NotFound();
 
+            return View("Modify", updatingObject);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{id}")]
+        [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
+        public virtual async Task<IActionResult> Edit(int id, Team updatedObject)
+        {
+            updatedObject.Id = id;
+
+            if (!ModelState.IsValid)
+                return View("Modify", updatedObject);
+
+            if (await _teams.FirstOrDefault(res => res.Id == id) is null)
+                return NotFound();
+
+            _teams.Update(updatedObject);
+            await _teams.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [Route("Delete/{id}")]
+        [HttpErrorsToPagesRedirect]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var item = await _teams.GetTeamById(id.Value, true);
+
+            if (item == null)
+                return NotFound();
+
+            return View(item);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Delete/{id}")]
+        [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var objectToDelete = await _teams.GetTeamById(id, true);
+            if (objectToDelete == null)
+                return NotFound();
+
+            _teams.Archive(objectToDelete);
+            await _teams.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Route("Stats/{id}")]
+        public async Task<IActionResult> Stats(int id)
+        {
             var stats = new TeamStatsModel();
 
             // Finds the team corresponding to the given id
-            var team = await DataService.GetEntityByIdUnfiltered(id.Value);
+            var team = await _teams.GetTeamById(id, true);
             // Only take seasons from the championship that is currently in use
             var seasons = _context.Seasons
                 .Where(s => s.Championship.ActiveChampionship)
@@ -128,7 +190,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> TeamTraits(int id)
         {
-            Team team = await DataService.GetEntityById(id);
+            Team team = await _teams.GetTeamById(id);
 
             List<Trait> teamTraits = await _context.TeamTraits
                 .Where(ttr => ttr.TeamId == id)
@@ -156,7 +218,7 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TeamTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Team team = await DataService.GetEntityById(id);
+            Team team = await _teams.GetTeamById(id);
             Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (team is null || trait is null)

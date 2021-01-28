@@ -6,6 +6,11 @@
     <UserSecretsId>d6ac1f5b-e0da-447d-9a62-6e2de980f926</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1701;1702;RCS1090;CA2007</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Migrations\20190607091518_RaceState.cs" />
     <Compile Remove="Migrations\20190607091602_RaceState.cs" />

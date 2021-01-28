@@ -1,6 +1,7 @@
 ﻿using FormuleCirkelEntity.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace FormuleCirkelEntity.Extensions
             bool condition,
             Func<IQueryable<T>, IQueryable<T>> transform)
         {
+            if (transform is null) { throw new NullReferenceException(); }
             return condition ? transform(source) : source;
         }
 

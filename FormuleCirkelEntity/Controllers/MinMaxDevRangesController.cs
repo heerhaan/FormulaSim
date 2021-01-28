@@ -20,19 +20,16 @@ namespace FormuleCirkelEntity.Controllers
             _context = context;
         }
 
-        // GET: MinMaxDevRanges
         public async Task<IActionResult> Index()
         {
             return View(await _context.MinMaxDevRange.ToListAsync());
         }
 
-        // GET: MinMaxDevRanges/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: MinMaxDevRanges/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MinMaxDevId,ValueKey,MinDev,MaxDev")] MinMaxDevRange minMaxDevRange)
@@ -46,7 +43,6 @@ namespace FormuleCirkelEntity.Controllers
             return View(minMaxDevRange);
         }
 
-        // GET: MinMaxDevRanges/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -62,7 +58,6 @@ namespace FormuleCirkelEntity.Controllers
             return View(minMaxDevRange);
         }
 
-        // POST: MinMaxDevRanges/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("MinMaxDevId,ValueKey,MinDev,MaxDev")] MinMaxDevRange minMaxDevRange)
@@ -79,23 +74,15 @@ namespace FormuleCirkelEntity.Controllers
                     _context.Update(minMaxDevRange);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException) when (!MinMaxDevRangeExists(minMaxDevRange.MinMaxDevId))
                 {
-                    if (!MinMaxDevRangeExists(minMaxDevRange.MinMaxDevId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(minMaxDevRange);
         }
 
-        // GET: MinMaxDevRanges/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

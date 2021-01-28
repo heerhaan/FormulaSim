@@ -11,71 +11,36 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Services
 {
-    public interface IChampionshipService
+    public interface IChampionshipService : IDataService<Championship>
     {
-        IQueryable<Championship> GetChampionshipsQuery();
         Task<IList<Championship>> GetChampionships();
         Task<Championship> GetChampionshipById(int id, bool includeRanges = false);
-        Task<Championship> FirstOrDefault(Expression<Func<Championship, bool>> predicate);
-        Task Add(Championship championship);
-        void Update(Championship championship);
         Task ActivateChampionship(Championship championship);
         string SetRangeToChampionship(Championship championship, bool isAgeDev, IList<int> valueKeys, IList<int> valueMins, IList<int> valueMaxs);
-        Task SaveChangesAsync();
     }
 
-    public class ChampionshipService : IChampionshipService
+    public class ChampionshipService : DataService<Championship>, IChampionshipService
     {
-        private readonly FormulaContext _context;
-        private DbSet<Championship> Data { get; }
-
-        public ChampionshipService(FormulaContext context)
-        {
-            _context = context;
-            Data = _context.Set<Championship>();
-        }
-
-        public IQueryable<Championship> GetChampionshipsQuery()
-        {
-            return Data;
-        }
+        public ChampionshipService(FormulaContext context) : base(context) { }
 
         public async Task<IList<Championship>> GetChampionships()
         {
-            var championship = await Data.AsNoTracking().ToListAsync().ConfigureAwait(false);
-            return championship;
+            return await Data.AsNoTracking().ToListAsync();
         }
 
         public async Task<Championship> GetChampionshipById(int id, bool includeRanges = false)
         {
-            var item = await Data.AsNoTracking()
+            return await Data.AsNoTracking()
                 .If(includeRanges, res => res.Include(c => c.AgeDevRanges))
                 .If(includeRanges, res => res.Include(c => c.SkillDevRanges))
-                .FirstOrDefaultAsync(res => res.ChampionshipId == id)
-                .ConfigureAwait(false);
-            return item;
-        }
-
-        public async Task<Championship> FirstOrDefault(Expression<Func<Championship, bool>> predicate)
-        {
-            return await Data.AsNoTracking().FirstOrDefaultAsync(predicate).ConfigureAwait(false);
-        }
-
-        public async Task Add(Championship championship)
-        {
-            await Data.AddAsync(championship).ConfigureAwait(false);
-        }
-
-        public void Update(Championship championship)
-        {
-            Data.Update(championship);
+                .FirstOrDefaultAsync(res => res.ChampionshipId == id);
         }
 
         public async Task ActivateChampionship(Championship championship)
         {
             if (championship is null) { throw new NullReferenceException(); }
             // First find and de-activate the other championships
-            var otherChamps = await Data.Where(c => c.ActiveChampionship).ToListAsync().ConfigureAwait(false);
+            var otherChamps = await Data.Where(c => c.ActiveChampionship).ToListAsync();
             foreach (var champ in otherChamps)
                 champ.ActiveChampionship = false;
 
@@ -104,9 +69,9 @@ namespace FormuleCirkelEntity.Services
                 return errString;
             // Empties either of the dev ranges so we can put in some new ones (owo)
             if (isAgeDev)
-                _context.MinMaxDevRange.RemoveRange(championship.AgeDevRanges);
+                Context.MinMaxDevRange.RemoveRange(championship.AgeDevRanges);
             else
-                _context.MinMaxDevRange.RemoveRange(championship.SkillDevRanges);
+                Context.MinMaxDevRange.RemoveRange(championship.SkillDevRanges);
 
             // Loops through all the key values which assumes that the age value, min dev and max dev lists are of the same length
             for (int i = 0; i < valueKeys.Count; i++)
@@ -136,11 +101,6 @@ namespace FormuleCirkelEntity.Services
                 }
             }
             return errString;
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }

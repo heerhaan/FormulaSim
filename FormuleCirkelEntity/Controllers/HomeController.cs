@@ -19,24 +19,30 @@ namespace FormuleCirkelEntity.Controllers
         private readonly IChampionshipService _championships;
         private readonly ISeasonService _seasons;
         private readonly IRaceService _races;
+        private readonly ISeasonDriverService _seasonDrivers;
+        private readonly ISeasonTeamService _seasonTeams;
 
         public HomeController(FormulaContext context,
             UserManager<SimUser> userManager,
             IChampionshipService championshipService,
             ISeasonService seasonService,
-            IRaceService raceService)
+            IRaceService raceService,
+            ISeasonDriverService seasonDriverService,
+            ISeasonTeamService seasonTeamService)
             : base(context, userManager)
         {
             _championships = championshipService;
             _seasons = seasonService;
             _races = raceService;
+            _seasonDrivers = seasonDriverService;
+            _seasonTeams = seasonTeamService;
         }
 
         public async Task<IActionResult> Index(string message = null)
         {
             bool championship = false;
             string name = "Formula";
-            var championships = await _championships.GetChampionships().ConfigureAwait(false);
+            var championships = await _championships.GetChampionships();
             if (championships.Count > 0)
             {
                 championship = true;
@@ -53,77 +59,29 @@ namespace FormuleCirkelEntity.Controllers
             return View(viewModel);
         }
 
-        public IActionResult DriverStandings()
+        public async Task<IActionResult> DriverStandings()
         {
-            var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship);
-
-            if (seasons.Any(s => s.State == SeasonState.Progress))
+            var season = await _seasons.FindActiveSeason();
+            if (season != null)
             {
-                var currentSeason = seasons
-                    .Where(s => s.State == SeasonState.Progress)
-                    .FirstOrDefault();
-
-                var drivers = _context.SeasonDrivers
-                    .IgnoreQueryFilters()
-                    .Where(s => s.SeasonId == currentSeason.SeasonId)
-                    .Include(s => s.DriverResults)
-                    .Include(s => s.Driver)
-                    .Include(s => s.SeasonTeam)
-                    .OrderByDescending(s => s.Points)
-                        .ThenByDescending(s => s.HiddenPoints)
-                    .ToList();
-
-                var rounds = _context.Races
-                    .IgnoreQueryFilters()
-                    .Where(r => r.SeasonId == currentSeason.SeasonId)
-                    .Include(r => r.Track)
-                    .OrderBy(r => r.Round)
-                    .ToList();
-
-                List<Track> tracks = new List<Track>();
-                foreach (var round in rounds)
-                {
-                    tracks.Add(round.Track);
-                }
-
-                // Calculates the average finishing position
-                IList<double> averages = new List<double>();
-                foreach (var driver in drivers)
-                {
-                    List<double> positions = new List<double>();
-                    double average = 0;
-                    if (driver.DriverResults.Any())
-                    {
-                        foreach (var result in driver.DriverResults)
-                        {
-                            if (result.Status == Status.Finished)
-                            {
-                                positions.Add(result.Position);
-                            }
-                        }
-                        if (positions.Any())
-                        {
-                            average = Math.Round((positions.Average()), 2);
-                        }
-                    }
-                    averages.Add(average);
-                }
+                var drivers = await _seasonDrivers.GetRankedSeasonDrivers(season.SeasonId, true, true);
+                var rounds = await _races.GetOrderedRaces(season.SeasonId, true);
+                var tracks = rounds.Select(res => res.Track);
 
                 var viewmodel = new HomeDriverStandingsModel
                 {
                     SeasonDrivers = drivers,
-                    Averages = averages,
+                    Averages = _seasonDrivers.CalculateDriverAverages(drivers),
                     Tracks = tracks,
                     Rounds = rounds.Select(r => r.RaceId),
-                    SeasonId = currentSeason.SeasonId,
-                    Year = currentSeason.SeasonNumber,
-                    LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
-                    Points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition),
-                    PolePoints = currentSeason.PolePoints
+                    SeasonId = season.SeasonId,
+                    Year = season.SeasonNumber,
+                    LastPointPos = season.PointsPerPosition.Keys.Max(),
+                    Points = JsonConvert.SerializeObject(season.PointsPerPosition),
+                    PolePoints = season.PolePoints
                 };
-
                 return View(viewmodel);
-            } 
+            }
             else
             {
                 return RedirectToAction("Index", "Season");
@@ -131,161 +89,70 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [ActionName("PastDriverStandings")]
-        public IActionResult DriverStandings(int seasonId)
+        public async Task<IActionResult> DriverStandings(int seasonId)
         {
-            var currentSeason = _context.Seasons
-                .Where(s => s.SeasonId == seasonId)
-                .FirstOrDefault();
-
-            var drivers = _context.SeasonDrivers
-                .IgnoreQueryFilters()
-                .Where(s => s.SeasonId == currentSeason.SeasonId)
-                .Include(s => s.DriverResults)
-                .Include(s => s.Driver)
-                .Include(s => s.SeasonTeam)
-                .OrderByDescending(s => s.Points)
-                .ToList();
-
-            var rounds = _context.Races
-                .IgnoreQueryFilters()
-                .Where(r => r.SeasonId == currentSeason.SeasonId)
-                .Include(r => r.Track)
-                .OrderBy(r => r.Round)
-                .ToList();
-
-            List<Track> tracks = new List<Track>();
-            foreach (var round in rounds)
-            {
-                tracks.Add(round.Track);
-            }
-
-            // Calculates the average finishing position
-            IList<double> averages = new List<double>();
-            foreach (var driver in drivers)
-            {
-                List<double> positions = new List<double>();
-                double average = 0;
-                if (driver.DriverResults.Any())
-                {
-                    foreach (var result in driver.DriverResults)
-                    {
-                        if (result.Status == Status.Finished)
-                        {
-                            positions.Add(result.Position);
-                        }
-                    }
-                    if (positions.Any())
-                    {
-                        average = Math.Round((positions.Average()), 2);
-                    }
-                }
-                averages.Add(average);
-            }
+            var season = await _seasons.GetSeasonById(seasonId);
+            var drivers = await _seasonDrivers.GetRankedSeasonDrivers(season.SeasonId, true, true);
+            var rounds = await _races.GetOrderedRaces(seasonId, true);
+            var tracks = rounds.Select(res => res.Track);
 
             var viewmodel = new HomeDriverStandingsModel
             {
                 SeasonDrivers = drivers,
-                Averages = averages,
+                Averages = _seasonDrivers.CalculateDriverAverages(drivers),
                 Tracks = tracks,
                 Rounds = rounds.Select(r => r.RaceId),
-                SeasonId = currentSeason.SeasonId,
-                Year = currentSeason.SeasonNumber,
-                LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
-                Points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition),
-                PolePoints = currentSeason.PolePoints
+                SeasonId = season.SeasonId,
+                Year = season.SeasonNumber,
+                LastPointPos = season.PointsPerPosition.Keys.Max(),
+                Points = JsonConvert.SerializeObject(season.PointsPerPosition),
+                PolePoints = season.PolePoints
             };
 
             return View("DriverStandings", viewmodel);
         }
 
-        // Calculates the average finishing position for the given season per driver
-        private List<double> CalculateAverageFinish(List<SeasonDriver> drivers)
-        {
-            List<double> averages = new List<double>();
-            foreach (var driver in drivers)
-            {
-                List<double> positions = new List<double>();
-                double average = 0;
-                if (driver.DriverResults.Any())
-                {
-                    foreach (var result in driver.DriverResults)
-                    {
-                        if (result.Status == Status.Finished)
-                        {
-                            positions.Add(result.Position);
-                        }
-                    }
-                    if (positions.Any())
-                    {
-                        average = Math.Round((positions.Average()), 2);
-                    }
-                }
-                averages.Add(average);
-            }
-            return averages;
-        }
-
         [HttpPost("[Controller]/{seasonId}/GetDriverGraphData")]
-        public IActionResult GetDriverGraphData(int seasonId)
+        public async Task<IActionResult> GetDriverGraphData(int seasonId)
         {
-            var standings = _context.SeasonDrivers
-                .IgnoreQueryFilters()
+            var query = _seasonDrivers.GetQueryable();
+            var standings = await query.IgnoreQueryFilters().AsNoTracking()
                 .Where(sd => sd.SeasonId == seasonId)
                 .OrderByDescending(sd => sd.Points)
                 .Take(10)
                 .Include(sd => sd.Driver)
                 .Include(sd => sd.DriverResults)
                 .Include(sd => sd.SeasonTeam)
-                .ToList();
+                .ToListAsync();
 
             return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         }
 
-        public IActionResult TeamStandings()
+        public async Task<IActionResult> TeamStandings()
         {
             // Selects seasons from the currently activated championship
-            var seasons = _context.Seasons.Where(s => s.Championship.ActiveChampionship).ToList();
+            var season = await _seasons.FindActiveSeason();
 
             // Checks if there is any season is in progress, else return to season list
-            if (seasons.Any(s => s.State == SeasonState.Progress))
+            if (season != null)
             {
-                var currentSeason = seasons
-                    .Where(s => s.State == SeasonState.Progress)
-                    .FirstOrDefault();
-
-                var rounds = _context.Races
-                    .IgnoreQueryFilters()
-                    .Where(r => r.SeasonId == currentSeason.SeasonId)
-                    .Include(r => r.Track)
-                    .OrderBy(r => r.Round)
-                    .ToList();
-
-                List<Track> tracks = new List<Track>();
-                foreach (var round in rounds)
-                {
-                    tracks.Add(round.Track);
-                }
+                var rounds = await _races.GetOrderedRaces(season.SeasonId, true);
+                var tracks = rounds.Select(res => res.Track);
 
                 var viewModel = new HomeTeamStandingsModel
                 {
                     // Assigns the lowest position that scores points
-                    LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
-                    SeasonTeams = _context.SeasonTeams
-                        .IgnoreQueryFilters()
-                        .Include(st => st.Team)
-                        .Include(st => st.SeasonDrivers)
-                        .Where(st => st.SeasonId == currentSeason.SeasonId)
-                        .OrderByDescending(st => st.Points)
-                        .ToList(),
+                    LastPointPos = season.PointsPerPosition.Keys.Max(),
+                    SeasonTeams = await _seasonTeams.GetRankedSeasonTeams(season.SeasonId, true),
                     Tracks = tracks,
                     Rounds = rounds.Select(r => r.RaceId),
-                    DriverResults = _context.DriverResults
-                        .Where(dr => dr.Race.SeasonId == currentSeason.SeasonId)
-                        .ToList(),
-                    SeasonId = currentSeason.SeasonId,
-                    Year = currentSeason.SeasonNumber,
-                    Points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition),
-                    PolePoints = currentSeason.PolePoints
+                    DriverResults = await _context.DriverResults
+                        .Where(dr => dr.Race.SeasonId == season.SeasonId)
+                        .ToListAsync(),
+                    SeasonId = season.SeasonId,
+                    Year = season.SeasonNumber,
+                    Points = JsonConvert.SerializeObject(season.PointsPerPosition),
+                    PolePoints = season.PolePoints
                 };
 
                 return View(viewModel);
@@ -294,94 +161,46 @@ namespace FormuleCirkelEntity.Controllers
             {
                 return RedirectToAction("Index", "Season");
             }
-            
         }
 
         [ActionName("PastTeamStandings")]
-        public IActionResult TeamStandings(int seasonId)
+        public async Task<IActionResult> TeamStandings(int seasonId)
         {
-            var currentSeason = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId);
-            var rounds = _context.Races
-                .IgnoreQueryFilters()
-                .Where(r => r.SeasonId == seasonId)
-                .Include(r => r.Track)
-                .OrderBy(r => r.Round)
-                .ToList();
-
-            List<Track> tracks = new List<Track>();
-            foreach (var round in rounds)
-            {
-                tracks.Add(round.Track);
-            }
+            var season = await _seasons.GetSeasonById(seasonId);
+            var rounds = await _races.GetOrderedRaces(seasonId, true);
+            var tracks = rounds.Select(res => res.Track);
 
             var viewModel = new HomeTeamStandingsModel
             {
                 // Assigns the lowest position that scores points
-                LastPointPos = currentSeason.PointsPerPosition.Keys.Max(),
-                SeasonTeams = _context.SeasonTeams
-                    .IgnoreQueryFilters()
-                    .Include(st => st.Team)
-                    .Include(st => st.SeasonDrivers)
-                    .Where(st => st.SeasonId == seasonId)
-                    .OrderByDescending(st => st.Points)
-                    .ToList(),
+                LastPointPos = season.PointsPerPosition.Keys.Max(),
+                SeasonTeams = await _seasonTeams.GetRankedSeasonTeams(seasonId, true),
                 Tracks = tracks,
                 Rounds = rounds.Select(r => r.RaceId),
-                DriverResults = _context.DriverResults
+                DriverResults = await _context.DriverResults
                     .Where(dr => dr.Race.SeasonId == seasonId)
-                    .ToList(),
-                SeasonId = currentSeason.SeasonId,
-                Year = currentSeason.SeasonNumber,
-                Points = JsonConvert.SerializeObject(currentSeason.PointsPerPosition),
-                PolePoints = currentSeason.PolePoints
+                    .ToListAsync(),
+                SeasonId = season.SeasonId,
+                Year = season.SeasonNumber,
+                Points = JsonConvert.SerializeObject(season.PointsPerPosition),
+                PolePoints = season.PolePoints
             };
 
             return View("TeamStandings", viewModel);
         }
 
-        [HttpPost("[Controller]/{seasonId}/GetTeamGraphData")]
-        public IActionResult GetTeamGraphData(int seasonId)
-        {
-            // wordt niet meer gebruikt
-            var season = _context.Seasons.SingleOrDefault(s => s.SeasonId == seasonId);
-            if (season == null)
-                return null;
-
-            var graphData = _context.SeasonTeams
-                .IgnoreQueryFilters()
-                .Where(st => st.SeasonId == seasonId)
-                .Include(st => st.SeasonDrivers)
-                    .ThenInclude(sd => sd.DriverResults)
-                .OrderBy(st => st.Name)
-                .ToList();
-
-            return new JsonResult(graphData, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
-        }
-
         public async Task<IActionResult> NextRace()
         {
-            var season = await _context.Seasons
-                .Include(r => r.Races)
-                .FirstOrDefaultAsync(s => s.Championship.ActiveChampionship && s.State == SeasonState.Progress);
+            var season = await _seasons.FindActiveSeason(true);
+            var nextrace = _races.FindNextRace(season);
 
-            if(season != null)
+            if (nextrace is null)
             {
-                var nextrace = season.Races
-                    .OrderBy(r => r.Round)
-                    .FirstOrDefault(r => r.RaceState != RaceState.Finished);
-
-                if (nextrace == null)
-                {
-                    return RedirectToAction("Index", "Season");
-                }
-                else
-                {
-                    return RedirectToAction("RacePreview", "Races", new { id = season.SeasonId, raceId = nextrace.RaceId });
-                }
+                return RedirectToAction("Index", "Season");
             }
             else
             {
-                return RedirectToAction("Index", "Season");
+                return RedirectToAction("RacePreview", "Races", new { id = season.SeasonId, raceId = nextrace.RaceId });
             }
         }
 
@@ -389,7 +208,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             return View();
         }
-        
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

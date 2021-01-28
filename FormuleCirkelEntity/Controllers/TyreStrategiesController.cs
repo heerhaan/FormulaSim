@@ -41,7 +41,7 @@ namespace FormuleCirkelEntity.Controllers
             if (ModelState.IsValid)
             {
                 await _tyreStrats.AddTyre(tyre);
-                await _context.SaveChangesAsync();
+                await _tyreStrats.SaveChangesAsync();
                 return RedirectToAction(nameof(TyreIndex));
             }
             return View(tyre);
@@ -65,7 +65,7 @@ namespace FormuleCirkelEntity.Controllers
             if (ModelState.IsValid)
             {
                 _tyreStrats.UpdateTyre(tyre);
-                await _context.SaveChangesAsync();
+                await _tyreStrats.SaveChangesAsync();
                 return RedirectToAction(nameof(TyreIndex));
             }
             return View(tyre);
@@ -120,7 +120,7 @@ namespace FormuleCirkelEntity.Controllers
 
              _tyreStrats.UpdateTyre(tyre);
             await _tyreStrats.AddTyreToStrategy(strategy, tyre, applyNum);
-            await _context.SaveChangesAsync();
+            await _tyreStrats.SaveChangesAsync();
             return RedirectToAction(nameof(StrategyCreate), new { id = strategy.StrategyId });
         }
 
@@ -130,7 +130,7 @@ namespace FormuleCirkelEntity.Controllers
             var tyreStrat = await _tyreStrats.GetTyreStratById(tyreStratId, true);
             _tyreStrats.RemoveTyreFromStrategy(tyreStrat, strategy);
             //_tyreStrats.UpdateStrategy(strategy); For some reason this works now
-            await _context.SaveChangesAsync();
+            await _tyreStrats.SaveChangesAsync();
             return RedirectToAction(nameof(StrategyCreate), new { id = strategyId });
         }
     }

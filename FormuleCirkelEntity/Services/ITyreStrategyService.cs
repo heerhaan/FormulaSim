@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace FormuleCirkelEntity.Services
 {
-    public interface ITyreStrategyService
+    public interface ITyreStrategyService : IDataService<TyreStrategy>
     {
         IQueryable<Tyre> GetTyresQuery();
         IQueryable<Strategy> GetStrategiesQuery();
-        Task<IList<Tyre>> GetTyres(bool ordered = false);
-        Task<IList<Strategy>> GetStrategies(bool ordered = false, bool includeTyres = false);
+        Task<List<Tyre>> GetTyres(bool ordered = false);
+        Task<List<Strategy>> GetStrategies(bool ordered = false, bool includeTyres = false);
         Task<Tyre> GetTyreById(int id);
         Task<Strategy> GetStrategyById(int id, bool includeTyres = false);
         Task<TyreStrategy> GetTyreStratById(int id, bool includeTyresAndStrat = false);
@@ -24,23 +24,19 @@ namespace FormuleCirkelEntity.Services
         Task AddStrategy(Strategy strategy);
         void UpdateTyre(Tyre tyre);
         void UpdateStrategy(Strategy strategy);
-        void UpdateTyreStrategy(TyreStrategy tyreStrategy);
         Task AddTyreToStrategy(Strategy strategy, Tyre tyre, int applyNum);
         void RemoveTyreFromStrategy(TyreStrategy strat, Strategy strategy);
-        Task SaveChangesAsync();
     }
 
-    public class TyreStrategyService : ITyreStrategyService
+    public class TyreStrategyService : DataService<TyreStrategy>, ITyreStrategyService
     {
-        private readonly FormulaContext _context;
         private DbSet<Tyre> TyreData { get; }
         private DbSet<Strategy> StratData { get; }
 
-        public TyreStrategyService(FormulaContext context)
+        public TyreStrategyService(FormulaContext context) : base(context)
         {
-            _context = context;
-            TyreData = _context.Set<Tyre>();
-            StratData = _context.Set<Strategy>();
+            TyreData = Context.Set<Tyre>();
+            StratData = Context.Set<Strategy>();
         }
 
         public IQueryable<Tyre> GetTyresQuery()
@@ -53,50 +49,45 @@ namespace FormuleCirkelEntity.Services
             return StratData;
         }
 
-        public async Task<IList<Tyre>> GetTyres(bool ordered = false)
+        public async Task<List<Tyre>> GetTyres(bool ordered = false)
         {
-            var tyres = await TyreData.AsNoTracking()
+            return await TyreData.AsNoTracking()
                 .If(ordered, res => res.OrderBy(t => t.StintLen))
                 .ToListAsync();
-            return tyres;
         }
 
-        public async Task<IList<Strategy>> GetStrategies(bool ordered = false, bool includeTyres = false)
+        public async Task<List<Strategy>> GetStrategies(bool ordered = false, bool includeTyres = false)
         {
-            var strategies = await StratData.AsNoTracking()
+            return await StratData.AsNoTracking()
                 .If(includeTyres, res => res.Include(ty => ty.Tyres)
                     .ThenInclude(ty => ty.Tyre))
                 .If(ordered, res => res.OrderBy(s => s.RaceLen))
                 .ToListAsync();
-            return strategies;
         }
 
         public async Task<Tyre> GetTyreById(int id)
         {
-            var item = await TyreData.AsNoTracking()
+            return await TyreData.AsNoTracking()
                 .FirstOrDefaultAsync(res => res.Id == id);
-            return item;
         }
 
         public async Task<Strategy> GetStrategyById(int id, bool includeTyres = false)
         {
-            var item = await StratData
+            return await StratData
                 .AsNoTracking()
                 .If(includeTyres, res => res.Include(ty => ty.Tyres)
                     .ThenInclude(ty => ty.Tyre))
                 .FirstOrDefaultAsync(res => res.StrategyId == id);
-            return item;
         }
 
         public async Task<TyreStrategy> GetTyreStratById(int id, bool includeTyresAndStrat = false)
         {
             // Returns the tyrestrategy object, if a true bool is given then it includes the corresponding tyre and strategy
-            var item = await _context.TyreStrategies
+            return await Context.TyreStrategies
                 .AsNoTracking()
                 .If(includeTyresAndStrat, res => res.Include(tr => tr.Strategy))
                 .If(includeTyresAndStrat, res => res.Include(tr => tr.Tyre))
                 .FirstOrDefaultAsync(res => res.TyreStrategyId == id);
-            return item;
         }
 
         public async Task<Tyre> FirstOrDefaultTyre(Expression<Func<Tyre, bool>> predicate)
@@ -125,16 +116,12 @@ namespace FormuleCirkelEntity.Services
             StratData.Update(strategy);
         }
 
-        public void UpdateTyreStrategy(TyreStrategy tyreStrategy)
-        {
-            _context.Update(tyreStrategy);
-        }
-        /// TyreStrategy adds a new strategy option to an existing possible strategy for a race
-        /// <param name="applyNum">Int value that represents in which stint the new strategy option is applied</param>
+        // TyreStrategy adds a new strategy option to an existing possible strategy for a race
+        // <param name="applyNum">Int value that represents in which stint the new strategy option is applied</param>
         public async Task AddTyreToStrategy(Strategy strategy, Tyre tyre, int applyNum)
         {
             TyreStrategy newStrat = new TyreStrategy { Strategy = strategy, Tyre = tyre, StintNumberApplied = applyNum };
-            await _context.AddAsync(newStrat);
+            await Add(newStrat);
         }
 
         public void RemoveTyreFromStrategy(TyreStrategy strat, Strategy strategy)
@@ -143,11 +130,7 @@ namespace FormuleCirkelEntity.Services
             // Subtract the usable length of the tyre from the total length of the strategy
             strategy.RaceLen -= strat.Tyre.StintLen;
             // Then the tyrestrategy object can be fully deleted
-            _context.Remove(strat);
-        }
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
+            Context.Remove(strat);
         }
     }
 }

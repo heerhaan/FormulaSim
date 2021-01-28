@@ -11,15 +11,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using FormuleCirkelEntity.Services;
 
 namespace FormuleCirkelEntity.Controllers
 {
     public class SeasonController : FormulaController
     {
-        public SeasonController(FormulaContext context, 
-            UserManager<SimUser> userManager)
+        private readonly ISeasonService _seasons;
+        public SeasonController(FormulaContext context,
+            UserManager<SimUser> userManager,
+            ISeasonService seasons)
             : base(context, userManager)
-        { }
+        {
+            _seasons = seasons;
+        }
 
         public async Task<IActionResult> Index()
         {
@@ -83,8 +88,8 @@ namespace FormuleCirkelEntity.Controllers
                 return NotFound();
 
             season.Championship = championship;
-            await _context.AddAsync(season);
-            await _context.SaveChangesAsync();
+            await _seasons.Add(season);
+            await _seasons.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id = season.SeasonId });
         }
 
@@ -135,7 +140,7 @@ namespace FormuleCirkelEntity.Controllers
                         season.Races.Add(newRace);
                     }
                 }
-                await _context.SaveChangesAsync();
+                await _seasons.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Detail), new { id });
         }
@@ -166,7 +171,7 @@ namespace FormuleCirkelEntity.Controllers
                 season.PointsPerPosition.Add(12, 1);
             }
             _context.Update(season);
-            await _context.SaveChangesAsync();
+            await _seasons.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id });
         }
 
@@ -179,7 +184,7 @@ namespace FormuleCirkelEntity.Controllers
 
             season.State = SeasonState.Finished;
             _context.Update(season);
-            await _context.SaveChangesAsync();
+            await _seasons.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id });
         }
 
@@ -238,7 +243,7 @@ namespace FormuleCirkelEntity.Controllers
             _context.RemoveRange(stints);
             _context.Remove(race);
             _context.Update(season);
-            await _context.SaveChangesAsync();
+            await _seasons.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
 
@@ -303,7 +308,7 @@ namespace FormuleCirkelEntity.Controllers
                 season.PitMin = settingsModel.PitMin;
                 season.PitMax = settingsModel.PitMax;
                 season.PolePoints = settingsModel.PolePoints;
-                await _context.SaveChangesAsync();
+                await _seasons.SaveChangesAsync();
                 return RedirectToAction(nameof(Settings), new { id = season.SeasonId, statusmessage = "Settings succesfully saved" });
             }
 
@@ -348,8 +353,8 @@ namespace FormuleCirkelEntity.Controllers
             foreach (var pair in pairs)
                 season.PointsPerPosition.Add(pair);
 
-            _context.Update(season);
-            await _context.SaveChangesAsync();
+            _seasons.Update(season);
+            await _seasons.SaveChangesAsync();
             return RedirectToAction(nameof(Settings), new { id = model.SeasonId });
         }
 

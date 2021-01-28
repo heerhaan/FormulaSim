@@ -39,9 +39,68 @@ namespace FormuleCirkelEntity.Controllers
         [SortResult(nameof(Driver.Name)), PagedResult]
         public override async Task<IActionResult> Index()
         {
-            var drivers = await _drivers.GetEntities().ConfigureAwait(false);
-            ViewBag.driverIds = drivers.Select(d => d.Id);
+            ViewBag.driverId = await _drivers.GetRandomDriverId();
             return base.Index().Result;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [Route("{id}")]
+        [HttpErrorsToPagesRedirect]
+        public virtual async Task<IActionResult> Edit(int id)
+        {
+            var updatingObject = await _drivers.GetDriverById(id);
+            if (updatingObject == null)
+                return NotFound();
+
+            return View("Modify", updatingObject);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{id}")]
+        [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
+        public virtual async Task<IActionResult> Edit(int id, Driver updatedObject)
+        {
+            if (updatedObject is null) { return NotFound(); }
+            updatedObject.Id = id;
+
+            if (!ModelState.IsValid)
+                return View("Modify", updatedObject);
+
+            if (await _drivers.FirstOrDefault(res => res.Id == id) is null)
+                return NotFound();
+
+            _drivers.Update(updatedObject);
+            await _drivers.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [Route("Delete/{id}")]
+        [HttpErrorsToPagesRedirect]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _drivers.GetDriverById(id, true);
+
+            if (item == null)
+                return NotFound();
+
+            return View(item);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Delete/{id}")]
+        [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var objectToDelete = await _drivers.GetDriverById(id, true);
+            if (objectToDelete == null)
+                return NotFound();
+
+            _drivers.Archive(objectToDelete);
+            await _drivers.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [Route("Stats/{id}")]
@@ -50,8 +109,8 @@ namespace FormuleCirkelEntity.Controllers
             var stats = new DriverStatsModel();
 
             // Prepares table items for ViewModel
-            var driver = await _drivers.GetEntityByIdUnfiltered(id).ConfigureAwait(false);
-            var seasons = await _seasons.GetSeasons(true, true).ConfigureAwait(false);
+            var driver = await _drivers.GetDriverById(id, true);
+            var seasons = await _seasons.GetSeasons(true, true);
 
             // Basic information about the driver
             stats.DriverId = driver.Id;
@@ -113,10 +172,10 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/{id}")]
         public async Task<IActionResult> DriverTraits(int id)
         {
-            var driver = await _drivers.GetEntityById(id).ConfigureAwait(false);
-            var driverTraits = await _traits.GetTraitsFromDriver(id).ConfigureAwait(false);
-            var usedTraitIds = driverTraits.Select(drt => drt.TraitId).ToList();
-            var traits = await _traits.GetUnusedTraitsFromEntity(TraitGroup.Driver, usedTraitIds).ConfigureAwait(false);
+            var driver = await _drivers.GetDriverById(id);
+            var driverTraits = await _traits.GetTraitsFromDriver(id);
+            var usedTraitIds = driverTraits.ConvertAll(drt => drt.TraitId);
+            var traits = await _traits.GetUnusedTraitsFromEntity(TraitGroup.Driver, usedTraitIds);
 
             var viewmodel = new DriverTraitsModel
             {
@@ -132,16 +191,16 @@ namespace FormuleCirkelEntity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DriverTraits(int id, [Bind("TraitId")] int traitId)
         {
-            Driver driver = await _drivers.GetEntityById(id).ConfigureAwait(false);
-            Trait trait = await _traits.GetTraitById(traitId).ConfigureAwait(false);
+            Driver driver = await _drivers.GetDriverById(id);
+            Trait trait = await _traits.GetTraitById(traitId);
 
             if (driver is null || trait is null)
                 return NotFound();
 
-            await _traits.AddTraitToDriver(driver, trait).ConfigureAwait(false);
+            await _traits.AddTraitToDriver(driver, trait);
             _drivers.Update(driver);
             _traits.Update(trait);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _drivers.SaveChangesAsync();
             return RedirectToAction(nameof(DriverTraits), new { id });
         }
 
@@ -149,16 +208,16 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{driverId}")]
         public async Task<IActionResult> RemoveDriverTrait(int driverId, int traitId)
         {
-            Driver driver = await _drivers.GetEntityById(driverId).ConfigureAwait(false);
-            Trait trait = await _traits.GetTraitById(traitId).ConfigureAwait(false);
+            Driver driver = await _drivers.GetDriverById(driverId);
+            Trait trait = await _traits.GetTraitById(traitId);
 
             if (driver == null || trait == null)
                 return NotFound();
 
-            await _traits.RemoveTraitFromDriver(driver, trait).ConfigureAwait(false);
+            await _traits.RemoveTraitFromDriver(driver, trait);
             _drivers.Update(driver);
             _traits.Update(trait);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _drivers.SaveChangesAsync();
             return RedirectToAction(nameof(DriverTraits), new { id = driverId });
         }
 
@@ -238,15 +297,15 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Archived")]
         public async Task<IActionResult> ArchivedDrivers()
         {
-            var drivers = await _drivers.GetArchivedDrivers().ConfigureAwait(false);
+            var drivers = await _drivers.GetArchivedDrivers();
             return View(drivers);
         }
 
         [HttpPost("SaveBiography")]
         public async Task<IActionResult> SaveBiography(int id, string biography)
         {
-            await _drivers.SaveBio(id, biography).ConfigureAwait(false);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _drivers.SaveBio(id, biography);
+            await _drivers.SaveChangesAsync();
             return RedirectToAction("Stats", new { id });
         }
     }

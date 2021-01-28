@@ -94,6 +94,8 @@ namespace FormuleCirkelEntity
             services.AddScoped(typeof(ITeamService), typeof(TeamService));
             services.AddScoped(typeof(ITrackService), typeof(TrackService));
             services.AddScoped(typeof(ISeasonService), typeof(SeasonService));
+            services.AddScoped(typeof(ISeasonDriverService), typeof(SeasonDriverService));
+            services.AddScoped(typeof(ISeasonTeamService), typeof(SeasonTeamService));
             services.AddScoped(typeof(ITraitService), typeof(TraitService));
             services.AddScoped(typeof(ITyreStrategyService), typeof(TyreStrategyService));
             // Custom services related to [fill in]

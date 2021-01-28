@@ -1,5 +1,6 @@
 ﻿using FormuleCirkelEntity.DAL;
 using FormuleCirkelEntity.Models;
+using FormuleCirkelEntity.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,22 +11,35 @@ namespace FormuleCirkelEntity.Services
 {
     public interface IEngineService : IDataService<Engine>
     {
-        Task<IList<Engine>> GetArchivedEngines();
+        Task<List<Engine>> GetEngines(bool noFilter = false);
+        Task<Engine> GetEngineById(int id, bool noFilter = false);
+        Task<List<Engine>> GetArchivedEngines();
     }
 
     public class EngineService : DataService<Engine>, IEngineService
     {
         public EngineService(FormulaContext context) : base(context) { }
 
-        public async Task<IList<Engine>> GetArchivedEngines()
+        public async Task<List<Engine>> GetEngines(bool noFilter = false)
+        {
+            return await Data.If(noFilter, res => res.IgnoreQueryFilters())
+                .AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Engine> GetEngineById(int id, bool noFilter = false)
+        {
+            return await Data.If(noFilter, res => res.IgnoreQueryFilters())
+                .AsNoTracking().FirstOrDefaultAsync(res => res.Id == id);
+        }
+
+        public async Task<List<Engine>> GetArchivedEngines()
         {
             return await Data
                 .IgnoreQueryFilters()
                 .AsNoTracking()
                 .Where(res => res.Archived)
                 .OrderBy(res => res.Name)
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .ToListAsync();
         }
     }
 }
