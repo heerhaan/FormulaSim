@@ -400,8 +400,11 @@ namespace FormuleCirkelEntity.Controllers
             var engines = await _context.Engines
                 .Select(t => new { t.Id, t.Name })
                 .ToListAsync();
-
             ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
+            var rubbers = await _context.Rubbers
+                .Select(r => new { r.RubberId, r.Name })
+                .ToListAsync();
+            ViewBag.rubbers = new SelectList(rubbers, nameof(Rubber.RubberId), nameof(Rubber.Name));
             ViewBag.seasonId = id;
 
             var seasonTeam = new SeasonTeam
@@ -423,6 +426,7 @@ namespace FormuleCirkelEntity.Controllers
                 seasonTeam.Chassis = lastTeam.Chassis;
                 seasonTeam.Reliability = lastTeam.Reliability;
                 seasonTeam.EngineId = lastTeam.EngineId;
+                seasonTeam.RubberId = lastTeam.RubberId;
                 seasonTeam.Topspeed = lastTeam.Topspeed;
                 seasonTeam.Acceleration = lastTeam.Acceleration;
                 seasonTeam.Handling = lastTeam.Handling;
@@ -463,11 +467,14 @@ namespace FormuleCirkelEntity.Controllers
             else
             {
                 var engines = await _context.Engines
-                    .Where(e => e.Archived == false)
+                    .Where(e => !e.Archived)
                     .Select(t => new { t.Id, t.Name })
                     .ToListAsync();
-
                 ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
+                var rubbers = await _context.Rubbers
+                    .Select(r => new { r.RubberId, r.Name })
+                    .ToListAsync();
+                ViewBag.rubbers = new SelectList(rubbers, nameof(Rubber.RubberId), nameof(Rubber.Name));
                 return View("AddOrUpdateTeam", seasonTeam);
             }
         }
@@ -491,6 +498,10 @@ namespace FormuleCirkelEntity.Controllers
                 .ToList();
 
             ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
+            var rubbers = await _context.Rubbers
+                    .Select(r => new { r.RubberId, r.Name })
+                    .ToListAsync();
+            ViewBag.rubbers = new SelectList(rubbers, nameof(Rubber.RubberId), nameof(Rubber.Name));
             ViewBag.seasonId = id;
             return View("AddOrUpdateTeam", team);
         }
@@ -520,6 +531,7 @@ namespace FormuleCirkelEntity.Controllers
                 team.Handling = updatedTeam.Handling;
                 team.Reliability = updatedTeam.Reliability;
                 team.EngineId = updatedTeam.EngineId;
+                team.RubberId = updatedTeam.RubberId;
                 _context.Update(team);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
@@ -532,6 +544,10 @@ namespace FormuleCirkelEntity.Controllers
                     .ToListAsync();
 
                 ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
+                var rubbers = await _context.Rubbers
+                    .Select(r => new { r.RubberId, r.Name })
+                    .ToListAsync();
+                ViewBag.rubbers = new SelectList(rubbers, nameof(Rubber.RubberId), nameof(Rubber.Name));
                 return View("AddOrUpdateDriver", team);
             }
         }

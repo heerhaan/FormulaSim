@@ -53,6 +53,10 @@
                         <label asp-for="EngineId" value="Motor" class="control-label float-left">Engine</label>
                         <select asp-for="EngineId" class="form-control" asp-items="@ViewBag.engines"></select>
                     </div>
+                    <div class="form-group">
+                        <label asp-for="RubberId" value="Rubber" class="control-label float-left">Tyre Manufacturer</label>
+                        <select asp-for="RubberId" class="form-control" asp-items="@ViewBag.rubbers"></select>
+                    </div>
                 </div>
                 <div class="col-4">
                     <h4>Specifications</h4><i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipTeamSpecification"></i>
