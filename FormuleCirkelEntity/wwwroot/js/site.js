@@ -1,59 +1,59 @@
 ﻿// Enables tooltips
 $(document).ready(function () {
-    $('[data-toggle="tooltip"]').tooltip();
+	$('[data-toggle="tooltip"]').tooltip();
 });
 
 function tableComparer(index, isAscending) {
-    let getCellValue = (row, idx) => row.children[idx].innerText || row.children[idx].textContent;
-    let isNumber = (val) => val !== '' && !isNaN(val);
-    return function (a, b) {
-        let valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
-        return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
-    }
+	let getCellValue = (row, idx) => row.children[idx].innerText || row.children[idx].textContent;
+	let isNumber = (val) => val !== '' && !isNaN(val);
+	return function (a, b) {
+		let valA = getCellValue(isAscending ? a : b, index), valB = getCellValue(isAscending ? b : a, index);
+		return isNumber(valA) && isNumber(valB) ? valA - valB : valA.toString().localeCompare(valB)
+	}
 }
 
 function takeScreenshot(graphic, imgContainer) {
-    html2canvas(document.querySelector(graphic)).then(function (canvas) {
-        $(imgContainer).empty();
-        var image = new Image();
-        image.src = canvas.toDataURL("image/jpeg");
-        document.querySelector(imgContainer).appendChild(image);
-    });
+	html2canvas(document.querySelector(graphic)).then(function (canvas) {
+		$(imgContainer).empty();
+		var image = new Image();
+		image.src = canvas.toDataURL("image/jpeg");
+		document.querySelector(imgContainer).appendChild(image);
+	});
 }
 
 // Used for development of all values
 function getDev(number) {
-    var element = document.getElementById("old-value-" + number);
-    var text = element.textContent;
-    var old = Number(text);
-    var min = Math.ceil(document.getElementById("custom-min-" + number).value);
-    var max = Math.floor(document.getElementById("custom-max-" + number).value);
-    var dev = Math.floor(Math.random() * (max - min + 1)) + min;
-    var newdev = (old + dev);
+	var element = document.getElementById("old-value-" + number);
+	var text = element.textContent;
+	var old = Number(text);
+	var min = Math.ceil(document.getElementById("custom-min-" + number).value);
+	var max = Math.floor(document.getElementById("custom-max-" + number).value);
+	var dev = Math.floor(Math.random() * (max - min + 1)) + min;
+	var newdev = (old + dev);
 
-    document.getElementById("custom-change-" + number).innerText = dev;
-    document.getElementById("custom-new-" + number).innerText = newdev;
+	document.getElementById("custom-change-" + number).innerText = dev;
+	document.getElementById("custom-new-" + number).innerText = newdev;
 }
 
 // Makes all elements completely black which contain the correspending class
 function hideElements() {
-    var elementsToHide = document.getElementsByClassName('onclick-hide');
-    for (var i = 0; i < elementsToHide.length; i++) {
-        elementsToHide[i].style.backgroundColor = "black";
-        elementsToHide[i].style.color = "black";
-    }
+	var elementsToHide = document.getElementsByClassName('onclick-hide');
+	for (var i = 0; i < elementsToHide.length; i++) {
+		elementsToHide[i].style.backgroundColor = "black";
+		elementsToHide[i].style.color = "black";
+	}
 }
 
 // Return random background
 function returnRandomBackground() {
-    var n = Math.floor(Math.random() * bgs.length);
-    return bgs[n];
+	var n = Math.floor(Math.random() * bgs.length);
+	return bgs[n];
 }
 
 // Return random man
 function returnRandomMan() {
-    var n = Math.floor(Math.random() * man.length);
-    return man[n];
+	var n = Math.floor(Math.random() * man.length);
+	return man[n];
 }
 
 // Array of all countries with id and their name
@@ -937,34 +937,29 @@ var isoCountries = [
 ];
 
 var bgs = [
-    '/../images/backgrounds/AlfaRomeoAss.jpg',
-    '/../images/backgrounds/FerrariFutureTrip.jpeg',
-    '/../images/backgrounds/HaasCurrentTrippy.jpg',
-    '/../images/backgrounds/HakkinenUnderMoon.jpg',
-    '/../images/backgrounds/HamiltonLeclercCrash.jpg',
-    '/../images/backgrounds/HamiltonVerstappenMonaco.jpg',
-    '/../images/backgrounds/KimiFerrariNightLight.jpg',
-    '/../images/backgrounds/McLarenFinish.jpeg',
-    '/../images/backgrounds/McLarenFutureAss.jpg',
-    '/../images/backgrounds/McLarenUpFuture.jpg',
-    '/../images/backgrounds/McLarenWest20xx.jpg',
-    '/../images/backgrounds/MikaMcLarenJump.jpg',
-    '/../images/backgrounds/RedBullRain.jpg',
-    '/../images/backgrounds/ToroRossoSide.jpg',
-    '/../images/backgrounds/VerstappenGermanyWin.jpg',
-    '/../images/backgrounds/VettelNumberOne.jpg',
-    '/../images/backgrounds/VettelPitstop.jpg',
-    '/../images/backgrounds/VettelVerstappenCrash.jpg',
-    '/../images/backgrounds/CharlesLeCrash.jpg'
+	'/../images/backgrounds/camel_lotus_sato.jpg',
+	'/../images/backgrounds/classic_ferrari_schumacher.jpg',
+	'/../images/backgrounds/honda_earth_button.jpg',
+	'/../images/backgrounds/kimi_sauberbull.jpeg',
+	'/../images/backgrounds/manor_wehrlein.jpg',
+	'/../images/backgrounds/marlboro_mclaren_mika.jpg',
+	'/../images/backgrounds/mclaren_mika.jpg',
+	'/../images/backgrounds/mercedes_bottas_kaputt.jpg',
+	'/../images/backgrounds/mercedes_hamilton_kaputt.jpg',
+	'/../images/backgrounds/mika_mclaren.jpg',
+	'/../images/backgrounds/player_lotus_senna.jpg',
+	'/../images/backgrounds/redbull_verstappen.jpg',
+	'/../images/backgrounds/redbull_verstappen_ricciardo.jpg',
+	'/../images/backgrounds/renault_alonso.jpg'
 ];
 
 var man = [
-    '/../images/man/MAN.png',
-    '/../images/man/man2.png',
-    '/../images/man/man3.jpg',
-    '/../images/man/man4.png',
-    '/../images/man/men.png',
-    '/../images/man/myhomie.jpg',
-    '/../images/man/myman.jpg',
-    '/../images/man/Pein.png'
+	'/../images/man/MAN.png',
+	'/../images/man/man2.png',
+	'/../images/man/man3.jpg',
+	'/../images/man/man4.png',
+	'/../images/man/men.png',
+	'/../images/man/myhomie.jpg',
+	'/../images/man/myman.jpg',
+	'/../images/man/Pein.png'
 ];

@@ -56,7 +56,7 @@ namespace FormuleCirkelEntity.Services
         public async Task<Race> GetLastRace(int championshipId, int trackId)
         {
             return await Data.AsNoTracking()
-                .Where(r => r.Season.ChampionshipId == championshipId && r.TrackId == trackId)
+                .Where(r => r.Season.ChampionshipId == championshipId && r.TrackId == trackId && r.Season.State == SeasonState.Finished)
                 .Include(r => r.Stints)
                 .Include(r => r.Track)
                 .OrderByDescending(r => r.RaceId)
@@ -153,6 +153,16 @@ namespace FormuleCirkelEntity.Services
             driverRes.Strategy = strategy;
             driverRes.CurrTyre = currentTyre;
             driverRes.TyreLife = currentTyre.Pace;
+        }
+        
+        public static void SetRubberEffect(DriverResult driverRes, Rubber rubber)
+        {
+            if (driverRes is null || rubber is null) { return; }
+
+            driverRes.MaxRNG += rubber.PaceMod;
+            driverRes.MinRNG += rubber.PaceMod;
+            driverRes.MaxTyreWear += rubber.MaxWearMod;
+            driverRes.MinTyreWear += rubber.MinWearMod;
         }
     }
 }

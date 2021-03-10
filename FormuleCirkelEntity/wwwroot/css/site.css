@@ -39,7 +39,8 @@ main {
 }
 
 h1 {
-    font-family: 'Formula1-Regular';
+    font-family: Audiowide;
+    font-style: italic;
 }
 
 a.navbar-brand {

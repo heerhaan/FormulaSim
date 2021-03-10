@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20210310003133_WeGotTheTyreDownNowBoy")]
+    partial class WeGotTheTyreDownNowBoy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -329,17 +331,17 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<string>("Colour")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MaxWearMod")
-                        .HasColumnType("int");
+                    b.Property<string>("MaxWearMod")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MinWearMod")
-                        .HasColumnType("int");
+                    b.Property<string>("MinWearMod")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PaceMod")
-                        .HasColumnType("int");
+                    b.Property<string>("PaceMod")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("RubberId");
 

@@ -1,0 +1,33 @@
+﻿@model FormuleCirkelEntity.Models.Rubber
+
+@{
+    ViewData["Title"] = "Archive";
+    string archive = "Archive";
+    if (Model.Archived) { archive = "Unarchive"; }
+}
+
+<div class="d-inline-block">
+    <h1>Archive</h1>
+    <div>
+        <h3>Are you sure you want to @archive the tyre manufacturer @Model.Name?</h3>
+        <dl class="row mt-3 text-left">
+            <dt class="col-sm-4">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="RubberId" />
+            <input type="submit" value="@archive" class="btn fullwidth" />
+        </form>
+    </div>
+
+    <div class="float-left mt-2">
+        <a class="btn" asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
+        </a>
+    </div>
+</div>

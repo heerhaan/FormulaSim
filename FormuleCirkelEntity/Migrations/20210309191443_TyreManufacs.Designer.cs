@@ -4,14 +4,16 @@ using FormuleCirkelEntity.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FormuleCirkelEntity.Migrations
 {
     [DbContext(typeof(FormulaContext))]
-    partial class FormulaContextModelSnapshot : ModelSnapshot
+    [Migration("20210309191443_TyreManufacs")]
+    partial class TyreManufacs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -315,7 +317,7 @@ namespace FormuleCirkelEntity.Migrations
 
             modelBuilder.Entity("FormuleCirkelEntity.Models.Rubber", b =>
                 {
-                    b.Property<int>("RubberId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -329,19 +331,19 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<string>("Colour")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MaxWearMod")
-                        .HasColumnType("int");
+                    b.Property<string>("MaxWearMod")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MinWearMod")
-                        .HasColumnType("int");
+                    b.Property<string>("MinWearMod")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PaceMod")
-                        .HasColumnType("int");
+                    b.Property<string>("PaceMod")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RubberId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Archived");
 
@@ -482,9 +484,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("Reliability")
                         .HasColumnType("int");
 
-                    b.Property<int>("RubberId")
-                        .HasColumnType("int");
-
                     b.Property<int>("SeasonId")
                         .HasColumnType("int");
 
@@ -497,8 +496,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasKey("SeasonTeamId");
 
                     b.HasIndex("EngineId");
-
-                    b.HasIndex("RubberId");
 
                     b.HasIndex("SeasonId");
 
@@ -1119,12 +1116,6 @@ namespace FormuleCirkelEntity.Migrations
                     b.HasOne("FormuleCirkelEntity.Models.Engine", "Engine")
                         .WithMany()
                         .HasForeignKey("EngineId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FormuleCirkelEntity.Models.Rubber", "Rubber")
-                        .WithMany()
-                        .HasForeignKey("RubberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

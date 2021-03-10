@@ -111,8 +111,7 @@ namespace FormuleCirkelEntity.Controllers
             var lastracemodel = await _raceService.GetLastRace(season.ChampionshipId, trackId);
             if (lastracemodel != null)
             {
-                var stintlist = lastracemodel.Stints;
-                foreach (var stint in stintlist)
+                foreach (var stint in lastracemodel.Stints)
                     model.RaceStints.Add(stint);
             }
             return View(model);
@@ -265,7 +264,10 @@ namespace FormuleCirkelEntity.Controllers
                         .Include(tet => tet.Trait)
                         .Where(trt => trt.TrackId == race.TrackId)
                         .ToListAsync();
-                    var seasonTeams = await _context.SeasonTeams.Where(st => st.SeasonId == race.SeasonId).ToListAsync();
+                    var seasonTeams = await _context.SeasonTeams
+                        .Where(st => st.SeasonId == race.SeasonId)
+                        .Include(st => st.Rubber)
+                        .ToListAsync();
                     // Get all the possible strategies for this race
                     var strategies = await _context.Strategies
                         .Where(s => s.RaceLen == race.Stints.Count)
@@ -287,14 +289,16 @@ namespace FormuleCirkelEntity.Controllers
                         // Gets the seasonteam of the driver in the loop
                         var thisDriverTeam = seasonTeams.First(st => st.SeasonDrivers.Contains(driverRes.SeasonDriver));
                         // Gets the traits from the team of the driver in the loop and sets them
-                        var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);
+                        var thisTeamTraits = teamTraits.Where(ttr => ttr.TeamId == thisDriverTeam.TeamId);                        
                         RaceService.SetTeamTraitMods(driverRes, thisTeamTraits, race.Weather);
                         // Sets the traits from the track to the driver in the loop
                         RaceService.SetTrackTraitMods(driverRes, trackTraits, race.Weather);
-
                         // Set a random strategy
                         int stratIndex = rng.Next(0, strategies.Count);
                         RaceService.SetRandomStrategy(driverRes, strategies[stratIndex]);
+                        // Applies the effect of the related tyre manufacturer
+                        var rubber = thisDriverTeam.Rubber;
+                        RaceService.SetRubberEffect(driverRes, rubber);
                     }
                     _context.DriverResults.AddRange(race.DriverResults);
                     await _context.SaveChangesAsync();
@@ -329,6 +333,7 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(st => st.Team)
                     .ThenInclude(t => t.TeamTraits)
                     .ThenInclude(tet => tet.Trait)
+                .Include(dr => dr.SeasonDriver.SeasonTeam.Rubber)
                 .ToListAsync();
 
             // Checks if the user is authenticated and sends the list of owned team id's if that's the case

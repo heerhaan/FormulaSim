@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Standings";
+    int increment = 1;
 }
 
 <div class="d-inline-block">
@@ -30,12 +31,12 @@
                     }
                 </tr>
             </thead>
-            <tbody class="table-counter">
+            <tbody>
                 @foreach (var item in Model.SeasonTeams)
                 {
                     <tr>
                         <td rowspan="@(item.SeasonDrivers.Count + 1)">
-                            <b class="table-count"></b>
+                            <b>@(increment++)</b>
                         </td>
                         <td class="text-left pr-2" rowspan="@(item.SeasonDrivers.Count + 1)">
                             <span class="ml-cel">@Html.DisplayFor(modelItem => item.Principal)</span>

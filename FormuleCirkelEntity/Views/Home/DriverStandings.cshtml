@@ -37,12 +37,12 @@
                     </th>
                 </tr>
             </thead>
-            <tbody class="table-counter">
+            <tbody>
                 @foreach (var item in Model.SeasonDrivers)
                 {
                     <tr>
                         <td>
-                            <b class="table-count"></b>
+                            <b>@(1 + increment)</b>
                         </td>
                         <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
                             <b>@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</b>

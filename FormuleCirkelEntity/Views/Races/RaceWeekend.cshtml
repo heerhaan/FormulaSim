@@ -16,6 +16,7 @@
                     <th class="fullborder">Nr.</th>
                     <th class="fullborder">Driver</th>
                     <th class="fullborder">Team</th>
+                    <th class="fullborder">Tyre</th>
                     <th class="fullborder">Penalty</th>
                     <th class="fullborder">Driver traits</th>
                     <th class="fullborder">Team traits</th>
@@ -39,6 +40,12 @@
                             <span class="custom-badge badge-team text-left fullwidth font-size-default"
                                   style="background-color:@(driver.SeasonDriver.SeasonTeam.Colour);color:@(driver.SeasonDriver.SeasonTeam.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Accent);">
                                 <span class="flag flag-@(driver.SeasonDriver.SeasonTeam.Team.Country) ff-sm flag-margin"></span>@driver.SeasonDriver.SeasonTeam.Name
+                            </span>
+                        </td>
+                        <td>
+                            <span class="custom-badge badge-team fullwidth font-size-default"
+                                  style="background-color:@(driver.SeasonDriver.SeasonTeam.Rubber.Colour);color:@(driver.SeasonDriver.SeasonTeam.Rubber.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Rubber.Accent);">
+                                @(driver.SeasonDriver.SeasonTeam.Rubber.Name.Substring(0,1).ToUpper())
                             </span>
                         </td>
                         @if (driver.PenaltyReason == null)

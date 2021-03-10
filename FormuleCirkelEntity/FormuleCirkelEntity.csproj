@@ -26,6 +26,12 @@
     <Compile Remove="Migrations\20201119202815_ChampionshipDevRanges.Designer.cs" />
     <Compile Remove="Migrations\20201215104856_Strategies.cs" />
     <Compile Remove="Migrations\20201215104856_Strategies.Designer.cs" />
+    <Compile Remove="Migrations\20210309191527_ApplyRubberSeasonTeam.cs" />
+    <Compile Remove="Migrations\20210309191527_ApplyRubberSeasonTeam.Designer.cs" />
+    <Compile Remove="Migrations\20210309225910_RubberManufacturers.cs" />
+    <Compile Remove="Migrations\20210309225910_RubberManufacturers.Designer.cs" />
+    <Compile Remove="Migrations\20210309233355_RubberManufacturersPlusRubberIdentified.cs" />
+    <Compile Remove="Migrations\20210309233355_RubberManufacturersPlusRubberIdentified.Designer.cs" />
     <Compile Remove="Migrations\Identity\20201118082029_DateTime.cs" />
     <Compile Remove="Migrations\Identity\20201118082029_DateTime.Designer.cs" />
     <Compile Remove="Migrations\20201202110837_TraitsModified.cs" />

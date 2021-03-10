@@ -20,6 +20,7 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<Championship> Championships { get; set; }
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Engine> Engines { get; set; }
+        public DbSet<Rubber> Rubbers { get; set; }
         public DbSet<Race> Races { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Team> Teams { get; set; }

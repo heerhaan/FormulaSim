@@ -208,6 +208,7 @@ namespace FormuleCirkelEntity.Controllers
                 .IgnoreQueryFilters()
                 .Include(t => t.Team)
                 .Include(t => t.Engine)
+                .Include(t => t.Rubber)
                 .Where(st => st.SeasonId == id)
                 .ToListAsync();
 
@@ -980,8 +981,9 @@ namespace FormuleCirkelEntity.Controllers
             {
                 foreach (var team in teams)
                 {
+                    var teamDriverIds = team.SeasonDrivers.Select(res => res.SeasonDriverId);
                     var qualyWinner = race.DriverResults
-                        .Where(dr => team.SeasonDrivers.Contains(dr.SeasonDriver))
+                        .Where(dr => teamDriverIds.Contains(dr.SeasonDriverId))
                         .OrderBy(o => o.Grid)
                         .FirstOrDefault();
 

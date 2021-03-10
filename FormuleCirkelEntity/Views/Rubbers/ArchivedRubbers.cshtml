@@ -1,0 +1,63 @@
+﻿@model IEnumerable<FormuleCirkelEntity.Models.Rubber>
+
+@{
+    ViewData["Title"] = "Archived Tyre Manufacturers";
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
+}
+
+<div class="d-inline-block">
+    <h1>Archived Tyre Manufacturers</h1>
+
+    <table class="ctable fullborder fullwidth min-width-index-table">
+        <thead class="fullborder">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PaceMod)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MinWearMod)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaxWearMod)
+                </th>
+                <th>Revert</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PaceMod)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MinWearMod)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaxWearMod)
+                    </td>
+                    @if (isAdmin)
+                    {
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@item.RubberId">
+                                <i class="fas fa-undo fa-2x"></i>
+                            </a>
+                        </td>
+                    } else { <td></td> }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="float-left">
+        <a class="btn" asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
+        </a>
+    </div>
+</div>
