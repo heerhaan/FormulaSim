@@ -127,9 +127,16 @@ namespace FormuleCirkelEntity.Controllers
                 .ToListAsync();
 
             stats.StartCount = results.Count;
+            for (int i = 1; i <= 20; i++)
+            {
+                int positionCount = results.Count(res => res.Position == i && res.Status == Status.Finished);
+                stats.PositionList.Add(i);
+                stats.ResultList.Add(positionCount);
+            }
             stats.WinCount = results.Count(r => r.Position == 1);
             stats.SecondCount = results.Count(r => r.Position == 2);
             stats.ThirdCount = results.Count(r => r.Position == 3);
+            stats.AveragePos = Math.Round(results.Where(res => res.Status == Status.Finished).Average(res => res.Position), 2);
             stats.PoleCount = results.Count(r => r.Grid == 1);
             stats.DNFCount = results.Count(r => r.Status == Status.DNF);
             stats.DSQCount = results.Count(r => r.Status == Status.DSQ);
@@ -143,9 +150,6 @@ namespace FormuleCirkelEntity.Controllers
                 pointCount += (current.Count(dr => dr.Position > 3 && dr.Position <= pointsMax));
             }
 
-            // Apply point finishes and subtract others to form outside point finishes
-            stats.PointFinishCount = pointCount;
-            stats.OutsideCount = (stats.StartCount - stats.WinCount - stats.SecondCount - stats.ThirdCount - pointCount - stats.DNFCount - stats.DSQCount);
             // Count of the sort of non-finishes a driver had
             stats.AccidentCount = results.Count(r => r.DNFCause == DNFCause.Accident || r.DNFCause == DNFCause.Puncture);
             stats.ContactCount = results.Count(r => r.DNFCause == DNFCause.Damage || r.DNFCause == DNFCause.Collision);

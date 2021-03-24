@@ -60,9 +60,9 @@
                     <td class="onclick-hide">@driver.SeasonTeam.Engine.Power</td>
                     <td class="onclick-hide">@(driver.Skill + driver.SeasonTeam.Chassis + driver.SeasonTeam.Engine.Power + ((((int)driver.DriverStatus) * -2) + 2))</td>
                     <td>
-                        <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Topspeed</span>
-                        <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Acceleration</span>
-                        <span class="badge badge-dark" style="width:30%;">@driver.SeasonTeam.Handling</span>
+                        <span class="badge badge-dark spec-val" style="width:30%;color:black;">@driver.SeasonTeam.Topspeed</span>
+                        <span class="badge badge-dark spec-val" style="width:30%;color:black;">@driver.SeasonTeam.Acceleration</span>
+                        <span class="badge badge-dark spec-val" style="width:30%;color:black;">@driver.SeasonTeam.Handling</span>
                     </td>
                     <td><span class="alt-color small">@(driver.SeasonTeam.Reliability)</span></td>
                 </tr>
@@ -81,3 +81,17 @@
 
     <div id="screenshot"></div>
 </div>
+
+<script>
+    $(function () {
+        var specValues = document.getElementsByClassName("spec-val");
+        // First we try to find the max value in the used specification values
+        var max = getMaxValueFromCollection(specValues);
+        // In the next iteration we can apply the hue to the badge
+        for (var i = 0; i < specValues.length; i++) {
+            var iterVal = parseInt(specValues[i].innerText);
+            var hueVal = iterVal / max;
+            specValues[i].style.color = getColourGradient(hueVal);
+        }
+    });
+</script>

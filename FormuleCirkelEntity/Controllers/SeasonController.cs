@@ -12,18 +12,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using FormuleCirkelEntity.Services;
+using FormuleCirkelEntity.Builders;
 
 namespace FormuleCirkelEntity.Controllers
 {
     public class SeasonController : FormulaController
     {
         private readonly ISeasonService _seasons;
+        private readonly ITrackService _tracks;
+        private readonly RaceBuilder _raceBuilder;
+
         public SeasonController(FormulaContext context,
             UserManager<SimUser> userManager,
-            ISeasonService seasons)
+            ISeasonService seasons,
+            ITrackService tracks,
+            RaceBuilder raceBuilder)
             : base(context, userManager)
         {
             _seasons = seasons;
+            _tracks = tracks;
+            _raceBuilder = raceBuilder;
         }
 
         public async Task<IActionResult> Index()
@@ -124,22 +132,34 @@ namespace FormuleCirkelEntity.Controllers
                 // Adds the previous season races if there aren't any added yet.
                 if (season.Races.Count == 0)
                 {
-                    foreach (var race in lastSeason.Races)
+                    foreach (var race in lastSeason.Races.OrderBy(res => res.Round))
                     {
-                        Race newRace = new Race
+                        var track = await _tracks.GetTrackById(race.TrackId);
+                        var newStints = new List<Stint>();
+                        foreach (var oldStint in race.Stints.OrderBy(res => res.Number))
                         {
-                            Season = season,
-                            Name = race.Name,
-                            Round = race.Round,
-                            TrackId = race.TrackId,
-                            Weather = Helpers.RandomWeather(),
-                            RaceState = RaceState.Concept
-                        };
-                        foreach (var stint in race.Stints)
-                            newRace.Stints.Add(stint);
+                            var newStint = new Stint
+                            {
+                                Number = oldStint.Number,
+                                ApplyDriverLevel = oldStint.ApplyDriverLevel,
+                                ApplyChassisLevel = oldStint.ApplyChassisLevel,
+                                ApplyEngineLevel = oldStint.ApplyEngineLevel,
+                                ApplyQualifyingBonus = oldStint.ApplyQualifyingBonus,
+                                ApplyReliability = oldStint.ApplyReliability,
+                                RNGMaximum = oldStint.RNGMaximum,
+                                RNGMinimum = oldStint.RNGMinimum
+                            };
+                            newStints.Add(newStint);
+                        }
+                        var newRace = _raceBuilder
+                            .InitializeRace(track, season)
+                            .AddModifiedStints(newStints)
+                            .GetResultAndRefresh();
+
                         season.Races.Add(newRace);
                     }
                 }
+                _seasons.Update(season);
                 await _seasons.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Detail), new { id });

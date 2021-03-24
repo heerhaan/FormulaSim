@@ -16,13 +16,14 @@ namespace FormuleCirkelEntity.ViewModels
 
         // Statistics about their races
         public decimal StartCount { get; set; }
-        public decimal PointFinishCount { get; set; }
-        public decimal OutsideCount { get; set; }
         public decimal WDCCount { get; set; }
         public decimal PoleCount { get; set; }
         public decimal WinCount { get; set; }
         public decimal SecondCount { get; set; }
         public decimal ThirdCount { get; set; }
+        public double AveragePos { get; set; }
+        public List<int> PositionList { get; } = new List<int>();
+        public List<decimal> ResultList { get; } = new List<decimal>();
 
         // Statistics about their DNFs
         public decimal DNFCount { get; set; }

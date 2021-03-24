@@ -24,12 +24,12 @@
                 <tr>
                     <th class="fullborder th-sm" data-field="position">Pos.</th>
                     <th class="fullborder th-sm">Nr.</th>
-                    <th class="fullborder th-lg">Name</th>
-                    <th class="fullborder th-xl">Team</th>
+                    <th class="fullborder">Name</th>
+                    <th class="fullborder">Team</th>
                     <th class="fullborder th-sm">PWR</th>
                     <th class="fullborder th-sm">Grid</th>
                     <th class="fullborder th-sm">Tyre</th>
-                    @foreach (var stint in Model.RaceStints)
+                    @foreach (var stint in Model.RaceStints.OrderBy(res => res.Number))
                     {
                         <th class="fullborder th-sm" data-field="stintResultHeader-@stint.Number">
                             @stint.Number
@@ -77,7 +77,7 @@
                                 [@driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper()] @driverResult.TyreLife
                             </span>
                         </td>
-                        @foreach (var stint in Model.RaceStints)
+                        @foreach (var stint in Model.RaceStints.OrderBy(res => res.Number))
                         {
                             var stintResult = driverResult.StintResults.First(res => res.Number == stint.Number);
                             <td data-field="stintResult-@stintResult.Number">

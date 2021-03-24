@@ -154,7 +154,7 @@
             raceresults.push(0);
 
             driverValue.DriverResults.forEach(function (result) {
-                if (result.Position <= lastpointpos) {
+                if (result.Position <= lastpointpos && result.Status == 0) {
                     total = total + points[result.Position];
                 }
                 if (result.Grid == 1) {

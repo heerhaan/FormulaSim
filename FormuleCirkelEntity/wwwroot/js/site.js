@@ -44,6 +44,23 @@ function hideElements() {
 	}
 }
 
+function getColourGradient(value) {
+	// Comparison value should go from 0 to 1
+	var hue = (value * 120).toString(10);
+	return ["hsl(", hue, ", 100%, 50%)"].join("");
+}
+
+function getMaxValueFromCollection(collection) {
+	var max = 0;
+	for (i = 0; i < collection.length; i++) {
+		var iterVal = parseInt(collection[i].innerText);
+		if (max < iterVal) {
+			max = iterVal;
+		}
+	}
+	return max;
+}
+
 // Return random background
 function returnRandomBackground() {
 	var n = Math.floor(Math.random() * bgs.length);
@@ -579,7 +596,7 @@ var isoCountries = [
 		"text": "Moldova"
 	},
 	{
-		"id": "MC",
+		"id": "ID",
 		"text": "Monaco"
 	},
 	{
@@ -937,6 +954,7 @@ var isoCountries = [
 ];
 
 var bgs = [
+	'/../images/backgrounds/buzzhahndoosenvelt.png',
 	'/../images/backgrounds/camel_lotus_sato.jpg',
 	'/../images/backgrounds/classic_ferrari_schumacher.jpg',
 	'/../images/backgrounds/honda_earth_button.jpg',

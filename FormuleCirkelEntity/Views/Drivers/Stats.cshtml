@@ -73,6 +73,12 @@
                         <span class="text-muted" style="font-size:0.8rem;">  (@((Model.DNFCount / Model.StartCount * 100).ToString("F"))%)</span>
                     }
                 </dd>
+                <dt class="col-md-6">
+                    Average position:
+                </dt>
+                <dd class="col-md-6">
+                    @Model.AveragePos
+                </dd>
             </dl>
             <div class="w-50" style="max-width: 500px;">
                 <p id="biography" contenteditable="true">
@@ -124,9 +130,15 @@
     $(function () {
         // Barchart for the kind of positions a driver has finished
         var ctxPosBar = document.getElementById('PosBarChart').getContext('2d');
-        var posBarLabels = ['P1', 'P2', 'P3', 'Points', 'Outside', 'DNF' ];
-        var posBarValues = [@Model.WinCount, @Model.SecondCount, @Model.ThirdCount, @Model.PointFinishCount, @Model.OutsideCount, @(Model.DNFCount + Model.DSQCount)];
-        var posBarColours = ['gold', 'silver', '#cd7f32', 'green', 'blue', 'red'];
+        var posBarLabels = @Html.Raw(Json.Serialize(Model.PositionList));
+        var posBarValues = @Html.Raw(Json.Serialize(Model.ResultList));
+        var posBarColours = ['gold', 'silver', '#cd7f32'];
+        while (posBarColours.length != 10) {
+            posBarColours.push('green');
+        }
+        while (posBarColours.length != posBarLabels.length) {
+            posBarColours.push('blue');
+        }
 
         var posBarChart = new Chart(ctxPosBar, {
             type: 'bar',
