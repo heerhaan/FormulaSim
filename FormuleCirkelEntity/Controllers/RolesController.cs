@@ -17,7 +17,7 @@ namespace FormuleCirkelEntity.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<SimUser> _userManager;
 
-        public RolesController(RoleManager<IdentityRole> roleManager, 
+        public RolesController(RoleManager<IdentityRole> roleManager,
             UserManager<SimUser> userManager)
         {
             _roleManager = roleManager;
@@ -110,7 +110,9 @@ namespace FormuleCirkelEntity.Controllers
                     Errors(result);
             }
             else
+            {
                 ModelState.AddModelError("", "No role found");
+            }
 
             return View("Index", _roleManager.Roles);
         }

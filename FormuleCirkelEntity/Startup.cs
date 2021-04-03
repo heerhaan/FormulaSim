@@ -86,6 +86,7 @@ namespace FormuleCirkelEntity
             // Singleton services only get made once
             services.AddSingleton(new Random());
             // Scoped services
+            services.AddScoped<IDataInitializer, DataInitializer>();
             services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
             services.AddScoped(typeof(IChampionshipService), typeof(ChampionshipService));
             services.AddScoped(typeof(IDriverService), typeof(DriverService));
@@ -119,7 +120,7 @@ namespace FormuleCirkelEntity
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseStaticFiles();
@@ -127,8 +128,16 @@ namespace FormuleCirkelEntity
 
             app.UseAuthentication();
             app.UseAuthorization();
-            // Seeds the default roles and a default admin account to the database if either lacks them
-            DataInitializer.SeedData(userManager, roleManager);
+
+            // Runs the database initializer and seeds the empty tables
+            var scopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            using (var scope = scopeFactory.CreateScope())
+            {
+                var dataInit = scope.ServiceProvider.GetService<IDataInitializer>();
+                dataInit.Initialize();
+                dataInit.SeedData();
+                dataInit.SeedIdentity(userManager, roleManager);
+            }
 
             app.UseEndpoints(endpoints =>
             {

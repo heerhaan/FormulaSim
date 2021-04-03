@@ -36,6 +36,20 @@
     color: white;
 }
 
+.primary-force {
+    background-color: rgb(30,34,39) !important;
+    color: white !important;
+}
+
+.secondary-force {
+    background-color: rgb(52, 58, 64) !important;
+}
+
+.teritary-force {
+    background-color: rgb(189, 33, 48) !important;
+    color: white !important;
+}
+
 .nav-link {
     color: rgba(255, 255, 255, 0.75);
 }

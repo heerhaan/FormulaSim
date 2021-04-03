@@ -67,8 +67,27 @@ namespace FormuleCirkelEntity.DAL
             builder.Entity<TrackTrait>()
                 .HasKey(tr => new { tr.TrackId, tr.TraitId });
 
-            // Applies seeded data for strategy and tyre, which are required
-            //builder.SeedStrategy();
+            #region Seed Data
+            // Seeds a default grooved tyre for the application
+            builder.Entity<Tyre>().HasData(
+                new Tyre
+                {
+                    Id = 1,
+                    TyreName = "Grooved",
+                    TyreColour = "#666699",
+                    StintLen = 20,
+                    Pace = 0,
+                    MinWear = 0,
+                    MaxWear = 0
+                }
+            );
+            // Creates a default strategy
+            builder.Entity<Strategy>().HasData(
+                new Strategy { StrategyId = 1, RaceLen = 20 });
+            // Connects the default strategy with the default grooved tyre
+            builder.Entity<TyreStrategy>().HasData(
+                new TyreStrategy() { TyreStrategyId = 1, StrategyId = 1, TyreId = 1, StintNumberApplied = 1 });
+            #endregion
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)

@@ -120,7 +120,7 @@ namespace FormuleCirkelEntity.Controllers
             stats.DriverBio = driver.Biography;
 
             // Count of the types of race finishes the driver had
-            var results = await _context.DriverResults
+            var results = await Context.DriverResults
                 .AsNoTracking()
                 .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver)
@@ -157,7 +157,7 @@ namespace FormuleCirkelEntity.Controllers
             stats.MechanicalCount = results.Count(r => r.DNFCause == DNFCause.Brakes || r.DNFCause == DNFCause.Clutch || r.DNFCause == DNFCause.Electrics ||
                 r.DNFCause == DNFCause.Exhaust || r.DNFCause == DNFCause.Hydraulics || r.DNFCause == DNFCause.Wheel);
 
-            var seasondriver = await _context.SeasonDrivers
+            var seasondriver = await Context.SeasonDrivers
                 .Where(s => s.Driver.Id == id)
                 .Include(s => s.SeasonTeam)
                     .Where(st => st.Season.Championship.ActiveChampionship)
@@ -230,7 +230,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             DriverLeaderlistsModel leaderlistsModel = new DriverLeaderlistsModel();
 
-            var drivers = _context.DriverResults
+            var drivers = Context.DriverResults
                 .IgnoreQueryFilters()
                 .Where(dr => dr.Race.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver.Driver)
@@ -238,7 +238,7 @@ namespace FormuleCirkelEntity.Controllers
                 .GroupBy(sd => sd.SeasonDriver.Driver)
                 .ToList();
 
-            var seasons = _context.Seasons
+            var seasons = Context.Seasons
                 .Where(s => s.Championship.ActiveChampionship && s.State == SeasonState.Finished)
                 .Include(s => s.Drivers)
                     .ThenInclude(sd => sd.Driver)

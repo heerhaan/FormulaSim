@@ -36,7 +36,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var seasons = await _context.Seasons
+            var seasons = await Context.Seasons
                 .IgnoreQueryFilters()
                 .Where(s => s.Championship.ActiveChampionship)
                 .Include(s => s.Drivers)
@@ -46,13 +46,13 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(s => s.SeasonNumber)
                 .ToListAsync();
 
-            var championship = _context.Championships.FirstOrDefault(s => s.ActiveChampionship);
+            var championship = Context.Championships.FirstOrDefault(s => s.ActiveChampionship);
             if (championship is null)
                 ViewBag.championship = "NaN";
             else
                 ViewBag.championship = championship.ChampionshipName;
 
-            var champs = await _context.Championships
+            var champs = await Context.Championships
                 .ToListAsync();
 
             ViewBag.champs = champs;
@@ -63,7 +63,7 @@ namespace FormuleCirkelEntity.Controllers
         [ActionName("ChampionshipSelect")]
         public async Task<IActionResult> Index(int championshipId)
         {
-            var seasons = await _context.Seasons
+            var seasons = await Context.Seasons
                 .IgnoreQueryFilters()
                 .Where(s => s.ChampionshipId == championshipId)
                 .Include(s => s.Drivers)
@@ -73,13 +73,13 @@ namespace FormuleCirkelEntity.Controllers
                 .OrderByDescending(s => s.SeasonNumber)
                 .ToListAsync();
 
-            var championship = _context.Championships.FirstOrDefault(s => s.ChampionshipId == championshipId);
+            var championship = Context.Championships.FirstOrDefault(s => s.ChampionshipId == championshipId);
             if (championship is null)
                 ViewBag.championship = "NaN";
             else
                 ViewBag.championship = championship.ChampionshipName;
 
-            var champs = await _context.Championships
+            var champs = await Context.Championships
                 .ToListAsync();
 
             ViewBag.champs = champs;
@@ -91,7 +91,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Create()
         {
             var season = new Season();
-            var championship = await _context.Championships.FirstAsync(c => c.ActiveChampionship);
+            var championship = await Context.Championships.FirstAsync(c => c.ActiveChampionship);
             if (championship is null)
                 return NotFound();
 
@@ -105,11 +105,11 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddDefault(int? id)
         {
             // gets the current and previous season in this championship
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .Include(s => s.Races)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            var lastSeason = _context.Seasons
+            var lastSeason = Context.Seasons
                 .Include(s => s.Races)
                     .ThenInclude(r => r.Stints)
                 .Include(s => s.Championship)
@@ -168,7 +168,7 @@ namespace FormuleCirkelEntity.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Start(int? id)
         {
-            var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
+            var season = await Context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
             if (season is null)
                 return NotFound();
 
@@ -190,7 +190,7 @@ namespace FormuleCirkelEntity.Controllers
                 season.PointsPerPosition.Add(11, 2);
                 season.PointsPerPosition.Add(12, 1);
             }
-            _context.Update(season);
+            Context.Update(season);
             await _seasons.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id });
         }
@@ -198,19 +198,19 @@ namespace FormuleCirkelEntity.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Finish(int? id)
         {
-            var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
+            var season = await Context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
             if (season is null)
                 return NotFound();
 
             season.State = SeasonState.Finished;
-            _context.Update(season);
+            Context.Update(season);
             await _seasons.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id });
         }
 
         public async Task<IActionResult> Detail(int? id)
         {
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .IgnoreQueryFilters()
                 .Include(s => s.Races)
                     .ThenInclude(r => r.Track)
@@ -218,13 +218,13 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(r => r.Stints)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            var drivers = await _context.SeasonDrivers
+            var drivers = await Context.SeasonDrivers
                 .IgnoreQueryFilters()
                 .Include(sd => sd.Driver)
                 .Where(sd => sd.SeasonId == id)
                 .ToListAsync();
 
-            var teams = await _context.SeasonTeams
+            var teams = await Context.SeasonTeams
                 .IgnoreQueryFilters()
                 .Include(t => t.Team)
                 .Include(t => t.Engine)
@@ -247,12 +247,12 @@ namespace FormuleCirkelEntity.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveRace(int? id, int seasonId)
         {
-            var race = await _context.Races.SingleOrDefaultAsync(s => s.RaceId == id);
-            var season = await _context.Seasons.Include(s => s.Races).SingleOrDefaultAsync(s => s.SeasonId == seasonId);
+            var race = await Context.Races.SingleOrDefaultAsync(s => s.RaceId == id);
+            var season = await Context.Seasons.Include(s => s.Races).SingleOrDefaultAsync(s => s.SeasonId == seasonId);
             if (race == null)
                 return NotFound();
 
-            var stints = await _context.Stints.Where(s => s.RaceId == race.RaceId).ToListAsync();
+            var stints = await Context.Stints.Where(s => s.RaceId == race.RaceId).ToListAsync();
             season.Races.Remove(race);
             int round = 0;
             foreach (var seasonRace in season.Races.OrderBy(r => r.Round))
@@ -261,16 +261,16 @@ namespace FormuleCirkelEntity.Controllers
                 seasonRace.Round = round;
             }
 
-            _context.RemoveRange(stints);
-            _context.Remove(race);
-            _context.Update(season);
+            Context.RemoveRange(stints);
+            Context.Remove(race);
+            Context.Update(season);
             await _seasons.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
 
         public async Task<IActionResult> SeasonStats(int? id)
         {
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .AsNoTracking()
                 .Include(s => s.Races)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -281,7 +281,7 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.seasonId = id;
             ViewBag.number = season.SeasonNumber;
 
-            var seasondrivers = _context.SeasonDrivers
+            var seasondrivers = Context.SeasonDrivers
                 .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(sd => sd.SeasonId == id)
@@ -299,7 +299,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("[Controller]/{id}/Settings")]
         public async Task<IActionResult> Settings(int id, string statusmessage = null)
         {
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (season is null)
@@ -313,7 +313,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("[Controller]/{id}/Settings")]
         public async Task<IActionResult> Settings(int id, [Bind] SeasonSettingsViewModel settingsModel)
         {
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
             if (season is null || settingsModel is null)
@@ -339,7 +339,7 @@ namespace FormuleCirkelEntity.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SetPoints(int id)
         {
-            var season = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
+            var season = await Context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
             var model = new SeasonSetPointsModel
             {
                 SeasonId = id,
@@ -358,9 +358,9 @@ namespace FormuleCirkelEntity.Controllers
             if (model is null)
                 return NotFound();
 
-            var season = await _context.Seasons.SingleAsync(s => s.SeasonId == model.SeasonId);
+            var season = await Context.Seasons.SingleAsync(s => s.SeasonId == model.SeasonId);
             // Clear the dictionary if it contains any values
-            if (season.PointsPerPosition.Any())
+            if (season.PointsPerPosition.Count > 0)
                 season.PointsPerPosition.Clear();
 
             Dictionary<int, int?> pairs = new Dictionary<int, int?>();
@@ -383,7 +383,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("[Controller]/{id}/Teams/Add")]
         public async Task<IActionResult> AddTeams(int? id)
         {
-            var seasons = await _context.Seasons
+            var seasons = await Context.Seasons
                 .Where(s => s.State == SeasonState.Draft || s.State == SeasonState.Progress)
                 .Include(s => s.Teams)
                 .ToListAsync();
@@ -396,8 +396,8 @@ namespace FormuleCirkelEntity.Controllers
             {
                 existingTeamIds.AddRange(season.Teams.Select(t => t.TeamId));
             }
-            var unregisteredTeams = await _context.Teams
-                .Where(t => t.Archived == false)
+            var unregisteredTeams = await Context.Teams
+                .Where(t => !t.Archived)
                 .Where(t => !existingTeamIds.Contains(t.Id))
                 .OrderBy(t => t.Abbreviation)
                 .ToListAsync();
@@ -410,18 +410,18 @@ namespace FormuleCirkelEntity.Controllers
         [Route("[Controller]/{id}/Teams/Add/{globalTeamId}")]
         public async Task<IActionResult> AddTeam(int? id, int? globalTeamId)
         {
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
+            var globalTeam = await Context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
 
             if (season is null || globalTeam is null)
                 return NotFound();
 
-            var engines = await _context.Engines
+            var engines = await Context.Engines
                 .Select(t => new { t.Id, t.Name })
                 .ToListAsync();
             ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
-            var rubbers = await _context.Rubbers
+            var rubbers = await Context.Rubbers
                 .Select(r => new { r.RubberId, r.Name })
                 .ToListAsync();
             ViewBag.rubbers = new SelectList(rubbers, nameof(Rubber.RubberId), nameof(Rubber.Name));
@@ -434,7 +434,7 @@ namespace FormuleCirkelEntity.Controllers
             };
 
             // Adds last previous used values from team as default
-            var allSeasonTeams = await _context.SeasonTeams.ToListAsync();
+            var allSeasonTeams = await Context.SeasonTeams.ToListAsync();
             var lastTeam = allSeasonTeams.LastOrDefault(lt => lt.TeamId == globalTeamId);
 
             if (lastTeam != null)
@@ -460,12 +460,12 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddTeam(int id, int? globalTeamId, [Bind] SeasonTeam seasonTeam)
         {
             // Get and validate URL parameter objects.
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
 
-            var globalTeam = await _context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
+            var globalTeam = await Context.Teams.SingleOrDefaultAsync(t => t.Id == globalTeamId);
 
             if (season is null || globalTeam is null || seasonTeam is null)
                 return NotFound();
@@ -480,18 +480,18 @@ namespace FormuleCirkelEntity.Controllers
                 seasonTeam.TeamId = globalTeamId ?? throw new ArgumentNullException(nameof(globalTeamId));
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
-                await _context.AddAsync(seasonTeam);
-                await _context.SaveChangesAsync();
+                await Context.AddAsync(seasonTeam);
+                await Context.SaveChangesAsync();
                 return RedirectToAction(nameof(AddTeams), new { id });
             }
             else
             {
-                var engines = await _context.Engines
+                var engines = await Context.Engines
                     .Where(e => !e.Archived)
                     .Select(t => new { t.Id, t.Name })
                     .ToListAsync();
                 ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
-                var rubbers = await _context.Rubbers
+                var rubbers = await Context.Rubbers
                     .Select(r => new { r.RubberId, r.Name })
                     .ToListAsync();
                 ViewBag.rubbers = new SelectList(rubbers, nameof(Rubber.RubberId), nameof(Rubber.Name));
@@ -503,7 +503,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("[Controller]/{id}/Teams/Update/{teamId}")]
         public async Task<IActionResult> UpdateTeam(int id, int? teamId)
         {
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -512,13 +512,13 @@ namespace FormuleCirkelEntity.Controllers
             if (season is null || team is null)
                 return NotFound();
 
-            var engines = _context.Engines
-                .Where(e => e.Archived == false)
+            var engines = Context.Engines
+                .Where(e => !e.Archived)
                 .Select(t => new { t.Id, t.Name })
                 .ToList();
 
             ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
-            var rubbers = await _context.Rubbers
+            var rubbers = await Context.Rubbers
                     .Select(r => new { r.RubberId, r.Name })
                     .ToListAsync();
             ViewBag.rubbers = new SelectList(rubbers, nameof(Rubber.RubberId), nameof(Rubber.Name));
@@ -530,7 +530,7 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost("[Controller]/{id}/Teams/Update/{teamId}")]
         public async Task<IActionResult> UpdateTeam(int id, int? teamId, [Bind] SeasonTeam updatedTeam)
         {
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .Include(s => s.Teams)
                     .ThenInclude(t => t.Team)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
@@ -552,19 +552,19 @@ namespace FormuleCirkelEntity.Controllers
                 team.Reliability = updatedTeam.Reliability;
                 team.EngineId = updatedTeam.EngineId;
                 team.RubberId = updatedTeam.RubberId;
-                _context.Update(team);
-                await _context.SaveChangesAsync();
+                Context.Update(team);
+                await Context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
             }
             else
             {
-                var engines = await _context.Engines
-                    .Where(e => e.Archived == false)
+                var engines = await Context.Engines
+                    .Where(e => !e.Archived)
                     .Select(t => new { t.Id, t.Name })
                     .ToListAsync();
 
                 ViewBag.engines = new SelectList(engines, nameof(Engine.Id), nameof(Engine.Name));
-                var rubbers = await _context.Rubbers
+                var rubbers = await Context.Rubbers
                     .Select(r => new { r.RubberId, r.Name })
                     .ToListAsync();
                 ViewBag.rubbers = new SelectList(rubbers, nameof(Rubber.RubberId), nameof(Rubber.Name));
@@ -576,7 +576,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("[Controller]/{id}/Drivers/Add")]
         public async Task<IActionResult> AddDrivers(int? id)
         {
-            var seasons = await _context.Seasons
+            var seasons = await Context.Seasons
                 .Where(s => s.State == SeasonState.Draft || s.State == SeasonState.Progress)
                 .Include(s => s.Drivers)
                 .ToListAsync();
@@ -589,14 +589,14 @@ namespace FormuleCirkelEntity.Controllers
             {
                 existingDriverIds.AddRange(season.Drivers.Select(d => d.DriverId));
             }
-            var unregisteredDrivers = await _context.Drivers
-                .Where(d => d.Archived == false)
+            var unregisteredDrivers = await Context.Drivers
+                .Where(d => !d.Archived)
                 .Where(d => !existingDriverIds.Contains(d.Id))
                 .OrderBy(d => d.Name)
                 .ToListAsync();
 
             ViewBag.seasonId = id;
-            var result = await _context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
+            var result = await Context.Seasons.SingleOrDefaultAsync(s => s.SeasonId == id);
             ViewBag.year = result.SeasonNumber;
             return View(unregisteredDrivers);
         }
@@ -605,10 +605,10 @@ namespace FormuleCirkelEntity.Controllers
         [Route("[Controller]/{id}/Drivers/Add/{globalDriverId}")]
         public async Task<IActionResult> AddDriver(int id, int globalDriverId)
         {
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .Include(s => s.Teams)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
+            var globalDriver = await Context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
 
             if (season is null || globalDriver is null)
                 return NotFound();
@@ -627,7 +627,7 @@ namespace FormuleCirkelEntity.Controllers
             };
 
             // Adds last previous used values from driver as default
-            var allSeasonDrivers = await _context.SeasonDrivers.ToListAsync();
+            var allSeasonDrivers = await Context.SeasonDrivers.ToListAsync();
             var lastDriver = allSeasonDrivers
                 .LastOrDefault(ld => ld.DriverId == globalDriverId);
 
@@ -646,11 +646,11 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> AddDriver(int id, int? globalDriverId, [Bind] SeasonDriver seasonDriver)
         {
             // Get and validate URL parameter objects.
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .Include(s => s.Drivers)
                 .Include(s => s.Teams)
                 .SingleOrDefaultAsync(s => s.SeasonId == id);
-            var globalDriver = await _context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
+            var globalDriver = await Context.Drivers.SingleOrDefaultAsync(d => d.Id == globalDriverId);
 
             if (season is null || globalDriver is null || seasonDriver is null)
                 return NotFound();
@@ -665,8 +665,8 @@ namespace FormuleCirkelEntity.Controllers
                 seasonDriver.DriverId = globalDriverId ?? throw new ArgumentNullException(nameof(globalDriverId));
 
                 // Persist the new SeasonDriver and return to AddDrivers page.
-                await _context.AddAsync(seasonDriver);
-                await _context.SaveChangesAsync();
+                await Context.AddAsync(seasonDriver);
+                await Context.SaveChangesAsync();
                 return RedirectToAction(nameof(AddDrivers), new { id });
             }
             else
@@ -685,7 +685,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> UpdateDriver(int id, int? driverId)
         {
             // Get and validate URL parameter objects.
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .Include(s => s.Drivers)
                     .ThenInclude(s => s.Driver)
                 .Include(s => s.Teams)
@@ -709,7 +709,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> UpdateDriver(int id, int? driverId, [Bind] SeasonDriver updatedDriver)
         {
             // Get and validate URL parameter objects.
-            var season = await _context.Seasons
+            var season = await Context.Seasons
                 .Include(s => s.Drivers)
                     .ThenInclude(d => d.Driver)
                 .Include(s => s.Teams)
@@ -728,8 +728,8 @@ namespace FormuleCirkelEntity.Controllers
                 driver.Skill = updatedDriver.Skill;
                 driver.DriverStatus = updatedDriver.DriverStatus;
                 driver.Dropped = false;
-                _context.Update(driver);
-                await _context.SaveChangesAsync();
+                Context.Update(driver);
+                await Context.SaveChangesAsync();
                 return RedirectToAction(nameof(Detail), new { id });
             }
             else
@@ -746,7 +746,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("[Controller]/{id}/Driver/Penaltylist/")]
         public async Task<IActionResult> PenaltyList(int id)
         {
-            var drivers = await _context.SeasonDrivers
+            var drivers = await Context.SeasonDrivers
                 .Include(s => s.DriverResults)
                 .Include(s => s.Driver)
                 .Include(s => s.SeasonTeam)
@@ -760,8 +760,8 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> DriverDev(int id)
         {
             DriverDevModel viewmodel = new DriverDevModel();
-            var season = await _context.Seasons.FirstAsync(s => s.SeasonId == id);
-            var championship = await _context.Championships
+            var season = await Context.Seasons.FirstAsync(s => s.SeasonId == id);
+            var championship = await Context.Championships
                 .Include(c => c.AgeDevRanges)
                 .Include(c => c.SkillDevRanges)
                 .SingleOrDefaultAsync(c => c.ActiveChampionship);
@@ -776,8 +776,8 @@ namespace FormuleCirkelEntity.Controllers
             foreach (var agerange in championship.AgeDevRanges)
                 viewmodel.AgeDevRanges.Add(agerange);
 
-            viewmodel.SeasonDrivers = await _context.SeasonDrivers
-                .Where(s => s.SeasonId == id && s.Dropped == false)
+            viewmodel.SeasonDrivers = await Context.SeasonDrivers
+                .Where(s => s.SeasonId == id && !s.Dropped)
                 .Include(t => t.SeasonTeam)
                 .Include(d => d.Driver)
                 .OrderBy(s => s.SeasonTeam.Team.Abbreviation)
@@ -788,7 +788,7 @@ namespace FormuleCirkelEntity.Controllers
 
         private int GetCurrentYear(int seasonId)
         {
-            var season = _context.Seasons.FirstOrDefault(s => s.SeasonId == seasonId);
+            var season = Context.Seasons.FirstOrDefault(s => s.SeasonId == seasonId);
             return season.SeasonNumber;
         }
 
@@ -796,11 +796,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveDriverDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var seasonId = await _context.Seasons
+            var seasonId = await Context.Seasons
                 .FirstOrDefaultAsync(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship);
 
-            var drivers = await _context.SeasonDrivers
-                .Where(s => s.SeasonId == seasonId.SeasonId && s.Dropped == false)
+            var drivers = await Context.SeasonDrivers
+                .Where(s => s.SeasonId == seasonId.SeasonId && !s.Dropped)
                 .ToListAsync();
 
             if (drivers is null || dev is null)
@@ -811,8 +811,8 @@ namespace FormuleCirkelEntity.Controllers
                 var driver = drivers.First(d => d.SeasonDriverId == driverdev.Id);
                 driver.Skill = driverdev.Newdev;
             }
-            _context.UpdateRange(drivers);
-            await _context.SaveChangesAsync();
+            Context.UpdateRange(drivers);
+            await Context.SaveChangesAsync();
             return RedirectToAction(nameof(DriverDev), new { id = seasonId.SeasonId });
         }
 
@@ -820,7 +820,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             ViewBag.seasonId = id;
 
-            return View(await _context.SeasonTeams
+            return View(await Context.SeasonTeams
                 .Where(s => s.SeasonId == id)
                 .Include(t => t.Team)
                 .OrderBy(t => t.Team.Abbreviation)
@@ -831,11 +831,11 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveTeamDev([FromBody]IEnumerable<GetDev> dev)
         {
-            var seasonId = await _context.Seasons
+            var seasonId = await Context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefaultAsync();
 
-            var teams = await _context.SeasonTeams
+            var teams = await Context.SeasonTeams
                 .Where(s => s.SeasonId == seasonId.SeasonId)
                 .OrderBy(t => t.Team.Abbreviation)
                 .ToListAsync();
@@ -848,8 +848,8 @@ namespace FormuleCirkelEntity.Controllers
                 var team = teams.First(t => t.SeasonTeamId == teamdev.Id);
                 team.Chassis = teamdev.Newdev;
             }
-            _context.UpdateRange(teams);
-            await _context.SaveChangesAsync();
+            Context.UpdateRange(teams);
+            await Context.SaveChangesAsync();
 
             return RedirectToAction(nameof(TeamDev), new { id = seasonId.SeasonId });
         }
@@ -858,7 +858,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             ViewBag.seasonId = id;
 
-            var teams = await _context.SeasonTeams
+            var teams = await Context.SeasonTeams
                 .Where(s => s.SeasonId == id)
                 .Include(st => st.Engine)
                 .ToListAsync();
@@ -878,16 +878,16 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (dev is null) { return NotFound(); }
 
-            var engines = await _context.Engines.ToListAsync();
+            var engines = await Context.Engines.ToListAsync();
             foreach (var enginedev in dev)
             {
                 var engine = engines.First(e => e.Id == enginedev.Id);
                 engine.Power = enginedev.Newdev;
             }
-            _context.UpdateRange(engines);
-            await _context.SaveChangesAsync();
+            Context.UpdateRange(engines);
+            await Context.SaveChangesAsync();
 
-            var seasonId = _context.Seasons
+            var seasonId = Context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefault();
 
@@ -898,7 +898,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             ViewBag.seasonId = id;
 
-            return View(await _context.SeasonTeams
+            return View(await Context.SeasonTeams
                 .Where(s => s.SeasonId == id)
                 .Include(t => t.Team)
                 .OrderBy(t => t.Team.Abbreviation)
@@ -911,11 +911,11 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (dev is null) { return NotFound(); }
 
-            var seasonId = _context.Seasons
+            var seasonId = Context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefault();
 
-            var teams = await _context.SeasonTeams
+            var teams = await Context.SeasonTeams
                 .Where(s => s.SeasonId == seasonId.SeasonId)
                 .OrderBy(t => t.Team.Abbreviation)
                 .ToListAsync();
@@ -925,8 +925,8 @@ namespace FormuleCirkelEntity.Controllers
                 var team = teams.First(t => t.SeasonTeamId == teamdev.Id);
                 team.Reliability = teamdev.Newdev;
             }
-            _context.UpdateRange(teams);
-            await _context.SaveChangesAsync();
+            Context.UpdateRange(teams);
+            await Context.SaveChangesAsync();
 
             return RedirectToAction(nameof(TeamReliabilityDev), new { id = seasonId.SeasonId });
         }
@@ -936,8 +936,8 @@ namespace FormuleCirkelEntity.Controllers
             ViewBag.seasonId = id;
             ViewBag.year = GetCurrentYear(id);
 
-            return View(await _context.SeasonDrivers
-                .Where(s => s.SeasonId == id && s.Dropped == false)
+            return View(await Context.SeasonDrivers
+                .Where(s => s.SeasonId == id && !s.Dropped)
                 .Include(t => t.SeasonTeam)
                 .Include(d => d.Driver)
                 .OrderBy(s => s.SeasonTeam.Team.Abbreviation)
@@ -950,12 +950,12 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (dev is null) { return NotFound(); }
 
-            var seasonId = await _context.Seasons
+            var seasonId = await Context.Seasons
                 .Where(s => s.State == SeasonState.Progress && s.Championship.ActiveChampionship)
                 .FirstOrDefaultAsync();
 
-            var drivers = await _context.SeasonDrivers
-                .Where(s => s.SeasonId == seasonId.SeasonId && s.Dropped == false)
+            var drivers = await Context.SeasonDrivers
+                .Where(s => s.SeasonId == seasonId.SeasonId && !s.Dropped)
                 .ToListAsync();
 
             foreach (var driverdev in dev)
@@ -963,8 +963,8 @@ namespace FormuleCirkelEntity.Controllers
                 var driver = drivers.First(d => d.SeasonDriverId == driverdev.Id);
                 driver.Reliability = driverdev.Newdev;
             }
-            _context.UpdateRange(drivers);
-            await _context.SaveChangesAsync();
+            Context.UpdateRange(drivers);
+            await Context.SaveChangesAsync();
 
             return RedirectToAction(nameof(DriverReliabilityDev), new { id = seasonId.SeasonId });
         }
@@ -973,19 +973,19 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Driver/Drop/{driverId}")]
         public async Task<IActionResult> DropDriverFromTeam(int seasonId, int driverId)
         {
-            var driver = await _context.SeasonDrivers.SingleOrDefaultAsync(sd => sd.SeasonDriverId == driverId);
+            var driver = await Context.SeasonDrivers.SingleOrDefaultAsync(sd => sd.SeasonDriverId == driverId);
             if (driver is null)
                 return NotFound();
 
             driver.Dropped = true;
-            _context.Update(driver);
-            await _context.SaveChangesAsync();
+            Context.Update(driver);
+            await Context.SaveChangesAsync();
             return RedirectToAction(nameof(Detail), new { id = seasonId });
         }
 
         public async Task<IActionResult> QualifyingBattle(int seasonId)
         {
-            var races = await _context.Races
+            var races = await Context.Races
                 .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == seasonId && r.RaceState == RaceState.Finished)
@@ -993,14 +993,14 @@ namespace FormuleCirkelEntity.Controllers
                     .ThenInclude(dr => dr.SeasonDriver)
                 .ToListAsync();
 
-            var drivers = await _context.SeasonDrivers
+            var drivers = await Context.SeasonDrivers
                 .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == seasonId)
                 .Select(sd => sd.SeasonDriverId)
                 .ToListAsync();
 
-            var teams = await _context.SeasonTeams
+            var teams = await Context.SeasonTeams
                 .AsNoTracking()
                 .IgnoreQueryFilters()
                 .Where(r => r.SeasonId == seasonId)
@@ -1026,7 +1026,7 @@ namespace FormuleCirkelEntity.Controllers
                     if (qualyWinner is null)
                         continue;
 
-                    Battles[qualyWinner.SeasonDriverId] += 1;
+                    Battles[qualyWinner.SeasonDriverId]++;
                 }
             }
             return View(new QualifyingBattleModel { QualyBattles = Battles, Teams = teams, SeasonId = seasonId });

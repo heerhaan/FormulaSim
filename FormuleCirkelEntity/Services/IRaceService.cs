@@ -154,7 +154,7 @@ namespace FormuleCirkelEntity.Services
             driverRes.CurrTyre = currentTyre;
             driverRes.TyreLife = currentTyre.Pace;
         }
-        
+
         public static void SetRubberEffect(DriverResult driverRes, Rubber rubber)
         {
             if (driverRes is null || rubber is null) { return; }

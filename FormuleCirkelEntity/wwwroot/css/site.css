@@ -7,6 +7,14 @@
     font-family: "Source Sans Pro";
     src: url('../fonts/SourceSansPro-Regular.ttf')
 }
+@font-face {
+    font-family: "TrainOne-Regular";
+    src: url('../fonts/TrainOne-Regular.ttf')
+}
+@font-face {
+    font-family: "Rubik-ExtraBold";
+    src: url('../fonts/Rubik-ExtraBold.ttf')
+}
 /* General styling */
 * {
     margin: 0;
@@ -39,8 +47,11 @@ main {
 }
 
 h1 {
-    font-family: Audiowide;
-    font-style: italic;
+    font-family: "Rubik-ExtraBold";
+}
+
+.alt-header {
+    font-family: "Rubik-ExtraBold";
 }
 
 a.navbar-brand {
@@ -135,6 +146,11 @@ i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
 /* Styling for the in-season pages */
 .nav-tabs {
     border-bottom: none;
+}
+
+.racemistake {
+    background-color: rgb(255,138,138);
+    border-radius: .25rem;
 }
 
 /* Styling for the index pages */

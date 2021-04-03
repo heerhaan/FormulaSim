@@ -9,15 +9,15 @@ namespace FormuleCirkelEntity.Controllers
 {
     public class FormulaController : Controller
     {
-        protected readonly FormulaContext _context;
-        protected readonly UserManager<SimUser> _userManager;
-
         protected FormulaController(FormulaContext context,
             UserManager<SimUser> userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            Context = context;
+            UserManager = userManager;
         }
+
+        protected FormulaContext Context { get; }
+        protected UserManager<SimUser> UserManager { get; }
 
         protected static Task<IActionResult> AsTask(IActionResult result)
         {

@@ -632,6 +632,9 @@ namespace FormuleCirkelEntity.Migrations
                     b.Property<int>("Number")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Pitstop")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Position")
                         .HasColumnType("int");
 

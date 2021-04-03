@@ -146,7 +146,7 @@ namespace FormuleCirkelEntity.Controllers
                     SeasonTeams = await _seasonTeams.GetRankedSeasonTeams(season.SeasonId, true),
                     Tracks = tracks,
                     Rounds = rounds.Select(r => r.RaceId),
-                    DriverResults = await _context.DriverResults
+                    DriverResults = await Context.DriverResults
                         .Where(dr => dr.Race.SeasonId == season.SeasonId)
                         .ToListAsync(),
                     SeasonId = season.SeasonId,
@@ -177,7 +177,7 @@ namespace FormuleCirkelEntity.Controllers
                 SeasonTeams = await _seasonTeams.GetRankedSeasonTeams(seasonId, true),
                 Tracks = tracks,
                 Rounds = rounds.Select(r => r.RaceId),
-                DriverResults = await _context.DriverResults
+                DriverResults = await Context.DriverResults
                     .Where(dr => dr.Race.SeasonId == seasonId)
                     .ToListAsync(),
                 SeasonId = season.SeasonId,

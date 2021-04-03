@@ -28,5 +28,8 @@ namespace FormuleCirkelEntity.ViewModels
         public decimal PointFinishes { get; set; }
         public decimal NoPointFinishes { get; set; }
         public decimal DidNotFinish { get; set; }
+        public double AveragePos { get; set; }
+        public List<int> PositionList { get; } = new List<int>();
+        public List<decimal> ResultList { get; } = new List<decimal>();
     }
 }

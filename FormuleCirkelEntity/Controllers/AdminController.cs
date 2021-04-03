@@ -23,7 +23,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Index()
         {
             // Get the users, albeit not through the usermanager because of wanting to use Includes
-            var users = await _context.Users
+            var users = await Context.Users
                 .Include(res => res.Drivers)
                 .Include(res => res.Teams)
                 .ToListAsync();
@@ -37,7 +37,7 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _userManager.CreateAsync(user);
+                var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
@@ -53,7 +53,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Modify(string userId)
         {
-            var simuser = await _userManager.FindByIdAsync(userId);
+            var simuser = await UserManager.FindByIdAsync(userId);
             if (simuser is null) { return NotFound(); }
             return View(simuser);
         }
@@ -61,10 +61,10 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            SimUser user = await _userManager.FindByIdAsync(id);
+            SimUser user = await UserManager.FindByIdAsync(id);
             if (user != null)
             {
-                var result = await _userManager.DeleteAsync(user);
+                var result = await UserManager.DeleteAsync(user);
                 if (result.Succeeded)
                     return RedirectToAction("Index");
                 else
@@ -86,7 +86,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> AddDriverToUser(string userId)
         {
-            SimUser user = await _userManager.FindByIdAsync(userId);
+            SimUser user = await UserManager.FindByIdAsync(userId);
             if (user is null)
                 return NotFound();
 
@@ -97,25 +97,25 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> AddDriverToUser(string userId, [Bind("driverId")] int driverId)
         {
-            SimUser user = await _userManager.FindByIdAsync(userId);
-            Driver driver = await _context.Drivers.FindAsync(driverId);
+            SimUser user = await UserManager.FindByIdAsync(userId);
+            Driver driver = await Context.Drivers.FindAsync(driverId);
             if (user is null || driver is null)
                 return NotFound();
 
             user.Drivers.Add(driver);
-            _ = await _userManager.UpdateAsync(user);
+            _ = await UserManager.UpdateAsync(user);
             return RedirectToAction(nameof(AddDriverToUser), new { userId });
         }
 
         public async Task<IActionResult> RemoveDriverFromUser(string userId, int driverId)
         {
-            SimUser user = await _userManager.FindByIdAsync(userId);
-            Driver driver = await _context.Drivers.FindAsync(driverId);
+            SimUser user = await UserManager.FindByIdAsync(userId);
+            Driver driver = await Context.Drivers.FindAsync(driverId);
             if (user is null || driver is null)
                 return NotFound();
 
             user.Drivers.Remove(driver);
-            _ = await _userManager.UpdateAsync(user);
+            _ = await UserManager.UpdateAsync(user);
             return RedirectToAction(nameof(AddDriverToUser), new { userId });
         }
 
@@ -124,7 +124,7 @@ namespace FormuleCirkelEntity.Controllers
             if (user is null)
                 return null;
 
-            var drivers = _context.Drivers
+            var drivers = Context.Drivers
                 .AsEnumerable()
                 .Where(t => !user.Drivers.Contains(t))
                 .ToList();
@@ -134,7 +134,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> AddTeamToUser(string userId)
         {
-            SimUser user = await _userManager.FindByIdAsync(userId);
+            SimUser user = await UserManager.FindByIdAsync(userId);
             if (user is null)
                 return NotFound();
 
@@ -145,25 +145,25 @@ namespace FormuleCirkelEntity.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTeamToUser(string userId, [Bind("teamId")] int teamId)
         {
-            SimUser user = await _userManager.FindByIdAsync(userId);
-            Team team = await _context.Teams.FindAsync(teamId);
+            SimUser user = await UserManager.FindByIdAsync(userId);
+            Team team = await Context.Teams.FindAsync(teamId);
             if (user is null || team is null)
                 return NotFound();
 
             user.Teams.Add(team);
-            _ = await _userManager.UpdateAsync(user);
+            _ = await UserManager.UpdateAsync(user);
             return RedirectToAction(nameof(AddTeamToUser), new { userId });
         }
 
         public async Task<IActionResult> RemoveTeamFromUser(string userId, int teamId)
         {
-            SimUser user = await _userManager.FindByIdAsync(userId);
+            SimUser user = await UserManager.FindByIdAsync(userId);
             Team team = user.Teams.FirstOrDefault(t => t.Id == teamId);
             if (user is null || team is null)
                 return NotFound();
 
             user.Teams.Remove(team);
-            _ = await _userManager.UpdateAsync(user);
+            _ = await UserManager.UpdateAsync(user);
             return RedirectToAction(nameof(AddTeamToUser), new { userId });
         }
 
@@ -172,7 +172,7 @@ namespace FormuleCirkelEntity.Controllers
             if (user is null)
                 return null;
 
-            var teams = _context.Teams
+            var teams = Context.Teams
                 .AsEnumerable()
                 .Where(t => !user.Teams.Contains(t))
                 .ToList();

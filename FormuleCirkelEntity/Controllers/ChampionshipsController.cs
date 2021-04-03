@@ -33,7 +33,7 @@ namespace FormuleCirkelEntity.Controllers
             // Activates the current championship and ensures the rest is deactivated
             var championship = await _champService.GetChampionshipById(championshipId);
             await _champService.ActivateChampionship(championship);
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
         }
 
@@ -52,7 +52,7 @@ namespace FormuleCirkelEntity.Controllers
             if (ModelState.IsValid)
             {
                 await _champService.ActivateChampionship(championship);
-                await _context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
             }
             return View(championship);
@@ -109,7 +109,7 @@ namespace FormuleCirkelEntity.Controllers
                 }
             }
             _champService.Update(championship);
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
             return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = "Dev ranges succesfully set!" });
         }
     }

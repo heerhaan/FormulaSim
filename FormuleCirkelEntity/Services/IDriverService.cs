@@ -40,7 +40,14 @@ namespace FormuleCirkelEntity.Services
         public async Task<int> GetRandomDriverId()
         {
             var drivers = await GetDrivers();
-            return drivers[_rng.Next(drivers.Count)].Id;
+            if (drivers.Any())
+            {
+                return drivers[_rng.Next(drivers.Count)].Id;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public async Task<List<Driver>> GetArchivedDrivers()
@@ -60,7 +67,7 @@ namespace FormuleCirkelEntity.Services
             // Null check since we really dont want to do stuff with something as empty as a null
             if (seasons is null) { return null; }
             List<int> driverIds = new List<int>();
-            foreach (var season in seasons)
+            foreach (var season in seasons.Where(res => res.State == SeasonState.Finished))
             {
                 // Get the driver with the highest amount of points
                 var winner = season.Drivers

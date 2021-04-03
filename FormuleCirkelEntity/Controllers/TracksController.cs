@@ -100,13 +100,13 @@ namespace FormuleCirkelEntity.Controllers
             // Finds the selected track by it's id
             Track track = await _tracks.GetTrackById(id);
             // Finds the traits used by the given track and returns a list of it
-            List<Trait> trackTraits = await _context.TrackTraits
+            List<Trait> trackTraits = await Context.TrackTraits
                 .Where(trt => trt.TrackId == id)
                 .Select(trt => trt.Trait)
                 .ToListAsync();
 
             // Finds the traits that belong to Tracks and aren't yet used by the given track
-            List<Trait> traits = _context.Traits
+            List<Trait> traits = Context.Traits
                 .AsNoTracking()
                 .AsEnumerable()
                 .Where(tr => tr.TraitGroup == TraitGroup.Track && !trackTraits.Any(res => res.TraitId == tr.TraitId))
@@ -131,15 +131,15 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> TrackTraits(int id, [Bind("TraitId")] int traitId)
         {
             Track track = await _tracks.GetTrackById(id);
-            Trait trait = await _context.Traits.FirstAsync(tr => tr.TraitId == traitId);
+            Trait trait = await Context.Traits.FirstAsync(tr => tr.TraitId == traitId);
 
             if (track is null || trait is null)
                 return NotFound();
 
             TrackTrait newTrait = new TrackTrait { Track = track, Trait = trait };
             DataService.Update(track);
-            await _context.AddAsync(newTrait);
-            await _context.SaveChangesAsync();
+            await Context.AddAsync(newTrait);
+            await Context.SaveChangesAsync();
 
             return RedirectToAction(nameof(TrackTraits), new { id });
         }
@@ -148,10 +148,10 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Traits/Remove/{trackId}")]
         public async Task<IActionResult> RemoveTrait(int trackId, int traitId)
         {
-            Track track = await _context.Tracks
+            Track track = await Context.Tracks
                 .Include(tr => tr.TrackTraits)
                 .FirstAsync(t => t.Id == trackId);
-            Trait trait = await _context.Traits
+            Trait trait = await Context.Traits
                 .FirstAsync(tr => tr.TraitId == traitId);
 
             if (track == null || trait == null)
@@ -160,8 +160,8 @@ namespace FormuleCirkelEntity.Controllers
             TrackTrait removetrait = track.TrackTraits
                 .First(trt => trt.TraitId == traitId);
 
-            _context.Remove(removetrait);
-            await _context.SaveChangesAsync();
+            Context.Remove(removetrait);
+            await Context.SaveChangesAsync();
             return RedirectToAction(nameof(TrackTraits), new { id = trackId });
         }
 

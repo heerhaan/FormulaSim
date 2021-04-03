@@ -20,7 +20,7 @@ namespace FormuleCirkelEntity.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var traits = await _context.Traits.ToListAsync();
+            var traits = await Context.Traits.ToListAsync();
             var indexmodel = new TraitsIndexModel
             {
                 DriverTraits = traits.Where(t => t.TraitGroup == TraitGroup.Driver).OrderBy(t => t.Name),
@@ -35,7 +35,7 @@ namespace FormuleCirkelEntity.Controllers
             if (id == null)
                 return NotFound();
 
-            var trait = await _context.Traits.FindAsync(id);
+            var trait = await Context.Traits.FindAsync(id);
 
             if (trait == null)
                 return NotFound();
@@ -56,8 +56,8 @@ namespace FormuleCirkelEntity.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _context.AddAsync(trait);
-                await _context.SaveChangesAsync();
+                await Context.AddAsync(trait);
+                await Context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -70,7 +70,7 @@ namespace FormuleCirkelEntity.Controllers
             if (id == null)
                 return NotFound();
 
-            var trait = await _context.Traits.FindAsync(id);
+            var trait = await Context.Traits.FindAsync(id);
             if (trait == null)
                 return NotFound();
 
@@ -89,8 +89,8 @@ namespace FormuleCirkelEntity.Controllers
             {
                 try
                 {
-                    _context.Update(trait);
-                    await _context.SaveChangesAsync();
+                    Context.Update(trait);
+                    await Context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {

@@ -15,6 +15,7 @@ namespace FormuleCirkelEntity.ViewModels
         public int MaxPos { get; set; }
         public int CountDrivers { get; set; }
         public string FullRaceTitle { get; set; }
+        public string RaceFlag { get; set; }
         public bool ShowRaceButtons { get; set; }
         public bool IsAdmin { get; set; }
         public IList<Stint> RaceStints { get; } = new List<Stint>();

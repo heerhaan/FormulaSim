@@ -68,21 +68,35 @@ namespace FormuleCirkelEntity.ResultGenerators
             if (stint.ApplyReliability)
             {
                 // Check for the reliability of the chassis.
-                if (GetChassisReliabilityResult(team.Reliability, driverResult.ChassisRelMod) == -1)
+                if (GetReliabilityResult(team.Reliability + driverResult.ChassisRelMod) == -1)
                 {
                     stintResult.StintStatus = StintStatus.ChassisDNF;
                 }
                 // Check for the reliability of the driver.
-                else if (GetDriverReliabilityResult(driver.Reliability, weatherDNF + driverResult.DriverRelMod) == -1)
+                else if (GetReliabilityResult(driver.Reliability + weatherDNF + driverResult.DriverRelMod) == -1)
                 {
                     stintResult.StintStatus = StintStatus.DriverDNF;
                 }
             }
 
-            if (stintResult.StintStatus == StintStatus.Running || stintResult.StintStatus == StintStatus.Pitstop)
+            if (stintResult.StintStatus == StintStatus.Running || stintResult.StintStatus == StintStatus.Mistake)
             {
                 // Add one because Random.Next() has an exclusive upper bound.
-                int result = _rng.Next((stint.RNGMinimum + driverResult.MinRNG), (stint.RNGMaximum + weatherRNG + driverResult.MaxRNG) + 1);
+                int result = _rng.Next(stint.RNGMinimum + driverResult.MinRNG, stint.RNGMaximum + weatherRNG + driverResult.MaxRNG + 1);
+                // Iterate through GetReliabilityResult twice to check if a driver made a mistake or not, requires two consequential true's to return a mistake
+                bool mistake = false;
+                for (int i = 0; i < 2; i++)
+                {
+                    mistake = GetReliabilityResult(driver.Reliability + weatherDNF + driverResult.DriverRelMod) == -1;
+                    if (!mistake)
+                        break;
+                }
+                // If the bool mistake is true then we have to subtract from the result
+                if (mistake)
+                {
+                    result += _rng.Next(-20, -10);
+                    stintResult.StintStatus = StintStatus.Mistake;
+                }
                 // In here we loop through the strategy of the driver to see if it is time for a pitstop
                 foreach (var tyreStrat in driverResult.Strategy.Tyres.OrderBy(t => t.StintNumberApplied))
                 {
@@ -91,18 +105,18 @@ namespace FormuleCirkelEntity.ResultGenerators
                     {
                         driverResult.TyreLife = tyreStrat.Tyre.Pace;
                         driverResult.CurrTyre = tyreStrat.Tyre;
-                        stintResult.StintStatus = StintStatus.Pitstop;
+                        stintResult.Pitstop = true;
                     }
                 }
                 // Current status tells us there is a pitstop so calculate pitstop RNG over the result
-                if (stintResult.StintStatus == StintStatus.Pitstop)
+                if (stintResult.Pitstop)
                 {
                     result += _rng.Next(pitMin, pitMax + 1);
                 }
                 // Deals with the tyre wear for this driver and changes tyres if it is needed
                 result += driverResult.TyreLife;
                 // Current status tells us the driver is still running so we apply some of the wear to the tyre
-                driverResult.TyreLife += _rng.Next((driverResult.CurrTyre.MaxWear + driverResult.MaxTyreWear), (driverResult.CurrTyre.MinWear + driverResult.MinTyreWear));               
+                driverResult.TyreLife += _rng.Next(driverResult.CurrTyre.MaxWear + driverResult.MaxTyreWear, driverResult.CurrTyre.MinWear + driverResult.MinTyreWear);
 
                 // Applies the qualifying bonus based on the amount of drivers for the current stint
                 if (stint.ApplyQualifyingBonus)
@@ -131,24 +145,11 @@ namespace FormuleCirkelEntity.ResultGenerators
             }
         }
 
-        // Performs reliability check on a chassis, returns -1 if the check fails and 1 if it succeeds
-        public int GetChassisReliabilityResult(int reliability, int additionalDNF)
+        // Performs a reliability check based on the given values
+        public int GetReliabilityResult(int reliability)
         {
-            var reliabilityScore = reliability + additionalDNF;
             var reliabilityCheckValue = _rng.Next(1, 101);
-            return reliabilityScore.CompareTo(reliabilityCheckValue);
-        }
-
-        /// <summary>
-        /// Performs a <see cref="SeasonDriver"/> reliability check.
-        /// </summary>
-        /// <param name="driver">The <see cref="SeasonDriver"/> to perform the reliability check on.</param>
-        /// <returns>-1 if the reliability check fails, 1 if it succeeds, and 0 if it's neutral.</returns>
-        public int GetDriverReliabilityResult(int reliability, int additionalDNF)
-        {
-            var reliabilityScore = reliability + additionalDNF;
-            var reliabilityCheckValue = _rng.Next(1, 101);
-            return reliabilityScore.CompareTo(reliabilityCheckValue);
+            return reliability.CompareTo(reliabilityCheckValue);
         }
 
         // Calculate a score generated in qualifying

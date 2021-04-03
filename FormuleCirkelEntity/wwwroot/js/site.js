@@ -50,6 +50,17 @@ function getColourGradient(value) {
 	return ["hsl(", hue, ", 100%, 50%)"].join("");
 }
 
+function getMinValueFromCollection(collection) {
+	var min = 9999999999;
+	for (i = 0; i < collection.length; i++) {
+		var iterVal = parseInt(collection[i].innerText);
+		if (min > iterVal) {
+			min = iterVal;
+		}
+	}
+	return min;
+}
+
 function getMaxValueFromCollection(collection) {
 	var max = 0;
 	for (i = 0; i < collection.length; i++) {

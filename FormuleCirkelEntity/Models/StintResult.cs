@@ -9,9 +9,10 @@ namespace FormuleCirkelEntity.Models
         public int Number { get; set; }
         public int Position { get; set; }
         public int Result { get; set; }
-        
+
         [EnumDataType(typeof(StintStatus))]
         public StintStatus StintStatus { get; set; }
+        public bool Pitstop { get; set; }
 
         public int DriverResultId { get; set; }
         public DriverResult DriverResult { get; set; }
@@ -23,6 +24,7 @@ namespace FormuleCirkelEntity.Models
         Running = 1,
         DriverDNF = 2,
         ChassisDNF = 3,
-        Pitstop = 4
+        Pitstop = 4, // deprecated
+        Mistake = 20
     }
 }
