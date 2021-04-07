@@ -1,0 +1,93 @@
+﻿@model FormuleCirkelEntity.Models.AppConfig
+
+@{
+    ViewData["Title"] = "App Configuration";
+}
+
+<div class="d-inline-block">
+    <h1>Modify application configuration settings</h1>
+    <div class="fullwidth">
+        <form method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="flex-row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="DisqualifyChance" class="control-label float-left"></label>
+                        <input asp-for="DisqualifyChance" class="form-control" />
+                        <span asp-validation-for="DisqualifyChance" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ChassisModifierDriverStatus" class="control-label float-left"></label>
+                        <input asp-for="ChassisModifierDriverStatus" class="form-control" />
+                        <span asp-validation-for="ChassisModifierDriverStatus" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MistakeAmountRolls" class="control-label float-left"></label>
+                        <input asp-for="MistakeAmountRolls" class="form-control" />
+                        <span asp-validation-for="MistakeAmountRolls" class="text-danger"></span>
+                    </div>
+                    <div class="flex-row">
+                        <div class="form-group col-6 p-0">
+                            <label asp-for="MistakeLowerValue" class="control-label float-left"></label>
+                            <input asp-for="MistakeLowerValue" class="form-control" />
+                            <span asp-validation-for="MistakeLowerValue" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6 p-0">
+                            <label asp-for="MistakeUpperValue" class="control-label float-left"></label>
+                            <input asp-for="MistakeUpperValue" class="form-control" />
+                            <span asp-validation-for="MistakeUpperValue" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="RainAdditionalRNG" class="control-label float-left"></label>
+                        <input asp-for="RainAdditionalRNG" class="form-control" />
+                        <span asp-validation-for="RainAdditionalRNG" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="StormAdditionalRNG" class="control-label float-left"></label>
+                        <input asp-for="StormAdditionalRNG" class="form-control" />
+                        <span asp-validation-for="StormAdditionalRNG" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="RainDriverReliabilityModifier" class="control-label float-left"></label>
+                        <input asp-for="RainDriverReliabilityModifier" class="form-control" />
+                        <span asp-validation-for="RainDriverReliabilityModifier" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="StormDriverReliabilityModifier" class="control-label float-left"></label>
+                        <input asp-for="StormDriverReliabilityModifier" class="form-control" />
+                        <span asp-validation-for="StormDriverReliabilityModifier" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="SunnyEngineMultiplier" class="control-label float-left"></label>
+                        <input asp-for="SunnyEngineMultiplier" class="form-control" />
+                        <span asp-validation-for="SunnyEngineMultiplier" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="OvercastEngineMultiplier" class="control-label float-left"></label>
+                        <input asp-for="OvercastEngineMultiplier" class="form-control" />
+                        <span asp-validation-for="OvercastEngineMultiplier" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="WetEngineMultiplier" class="control-label float-left"></label>
+                        <input asp-for="WetEngineMultiplier" class="form-control" />
+                        <span asp-validation-for="WetEngineMultiplier" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn fullwidth" />
+            </div>
+        </form>
+    </div>
+
+    <div class="float-left">
+        <a class="btn" asp-controller="Accounts" asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
+        </a>
+    </div>
+</div>

@@ -17,6 +17,7 @@ namespace FormuleCirkelEntity.DAL
     {
         public FormulaContext(DbContextOptions<FormulaContext> options) : base(options) { }
 
+        public DbSet<AppConfig> AppConfig { get; set; }
         public DbSet<Championship> Championships { get; set; }
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Engine> Engines { get; set; }
@@ -53,8 +54,6 @@ namespace FormuleCirkelEntity.DAL
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
             // Modify entities
-            builder.Entity<Track>()
-                .Property(t => t.LengthKM);
             builder.Entity<Season>()
                 .Property(p => p.PointsPerPosition)
                 .HasConversion(
@@ -66,28 +65,6 @@ namespace FormuleCirkelEntity.DAL
                 .HasKey(tt => new { tt.TeamId, tt.TraitId });
             builder.Entity<TrackTrait>()
                 .HasKey(tr => new { tr.TrackId, tr.TraitId });
-
-            #region Seed Data
-            // Seeds a default grooved tyre for the application
-            builder.Entity<Tyre>().HasData(
-                new Tyre
-                {
-                    Id = 1,
-                    TyreName = "Grooved",
-                    TyreColour = "#666699",
-                    StintLen = 20,
-                    Pace = 0,
-                    MinWear = 0,
-                    MaxWear = 0
-                }
-            );
-            // Creates a default strategy
-            builder.Entity<Strategy>().HasData(
-                new Strategy { StrategyId = 1, RaceLen = 20 });
-            // Connects the default strategy with the default grooved tyre
-            builder.Entity<TyreStrategy>().HasData(
-                new TyreStrategy() { TyreStrategyId = 1, StrategyId = 1, TyreId = 1, StintNumberApplied = 1 });
-            #endregion
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -102,8 +79,7 @@ namespace FormuleCirkelEntity.DAL
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
-        public virtual void Restore(IArchivable archivable)
-            => archivable.Archived = false;
+        public virtual void Restore(IArchivable archivable) => archivable.Archived = false;
 
         #region Soft delete configuration
 

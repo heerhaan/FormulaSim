@@ -434,6 +434,8 @@ namespace FormuleCirkelEntity.Controllers
                 .Include(st => st.Engine)
                 .ToListAsync();
 
+            var appConfig = await Context.AppConfig.FirstOrDefaultAsync();
+
             if (race.StintProgress == race.Stints.Count)
                 return BadRequest();
 
@@ -446,14 +448,15 @@ namespace FormuleCirkelEntity.Controllers
                 var stintResult = result.StintResults.Single(sr => sr.Number == race.StintProgress);
                 var currentTeam = teams.First(t => t.SeasonTeamId == result.SeasonDriver.SeasonTeamId);
 
-                _resultGenerator.UpdateStintResult(stintResult, stint, result, currentTeam, race.Weather, race.Track.Specification, driverResults.Count, season.QualyBonus, season.PitMin, season.PitMax);
+                _resultGenerator.UpdateStintResult(stintResult, stint, result, currentTeam, race.Weather, race.Track.Specification, driverResults.Count, season.QualyBonus, season.PitMin, season.PitMax, appConfig);
 
                 // Driver isn't running anymore, which indicates that he DNFed
                 if (stintResult.StintStatus == StintStatus.DriverDNF || stintResult.StintStatus == StintStatus.ChassisDNF)
                 {
+                    int upperRangeDSQ = 100 / appConfig.DisqualifyChance;
                     // RNG to determine the type of DNF.
                     int dnfvalue = rng.Next(1, 26);
-                    if (dnfvalue == 25)
+                    if (dnfvalue == (upperRangeDSQ - 1))
                     {
                         result.Status = Status.DSQ;
                         stintResult.Result += -2000;

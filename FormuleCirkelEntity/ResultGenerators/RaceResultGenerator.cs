@@ -8,7 +8,7 @@ namespace FormuleCirkelEntity.ResultGenerators
 {
     public class RaceResultGenerator
     {
-        Random _rng;
+        private readonly Random _rng;
 
         public RaceResultGenerator(Random randomGen)
         {
@@ -18,8 +18,8 @@ namespace FormuleCirkelEntity.ResultGenerators
         /// <summary>
         /// Gets the points result of a single <see cref="StintResult"/>, with any enabled <see cref="StintResult"/> modifiers applied.
         /// </summary>
-        /// <param name="driverResult">The partial <see cref="DriverResult"/> from which to derive certain modifiers.</param>
         /// <param name="stint">The <see cref="Stint"/> supplying the modifiers to use.</param>
+        /// <param name="driverResult">The partial <see cref="DriverResult"/> from which to derive certain modifiers.</param>
         public void UpdateStintResult(StintResult stintResult,
             Stint stint,
             DriverResult driverResult,
@@ -29,16 +29,14 @@ namespace FormuleCirkelEntity.ResultGenerators
             int driverCount,
             int qualyBonus,
             int pitMin,
-            int pitMax)
+            int pitMax,
+            AppConfig appConfig)
         {
-            if (stintResult is null || driverResult is null || stint is null || team is null)
+            if (stintResult is null || driverResult is null || stint is null || team is null || appConfig is null)
                 throw new NullReferenceException();
 
             // Applies the increased or decreased odds for the specific track.
             double engineWeatherMultiplier = 1;
-            //int tireWeatherBonus = 0;
-            //int tireWeatherWear = 0;
-
             int weatherRNG = 0;
             int weatherDNF = 0;
 
@@ -48,20 +46,20 @@ namespace FormuleCirkelEntity.ResultGenerators
             switch (weather)
             {
                 case Weather.Sunny:
-                    //tireWeatherWear += 4;
-                    engineWeatherMultiplier = 0.9;
+                    engineWeatherMultiplier = appConfig.SunnyEngineMultiplier;
                     break;
                 case Weather.Overcast:
-                    //tireWeatherBonus += 2;
-                    engineWeatherMultiplier = 1.1;
+                    engineWeatherMultiplier = appConfig.OvercastEngineMultiplier;
                     break;
                 case Weather.Rain:
-                    weatherRNG += 10;
-                    weatherDNF += -3;
+                    weatherRNG += appConfig.RainAdditionalRNG;
+                    weatherDNF += appConfig.RainDriverReliabilityModifier;
+                    engineWeatherMultiplier = appConfig.WetEngineMultiplier;
                     break;
                 case Weather.Storm:
-                    weatherRNG += 20;
-                    weatherDNF += -5;
+                    weatherRNG += appConfig.StormAdditionalRNG;
+                    weatherDNF += appConfig.StormDriverReliabilityModifier;
+                    engineWeatherMultiplier = appConfig.WetEngineMultiplier;
                     break;
             }
 
@@ -85,7 +83,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 int result = _rng.Next(stint.RNGMinimum + driverResult.MinRNG, stint.RNGMaximum + weatherRNG + driverResult.MaxRNG + 1);
                 // Iterate through GetReliabilityResult twice to check if a driver made a mistake or not, requires two consequential true's to return a mistake
                 bool mistake = false;
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < appConfig.MistakeAmountRolls; i++)
                 {
                     mistake = GetReliabilityResult(driver.Reliability + weatherDNF + driverResult.DriverRelMod) == -1;
                     if (!mistake)
@@ -94,7 +92,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 // If the bool mistake is true then we have to subtract from the result
                 if (mistake)
                 {
-                    result += _rng.Next(-20, -10);
+                    result += _rng.Next(appConfig.MistakeLowerValue, appConfig.MistakeUpperValue);
                     stintResult.StintStatus = StintStatus.Mistake;
                 }
                 // In here we loop through the strategy of the driver to see if it is time for a pitstop
@@ -132,8 +130,13 @@ namespace FormuleCirkelEntity.ResultGenerators
                 if (stint.ApplyChassisLevel)
                 {
                     int bonus = Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(team), trackSpec.ToString());
-                    int statusBonus = (((int)driver.DriverStatus) * -2) + 2;
-                    result += (team.Chassis + driverResult.ChassisRacePace + bonus + statusBonus);
+                    int statusBonus = 0;
+                    if (driver.DriverStatus == DriverStatus.First)
+                        statusBonus = appConfig.ChassisModifierDriverStatus;
+                    else if (driver.DriverStatus == DriverStatus.Second)
+                        statusBonus = (appConfig.ChassisModifierDriverStatus * -1);
+
+                    result += team.Chassis + driverResult.ChassisRacePace + bonus + statusBonus;
                 }
                 // Applies the power of the engine plus external factors when it is relevant for the current stint
                 if (stint.ApplyEngineLevel)

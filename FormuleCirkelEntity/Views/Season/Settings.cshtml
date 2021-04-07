@@ -23,17 +23,19 @@
                         <input asp-for="PolePoints" class="form-control" />
                         <span asp-validation-for="PolePoints" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="PitMin" class="control-label float-left">Minimum value pitstop</label>
-                        <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="left" title="@Constants.ToolTipSeasonSettingsPitMin"></i>
-                        <input asp-for="PitMin" class="form-control" />
-                        <span asp-validation-for="PitMin" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="PitMax" class="control-label float-left">Maximum value pitstop</label>
-                        <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="left" title="@Constants.ToolTipSeasonSettingsPitMax"></i>
-                        <input asp-for="PitMax" class="form-control" />
-                        <span asp-validation-for="PitMax" class="text-danger"></span>
+                    <div class="flex-row">
+                        <div class="form-group col-6 mr-1">
+                            <label asp-for="PitMin" class="control-label float-left">Minimum value pitstop</label>
+                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="left" title="@Constants.ToolTipSeasonSettingsPitMin"></i>
+                            <input asp-for="PitMin" class="form-control" />
+                            <span asp-validation-for="PitMin" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-6 ml-1">
+                            <label asp-for="PitMax" class="control-label float-left">Maximum value pitstop</label>
+                            <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="left" title="@Constants.ToolTipSeasonSettingsPitMax"></i>
+                            <input asp-for="PitMax" class="form-control" />
+                            <span asp-validation-for="PitMax" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-6">

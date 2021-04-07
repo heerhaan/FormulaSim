@@ -43,42 +43,10 @@ namespace FormuleCirkelEntity
             {
                 using (var context = serviceScope.ServiceProvider.GetService<FormulaContext>())
                 {
-                    // Add base Grooved tyre
-                    if (!context.Tyres.Any())
-                    {
-                        var groovedTyre = new Tyre
-                        {
-                            Id = 1,
-                            TyreName = "Grooved",
-                            TyreColour = "#666699",
-                            StintLen = 20,
-                            Pace = 0,
-                            MinWear = 0,
-                            MaxWear = 0
-                        };
-                        context.Tyres.Add(groovedTyre);
-                    }
-                    // Add default strategy
-                    if (!context.Strategies.Any())
-                    {
-                        var baseStrategy = new Strategy
-                        {
-                            StrategyId = 1,
-                            RaceLen = 20
-                        };
-                        context.Strategies.Add(baseStrategy);
-                    }
-                    // Combine the default grooved tyre and strategy to a single TyreStrategy object
-                    if (!context.TyreStrategies.Any())
-                    {
-                        var raceStrategy = new TyreStrategy
-                        {
-                            TyreId = 1,
-                            StrategyId = 1,
-                            StintNumberApplied = 1
-                        };
-                        context.TyreStrategies.Add(raceStrategy);
-                    }
+                    // Sets the default setup for the application configuration
+                    SeedConfig(context);
+                    // Sets a default tyre and a strategy for it
+                    SeedTyreData(context);
                     context.SaveChanges();
                 }
             }
@@ -122,6 +90,63 @@ namespace FormuleCirkelEntity
                 {
                     userManager.AddToRoleAsync(user, "Admin").Wait();
                 }
+            }
+        }
+
+        private static void SeedConfig(FormulaContext context)
+        {
+            if (!context.AppConfig.Any())
+            {
+                var appConfig = new AppConfig
+                {
+                    DisqualifyChance = 4,
+                    MistakeLowerValue = -30,
+                    MistakeUpperValue = -15,
+                    RainAdditionalRNG = 10,
+                    StormAdditionalRNG = 20,
+                    SunnyEngineMultiplier = 0.9,
+                    OvercastEngineMultiplier = 1.1,
+                    WetEngineMultiplier = 1,
+                    RainDriverReliabilityModifier = -3,
+                    StormDriverReliabilityModifier = -5,
+                    MistakeAmountRolls = 2,
+                    ChassisModifierDriverStatus = 2
+                };
+                context.AppConfig.Add(appConfig);
+            }
+        }
+
+        private static void SeedTyreData(FormulaContext context)
+        {
+            if (!context.Tyres.Any() && !context.Strategies.Any() && !context.TyreStrategies.Any())
+            {
+                // Add base Grooved tyre
+                var groovedTyre = new Tyre
+                {
+                    Id = 1,
+                    TyreName = "Grooved",
+                    TyreColour = "#666699",
+                    StintLen = 20,
+                    Pace = 0,
+                    MinWear = 0,
+                    MaxWear = 0
+                };
+                context.Tyres.Add(groovedTyre);
+                // Add default strategy
+                var baseStrategy = new Strategy
+                {
+                    StrategyId = 1,
+                    RaceLen = 20
+                };
+                context.Strategies.Add(baseStrategy);
+                // Combine the default grooved tyre and strategy to a single TyreStrategy object
+                var raceStrategy = new TyreStrategy
+                {
+                    TyreId = 1,
+                    StrategyId = 1,
+                    StintNumberApplied = 1
+                };
+                context.TyreStrategies.Add(raceStrategy);
             }
         }
     }

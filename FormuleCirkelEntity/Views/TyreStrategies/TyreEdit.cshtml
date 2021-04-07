@@ -29,15 +29,17 @@
                 <input asp-for="Pace" class="form-control" />
                 <span asp-validation-for="Pace" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="MaxWear" class="float-left"></label>
-                <input asp-for="MaxWear" class="form-control" />
-                <span asp-validation-for="MaxWear" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MinWear" class="float-left"></label>
-                <input asp-for="MinWear" class="form-control" />
-                <span asp-validation-for="MinWear" class="text-danger"></span>
+            <div class="flex-row justify-content-between">
+                <div class="form-group mr-1">
+                    <label asp-for="MaxWear" class="float-left"></label>
+                    <input asp-for="MaxWear" class="form-control" />
+                    <span asp-validation-for="MaxWear" class="text-danger"></span>
+                </div>
+                <div class="form-group ml-1">
+                    <label asp-for="MinWear" class="float-left"></label>
+                    <input asp-for="MinWear" class="form-control" />
+                    <span asp-validation-for="MinWear" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn fullwidth" />

@@ -179,5 +179,22 @@ namespace FormuleCirkelEntity.Controllers
 
             return teams;
         }
+
+        public async Task<IActionResult> ModifyAppConfig()
+        {
+            return View(await Context.AppConfig.FirstOrDefaultAsync());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModifyAppConfig(AppConfig appConfig)
+        {
+            if (ModelState.IsValid)
+            {
+                Context.Update(appConfig);
+                await Context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(appConfig);
+        }
     }
 }

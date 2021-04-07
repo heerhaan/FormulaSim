@@ -9,22 +9,27 @@
     <table class="ctable fullborder min-width-index-table">
         <thead><tr><th>Name</th><th>Update</th><th></th></tr></thead>
         <tbody>
-        @foreach (var role in Model)
-        {
-            <tr>
-                <td>@role.Name</td>
-                <td>
-                    <a asp-action="Modify" asp-route-id="@role.Id">
-                        <i class="fas fa-wrench fa-2x"></i>
-                    </a>
-                </td>
-                <td>
-                    <form asp-action="Delete" asp-route-id="@role.Id" method="post">
-                        <button class="btn btn-danger" type="submit">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
+            @foreach (var role in Model)
+            {
+                <tr>
+                    <td>@role.Name</td>
+                    <td>
+                        <a asp-action="Modify" asp-route-id="@role.Id">
+                            <i class="fas fa-wrench fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <form asp-action="Delete" asp-route-id="@role.Id" method="post">
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
+    <div class="float-left">
+        <a class="btn" asp-controller="Accounts" asp-action="Index">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
+        </a>
+    </div>
 </div>
