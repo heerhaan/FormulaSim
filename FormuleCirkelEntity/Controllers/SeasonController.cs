@@ -771,9 +771,9 @@ namespace FormuleCirkelEntity.Controllers
 
             viewmodel.SeasonId = season.SeasonId;
             viewmodel.Year = season.SeasonNumber;
-            foreach (var skillrange in championship.SkillDevRanges)
+            foreach (var skillrange in championship.SkillDevRanges.OrderBy(res => res.ValueKey))
                 viewmodel.SkillDevRanges.Add(skillrange);
-            foreach (var agerange in championship.AgeDevRanges)
+            foreach (var agerange in championship.AgeDevRanges.OrderBy(res => res.ValueKey))
                 viewmodel.AgeDevRanges.Add(agerange);
 
             viewmodel.SeasonDrivers = await Context.SeasonDrivers

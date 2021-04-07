@@ -86,8 +86,7 @@ namespace FormuleCirkelEntity.Controllers
                     setDevModel.AgeValueKey,
                     setDevModel.AgeMinDev,
                     setDevModel.AgeMaxDev);
-                // Uh oh, the returned string wasn't empty so this means something went wrong!
-                // Time to return it to the view
+                // Uh oh, the returned string wasn't empty so this means something went wrong! Return to the view with an error message
                 if (!string.IsNullOrEmpty(errString))
                 {
                     return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = $"Error at age: {errString}" });
@@ -101,8 +100,7 @@ namespace FormuleCirkelEntity.Controllers
                     setDevModel.SkillValueKey,
                     setDevModel.SkillMinDev,
                     setDevModel.SkillMaxDev);
-                // Ruh roh, the returned string wasn't empty so this means something went wrong!
-                // Time to return it to the view
+                // Ruh roh, the returned string wasn't empty so this means something went wrong! Return to the view with an error message
                 if (!string.IsNullOrEmpty(errString))
                 {
                     return RedirectToAction(nameof(SetDevRanges), new { id = setDevModel.ChampionshipId, statusmessage = $"Error at skill: {errString}" });

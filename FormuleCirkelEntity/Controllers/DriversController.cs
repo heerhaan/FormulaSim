@@ -106,66 +106,20 @@ namespace FormuleCirkelEntity.Controllers
         [Route("Stats/{id}")]
         public async Task<IActionResult> Stats(int id)
         {
-            var stats = new DriverStatsModel();
-
             // Prepares table items for ViewModel
+            var stats = new DriverStatsModel();
             var driver = await _drivers.GetDriverById(id, true);
             var seasons = await _seasons.GetSeasons(true, true);
-
-            // Basic information about the driver
-            stats.DriverId = driver.Id;
-            stats.DriverName = driver.Name;
-            stats.DriverNumber = driver.DriverNumber;
-            stats.DriverCountry = driver.Country;
-            stats.DriverBio = driver.Biography;
-
-            // Count of the types of race finishes the driver had
+            // [TODO]: Statement underneath should be converted to a service call to driverresultservice
             var results = await Context.DriverResults
                 .AsNoTracking()
                 .Where(dr => dr.SeasonDriver.DriverId == id && dr.SeasonDriver.Season.Championship.ActiveChampionship)
                 .Include(dr => dr.SeasonDriver)
                 .ToListAsync();
-
-            stats.StartCount = results.Count;
-            for (int i = 1; i <= 20; i++)
-            {
-                int positionCount = results.Count(res => res.Position == i && res.Status == Status.Finished);
-                stats.PositionList.Add(i);
-                stats.ResultList.Add(positionCount);
-            }
-            stats.WinCount = results.Count(r => r.Position == 1);
-            stats.SecondCount = results.Count(r => r.Position == 2);
-            stats.ThirdCount = results.Count(r => r.Position == 3);
-            stats.AveragePos = Math.Round(results.Where(res => res.Status == Status.Finished).Average(res => res.Position), 2);
-            stats.PoleCount = results.Count(r => r.Grid == 1);
-            stats.DNFCount = results.Count(r => r.Status == Status.DNF);
-            stats.DSQCount = results.Count(r => r.Status == Status.DSQ);
-
-            // Calculate point finishes
-            int pointCount = 0;
-            foreach (var season in seasons)
-            {
-                var current = results.Where(r => r.SeasonDriver.SeasonId == season.SeasonId);
-                var pointsMax = season.PointsPerPosition.Keys.Max();
-                pointCount += (current.Count(dr => dr.Position > 3 && dr.Position <= pointsMax));
-            }
-
-            // Count of the sort of non-finishes a driver had
-            stats.AccidentCount = results.Count(r => r.DNFCause == DNFCause.Accident || r.DNFCause == DNFCause.Puncture);
-            stats.ContactCount = results.Count(r => r.DNFCause == DNFCause.Damage || r.DNFCause == DNFCause.Collision);
-            stats.EngineCount = results.Count(r => r.DNFCause == DNFCause.Engine);
-            stats.MechanicalCount = results.Count(r => r.DNFCause == DNFCause.Brakes || r.DNFCause == DNFCause.Clutch || r.DNFCause == DNFCause.Electrics ||
-                r.DNFCause == DNFCause.Exhaust || r.DNFCause == DNFCause.Hydraulics || r.DNFCause == DNFCause.Wheel);
-
-            var seasondriver = await Context.SeasonDrivers
-                .Where(s => s.Driver.Id == id)
-                .Include(s => s.SeasonTeam)
-                    .Where(st => st.Season.Championship.ActiveChampionship)
-                .Include(s => s.SeasonTeam)
-                    .ThenInclude(t => t.Team)
-                .ToListAsync();
-
-            stats.Teams = seasondriver.Select(s => s.SeasonTeam.Team).Distinct().ToList();
+            // Fills the viewmodel class with the required data
+            _drivers.PrepareDriverStatsModel(stats, driver, seasons, results);
+            // Gets all the teams that this driver has driven for
+            stats.Teams = await _drivers.GetDistinctTeamsHistoryByDriver(id);
             // Calculates the amount of WDCs a driver might have
             var driverChampions = _drivers.GetDriverChampionsIds(seasons);
             stats.WDCCount = driverChampions.Count(s => s == id);

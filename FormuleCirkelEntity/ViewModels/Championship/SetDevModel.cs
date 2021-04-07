@@ -1,6 +1,7 @@
 ﻿using FormuleCirkelEntity.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FormuleCirkelEntity.ViewModels
 {
@@ -13,13 +14,13 @@ namespace FormuleCirkelEntity.ViewModels
 
             ChampionshipId = championship.ChampionshipId;
             ChampionshipName = championship.ChampionshipName;
-            foreach (var skilldev in championship.SkillDevRanges)
+            foreach (var skilldev in championship.SkillDevRanges.OrderBy(res => res.ValueKey))
             {
                 SkillValueKey.Add(skilldev.ValueKey);
                 SkillMinDev.Add(skilldev.MinDev);
                 SkillMaxDev.Add(skilldev.MaxDev);
             }
-            foreach (var agedev in championship.AgeDevRanges)
+            foreach (var agedev in championship.AgeDevRanges.OrderBy(res => res.ValueKey))
             {
                 AgeValueKey.Add(agedev.ValueKey);
                 AgeMinDev.Add(agedev.MinDev);
