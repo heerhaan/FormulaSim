@@ -25,6 +25,7 @@ namespace FormuleCirkelEntity.Models
         DriverDNF = 2,
         ChassisDNF = 3,
         Pitstop = 4, // deprecated
+        NextStintStop = 10, // not used yet
         Mistake = 20
     }
 }

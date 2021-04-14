@@ -98,7 +98,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var stint in Model.Race.Stints)
+                @foreach (var stint in Model.Race.Stints.OrderBy(res => res.Number))
                 {
                 <tr>
                     <td class="alt-font">@stint.Number</td>

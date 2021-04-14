@@ -961,6 +961,10 @@ var isoCountries = [
 	{
 		"id": "ZW",
 		"text": "Zimbabwe"
+	},
+	{
+		"id": "SU",
+		"text": "Soviet Union"
 	}
 ];
 
