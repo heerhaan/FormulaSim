@@ -31,7 +31,7 @@
                         <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
-                        <a asp-controller="Drivers" asp-action="RemoveDriverTrait" asp-route-driverId="@Model.Driver.Id" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
+                        <a asp-controller="Drivers" asp-action="RemoveDriverTrait" asp-route-driverId="@Model.Driver.Id" asp-route-traitId="@trait.TraitId" class="btn fullwidth fullborder">Remove</a>
                     </td>
                 </tr>
             }
@@ -71,7 +71,7 @@
                     <td>
                         <form method="POST">
                             <input type="hidden" name="traitId" value="@trait.TraitId" />
-                            <input type="submit" class="btn fullwidth" value="Add" />
+                            <input type="submit" class="btn fullwidth fullborder" value="Add" />
                         </form>
                     </td>
                 </tr>

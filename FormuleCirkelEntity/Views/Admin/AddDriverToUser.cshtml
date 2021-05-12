@@ -42,7 +42,7 @@
                         <a asp-controller="Drivers" asp-action="Stats" asp-route-id="@driver.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
-                        <a asp-action="RemoveDriverFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-driverId="@driver.Id" class="btn fullwidth">Remove</a>
+                        <a asp-action="RemoveDriverFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-driverId="@driver.Id" class="btn fullwidth fullborder">Remove</a>
                     </td>
                 </tr>
             }
@@ -91,7 +91,7 @@
                     <td>
                         <form method="POST">
                             <input type="hidden" name="driverId" value="@driver.Id" />
-                            <input type="submit" class="btn fullwidth" value="Add" />
+                            <input type="submit" class="btn fullwidth fullborder" value="Add" />
                         </form>
                     </td>
                 </tr>

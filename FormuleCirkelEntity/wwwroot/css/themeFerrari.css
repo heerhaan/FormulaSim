@@ -1,12 +1,12 @@
 ﻿body table {
-    background-color: rgb(255, 0, 0);
+    background-color: rgb(176, 0, 0);
     color: white;
 }
 
     body code[class*=language-],
     body table tbody > tr:nth-child(odd) > td,
     body table tbody > tr:nth-child(odd) > th {
-        background: rgb(255, 102, 102);
+        background: rgb(32, 32, 32);
     }
 
 .table-prev {
@@ -24,12 +24,12 @@
 }
 
 .primary {
-    background-color: rgb(255, 0, 0);
+    background-color: rgb(176, 0, 0);
     color: white;
 }
 
 .secondary {
-    background-color: rgb(255, 102, 102);
+    background-color: rgb(32, 32, 32);
 }
 
 .teritary {
@@ -37,12 +37,26 @@
     color: white;
 }
 
+.primary-force {
+    background-color: rgb(176, 0, 0) !important;
+    color: white !important;
+}
+
+.secondary-force {
+    background-color: rgb(32, 32, 32) !important;
+}
+
+.teritary-force {
+    background-color: rgb(0, 0, 0) !important;
+    color: white !important;
+}
+
 .nav-link {
     color: rgba(255, 255, 255, 0.75);
 }
 
 .page-link {
-    background-color: rgb(255, 102, 102);
+    background-color: rgb(32, 32, 32);
     color: rgb(0, 0, 0);
     border-color: rgb(0, 0, 0);
 }
@@ -50,11 +64,11 @@
 .page-item.active .page-link {
     background-color: rgb(0, 0, 0);
     border-color: rgb(0, 0, 0);
-    color: rgb(255, 102, 102);
+    color: rgb(32, 32, 32);
 }
 
 .btn {
-    background-color: rgb(255, 102, 102);
+    background-color: rgb(32, 32, 32);
     color: white;
     border-color: rgb(0, 0, 0);
 }
@@ -64,7 +78,7 @@
     }
 
 #graphic {
-    background-color: rgb(255, 0, 0);
+    background-color: rgb(176, 0, 0);
 }
 
 i.fas, i.fab, i.far, .link {
@@ -72,21 +86,21 @@ i.fas, i.fab, i.far, .link {
 }
 
 .fullborder {
-    border: 1px solid rgb(0, 0, 0) !important;
+    border: 1px solid rgb(255, 215, 0) !important;
 }
 
 .upperline {
-    border-top: 1px solid rgb(0, 0, 0) !important;
+    border-top: 1px solid rgb(255, 215, 0) !important;
 }
 
 .bottomline {
-    border-bottom: 1px solid rgb(0, 0, 0) !important;
+    border-bottom: 1px solid rgb(255, 215, 0) !important;
 }
 
 .leftline {
-    border-right: 1px solid rgb(0, 0, 0) !important;
+    border-right: 1px solid rgb(255, 215, 0) !important;
 }
 
 .rightline {
-    border-right: 1px solid rgb(0, 0, 0) !important;
+    border-right: 1px solid rgb(255, 215, 0) !important;
 }

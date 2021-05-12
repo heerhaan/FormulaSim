@@ -13,10 +13,10 @@
             <thead>
                 <tr>
                     <th class="fullborder">
-                        #
+                        POS
                     </th>
                     <th class="fullborder">
-                        Nr.
+                        No
                     </th>
                     <th class="fullborder">
                         Driver
@@ -30,10 +30,10 @@
                             <br /><span class="flag flag-@(track.Country) ff-sm"></span></th>
                     }
                     <th class="fullborder">
-                        Pts.
+                        Pts
                     </th>
                     <th class="fullborder">
-                        Avg.
+                        Avg
                     </th>
                 </tr>
             </thead>
@@ -119,7 +119,7 @@
                             <span>@Html.DisplayFor(modelItem => item.Points)</span>
                         </td>
                         <td>
-                            <span class='alt-font ml-1' style="font-size:0.7rem;">@(Model.Averages[increment++])</span>
+                            <span class='alt-font ml-1'>@(Model.Averages[increment++])</span>
                         </td>
                     </tr>
                 }

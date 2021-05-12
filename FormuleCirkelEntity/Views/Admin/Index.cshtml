@@ -25,12 +25,12 @@
                     <td>@Html.DisplayFor(modelItem => user.Email)</td>
                     <td>@Html.DisplayFor(modelItem => user.LastLogin)</td>
                     <td>
-                        <a class="btn fullwidth" asp-action="AddDriverToUser" asp-route-userId="@user.Id">
+                        <a class="btn fullwidth fullborder" asp-action="AddDriverToUser" asp-route-userId="@user.Id">
                             <span class="bigger-text">@Html.DisplayFor(modelItem => user.Drivers.Count)</span>
                         </a>
                     </td>
                     <td>
-                        <a class="btn fullwidth" asp-action="AddTeamToUser" asp-route-userId="@user.Id">
+                        <a class="btn fullwidth fullborder" asp-action="AddTeamToUser" asp-route-userId="@user.Id">
                             <span class="bigger-text">@Html.DisplayFor(modelItem => user.Teams.Count)</span>
                         </a>
                     </td>
@@ -41,7 +41,7 @@
                     </td>
                     <td>
                         <form asp-action="Delete" asp-route-id="@user.Id" method="post">
-                            <button class="btn btn-danger" type="submit">Delete</button>
+                            <button class="btn btn-danger fullborder" type="submit">Delete</button>
                         </form>
                     </td>
                 </tr>

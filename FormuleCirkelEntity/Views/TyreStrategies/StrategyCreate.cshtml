@@ -29,7 +29,7 @@
                     <td>@tyre.Tyre.MaxWear</td>
                     <td>@tyre.Tyre.MinWear</td>
                     <td>
-                        <a asp-action="RemoveTyreStrategy" asp-route-tyreStratId="@tyre.TyreStrategyId" asp-route-strategyId="@Model.StrategyId" class="btn fullwidth">Remove</a>
+                        <a asp-action="RemoveTyreStrategy" asp-route-tyreStratId="@tyre.TyreStrategyId" asp-route-strategyId="@Model.StrategyId" class="btn fullborder fullwidth">Remove</a>
                     </td>
                 </tr>
             }
@@ -71,7 +71,7 @@
                                     <input type="number" class="form-control col-6" name="raceLen" value="@(Model.RaceLen + tyre.StintLen)" />
                                 </div>
                                 <div class="form-group">
-                                    <input type="submit" class="btn fullwidth" value="Add" />
+                                    <input type="submit" class="btn fullborder fullwidth" value="Add" />
                                 </div>
                             </div>
                         </form>

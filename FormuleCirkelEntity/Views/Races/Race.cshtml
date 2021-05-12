@@ -7,10 +7,10 @@
     <div class="flex-row justify-content-between">
         @if (Model.ShowRaceButtons && Model.IsAdmin)
         {
-            <a class="btn w-25" onclick="advanceStint()">Next stint</a>
+            <a class="btn fullborder w-25" onclick="advanceStint()">Next stint</a>
 
             <form asp-action="FinishRace" asp-route-seasonId="@(Model.SeasonId)" asp-route-raceId="@(Model.RaceId)" id="finish" class="w-25">
-                <input type="submit" value="Finish" class="btn fullwidth" />
+                <input type="submit" value="Finish" class="btn fullborder fullwidth" />
             </form>
         }
     </div>
@@ -55,27 +55,27 @@
                         <td data-field="startGrid" class="primary-force">
                             @if (gridChange > 0)
                             {
-                                <i class='fas fa-caret-up' style='color:green;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@gridChange</span>
+                                <i class='fas fa-caret-up' style='color:green;'></i><span class='alt-font ml-1'>@gridChange</span>
                             }
                             else if (gridChange < 0)
                             {
-                                <i class='fas fa-caret-down' style='color:red;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@(gridChange * -1)</span>
+                                <i class='fas fa-caret-down' style='color:red;'></i><span class='alt-font ml-1'>@(gridChange * -1)</span>
                             }
                             else
                             {
-                                <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style="font-size:0.7rem;">@gridChange</span>
+                                <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1'>@gridChange</span>
                             }
                         </td>
-                        <td data-field="driverNumber"><span class="custom-badge badge-team fullwidth font-size-default" 
+                        <td data-field="driverNumber"><span class="custom-badge badge-team fullwidth" 
                                                             style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
                             @driverResult.SeasonDriver.Driver.DriverNumber</span></td>
                         <td data-field="driverName" class="text-left primary-force"><span class="ml-cel result-click" style="cursor:pointer;"><span data-field="driverFlag" class="flag flag-@(driverResult.SeasonDriver.Driver.Country) ff-sm flag-margin"></span>
                             @driverResult.SeasonDriver.Driver.Name
                               </span></td>
-                        <td data-field="teamName"><span class="custom-badge badge-team fullwidth font-size-default" 
+                        <td data-field="teamName"><span class="custom-badge badge-team fullwidth" 
                                                         style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
                             @driverResult.SeasonDriver.SeasonTeam.Name</span></td>
-                        <td data-field="pwr" class="secondary-force"><b class="alt-font" style="font-size:0.8rem;">@(Model.Power[driverResult.Position - 1])</b></td>
+                        <td data-field="pwr" class="secondary-force"><b class="alt-font">@(Model.Power[driverResult.Position - 1])</b></td>
                         <td data-field="tyre">
                             <span class="custom-badge fullwidth" style="background-color:@driverResult.CurrTyre.TyreColour;">
                                 [@driverResult.CurrTyre.TyreName.Substring(0, 1).ToUpper()] @driverResult.TyreLife
@@ -88,7 +88,7 @@
                                 <div condition-class-racemistake="@(stintResult.StintStatus == StintStatus.Mistake)">
                                     @if (stintResult.StintStatus == StintStatus.Running || stintResult.StintStatus == StintStatus.Mistake || stintResult.StintStatus == StintStatus.Pitstop)
                                     {
-                                        <span style="font-size:0.85rem;">@stintResult.Result</span>
+                                        <span>@stintResult.Result</span>
                                         @if (stintResult.StintStatus == StintStatus.Pitstop || stintResult.Pitstop)
                                         {
                                             <b class="pole">PIT</b>
@@ -244,13 +244,13 @@
 
             let gridChange = (driverResult.Grid - driverResult.Position);
             if (gridChange > 0) {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-up' style='color:green;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + gridChange + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-up' style='color:green;'></i><span class='alt-font ml-1'> " + gridChange + " </span>";
             }
             else if (gridChange < 0) {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-down' style='color:red;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + (gridChange * -1) + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-caret-down' style='color:red;'></i><span class='alt-font ml-1'> " + (gridChange * -1) + " </span>";
             }
             else {
-                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1' style='font-size: 0.7rem;'> " + gridChange + " </span>";
+                row.querySelector("td[data-field='startGrid']").innerHTML = "<i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1'> " + gridChange + " </span>";
             }
             driverResult.StintResults.forEach((stintResult, idx) => {
                 // Check for what happened in this stint: 1=running, 20=mistake, 4=pitstop (deprecated)
@@ -259,7 +259,7 @@
                     if (stintResult.StintStatus == 20) {
                         resultHtml += " class='racemistake'";
                     }
-                    resultHtml += ("><span style='font-size:0.85rem;'>" + stintResult.Result + "</span>");
+                    resultHtml += ("><span>" + stintResult.Result + "</span>");
                     // If a pitstop happened, then info is added to the cell
                     if (stintResult.StintStatus == 4 || stintResult.Pitstop) {
                         resultHtml += "<b class='pole'>PIT</b>";

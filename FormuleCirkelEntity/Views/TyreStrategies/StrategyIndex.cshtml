@@ -11,7 +11,7 @@
     <div class="flex-row justify-content-between index-btns">
         @if (isAdmin)
         {
-            <a asp-action="StrategyCreate" class="btn mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
+            <a asp-action="StrategyCreate" class="btn fullborder mr-auto"><i class="fas fa-plus"></i><span class="ml-1">New</span></a>
         }
     </div>
 
@@ -31,7 +31,7 @@
                 <td class="text-left">
                     @foreach (var tyre in item.Tyres.OrderBy(t => t.StintNumberApplied))
                     {
-                        <span class="badge font-size-default" style="background-color:@tyre.Tyre.TyreColour;">
+                        <span class="custom-badge" style="background-color:@tyre.Tyre.TyreColour;">
                             S@(tyre.StintNumberApplied) - @tyre.Tyre.TyreName
                         </span>
                     }

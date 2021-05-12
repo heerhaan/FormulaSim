@@ -9,12 +9,12 @@
     <partial name="_StatusMessage" model="ViewBag.statusmessage" />
     <div class="row">
         <div class="col-4">
-            <a class="btn fullwidth" asp-action="ChangeAccount">Edit account</a>
+            <a class="btn fullwidth fullborder" asp-action="ChangeAccount">Edit account</a>
             @if (isAdmin)
             {
-                <a class="btn fullwidth" asp-controller="Admin" asp-action="ModifyAppConfig">Configuration</a>
-                <a class="btn fullwidth" asp-controller="Admin" asp-action="Index">Users</a>
-                <a class="btn fullwidth" asp-controller="Roles" asp-action="Index">Roles</a>
+                <a class="btn fullwidth fullborder" asp-controller="Admin" asp-action="ModifyAppConfig">Configuration</a>
+                <a class="btn fullwidth fullborder" asp-controller="Admin" asp-action="Index">Users</a>
+                <a class="btn fullwidth fullborder" asp-controller="Roles" asp-action="Index">Roles</a>
             }
         </div>
         <div class="col-8">

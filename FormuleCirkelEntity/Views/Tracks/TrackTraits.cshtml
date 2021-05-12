@@ -31,7 +31,7 @@
                         <a asp-controller="Traits" asp-action="Info" asp-route-id="@trait.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
-                        <a asp-controller="Tracks" asp-action="RemoveTrait" asp-route-trackId="@Model.Track.Id" asp-route-traitId="@trait.TraitId" class="btn fullwidth">Remove</a>
+                        <a asp-controller="Tracks" asp-action="RemoveTrait" asp-route-trackId="@Model.Track.Id" asp-route-traitId="@trait.TraitId" class="btn fullborder fullwidth">Remove</a>
                     </td>
                 </tr>
             }
@@ -67,7 +67,7 @@
                     <td>
                         <form method="POST">
                             <input type="hidden" name="traitId" value="@trait.TraitId" />
-                            <input type="submit" class="btn fullwidth" value="Add" />
+                            <input type="submit" class="btn fullborder fullwidth" value="Add" />
                         </form>
                     </td>
                 </tr>

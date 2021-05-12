@@ -1,6 +1,6 @@
 ﻿body table {
     background-color: rgb(25, 16, 35);
-    color: rgb(238, 114, 241);
+    color: rgb(253, 180, 255);
 }
     body code[class*=language-],
     body table tbody > tr:nth-child(odd) > td,
@@ -27,12 +27,12 @@ th {
 }
 
 h1, h2, h3, h4, h5, th, dt, .link {
-    color: rgb(232, 9, 154);
+    color: rgb(238, 114, 241);
 }
 
 .primary {
     background-color: rgb(25, 16, 35);
-    color: rgb(238, 114, 241);
+    color: rgb(253, 180, 255);
 }
 
 .secondary {
@@ -41,7 +41,21 @@ h1, h2, h3, h4, h5, th, dt, .link {
 
 .teritary {
     background-color: rgb(232, 9, 154);
-    color: rgb(0, 243, 255);
+    color: white;
+}
+
+.primary-force {
+    background-color: rgb(25, 16, 35) !important;
+    color: rgb(253, 180, 255) !important;
+}
+
+.secondary-force {
+    background-color: rgb(10, 14, 41) !important;
+}
+
+.teritary-force {
+    background-color: rgb(232, 9, 154) !important;
+    color: white !important;
 }
 
 .alt-font {
@@ -49,7 +63,7 @@ h1, h2, h3, h4, h5, th, dt, .link {
 }
 
 .nav-link {
-    color: rgba(238, 114, 241, 0.75);
+    color: rgba(255, 255, 255, 0.75);
 }
 
 .page-link {
@@ -70,12 +84,11 @@ i.fas, i.fab, i.far, .link {
 
 .btn {
     background-color: rgb(10, 14, 41);
-    color: rgb(232, 9, 154) !important;
-    border-color: rgb(0, 243, 255);
+    color: white;
 }
     .btn:hover {
         background-color: rgb(238, 114, 241);
-        color: rgb(10, 14, 41) !important;
+        color: white;
     }
         .btn:hover i.fas, .btn:hover i.fab, .btn:hover i.far {
             color: rgb(10, 14, 41);

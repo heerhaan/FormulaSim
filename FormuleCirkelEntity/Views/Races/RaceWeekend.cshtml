@@ -13,7 +13,7 @@
             <thead class="fullborder">
                 <tr>
                     <th class="fullborder">#</th>
-                    <th class="fullborder">Nr.</th>
+                    <th class="fullborder">No</th>
                     <th class="fullborder">Driver</th>
                     <th class="fullborder">Team</th>
                     <th class="fullborder">Tyre</th>
@@ -30,20 +30,20 @@
                     <tr>
                         <td><b class="alt-font">@driver.Grid</b></td>
                         <td>
-                            <span class="custom-badge badge-team fullwidth font-size-default"
+                            <span class="custom-badge badge-team fullwidth"
                                   style="background-color:@(driver.SeasonDriver.SeasonTeam.Colour);color:@(driver.SeasonDriver.SeasonTeam.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Accent);">
                                 @driver.SeasonDriver.Driver.DriverNumber
                             </span>
                         </td>
                         <td class="text-left"><span class="ml-cel"><span class="flag flag-@(driver.SeasonDriver.Driver.Country) ff-sm flag-margin"></span>@driver.SeasonDriver.Driver.Name</span></td>
                         <td>
-                            <span class="custom-badge badge-team text-left fullwidth font-size-default"
+                            <span class="custom-badge badge-team text-left fullwidth"
                                   style="background-color:@(driver.SeasonDriver.SeasonTeam.Colour);color:@(driver.SeasonDriver.SeasonTeam.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Accent);">
                                 <span class="flag flag-@(driver.SeasonDriver.SeasonTeam.Team.Country) ff-sm flag-margin"></span>@driver.SeasonDriver.SeasonTeam.Name
                             </span>
                         </td>
                         <td>
-                            <span class="custom-badge badge-team fullwidth font-size-default"
+                            <span class="custom-badge badge-team fullwidth"
                                   style="background-color:@(driver.SeasonDriver.SeasonTeam.Rubber.Colour);color:@(driver.SeasonDriver.SeasonTeam.Rubber.Accent);border-color:@(driver.SeasonDriver.SeasonTeam.Rubber.Accent);">
                                 @(driver.SeasonDriver.SeasonTeam.Rubber.Name.Substring(0,1).ToUpper())
                             </span>
@@ -90,10 +90,10 @@
     <div class="flex-row mb-1">
         @if (Model.Race.RaceState == RaceState.Race || Model.Race.RaceState == RaceState.Finished || Model.Race.Season.State == SeasonState.Finished)
         {
-            <a asp-action="Race" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" class="btn w-25">Race</a>
+            <a asp-action="Race" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" class="btn fullborder w-25">Race</a>
         } else if (Model.Race.RaceState == RaceState.Concept || Model.Race.RaceState == RaceState.Qualifying)
         {
-            <a asp-action="Qualifying" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" class="btn w-25">Qualifying</a>
+            <a asp-action="Qualifying" asp-route-id="@Model.Race.SeasonId" asp-route-raceId="@Model.Race.RaceId" class="btn fullborder w-25">Qualifying</a>
         }
         <button class="btn ml-auto" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
             <i class="fas fa-image fa-2x"></i>

@@ -37,8 +37,10 @@ body {
     flex-direction: column;
     width: 100%;
     min-height: 100vh;
-    font-family: 'Source Sans Pro', sans-serif;
     line-height: 1.0;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: bolder;
+    font-size: 1em;
 }
 
 main {
@@ -52,6 +54,14 @@ h1 {
 
 .alt-header {
     font-family: "Rubik-ExtraBold";
+}
+
+h1, h2, h3, h4, h5, th, dt, .link, .nav-link {
+    font-variant: all-petite-caps;
+}
+
+th, dt, .link, nav-link {
+    font-size: 1.1em;
 }
 
 a.navbar-brand {
@@ -87,8 +97,8 @@ footer {
 }
 
 .ctable {
+    width: 96vw;
     margin-bottom: 10px;
-    max-width: 100%;
     text-align: center;
     line-height: normal;
 }
@@ -218,7 +228,6 @@ dl.inline-flex {
 .custom-badge {
     display: inline-block;
     padding: .25em .4em;
-    font-size: 85%;
     font-weight: 700;
     line-height: 1;
     text-align: center;

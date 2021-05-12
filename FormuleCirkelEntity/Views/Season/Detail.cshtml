@@ -14,15 +14,15 @@
             <div class="btn-group">
                 @if (isAdmin)
                 {
-                    <a asp-action="Start" asp-route-id="@Model.Season.SeasonId" class="btn">Start season!</a>
-                    <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.Season.SeasonId" class="btn">Add race</a>
-                    <a asp-action="Settings" asp-route-id="@Model.Season.SeasonId" class="btn"><i class="fas fa-cog"></i> Settings</a>
-                    <a asp-action="AddDefault" asp-route-id="@Model.Season.SeasonId" class="btn" data-toggle="tooltip" data-placement="top" title="@Constants.ToolTipDefaultSeasonBtn">
+                    <a asp-action="Start" asp-route-id="@Model.Season.SeasonId" class="btn fullborder">Start season!</a>
+                    <a asp-controller="Races" asp-action="AddTracks" asp-route-id="@Model.Season.SeasonId" class="btn fullborder">Add race</a>
+                    <a asp-action="Settings" asp-route-id="@Model.Season.SeasonId" class="btn fullborder"><i class="fas fa-cog"></i> Settings</a>
+                    <a asp-action="AddDefault" asp-route-id="@Model.Season.SeasonId" class="btn fullborder" data-toggle="tooltip" data-placement="top" title="@Constants.ToolTipDefaultSeasonBtn">
                         <i class="fas fa-recycle"></i> Default
                     </a>
                 }
-                <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn">Add driver</a>
-                <a asp-action="AddTeams" asp-route-id="@Model.Season.SeasonId" class="btn">Add team</a>
+                <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" class="btn fullborder">Add driver</a>
+                <a asp-action="AddTeams" asp-route-id="@Model.Season.SeasonId" class="btn fullborder">Add team</a>
             </div>
         }
         else
@@ -35,8 +35,8 @@
         @if (Model.Season.State == SeasonState.Progress)
         {
             <div class="btn-group">
-                <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" id="btnTest" class="btn">Add driver</a>
-                <a asp-action="Finish" asp-route-id="@Model.Season.SeasonId" class="btn">End season</a>
+                <a asp-action="AddDrivers" asp-route-id="@Model.Season.SeasonId" id="btnTest" class="btn fullborder">Add driver</a>
+                <a asp-action="Finish" asp-route-id="@Model.Season.SeasonId" class="btn fullborder">End season</a>
             </div>
         }
     </div>
@@ -50,7 +50,7 @@
                 <tr>
                     <th>#</th>
                     <th>Points</th>
-                    <th style="width: 30px;">Nr.</th>
+                    <th>Nr.</th>
                     <th>Driver</th>
                     <th>Skill</th>
                     <th>Reliability</th>
@@ -67,14 +67,14 @@
                     <tr>
                         <td><b class="table-count"></b></td>
                         <td>@driver.Points</td>
-                        <td style="width: 30px;">
-                            <span class="badge badge-team"
-                                  style="width:25px;background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
+                        <td>
+                            <span class="custom-badge badge-team"
+                                  style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
                                 @driver.Driver.DriverNumber
                             </span>
                         </td>
                         <td>
-                            <span class="badge badge-team fullwidth text-left font-size-default"
+                            <span class="custom-badge badge-team fullwidth text-left"
                                   style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);border-color:@(driver.SeasonTeam.Accent);">
                                 <span class="flag flag-@(driver.Driver.Country) ff-sm flag-margin"></span>@driver.Driver.Name
                             </span>
@@ -110,8 +110,8 @@
         @if (Model.Season.State == SeasonState.Progress && isAdmin)
         {
             <div class="flex-row">
-                <a asp-action="DriverDev" asp-route-id="@Model.Season.SeasonId" class="btn col-6">Driver development</a>
-                <a asp-action="DriverReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn col-6">Reliability</a>
+                <a asp-action="DriverDev" asp-route-id="@Model.Season.SeasonId" class="btn fullborder col-6">Driver development</a>
+                <a asp-action="DriverReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn fullborder col-6">Reliability</a>
             </div>
         }
     </div>
@@ -194,12 +194,12 @@
                         <td><b class="table-count"></b></td>
                         <td>@team.Points</td>
                         <td>
-                            <span class="badge badge-team text-left fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);font-size:1rem;">
+                            <span class="custom-badge badge-team text-left fullwidth" style="background-color:@(team.Colour);color:@(team.Accent);border-color:@(team.Accent);font-size:1rem;">
                                 <span class="flag flag-@(team.Team.Country) ff-sm flag-margin"></span>@team.Name
                             </span>
                         </td>
                         <td>
-                            <span class="badge badge-team text-left" style="background-color:@(team.Rubber.Colour);color:@(team.Rubber.Accent);border-color:@(team.Rubber.Accent);font-size:1rem;">
+                            <span class="custom-badge badge-team text-left" style="background-color:@(team.Rubber.Colour);color:@(team.Rubber.Accent);border-color:@(team.Rubber.Accent);font-size:1rem;">
                                 @(team.Rubber.Name)
                             </span>
                         </td>
@@ -222,9 +222,9 @@
         @if (Model.Season.State == SeasonState.Progress && isAdmin)
         {
             <div class="flex-row">
-                <a asp-action="TeamDev" asp-route-id="@Model.Season.SeasonId" class="btn col-4">Chassis development</a>
-                <a asp-action="EngineDev" asp-route-id="@Model.Season.SeasonId" class="btn col-4">Engine development</a>
-                <a asp-action="TeamReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn col-4">Reliability</a>
+                <a asp-action="TeamDev" asp-route-id="@Model.Season.SeasonId" class="btn fullborder col-4">Chassis development</a>
+                <a asp-action="EngineDev" asp-route-id="@Model.Season.SeasonId" class="btn fullborder col-4">Engine development</a>
+                <a asp-action="TeamReliabilityDev" asp-route-id="@Model.Season.SeasonId" class="btn fullborder col-4">Reliability</a>
             </div>
         }
     </div>

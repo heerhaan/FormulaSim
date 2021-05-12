@@ -23,7 +23,7 @@
                 @foreach (var driver in Model)
                 {
                 <tr>
-                    <td class="text-left"><span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">@driver.Driver.Name</span></td>
+                    <td class="text-left"><span class="custom-badge fullwidth" style="background-color:@(driver.SeasonTeam.Colour);color:@(driver.SeasonTeam.Accent);">@driver.Driver.Name</span></td>
                     @{count = driver.DriverResults.Where(d => d.DNFCause == DNFCause.Engine).Count();}
                     @if (count == 2)
                     {

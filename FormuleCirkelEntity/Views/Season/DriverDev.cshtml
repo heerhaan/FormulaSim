@@ -9,13 +9,13 @@
 
     <div class="flex-row justify-content-between mb-1">
         <div>
-            <button id="develop" class="btn">Develop</button>
-            <button id="rateddevelop" class="btn">Rated dev</button>
+            <button id="develop" class="btn fullborder">Develop</button>
+            <button id="rateddevelop" class="btn fullborder">Rated dev</button>
             <input id="min" class="input-style fullheight" type="number" placeholder="Min. RNG"/>
             <input id="max" class="input-style fullheight" type="number" placeholder="Max. RNG" />
         </div>
-        <button id="showcustom" class="btn">Custom dev</button>
-        <button id="custom" class="btn customdev" style="display:none;">Custom</button>
+        <button id="showcustom" class="btn fullborder">Custom dev</button>
+        <button id="custom" class="btn fullborder customdev" style="display:none;">Custom</button>
     </div>
 
     <table id="graphic" class="ctable fullborder fullwidth">
@@ -39,7 +39,7 @@
                         <td class="text-left"><span class="ml-cel">@driver.Driver.Name</span></td>
                         <td id="driver_age_@number">@(Model.Year - driver.Driver.DateOfBirth.Year)</td>
                         <td>
-                            <span class="badge fullwidth font-size-default" style="background-color:@(driver.SeasonTeam.Colour);
+                            <span class="custom-badge fullwidth" style="background-color:@(driver.SeasonTeam.Colour);
                                     color:@(driver.SeasonTeam.Accent);">
                                 @driver.SeasonTeam.Name
                             </span>
@@ -57,7 +57,7 @@
             }
         </tbody>
     </table>
-    <button id="save" class="btn fullwidth">Save</button>
+    <button id="save" class="btn fullborder fullwidth">Save</button>
 
     <div class="flex-row justify-content-between mb-1">
         <a class="btn" asp-action="Detail" asp-route-id="@Model.SeasonId">

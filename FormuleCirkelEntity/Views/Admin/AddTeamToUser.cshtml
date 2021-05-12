@@ -30,7 +30,7 @@
                         <a asp-controller="Teams" asp-action="Stats" asp-route-id="@team.Id"><i class="fas fa-info-circle fa-2x"></i></a>
                     </td>
                     <td>
-                        <a asp-action="RemoveTeamFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-teamId="@team.Id" class="btn fullwidth">Remove</a>
+                        <a asp-action="RemoveTeamFromUser" asp-route-userId="@Model.SimUser.Id" asp-route-teamId="@team.Id" class="btn fullwidth fullborder">Remove</a>
                     </td>
                 </tr>
             }
@@ -67,7 +67,7 @@
                     <td>
                         <form method="POST">
                             <input type="hidden" name="teamId" value="@team.Id" />
-                            <input type="submit" class="btn fullwidth" value="Add" />
+                            <input type="submit" class="btn fullwidth fullborder" value="Add" />
                         </form>
                     </td>
                 </tr>

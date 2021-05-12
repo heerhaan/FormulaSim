@@ -108,7 +108,7 @@ namespace FormuleCirkelEntity
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostEnvironment env, UserManager<SimUser> userManager, RoleManager<IdentityRole> roleManager)
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -128,16 +128,6 @@ namespace FormuleCirkelEntity
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            // Runs the database initializer and seeds the empty tables
-            var scopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-            using (var scope = scopeFactory.CreateScope())
-            {
-                var dataInit = scope.ServiceProvider.GetService<IDataInitializer>();
-                dataInit.Initialize();
-                dataInit.SeedData();
-                dataInit.SeedIdentity(userManager, roleManager);
-            }
 
             app.UseEndpoints(endpoints =>
             {

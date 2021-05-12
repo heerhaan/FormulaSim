@@ -71,13 +71,13 @@
         </div>
     </div>
 
-    <button id="generateq1" class="btn float-left w-25">Start Q1!</button>
-    <button id="generateq2" class="btn float-left w-25">Start Q2!</button>
-    <button id="generateq3" class="btn float-left w-25">Start Q3!</button>
+    <button id="generateq1" class="btn fullborder float-left w-25">Start Q1!</button>
+    <button id="generateq2" class="btn fullborder float-left w-25">Start Q2!</button>
+    <button id="generateq3" class="btn fullborder float-left w-25">Start Q3!</button>
 
     <form asp-action="Return" asp-route-seasonId="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
         <div class="form-group">
-            <input type="submit" value="Finish!" class="btn float-left w-25" />
+            <input type="submit" value="Finish!" class="btn fullborder float-left w-25" />
         </div>
     </form>
 
@@ -197,15 +197,15 @@
 
     function rowString(position, colour, accent, team, driver, score, gap, dangerzone) {
         if (dangerzone) {
-            var retString = "<tr><td><span class='custom-badge result-dnf fullwidth font-size-default'>" + position
-                + "</span></td><td class='text-left'><span class='ml-cel'>" + driver + "</span></td><td><span class='custom-badge badge-team fullwidth font-size-default' style='background-color:"
+            var retString = "<tr><td><span class='custom-badge result-dnf fullwidth'>" + position
+                + "</span></td><td class='text-left'><span class='ml-cel'>" + driver + "</span></td><td><span class='custom-badge badge-team fullwidth' style='background-color:"
                 + colour + ";color:" + accent + ";border-color:" + accent + ";'>" + team + "</span></td><td>" + score + "</td><td>" + gap + "</td></tr>";
 
             return retString;
         }
         else {
             var retString = "<tr><td class='alt-font'>" + position + "</td><td class='text-left'><span class='ml-cel'>" + driver
-                + "</span></td><td><span class='custom-badge badge-team fullwidth font-size-default' style='background-color:"
+                + "</span></td><td><span class='custom-badge badge-team fullwidth' style='background-color:"
                 + colour + ";color:" + accent + ";border-color:" + accent + ";'>" + team + "</span></td><td>" + score + "</td><td>" + gap + "</td></tr>";
 
             return retString;
