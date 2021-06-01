@@ -53,6 +53,9 @@ namespace FormuleCirkelEntity.Controllers
         [HttpErrorsToPagesRedirect]
         public virtual async Task<IActionResult> Edit(int id, Team updatedObject)
         {
+            if (updatedObject is null)
+                return NotFound();
+
             updatedObject.Id = id;
 
             if (!ModelState.IsValid)
