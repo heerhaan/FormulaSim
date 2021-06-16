@@ -125,6 +125,8 @@
                 }
             </tbody>
         </table>
+
+        <div id="handlebars-test"></div>
     </div>
     <div class="flex-row justify-content-between">
         <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
@@ -134,7 +136,56 @@
     <canvas id="standingsChart" style="display: none;"></canvas>
 </div>
 
-<script>
+<script id="driver-standings-template" type="text/x-handlebars-template">
+    <table class="ctable standings-border fullborder">
+        <thead>
+            <tr>
+                <th class="fullborder">POS</th>
+                <th class="fullborder">No</th>
+                <th class="fullborder">Driver</th>
+                <th class="fullborder">Team</th>
+                {{#each Tracks}}
+                <th class="fullborder"><div>{{trimString this.Location 3}}</div><br /><span class="flag flag-{{this.Country}} ff-sm"></span>
+                </th>
+                {{/each}}
+                <th class="fullborder">Pts</th>
+                <th class="fullborder">Avg</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each SeasonDrivers}}
+            <tr>
+                {{! Underneath is subject to change as the goal is completely implement Handlebars instead of still using C# from the view}}
+                <td><b></b></td>
+                <td style="background-color:{{this.SeasonTeam.Colour}};color:{{this.SeasonTeam.Accent}}"><b>{{this.Driver.DriverNumber}}</b></td>
+                <td class="text-left pr-2"><div class="ml-cel"><span class="flag flag-{{this.Driver.Country}} ff-sm flag-margin">{{this.Driver.Name}}</span></div></td>
+                <td style="background-color:{{this.SeasonTeam.Colour}};color:{{this.SeasonTeam.Accent}}"><span class="pl-1 pr-1">{{this.SeasonTeam.Name}}</span></td>
+                {{#each this.Rounds}}
+                <td></td>
+                {{/each}}
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Registering the helpers for this page
+        Handlebars.registerHelper("trimString", function (passedString, charCount) {
+            var retString = passedString.substring(0, charCount).toUpperCase();
+            return new Handlebars.SafeString(retString);
+        });
+
+        var standingsTemplate = $("#driver-standings-template").html();
+        var templateScript = Handlebars.compile(standingsTemplate);
+        var context = @(new { Tracks = Model.Tracks, SeasonDrivers = Model.SeasonDrivers })
+        var htmlResult = templateScript(context);
+        $("#handlebars-test").append(htmlResult);
+    });
+</script>
+
+<script type="text/javascript">
     const polepoint = @Model.PolePoints;
     const lastpointpos = @Model.LastPointPos;
     const points = @(Html.Raw(Model.Points));
