@@ -145,7 +145,7 @@
                 <th class="fullborder">Driver</th>
                 <th class="fullborder">Team</th>
                 {{#each Tracks}}
-                <th class="fullborder"><div>{{trimString this.Location 3}}</div><br /><span class="flag flag-{{this.Country}} ff-sm"></span>
+                <th class="fullborder"><div>{{trimString this.Location 3}}</div><span class="flag flag-{{this.Country}} ff-sm"></span>
                 </th>
                 {{/each}}
                 <th class="fullborder">Pts</th>
@@ -156,13 +156,23 @@
             {{#each SeasonDrivers}}
             <tr>
                 {{! Underneath is subject to change as the goal is completely implement Handlebars instead of still using C# from the view}}
-                <td><b></b></td>
-                <td style="background-color:{{this.SeasonTeam.Colour}};color:{{this.SeasonTeam.Accent}}"><b>{{this.Driver.DriverNumber}}</b></td>
-                <td class="text-left pr-2"><div class="ml-cel"><span class="flag flag-{{this.Driver.Country}} ff-sm flag-margin">{{this.Driver.Name}}</span></div></td>
-                <td style="background-color:{{this.SeasonTeam.Colour}};color:{{this.SeasonTeam.Accent}}"><span class="pl-1 pr-1">{{this.SeasonTeam.Name}}</span></td>
+                <td><b>1</b></td>
+                <td style="background-color:{{this.SeasonTeam.Colour}};color:{{this.SeasonTeam.Accent}}">
+                    <b>{{this.Driver.DriverNumber}}</b>
+                </td>
+                <td class="text-left pr-2">
+                    <div class="ml-cel">
+                        <span class="flag flag-{{this.Driver.Country}} ff-sm flag-margin"></span>{{this.Driver.Name}}
+                    </div>
+                </td>
+                <td style="background-color:{{this.SeasonTeam.Colour}};color:{{this.SeasonTeam.Accent}}">
+                    <span class="pl-1 pr-1">{{this.SeasonTeam.Name}}</span>
+                </td>
                 {{#each this.Rounds}}
-                <td></td>
+                <td>?</td>
                 {{/each}}
+                <td>{{this.Points}}</td>
+                <td>?</td>
             </tr>
             {{/each}}
         </tbody>
@@ -170,19 +180,46 @@
 </script>
 
 <script type="text/javascript">
+    var standingsData;
+
     $(document).ready(function () {
         // Registering the helpers for this page
         Handlebars.registerHelper("trimString", function (passedString, charCount) {
             var retString = passedString.substring(0, charCount).toUpperCase();
             return new Handlebars.SafeString(retString);
         });
+        // <td nowrap>{{lookUpArr _History ../_Year 'deep' 'deeper' 'property'}}</td>
+        Handlebars.registerHelper("lookUpArr", function () {
+            var args = [].slice.call(arguments);
 
+            var block = args.pop();
+            var object = args.shift();
+
+            var value = args.reduce(function (a, b) {
+                return a[b];
+            }, object);
+
+            return value;
+        });
+
+        // Opstart data ophalen
+        $.post("@Url.Action("GetDriverStandingsData")")
+            .done(retrievalDone)
+            .fail(retrievalFail);
+    });
+
+    function retrievalDone(res) {
+        standingsData = res;
+        console.log(res);
         var standingsTemplate = $("#driver-standings-template").html();
         var templateScript = Handlebars.compile(standingsTemplate);
-        var context = @(new { Tracks = Model.Tracks, SeasonDrivers = Model.SeasonDrivers })
-        var htmlResult = templateScript(context);
-        $("#handlebars-test").append(htmlResult);
-    });
+        var htmlResult = templateScript(standingsData);
+        $("#handlebars-test").html(htmlResult);
+    }
+
+    function retrievalFail(res, status) {
+        console.log({ result: res, status: status }); // Errors moeten nog wel afgehandeld worden
+    }
 </script>
 
 <script type="text/javascript">
