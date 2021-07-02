@@ -59,75 +59,15 @@ namespace FormuleCirkelEntity.Controllers
             return View(viewModel);
         }
 
+        [HttpGet("[controller]/[Action]")]
         public async Task<IActionResult> DriverStandings()
         {
             var season = await _seasons.FindActiveSeason();
-            if (season != null)
-            {
-                var drivers = await _seasonDrivers.GetRankedSeasonDrivers(season.SeasonId, true, true);
-                var rounds = await _races.GetOrderedRaces(season.SeasonId, true);
-                var tracks = rounds.Select(res => res.Track);
-
-                var viewmodel = new HomeDriverStandingsModel
-                {
-                    SeasonDrivers = drivers,
-                    Averages = _seasonDrivers.CalculateDriverAverages(drivers),
-                    Tracks = tracks,
-                    Rounds = rounds.Select(r => r.RaceId),
-                    SeasonId = season.SeasonId,
-                    Year = season.SeasonNumber,
-                    LastPointPos = season.PointsPerPosition.Keys.Max(),
-                    Points = JsonConvert.SerializeObject(season.PointsPerPosition),
-                    PolePoints = season.PolePoints
-                };
-                return View(viewmodel);
-            }
-            else
-            {
-                return RedirectToAction("Index", "Season");
-            }
+            if (season is null) return RedirectToAction("Index", "Season");
+            else return await DriverStandings(season.SeasonId);
         }
 
-        private static ContentResult Json<TObject>(TObject obj) => AsJson<TObject>(obj);
-
-        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
-
-        private static ContentResult AsJson<TContent>(TContent input)
-        {
-            return new ContentResult()
-            {
-                Content = JsonConvert.SerializeObject(input, typeof(TContent), SerializerSettings),
-                ContentType = "application/json"
-            };
-        }
-
-        public async Task<ContentResult> GetDriverStandingsData()
-        {
-            var season = await _seasons.FindActiveSeason();
-            if (season != null)
-            {
-                var drivers = await _seasonDrivers.GetRankedSeasonDrivers(season.SeasonId, true, true);
-                var rounds = await _races.GetOrderedRaces(season.SeasonId, true);
-                var tracks = rounds.Select(res => res.Track);
-
-                var driverData = new
-                {
-                    SeasonDrivers = drivers.ToArray(),
-                    Averages = _seasonDrivers.CalculateDriverAverages(drivers).ToArray(),
-                    Tracks = tracks.ToArray(),
-                    Rounds = rounds.Select(r => r.RaceId).ToArray(),
-                    SeasonId = season.SeasonId,
-                    Year = season.SeasonNumber,
-                    LastPointPos = season.PointsPerPosition.Keys.Max(),
-                    Points = season.PointsPerPosition.ToArray(),
-                    PolePoints = season.PolePoints
-                };
-                return Json(driverData);
-            }
-            else { return null; } //temporary
-        }
-
-        [ActionName("PastDriverStandings")]
+        [HttpGet("[controller]/[Action]/{seasonId}")]
         public async Task<IActionResult> DriverStandings(int seasonId)
         {
             var season = await _seasons.GetSeasonById(seasonId);
@@ -137,10 +77,6 @@ namespace FormuleCirkelEntity.Controllers
 
             var viewmodel = new HomeDriverStandingsModel
             {
-                SeasonDrivers = drivers,
-                Averages = _seasonDrivers.CalculateDriverAverages(drivers),
-                Tracks = tracks,
-                Rounds = rounds.Select(r => r.RaceId),
                 SeasonId = season.SeasonId,
                 Year = season.SeasonNumber,
                 LastPointPos = season.PointsPerPosition.Keys.Max(),
@@ -151,20 +87,34 @@ namespace FormuleCirkelEntity.Controllers
             return View("DriverStandings", viewmodel);
         }
 
-        [HttpPost("[Controller]/{seasonId}/GetDriverGraphData")]
+        public async Task<ContentResult> GetDriverStandingsData(int seasonId)
+        {
+            var drivers = await _seasonDrivers.GetRankedSeasonDrivers(seasonId, true, true);
+            var rounds = await _races.GetOrderedRaces(seasonId, true);
+            var tracks = rounds.Select(res => res.Track);
+
+            var driverData = new
+            {
+                SeasonDrivers = drivers.ToArray(),
+                Averages = _seasonDrivers.CalculateDriverAverages(drivers).ToArray(),
+                Tracks = tracks.ToArray(),
+                Rounds = rounds.Select(r => r.RaceId).ToArray()
+            };
+            return Json(driverData);
+        }
+
         public async Task<IActionResult> GetDriverGraphData(int seasonId)
         {
             var query = _seasonDrivers.GetQueryable();
             var standings = await query.IgnoreQueryFilters().AsNoTracking()
                 .Where(sd => sd.SeasonId == seasonId)
                 .OrderByDescending(sd => sd.Points)
-                .Take(10)
                 .Include(sd => sd.Driver)
                 .Include(sd => sd.DriverResults)
                 .Include(sd => sd.SeasonTeam)
-                .ToListAsync();
+                .ToArrayAsync();
 
-            return new JsonResult(standings, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
+            return Json(standings);
         }
 
         public async Task<IActionResult> TeamStandings()

@@ -74,6 +74,8 @@ namespace FormuleCirkelEntity.ResultGenerators
                 else if (GetReliabilityResult(driver.Reliability + weatherDNF + driverResult.DriverRelMod) == -1)
                 {
                     stintResult.StintStatus = StintStatus.DriverDNF;
+                    if (driver.SeasonDriverId == 1894)
+                        stintResult.StintStatus = StintStatus.DriverDNF;
                 }
             }
 

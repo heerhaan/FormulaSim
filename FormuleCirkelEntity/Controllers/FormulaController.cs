@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FormuleCirkelEntity.DAL;
 using Microsoft.AspNetCore.Identity;
 using FormuleCirkelEntity.Models;
+using Newtonsoft.Json;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -22,6 +23,19 @@ namespace FormuleCirkelEntity.Controllers
         protected static Task<IActionResult> AsTask(IActionResult result)
         {
             return Task.FromResult(result);
+        }
+
+        protected static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+
+        protected static ContentResult Json<TObject>(TObject obj) => AsJson<TObject>(obj);
+
+        protected static ContentResult AsJson<TContent>(TContent input)
+        {
+            return new ContentResult()
+            {
+                Content = JsonConvert.SerializeObject(input, typeof(TContent), SerializerSettings),
+                ContentType = "application/json"
+            };
         }
     }
 }

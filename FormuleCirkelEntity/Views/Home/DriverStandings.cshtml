@@ -98,7 +98,7 @@
         });
 
         // Opstart data ophalen
-        $.post("@Url.Action("GetDriverStandingsData")")
+        $.post("@Url.Action("GetDriverStandingsData", new { seasonId = Model.SeasonId })")
             .done(retrievalDone)
             .fail(retrievalFail);
     });
@@ -139,6 +139,7 @@
 </script>
 
 <script type="text/javascript">
+    // Het ophalen van de gegevens en genereren van de grafiek wordt in deze script-tag gemaakt
     const polepoint = @Model.PolePoints;
     const lastpointpos = @Model.LastPointPos;
     const points = @(Html.Raw(Model.Points));
@@ -267,8 +268,8 @@
     }
 
     function getStandingsGraph() {
-        fetch("/Home/@Model.SeasonId/GetDriverGraphData", { method: "POST" })
-            .then(response => response.json())
-            .then(result => drawStandingsChart(result));
+        $.get("@Url.Action("GetDriverGraphData", new { Model.SeasonId })", function (res) {
+            drawStandingsChart(res);
+        });
     }
 </script>
