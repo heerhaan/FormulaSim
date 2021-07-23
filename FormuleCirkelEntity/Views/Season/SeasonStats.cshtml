@@ -10,12 +10,8 @@
     <div class="flex-row justify-content-between">
         <h3>Power rankings</h3>
         <div>
-            <a asp-controller="Home" asp-action="PastDriverStandings" asp-route-seasonId="@ViewBag.seasonId">
-                <span class="custom-badge badge-light">WDC</span>
-            </a>
-            <a asp-controller="Home" asp-action="PastTeamStandings" asp-route-seasonId="@ViewBag.seasonId">
-                <span class="custom-badge badge-light">WCC</span>
-            </a>
+            <span class="custom-badge badge-light redirect" onclick="window.location.href='@Url.Action("DriverStandings", "Home", new { seasonId = ViewBag.seasonId })'">WDC</span>
+            <span class="custom-badge badge-light redirect" onclick="window.location.href='@Url.Action("TeamStandings", "Home", new { seasonId = ViewBag.seasonId })'">WCC</span>
         </div>
     </div>
     

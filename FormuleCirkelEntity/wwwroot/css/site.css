@@ -32,12 +32,11 @@ html {
     }
 }
 
-body {
+.body-wrapper {
     display: flex;
     flex-direction: column;
     width: 100%;
     min-height: 100vh;
-    line-height: 1.0;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 1em;
 }
@@ -138,6 +137,10 @@ ul li {
 
 i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
     opacity: 0.7;
+}
+
+.redirect {
+    cursor: pointer;
 }
 
 /* Home page styling */

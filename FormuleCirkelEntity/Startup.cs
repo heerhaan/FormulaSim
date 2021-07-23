@@ -44,10 +44,9 @@ namespace FormuleCirkelEntity
 
             services.AddMvc()
                 .WithRazorPagesAtContentRoot()
+                .AddRazorRuntimeCompilation()
+                .AddNewtonsoftJson()
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
-
-            services.AddControllers()
-                .AddNewtonsoftJson();
 
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
             services.AddDefaultIdentity<SimUser>(options => options.SignIn.RequireConfirmedAccount = false)

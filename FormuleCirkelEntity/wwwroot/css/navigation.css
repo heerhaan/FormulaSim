@@ -1,0 +1,20 @@
+﻿.navbar-side {
+    min-height: 100%;
+    background-color: black;
+    position: absolute;
+    width: 15em;
+}
+
+.navigation-menu {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.active {
+
+}
+
+.in {
+
+}

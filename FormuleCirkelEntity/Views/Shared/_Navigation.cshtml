@@ -1,0 +1,188 @@
+﻿@using FormuleCirkelEntity.Controllers;
+
+@{
+    var currentController = (ViewContext.RouteData.Values["Controller"].ToString());
+    var isHome = currentController is "Home";
+    var isDriver = currentController is "Drivers";
+}
+
+<nav class="navbar-side rightline" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav navigation-menu">
+            <li class="nav-header">
+                <span>Voeg logo hier toe</span>
+                <span>Menu-items hier</span>
+            </li>
+
+            <li class="@(isHome ? "active" : "")">
+                <a href="@(Url.Action("Index", "Home"))"></a>
+            </li>
+
+            <li class="@(isDriver ? "active" : "")">
+                <a data-toggle="collapse" data-target="#nav-participants-submenu">
+                    <i class="fas fa-list"></i>
+                    <span class="nav-label">Participants</span>
+                    <span class="fas arrow"></span>
+                </a>
+                <ul id="nav-participants-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Drivers")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Drivers</span>
+                        </a>
+                    </li>
+
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Teams")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Teams</span>
+                        </a>
+                    </li>
+
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Tracks")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Tracks</span>
+                        </a>
+                    </li>
+
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Traits")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Traits</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="@(isDriver ? "active" : "")">
+                <a data-toggle="collapse" data-target="#nav-factors-submenu">
+                    <i class="fas fa-list"></i>
+                    <span class="nav-label">Race factors</span>
+                    <span class="fas arrow"></span>
+                </a>
+                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Engines")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Engines</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Rubbers")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Tyre manufacturers</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("StrategyIndex", "TyreStrategies")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Tyres</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("TyreIndex", "TyreStrategies")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Strategies</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="@(isDriver ? "active" : "")">
+                <a data-toggle="collapse" data-target="#nav-season-submenu">
+                    <i class="fas fa-list"></i>
+                    <span class="nav-label">Season</span>
+                    <span class="fas arrow"></span>
+                </a>
+                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("NextRace", "Home")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Next race</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("DriverStandings", "Home")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Driver standings</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("TeamStandings", "Home")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Team standings</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Season")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">Current</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Season")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">All</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="@(isDriver ? "active" : "")">
+                <a data-toggle="collapse" data-target="#nav-league-submenu">
+                    <i class="fas fa-list"></i>
+                    <span class="nav-label">Championships</span>
+                    <span class="fas arrow"></span>
+                </a>
+                <ul id="nav-league-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
+                    <li class="@(isDriver ? "active" : "")">
+                        <a href="@Url.Action("Index", "Championships")">
+                            <i class="fas fa-list-ol"></i>
+                            <span class="nav-label">All</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="mt-auto bottomline"></li>
+
+            <li>
+                <div>
+                    <a id="lighttheme" class="theme-button">☀️</a>
+                    <a id="darktheme" class="theme-button">🌑</a>
+                    <a id="synththeme" class="theme-button">🕶</a>
+                    <a id="yoshitheme" class="theme-button">🐲</a>
+                    <a id="ferraritheme" class="theme-button">🐎</a>
+                </div>
+            </li>
+
+            <li>
+                <div class="text-muted">
+                    <a asp-action="AboutMe" asp-controller="Home" style="text-decoration:none;">&copy; 2021 - Mika van den Brink</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

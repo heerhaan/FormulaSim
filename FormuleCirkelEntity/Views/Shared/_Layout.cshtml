@@ -20,12 +20,13 @@
     </environment>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css" integrity="sha384-xxzQGERXS00kBmZW/6qxqJPyxW3UR0BPsL4c8ILaIWXva5kFi7TxkIIaMiKtqV1Q" crossorigin="anonymous">
     <link rel="stylesheet" href="~/lib/flags/freakflags.css" />
+
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css//navigation.css" />
     <link id="theme" rel="stylesheet" href="~/css/themeDark.css" />
-    
 </head>
 
-<body class="primary">
+<body class="body-wrapper primary">
     <environment exclude="Development">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
@@ -56,7 +57,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
         <script src="~/lib/select2/dist/js/select2.min.js"></script>
-        
+
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
         <script src="~/lib/html2canvas.min.js"></script>
         <script src="~/lib/handlebars-v4.7.7.js"></script>
@@ -71,28 +72,12 @@
 
     @RenderSection("Scripts", required: false)
 
-    <header>
-        <partial name="_MenuPartial" />
-    </header>
+    @(await Html.PartialAsync("_Navigation"))
 
     <partial name="_CookieConsentPartial" />
     <main role="main" class="m-sides">
         @RenderBody()
     </main>
-
-    <footer class="secondary upperline mt-1">
-        <div class="m-sides text-muted">
-            &copy; 2021 - Mika van den Brink
-            <a asp-action="AboutMe" asp-controller="Home" style="text-decoration:none;"> About me</a>
-            <div class="theme-buttons">
-                <a id="lighttheme" class="theme-button">☀️</a>
-                <a id="darktheme" class="theme-button">🌑</a>
-                <a id="synththeme" class="theme-button">🕶</a>
-                <a id="yoshitheme" class="theme-button">🐲</a>
-                <a id="ferraritheme" class="theme-button">🐎</a>
-            </div>
-        </div>
-    </footer>
 </body>
 </html>
 
