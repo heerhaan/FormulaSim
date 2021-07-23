@@ -89,6 +89,7 @@ namespace FormuleCirkelEntity
             services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
             services.AddScoped(typeof(IChampionshipService), typeof(ChampionshipService));
             services.AddScoped(typeof(IDriverService), typeof(DriverService));
+            services.AddScoped(typeof(IDriverResultService), typeof(DriverResultService));
             services.AddScoped(typeof(IEngineService), typeof(EngineService));
             services.AddScoped(typeof(IRubberService), typeof(RubberService));
             services.AddScoped(typeof(IRaceService), typeof(RaceService));
@@ -99,7 +100,7 @@ namespace FormuleCirkelEntity
             services.AddScoped(typeof(ISeasonTeamService), typeof(SeasonTeamService));
             services.AddScoped(typeof(ITraitService), typeof(TraitService));
             services.AddScoped(typeof(ITyreStrategyService), typeof(TyreStrategyService));
-            // Custom services related to [fill in]
+
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();
             services.AddTransient<SeasonSettingsValidator>();

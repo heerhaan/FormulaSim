@@ -52,6 +52,7 @@ namespace FormuleCirkelEntity.Services
 
         public void Archive(T entity)
         {
+            // ALERT: Archiveren is slechts voor een beperkte aantal klassen, dit is geen DataService-object
             // First check if entity is archived or not, based on that either archive or unarchive the entity
             if (entity is IArchivable archivable && archivable.Archived)
             {

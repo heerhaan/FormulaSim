@@ -108,6 +108,7 @@ namespace FormuleCirkelEntity.Controllers
                 TrackName = track.Name,
             };
             // Finds the last time track was used and uses same stintsetup as then if it exists
+            // Haalt de laatste keer dat een circuit gebruikt is op en past dezelfde stintsetup toe
             var lastracemodel = await _raceService.GetLastRace(season.ChampionshipId, trackId);
             if (lastracemodel != null)
             {
@@ -122,8 +123,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> ModifyRace(RacesModifyRaceModel raceModel)
         {
             // Those gosh darn warnings against checking for nulls, but here we are
-            if (raceModel == null)
-                return NotFound();
+            if (raceModel == null) return NotFound();
 
             var track = await _trackService.GetTrackById(raceModel.TrackId);
             var season = await _seasonService.GetSeasonById(raceModel.SeasonId, true, true);
