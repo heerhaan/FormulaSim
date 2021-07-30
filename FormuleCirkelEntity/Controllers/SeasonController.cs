@@ -208,7 +208,12 @@ namespace FormuleCirkelEntity.Controllers
             return RedirectToAction(nameof(Detail), new { id });
         }
 
-        public async Task<IActionResult> Detail(int? id)
+        public async Task<IActionResult> CurrentDetail()
+        {
+            var current = await _seasons.FindActiveSeason();
+            return await Detail(current.SeasonId);
+        }
+        public async Task<IActionResult> Detail(int id)
         {
             var season = await Context.Seasons
                 .IgnoreQueryFilters()

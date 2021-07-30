@@ -1,20 +1,84 @@
 ﻿.navbar-side {
-    min-height: 100%;
-    background-color: black;
-    position: absolute;
-    width: 15em;
+    width: 13.75em;
+    font-size: 0.95em;
+}
+
+.fixed-left {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
 }
 
 .navigation-menu {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    overflow:hidden;
 }
 
-.active {
-
+.nav-header {
+    padding: 0.625em 1.5625em;
+    min-height: 5em;
 }
 
-.in {
+.login-nav-buttons {
+    padding: 0.5em 1.1em;
+}
 
+.nav > li > a, .nav > li > form > button {
+    position: relative;
+    display: block;
+    color: white;
+    font-weight: 600;
+    padding: 1.3125em 1.25em 1.3125em 1.625em;
+}
+
+.nav > li > a:hover, .nav > li > form > button:hover {
+    cursor: pointer;
+}
+
+.nav.nav-second-level li {
+    width: 100%;
+    border-left: 0 !important;
+}
+
+.nav-second-level li a, .nav-second-level li form > button {
+    padding: 0.4375em 0.625em 0.4375em 0.625em;
+    padding-left: 3em;
+}
+
+.nav-second-level li a:hover, .nav-second-level li form > button:hover {
+    text-decoration: underline;
+}
+
+.collapse.in {
+    display: block;
+}
+
+.menu-arrow {
+    font-size: 80%;
+    line-height: 2;
+    float: right;
+}
+
+.theme-buttons {
+    display: flex;
+    flex-direction: row;
+}
+    .theme-buttons > a {
+        cursor: pointer;
+        width: 1.75em;
+        height: 1.25em;
+    }
+
+.stripped-btn {
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    color: white;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
 }

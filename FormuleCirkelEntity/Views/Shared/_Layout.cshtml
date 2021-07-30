@@ -75,7 +75,7 @@
     @(await Html.PartialAsync("_Navigation"))
 
     <partial name="_CookieConsentPartial" />
-    <main role="main" class="m-sides">
+    <main class="page-content" role="main">
         @RenderBody()
     </main>
 </body>
@@ -95,9 +95,9 @@
             $("link#theme").attr("href", "@Url.Content("~/css/themeLight.css")");
             $.cookie('theme-cookie', "@Url.Content("~/css/themeLight.css")");
         });
-        $("#yoshitheme").click(function () {
-            $("link#theme").attr("href", "@Url.Content("~/css/themeYoshiWTCC.css")");
-            $.cookie('theme-cookie', "@Url.Content("~/css/themeYoshiWTCC.css")");
+        $("#bluetheme").click(function () {
+            $("link#theme").attr("href", "@Url.Content("~/css/themeBlueAlt.css")");
+            $.cookie('theme-cookie', "@Url.Content("~/css/themeBlueAlt.css")");
         });
         $("#ferraritheme").click(function () {
             $("link#theme").attr("href", "@Url.Content("~/css/themeFerrari.css")");

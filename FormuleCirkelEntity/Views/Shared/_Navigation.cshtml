@@ -1,180 +1,203 @@
-﻿@using FormuleCirkelEntity.Controllers;
+﻿@using FormuleCirkelEntity.Controllers
+@using Microsoft.AspNetCore.Identity
+@using FormuleCirkelEntity.Models
+
+@inject SignInManager<SimUser> SignInManager
+@inject UserManager<SimUser> UserManager
 
 @{
     var currentController = (ViewContext.RouteData.Values["Controller"].ToString());
-    var isHome = currentController is "Home";
-    var isDriver = currentController is "Drivers";
+    var currentAction = (ViewContext.RouteData.Values["Action"].ToString());
+    var isParticipants = (currentController is "Drivers" || currentController is "Teams" || currentController is "Tracks" || currentController is "Traits");
+    var isFactors = (currentController is "Engines" || currentController is "Rubbers" || currentController is "TyreStrategies");
+    var isSeasons = (currentController is "Season" || currentAction is "DriverStandings" || currentAction is "TeamStandings");
+    var isChamps = (currentController is "Championships");
+    var isProfiles = (currentController is "Admin" || currentController is "Accounts" || currentController is "Roles");
+    bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
-<nav class="navbar-side rightline" role="navigation">
+<nav class="navbar-side fixed-left secondary rightline" role="navigation">
     <div class="sidebar-collapse">
         <ul class="nav navigation-menu">
             <li class="nav-header">
-                <span>Voeg logo hier toe</span>
-                <span>Menu-items hier</span>
+                <img src="~/images/formuladreamlogothicc.png" title="Logo" alt="Formula Logo" width="146" height="48" />
             </li>
 
-            <li class="@(isHome ? "active" : "")">
-                <a href="@(Url.Action("Index", "Home"))"></a>
+            <li class="@((currentController is "Home" && currentAction is "Index") ? "active" : "")">
+                <a href="@(Url.Action("Index", "Home"))">Home</a>
             </li>
 
-            <li class="@(isDriver ? "active" : "")">
+            <li class="@(isParticipants ? "active" : "")">
                 <a data-toggle="collapse" data-target="#nav-participants-submenu">
-                    <i class="fas fa-list"></i>
+                    <i class="fas fa-users"></i>
                     <span class="nav-label">Participants</span>
-                    <span class="fas arrow"></span>
+                    <span class="fas fa-chevron-down menu-arrow"></span>
                 </a>
-                <ul id="nav-participants-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                <ul id="nav-participants-submenu" class="nav nav-second-level collapse @(isParticipants ? "in" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Drivers")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Drivers</span>
                         </a>
                     </li>
 
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Teams")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Teams</span>
                         </a>
                     </li>
 
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Tracks")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Tracks</span>
                         </a>
                     </li>
 
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Traits")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Traits</span>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="@(isDriver ? "active" : "")">
+            <li class="@(isFactors ? "active" : "")">
                 <a data-toggle="collapse" data-target="#nav-factors-submenu">
-                    <i class="fas fa-list"></i>
+                    <i class="fas fa-gas-pump"></i>
                     <span class="nav-label">Race factors</span>
-                    <span class="fas arrow"></span>
+                    <span class="fas fa-chevron-down menu-arrow"></span>
                 </a>
-                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isFactors ? "in" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Engines")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Engines</span>
                         </a>
                     </li>
-                </ul>
 
-                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Rubbers")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Tyre manufacturers</span>
                         </a>
                     </li>
-                </ul>
 
-                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("StrategyIndex", "TyreStrategies")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Tyres</span>
                         </a>
                     </li>
-                </ul>
 
-                <ul id="nav-factors-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("TyreIndex", "TyreStrategies")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Strategies</span>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="@(isDriver ? "active" : "")">
+            <li class="@(isSeasons ? "active" : "")">
                 <a data-toggle="collapse" data-target="#nav-season-submenu">
-                    <i class="fas fa-list"></i>
+                    <i class="fas fa-flag-checkered"></i>
                     <span class="nav-label">Season</span>
-                    <span class="fas arrow"></span>
+                    <span class="fas fa-chevron-down menu-arrow"></span>
                 </a>
-                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isSeasons ? "in" : "")">
+                    <li>
                         <a href="@Url.Action("NextRace", "Home")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Next race</span>
                         </a>
                     </li>
-                </ul>
 
-                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("DriverStandings", "Home")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Driver standings</span>
                         </a>
                     </li>
-                </ul>
 
-                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("TeamStandings", "Home")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">Team standings</span>
                         </a>
                     </li>
-                </ul>
 
-                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
-                        <a href="@Url.Action("Index", "Season")">
-                            <i class="fas fa-list-ol"></i>
+                    <li>
+                        <a href="@Url.Action("CurrentDetail", "Season")">
                             <span class="nav-label">Current</span>
                         </a>
                     </li>
-                </ul>
 
-                <ul id="nav-season-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Season")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">All</span>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="@(isDriver ? "active" : "")">
+            <li class="@(isChamps ? "active" : "")">
                 <a data-toggle="collapse" data-target="#nav-league-submenu">
-                    <i class="fas fa-list"></i>
+                    <i class="fas fa-chess-king"></i>
                     <span class="nav-label">Championships</span>
-                    <span class="fas arrow"></span>
+                    <span class="fas fa-chevron-down menu-arrow"></span>
                 </a>
-                <ul id="nav-league-submenu" class="nav nav-second-level collapse @(isDriver ? "in" : "")">
-                    <li class="@(isDriver ? "active" : "")">
+                <ul id="nav-league-submenu" class="nav nav-second-level collapse @(isChamps ? "in" : "")">
+                    <li>
                         <a href="@Url.Action("Index", "Championships")">
-                            <i class="fas fa-list-ol"></i>
                             <span class="nav-label">All</span>
                         </a>
                     </li>
                 </ul>
             </li>
 
-            <li class="mt-auto bottomline"></li>
+            <li class="mt-auto"></li>
 
-            <li>
-                <div>
-                    <a id="lighttheme" class="theme-button">☀️</a>
-                    <a id="darktheme" class="theme-button">🌑</a>
-                    <a id="synththeme" class="theme-button">🕶</a>
-                    <a id="yoshitheme" class="theme-button">🐲</a>
-                    <a id="ferraritheme" class="theme-button">🐎</a>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <li class="@(isProfiles ? "active" : "")">
+                    <a data-toggle="collapse" data-target="#nav-profiles-submenu">
+                        <i class="fas fa-user"></i>
+                        <span class="nav-label">@UserManager.GetUserName(User)</span>
+                        <span class="fas fa-chevron-down menu-arrow"></span>
+                    </a>
+                    <ul id="nav-profiles-submenu" class="nav nav-second-level collapse @(isProfiles ? "in" : "")">
+                        <li>
+                            <a href="@Url.Action("Index", "Accounts")">
+                                <span class="nav-label">Profile</span>
+                            </a>
+                        </li>
+                        @if (isAdmin)
+                        {
+                            <li>
+                                <a href="@Url.Action("Index", "Admin")">
+                                    <span class="nav-label">Admin</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Index", "Roles")">
+                                    <span>Roles</span>
+                                </a>
+                            </li>
+                        }
+                        <li>
+                            <form action="@Url.Action("Logout", "Accounts")" method="post">
+                                <button type="submit" name="Logout" value="Logout" class="stripped-btn">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="@(currentController is "Accounts" ? "active" : "")">
+                    <a href="@(Url.Action("Login", "Accounts"))">Login</a>
+                </li>
+            }
+
+            <li class="upperline">
+                <div class="theme-buttons">
+                    <a id="lighttheme">☀️</a>
+                    <a id="darktheme">🌑</a>
+                    <a id="synththeme">🕶</a>
+                    <a id="yoshitheme">🐲</a>
+                    <a id="ferraritheme">🐎</a>
                 </div>
             </li>
 

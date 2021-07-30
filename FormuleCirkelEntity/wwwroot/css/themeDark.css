@@ -103,3 +103,18 @@ i.fas, i.fab, i.far, .link {
 .rightline {
     border-right: 1px solid rgb(189, 33, 48) !important;
 }
+
+/*Navigation menu*/
+
+.nav > li > a:hover, .nav > li > form > button:hover {
+    background-color: rgb(30,34,39);
+}
+
+.nav.nav-second-level li {
+    background-color: rgb(30,34,39);
+}
+
+li.active {
+    border-left: 3px solid rgb(189, 33, 48) !important;
+    background-color: rgb(30,34,39);
+}
