@@ -247,8 +247,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 // Checks if the user activating the race is the admin
                 SimUser user = await UserManager.GetUserAsync(User);
-                var result = await UserManager.IsInRoleAsync(user, Constants.RoleAdmin);
-                if (result)
+                if (User.Identity.IsAuthenticated && await UserManager.IsInRoleAsync(user, Constants.RoleAdmin))
                 {
                     race = _raceBuilder
                         .Use(race)

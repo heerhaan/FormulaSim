@@ -70,7 +70,10 @@
                             Description
                         </th>
                         <th class="w-10">Info</th>
-                        <th class="w-10">Edit</th>
+                        @if (isAdmin)
+                        {
+                            <th class="w-10">Edit</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -86,9 +89,12 @@
                             <td>
                                 <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                             </td>
-                            <td>
-                                <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
-                            </td>
+                            @if (isAdmin)
+                            {
+                                <td>
+                                    <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
+                                </td>
+                            }
                         </tr>
                     }
                 </tbody>
@@ -107,7 +113,10 @@
                             Description
                         </th>
                         <th class="w-10">Info</th>
-                        <th class="w-10">Edit</th>
+                        @if (isAdmin)
+                        {
+                            <th class="w-10">Edit</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -123,9 +132,12 @@
                             <td>
                                 <a asp-action="Info" asp-route-id="@item.TraitId"><i class="fas fa-info-circle fa-2x"></i></a>
                             </td>
-                            <td>
-                                <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
-                            </td>
+                            @if (isAdmin)
+                            {
+                                <td>
+                                    <a asp-action="Modify" asp-route-id="@item.TraitId"><i class="fas fa-wrench fa-2x"></i></a>
+                                </td>
+                            }
                         </tr>
                     }
                 </tbody>
