@@ -12,6 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\node_modules\**" />
+    <Content Remove="wwwroot\lib\node_modules\**" />
+    <EmbeddedResource Remove="wwwroot\lib\node_modules\**" />
+    <None Remove="wwwroot\lib\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Migrations\20190607091518_RaceState.cs" />
     <Compile Remove="Migrations\20190607091602_RaceState.cs" />
     <Compile Remove="Migrations\20190607093522_InitialCreate.cs" />
@@ -67,6 +74,11 @@
   </ItemGroup>
 
 
-  <ProjectExtensions><VisualStudio><UserProperties wwwroot_4lib_4bootstrap_4dist_4css_4bootstrap_1min_1css_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\jquery\dist\" />
+  </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

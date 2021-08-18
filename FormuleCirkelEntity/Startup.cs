@@ -14,6 +14,8 @@ using FormuleCirkelEntity.Services;
 using Microsoft.Extensions.Hosting;
 using FormuleCirkelEntity.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace FormuleCirkelEntity
 {
@@ -120,6 +122,14 @@ namespace FormuleCirkelEntity
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseFileServer(new FileServerOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"node_modules")),
+                RequestPath = new PathString("/node_modules"),
+                EnableDirectoryBrowsing = true
+            });
 
             app.UseHttpsRedirection();
             app.UseRouting();

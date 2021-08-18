@@ -11,15 +11,13 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
               crossorigin="anonymous"
               integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" />
+        
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" 
               asp-fallback-href="~/lib/select2/dist/css/select2.min.css"/>
     </environment>
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/select2/dist/css/select2.min.css" />
-    </environment>
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css" integrity="sha384-xxzQGERXS00kBmZW/6qxqJPyxW3UR0BPsL4c8ILaIWXva5kFi7TxkIIaMiKtqV1Q" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/lib/flags/freakflags.css" />
+    <link rel="stylesheet" href="~/images/flags/freakflags.css" />
 
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css//navigation.css" />
@@ -28,13 +26,15 @@
 
 <body class="body-wrapper primary">
     <environment exclude="Development">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
                 crossorigin="anonymous"
                 integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
         </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.cookie.min.js">
+        </script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
@@ -44,23 +44,12 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"
                 asp-fallback-src="~/lib/select2/dist/js/select2.min.js">
         </script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" integrity="sha512-s/XK4vYVXTGeUSv4bRPOuxSDmDlTedEpMEcAQk0t/FMd9V6ft8iXdwSBxV0eD60c6w/tjotSlKu9J2AAW1ckTA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"
+                asp-fallback-src="~/lib/chart.js/dist/chart.min.js">
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"
                 asp-fallback-src="~/lib/handlebars-v4.7.7.js">
         </script>
-
-        <script src="~/lib/chart.js/dist/chart.min.js"></script>
-    </environment>
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-        <script src="~/lib/select2/dist/js/select2.min.js"></script>
-
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
-        <script src="~/lib/html2canvas.min.js"></script>
-        <script src="~/lib/handlebars-v4.7.7.js"></script>
     </environment>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -84,24 +73,24 @@
 <script>
     $(function () {
         $("#darktheme").click(function () {
-            $("link#theme").attr("href", "@Url.Content("~/css/themeDark.css")");
-            $.cookie('theme-cookie', "@Url.Content("~/css/themeDark.css")");
+            $("link#theme").attr("href", "@Url.Content("~/css/themes/themeDark.css")");
+            $.cookie('theme-cookie', "@Url.Content("~/css/themes/themeDark.css")");
         });
         $("#synththeme").click(function () {
-            $("link#theme").attr("href", "@Url.Content("~/css/themeSynth.css")");
-            $.cookie('theme-cookie', "@Url.Content("~/css/themeSynth.css")");
+            $("link#theme").attr("href", "@Url.Content("~/css/themes/themeSynth.css")");
+            $.cookie('theme-cookie', "@Url.Content("~/css/themes/themeSynth.css")");
         });
         $("#lighttheme").click(function () {
-            $("link#theme").attr("href", "@Url.Content("~/css/themeLight.css")");
-            $.cookie('theme-cookie', "@Url.Content("~/css/themeLight.css")");
+            $("link#theme").attr("href", "@Url.Content("~/css/themes/themeLight.css")");
+            $.cookie('theme-cookie', "@Url.Content("~/css/themes/themeLight.css")");
         });
         $("#bluetheme").click(function () {
-            $("link#theme").attr("href", "@Url.Content("~/css/themeBlueAlt.css")");
-            $.cookie('theme-cookie', "@Url.Content("~/css/themeBlueAlt.css")");
+            $("link#theme").attr("href", "@Url.Content("~/css/themes/themeBlueAlt.css")");
+            $.cookie('theme-cookie', "@Url.Content("~/css/themes/themeBlueAlt.css")");
         });
         $("#ferraritheme").click(function () {
-            $("link#theme").attr("href", "@Url.Content("~/css/themeFerrari.css")");
-            $.cookie('theme-cookie', "@Url.Content("~/css/themeFerrari.css")");
+            $("link#theme").attr("href", "@Url.Content("~/css/themes/themeFerrari.css")");
+            $.cookie('theme-cookie', "@Url.Content("~/css/themes/themeFerrari.css")");
         });
     });
 </script>
