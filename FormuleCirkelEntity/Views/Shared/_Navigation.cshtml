@@ -28,7 +28,7 @@
             </li>
 
             <li class="@(isParticipants ? "active" : "")">
-                <a data-toggle="collapse" data-target="#nav-participants-submenu">
+                <a data-bs-toggle="collapse" href="#nav-participants-submenu">
                     <i class="fas fa-users"></i>
                     <span class="nav-label">Participants</span>
                     <span class="fas fa-chevron-down menu-arrow"></span>
@@ -61,7 +61,7 @@
             </li>
 
             <li class="@(isFactors ? "active" : "")">
-                <a data-toggle="collapse" data-target="#nav-factors-submenu">
+                <a data-bs-toggle="collapse" href="#nav-factors-submenu">
                     <i class="fas fa-gas-pump"></i>
                     <span class="nav-label">Race factors</span>
                     <span class="fas fa-chevron-down menu-arrow"></span>
@@ -94,7 +94,7 @@
             </li>
 
             <li class="@(isSeasons ? "active" : "")">
-                <a data-toggle="collapse" data-target="#nav-season-submenu">
+                <a data-bs-toggle="collapse" href="#nav-season-submenu">
                     <i class="fas fa-flag-checkered"></i>
                     <span class="nav-label">Season</span>
                     <span class="fas fa-chevron-down menu-arrow"></span>
@@ -133,7 +133,7 @@
             </li>
 
             <li class="@(isChamps ? "active" : "")">
-                <a data-toggle="collapse" data-target="#nav-league-submenu">
+                <a data-bs-toggle="collapse" href="#nav-league-submenu">
                     <i class="fas fa-chess-king"></i>
                     <span class="nav-label">Championships</span>
                     <span class="fas fa-chevron-down menu-arrow"></span>
@@ -152,7 +152,7 @@
             @if (SignInManager.IsSignedIn(User))
             {
                 <li class="@(isProfiles ? "active" : "")">
-                    <a data-toggle="collapse" data-target="#nav-profiles-submenu">
+                    <a data-bs-toggle="collapse" href="#nav-profiles-submenu">
                         <i class="fas fa-user"></i>
                         <span class="nav-label">@UserManager.GetUserName(User)</span>
                         <span class="fas fa-chevron-down menu-arrow"></span>

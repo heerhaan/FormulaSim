@@ -1,34 +1,53 @@
 {
-  "_from": "chart.js",
-  "_id": "chart.js@3.3.2",
-  "_inBundle": false,
-  "_integrity": "sha512-H0hSO7xqTIrwxoACqnSoNromEMfXvfuVnrbuSt2TuXfBDDofbnto4zuZlRtRvC73/b37q3wGAWZyUU41QPvNbA==",
-  "_location": "/chart.js",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "chart.js",
-    "name": "chart.js",
-    "escapedName": "chart.js",
-    "rawSpec": "",
-    "saveSpec": null,
-    "fetchSpec": "latest"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
+  "name": "chart.js",
+  "homepage": "https://www.chartjs.org",
+  "description": "Simple HTML5 charts using the canvas element.",
+  "version": "3.5.1",
+  "license": "MIT",
+  "jsdelivr": "dist/chart.min.js",
+  "unpkg": "dist/chart.min.js",
+  "main": "dist/chart.js",
+  "module": "dist/chart.esm.js",
+  "types": "types/index.esm.d.ts",
+  "keywords": [
+    "canvas",
+    "charts",
+    "data",
+    "graphs",
+    "html5",
+    "responsive"
   ],
-  "_resolved": "https://registry.npmjs.org/chart.js/-/chart.js-3.3.2.tgz",
-  "_shasum": "667f3a0b6371b9719d8949c04a5bcbaec0d8c615",
-  "_spec": "chart.js",
-  "_where": "C:\\Users\\Mika\\Documents\\FormulaSim\\FormulaSim\\FormuleCirkelEntity\\wwwroot\\lib",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chartjs/Chart.js.git"
+  },
   "bugs": {
     "url": "https://github.com/chartjs/Chart.js/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
-  "description": "Simple HTML5 charts using the canvas element.",
+  "files": [
+    "auto/**/*.js",
+    "auto/**/*.d.ts",
+    "dist/*.js",
+    "dist/chunks/*.js",
+    "types/*.d.ts",
+    "types/helpers/*.d.ts",
+    "helpers/**/*.js",
+    "helpers/**/*.d.ts"
+  ],
+  "scripts": {
+    "autobuild": "rollup -c -w",
+    "build": "rollup -c",
+    "dev": "karma start --auto-watch --no-single-run --browsers chrome --grep",
+    "dev:ff": "karma start --auto-watch --no-single-run --browsers firefox --grep",
+    "docs": "npm run build && vuepress build docs --no-cache",
+    "docs:dev": "npm run build && vuepress dev docs --no-cache",
+    "lint-js": "eslint \"src/**/*.js\" \"test/**/*.js\" \"docs/**/*.js\"",
+    "lint-md": "eslint \"**/*.md\"",
+    "lint-tsc": "tsc",
+    "lint-types": "eslint \"types/**/*.ts\" && tsc -p types/tests/",
+    "lint": "concurrently \"npm:lint-*\"",
+    "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
+  },
   "devDependencies": {
     "@kurkle/color": "^0.1.9",
     "@rollup/plugin-commonjs": "^19.0.0",
@@ -73,61 +92,17 @@
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-istanbul": "^3.0.0",
     "rollup-plugin-terser": "^7.0.2",
-    "typedoc": "^0.20.35",
+    "typedoc": "^0.21.2",
     "typedoc-plugin-markdown": "^3.6.1",
-    "typescript": "~4.1.0",
+    "typescript": "^4.3.5",
     "vue-tabs-component": "^1.5.0",
     "vuepress": "^1.8.2",
-    "vuepress-plugin-flexsearch": "^0.1.0",
+    "vuepress-plugin-code-copy": "^1.0.6",
+    "vuepress-plugin-flexsearch": "^0.2.0",
     "vuepress-plugin-redirect": "^1.2.5",
     "vuepress-plugin-tabs": "^0.3.0",
-    "vuepress-plugin-typedoc": "^0.7.0",
+    "vuepress-plugin-typedoc": "^0.8.1",
     "vuepress-theme-chartjs": "^0.2.0",
     "yargs": "^17.0.1"
-  },
-  "files": [
-    "auto/**/*.js",
-    "auto/**/*.d.ts",
-    "dist/*.js",
-    "dist/chunks/*.js",
-    "types/*.d.ts",
-    "types/helpers/*.d.ts",
-    "helpers/**/*.js",
-    "helpers/**/*.d.ts"
-  ],
-  "homepage": "https://www.chartjs.org",
-  "jsdelivr": "dist/chart.min.js",
-  "keywords": [
-    "canvas",
-    "charts",
-    "data",
-    "graphs",
-    "html5",
-    "responsive"
-  ],
-  "license": "MIT",
-  "main": "dist/chart.js",
-  "module": "dist/chart.esm.js",
-  "name": "chart.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/chartjs/Chart.js.git"
-  },
-  "scripts": {
-    "autobuild": "rollup -c -w",
-    "build": "rollup -c",
-    "dev": "karma start --auto-watch --no-single-run --browsers chrome --grep",
-    "dev:ff": "karma start --auto-watch --no-single-run --browsers firefox --grep",
-    "docs": "npm run build && vuepress build docs --no-cache",
-    "docs:dev": "npm run build && vuepress dev docs --no-cache",
-    "lint": "concurrently \"npm:lint-*\"",
-    "lint-js": "eslint \"src/**/*.js\" \"test/**/*.js\" \"docs/**/*.js\"",
-    "lint-md": "eslint \"**/*.md\"",
-    "lint-tsc": "tsc",
-    "lint-types": "eslint \"types/**/*.ts\" && tsc -p types/tests/",
-    "test": "npm run lint && cross-env NODE_ENV=test karma start --auto-watch --single-run --coverage --grep"
-  },
-  "types": "types/index.esm.d.ts",
-  "unpkg": "dist/chart.min.js",
-  "version": "3.3.2"
+  }
 }

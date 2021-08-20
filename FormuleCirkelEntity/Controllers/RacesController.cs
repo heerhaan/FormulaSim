@@ -311,10 +311,9 @@ namespace FormuleCirkelEntity.Controllers
                     return Forbid();
                 }
             }
-            return RedirectToAction("RaceWeekend", new { id, raceId });
+            return RedirectToAction("RaceWeekend", new { raceId });
         }
 
-        [Route("Season/{id}/[Controller]/{raceId}/Weekend")]
         public async Task<IActionResult> RaceWeekend(int raceId)
         {
             var race = await Context.Races

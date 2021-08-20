@@ -32,6 +32,7 @@
     color: white;
     font-weight: 600;
     padding: 1.3125em 1.25em 1.3125em 1.625em;
+    text-decoration: none;
 }
 
 .nav > li > a:hover, .nav > li > form > button:hover {

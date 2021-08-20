@@ -17,7 +17,7 @@ export { LayoutItem, LayoutPosition } from './layout';
 
 export interface ScriptableContext<TType extends ChartType> {
   active: boolean;
-  chart: UnionToIntersection<Chart<TType>>;
+  chart: Chart;
   dataIndex: number;
   dataset: UnionToIntersection<ChartDataset<TType>>;
   datasetIndex: number;
@@ -28,7 +28,10 @@ export interface ScriptableContext<TType extends ChartType> {
 export interface ScriptableLineSegmentContext {
   type: 'segment',
   p0: PointElement,
-  p1: PointElement
+  p1: PointElement,
+  p0DataIndex: number,
+  p1DataIndex: number,
+  datasetIndex: number
 }
 
 export type Scriptable<T, TContext> = T | ((ctx: TContext, options: AnyObject) => T);
@@ -252,6 +255,13 @@ export interface DoughnutControllerDatasetOptions
    * @default 1
    */
   weight: number;
+
+  /**
+   * Similar to the `offset` option, but applies to all arcs. This can be used to to add spaces
+   * between arcs
+   * @default 0
+   */
+  spacing: number;
 }
 
 export interface DoughnutAnimationOptions {
@@ -294,6 +304,12 @@ export interface DoughnutControllerChartOptions {
    */
   rotation: number;
 
+  /**
+   * Spacing between the arcs
+   * @default 0
+   */
+  spacing: number;
+
   animation: DoughnutAnimationOptions;
 }
 
@@ -314,11 +330,16 @@ export const DoughnutController: ChartComponent & {
   new (chart: Chart, datasetIndex: number): DoughnutController;
 };
 
+export interface DoughnutMetaExtensions {
+  total: number;
+}
+
 export type PieControllerDatasetOptions = DoughnutControllerDatasetOptions;
 export type PieControllerChartOptions = DoughnutControllerChartOptions;
 export type PieAnimationOptions = DoughnutAnimationOptions;
 
 export type PieDataPoint = DoughnutDataPoint;
+export type PieMetaExtensions = DoughnutMetaExtensions;
 
 export type PieController = DoughnutController
 export const PieController: ChartComponent & {
@@ -356,10 +377,8 @@ export const PolarAreaController: ChartComponent & {
 
 export interface RadarControllerDatasetOptions
   extends ControllerDatasetOptions,
-    ScriptableOptions<PointPrefixedOptions, ScriptableContext<'radar'>>,
-    ScriptableOptions<PointPrefixedHoverOptions, ScriptableContext<'radar'>>,
-    ScriptableOptions<LineOptions, ScriptableContext<'radar'>>,
-    ScriptableOptions<LineHoverOptions, ScriptableContext<'radar'>>,
+    ScriptableAndArrayOptions<PointOptions & PointHoverOptions & PointPrefixedOptions & PointPrefixedHoverOptions, ScriptableContext<'radar'>>,
+    ScriptableAndArrayOptions<LineOptions & LineHoverOptions, ScriptableContext<'radar'>>,
     AnimationOptions<'radar'> {
         /**
    * The ID of the x axis to plot this dataset on.
@@ -388,7 +407,7 @@ export const RadarController: ChartComponent & {
   prototype: RadarController;
   new (chart: Chart, datasetIndex: number): RadarController;
 };
-export interface ChartMeta<TElement extends Element = Element, TDatasetElement extends Element = Element> {
+interface ChartMetaCommon<TElement extends Element = Element, TDatasetElement extends Element = Element> {
   type: string;
   controller: DatasetController;
   order: number;
@@ -423,6 +442,16 @@ export interface ChartMeta<TElement extends Element = Element, TDatasetElement e
   _parsed: unknown[];
 }
 
+export type ChartMeta<
+  TElement extends Element = Element,
+  TDatasetElement extends Element = Element,
+  // TODO - V4, move this to the first parameter.
+  // When this was introduced, doing so was a breaking change
+  TType extends ChartType = ChartType,
+> = DeepPartial<
+  { [key in ChartType]: ChartTypeRegistry[key]['metaExtensions'] }[TType]
+> & ChartMetaCommon<TElement, TDatasetElement>;
+
 export interface ActiveDataPoint {
   datasetIndex: number;
   index: number;
@@ -451,6 +480,8 @@ export declare class Chart<
   readonly scales: { [key: string]: Scale };
   readonly attached: boolean;
 
+  readonly tooltip?: TooltipModel<TType>; // Only available if tooltip plugin is registered and enabled
+
   data: ChartData<TType, TData, TLabel>;
   options: ChartOptions<TType>;
 
@@ -477,8 +508,8 @@ export declare class Chart<
   setDatasetVisibility(datasetIndex: number, visible: boolean): void;
   toggleDataVisibility(index: number): void;
   getDataVisibility(index: number): boolean;
-  hide(datasetIndex: number): void;
-  show(datasetIndex: number): void;
+  hide(datasetIndex: number, dataIndex?: number): void;
+  show(datasetIndex: number, dataIndex?: number): void;
 
   getActiveElements(): ActiveElement[];
   setActiveElements(active: ActiveDataPoint[]): void;
@@ -534,7 +565,7 @@ export class DatasetController<
 
   readonly chart: Chart;
   readonly index: number;
-  readonly _cachedMeta: ChartMeta<TElement, TDatasetElement>;
+  readonly _cachedMeta: ChartMeta<TElement, TDatasetElement, TType>;
   enableOptionSharing: boolean;
 
   linkScales(): void;
@@ -547,7 +578,7 @@ export class DatasetController<
   draw(): void;
   reset(): void;
   getDataset(): ChartDataset;
-  getMeta(): ChartMeta<TElement, TDatasetElement>;
+  getMeta(): ChartMeta<TElement, TDatasetElement, TType>;
   getScaleForId(scaleID: string): Scale | undefined;
   configure(): void;
   initialize(): void;
@@ -583,9 +614,9 @@ export class DatasetController<
   setHoverStyle(element: TElement, datasetIndex: number, index: number): void;
 
   parse(start: number, count: number): void;
-  protected parsePrimitiveData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
-  protected parseArrayData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
-  protected parseObjectData(meta: ChartMeta<TElement, TDatasetElement>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parsePrimitiveData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parseArrayData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
+  protected parseObjectData(meta: ChartMeta<TElement, TDatasetElement, TType>, data: AnyObject[], start: number, count: number): AnyObject[];
   protected getParsed(index: number): TParsedData;
   protected applyStack(scale: Scale, parsed: unknown[]): number;
   protected updateRangeFromParsed(
@@ -1124,11 +1155,11 @@ export interface CoreScaleOptions {
   /**
    * Callback that runs before tick rotation is determined.
    */
-  beforeCalculateTickRotation(axis: Scale): void;
+  beforeCalculateLabelRotation(axis: Scale): void;
   /**
    * Callback that runs after tick rotation is determined.
    */
-  afterCalculateTickRotation(axis: Scale): void;
+  afterCalculateLabelRotation(axis: Scale): void;
   /**
    * Callback that runs before the scale fits to the canvas.
    */
@@ -1143,7 +1174,7 @@ export interface CoreScaleOptions {
   afterUpdate(axis: Scale): void;
 }
 
-export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element<{}, O>, LayoutItem {
+export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends Element<unknown, O>, LayoutItem {
   readonly id: string;
   readonly type: string;
   readonly ctx: CanvasRenderingContext2D;
@@ -1206,7 +1237,7 @@ export interface Scale<O extends CoreScaleOptions = CoreScaleOptions> extends El
    * @param {number} [index]
    * @return {number}
    */
-  getPixelForValue(value: number, index: number): number;
+  getPixelForValue(value: number, index?: number): number;
 
   /**
    * Used to get the data value from a given pixel. This is the inverse of getPixelForValue
@@ -1264,6 +1295,14 @@ export interface ScriptableScaleContext {
   index: number;
   tick: Tick;
 }
+
+export interface ScriptableScalePointLabelContext {
+  chart: Chart;
+  scale: Scale;
+  index: number;
+  label: string;
+}
+
 
 export const Ticks: {
   formatters: {
@@ -1391,6 +1430,11 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * @default true
    */
   maintainAspectRatio: boolean;
+  /**
+   * Delay the resize update by give amount of milliseconds. This can ease the resize process by debouncing update of the elements.
+   * @default 0
+   */
+  resizeDelay: number;
 
   /**
    * Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Note that this option is ignored if the height is explicitly defined either as attribute or via the style.
@@ -1423,7 +1467,20 @@ export interface CoreChartOptions<TType extends ChartType> extends ParsingOption
    * The events option defines the browser events that the chart should listen to for tooltips and hovering.
    * @default ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove']
    */
-  events: ('mousemove' | 'mouseout' | 'click' | 'touchstart' | 'touchmove')[];
+  events: (
+    'mousemove' |
+    'mouseout' |
+    'click' |
+    'touchstart' |
+    'touchmove' |
+    'touchend' |
+    'pointerenter' |
+    'pointerdown' |
+    'pointermove' |
+    'pointerup' |
+    'pointerleave' |
+    'pointerout'
+  )[];
 
   /**
    * Called when any of the events fire. Passed the event, an array of active elements (bars, points, etc), and the chart.
@@ -1574,7 +1631,7 @@ export interface FontSpec {
 export type TextAlign = 'left' | 'center' | 'right';
 
 export interface VisualElement {
-  draw(ctx: CanvasRenderingContext2D): void;
+  draw(ctx: CanvasRenderingContext2D, area?: ChartArea): void;
   inRange(mouseX: number, mouseY: number, useFinalPosition?: boolean): boolean;
   inXRange(mouseX: number, useFinalPosition?: boolean): boolean;
   inYRange(mouseY: number, useFinalPosition?: boolean): boolean;
@@ -1646,7 +1703,9 @@ export const ArcElement: ChartComponent & {
   new (cfg: AnyObject): ArcElement;
 };
 
-export interface LineProps {}
+export interface LineProps {
+  points: Point[]
+}
 
 export interface LineOptions extends CommonElementOptions {
   /**
@@ -1689,6 +1748,10 @@ export interface LineOptions extends CommonElementOptions {
    * @default false
    */
   stepped: 'before' | 'after' | 'middle' | boolean;
+  /**
+   * Both line and radar charts support a fill option on the dataset object which can be used to create area between two datasets or a dataset and a boundary, i.e. the scale origin, start or end
+   */
+  fill: FillTarget | ComplexFillTarget;
 
   segment: {
     backgroundColor: Scriptable<Color|undefined, ScriptableLineSegmentContext>,
@@ -1961,6 +2024,7 @@ export const enum DecimationAlgorithm {
 }
 interface BaseDecimationOptions {
   enabled: boolean;
+  threshold?: number;
 }
 
 interface LttbDecimationOptions extends BaseDecimationOptions {
@@ -1980,7 +2044,7 @@ export interface FillerOptions {
   propagate: boolean;
 }
 
-export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | boolean;
+export type FillTarget = number | string | { value: number } | 'start' | 'end' | 'origin' | 'stack' | 'shape' | boolean;
 
 export interface ComplexFillTarget {
   /**
@@ -2089,9 +2153,14 @@ export interface LegendItem {
   textAlign?: TextAlign;
 }
 
-export interface LegendElement extends Element, LayoutItem {}
+export interface LegendElement<TType extends ChartType> extends Element<AnyObject, LegendOptions<TType>>, LayoutItem {
+  chart: Chart<TType>;
+  ctx: CanvasRenderingContext2D;
+  legendItems?: LegendItem[];
+  options: LegendOptions<TType>;
+}
 
-export interface LegendOptions {
+export interface LegendOptions<TType extends ChartType> {
   /**
    * Is the legend shown?
    * @default true
@@ -2108,6 +2177,14 @@ export interface LegendOptions {
    */
   align: 'start' | 'center' | 'end';
   /**
+   * Maximum height of the legend, in pixels
+   */
+  maxHeight: number;
+  /**
+   * Maximum width of the legend, in pixels
+   */
+  maxWidth: number;
+  /**
    * Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
    * @default true
    */
@@ -2120,15 +2197,15 @@ export interface LegendOptions {
   /**
    * A callback that is called when a click event is registered on a label item.
    */
-  onClick(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
+  onClick(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
   /**
    * A callback that is called when a 'mousemove' event is registered on top of a label item
    */
-  onHover(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
+  onHover(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
   /**
    * A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item.
    */
-  onLeave(this: LegendElement, e: ChartEvent, legendItem: LegendItem, legend: LegendElement): void;
+  onLeave(this: LegendElement<TType>, e: ChartEvent, legendItem: LegendItem, legend: LegendElement<TType>): void;
 
   labels: {
     /**
@@ -2187,6 +2264,15 @@ export interface LegendOptions {
      */
     usePointStyle: boolean;
   };
+  /**
+   * true for rendering the legends from right to left.
+   */
+  rtl: boolean;
+  /**
+   * This will force the text direction 'rtl' or 'ltr' on the canvas for rendering the legend, regardless of the css specified on the canvas
+   * @default canvas' default
+   */
+  textDirection: string;
 
   title: {
     /**
@@ -2212,6 +2298,7 @@ export interface LegendOptions {
   };
 }
 
+export const SubTitle: Plugin;
 export const Title: Plugin;
 
 export interface TitleOptions {
@@ -2397,7 +2484,7 @@ export interface ScriptableTooltipContext<TType extends ChartType> {
   tooltipItems: TooltipItem<TType>[];
 }
 
-export interface TooltipOptions<TType extends ChartType> extends CoreInteractionOptions {
+export interface TooltipOptions<TType extends ChartType = ChartType> extends CoreInteractionOptions {
   /**
    * Are on-canvas tooltips enabled?
    * @default true
@@ -2421,9 +2508,9 @@ export interface TooltipOptions<TType extends ChartType> extends CoreInteraction
   /**
    * Sort tooltip items.
    */
-  itemSort: (a: TooltipItem<ChartType>, b: TooltipItem<ChartType>, data: ChartData) => number;
+  itemSort: (a: TooltipItem<TType>, b: TooltipItem<TType>, data: ChartData) => number;
 
-  filter: (e: TooltipItem<ChartType>, index: number, array: TooltipItem<ChartType>[], data: ChartData) => boolean;
+  filter: (e: TooltipItem<TType>, index: number, array: TooltipItem<TType>[], data: ChartData) => boolean;
 
   /**
    * Background color of the tooltip.
@@ -2600,7 +2687,7 @@ export interface TooltipItem<TType extends ChartType> {
   /**
    * The dataset the item comes from
    */
-  dataset: ChartDataset;
+  dataset: UnionToIntersection<ChartDataset<TType>>;
 
   /**
    * Index of the dataset the item comes from
@@ -2621,7 +2708,8 @@ export interface TooltipItem<TType extends ChartType> {
 export interface PluginOptionsByType<TType extends ChartType> {
   decimation: DecimationOptions;
   filler: FillerOptions;
-  legend: LegendOptions;
+  legend: LegendOptions<TType>;
+  subtitle: TitleOptions;
   title: TitleOptions;
   tooltip: TooltipOptions<TType>;
 }
@@ -2693,6 +2781,10 @@ export interface GridLineOptions {
    * @default false
    */
   offset: boolean;
+  /**
+   * @default 0
+   */
+  z: number;
 }
 
 export interface TickOptions {
@@ -2761,9 +2853,30 @@ export interface TickOptions {
 
 export interface CartesianScaleOptions extends CoreScaleOptions {
   /**
+   * Scale boundary strategy (bypassed by min/max time options)
+   * - `data`: make sure data are fully visible, ticks outside are removed
+   * - `ticks`: make sure ticks are fully visible, data outside are truncated
+   * @since 2.7.0
+   * @default 'ticks'
+   */
+  bounds: 'ticks' | 'data';
+
+  /**
    * Position of the axis.
    */
   position: 'left' | 'top' | 'right' | 'bottom' | 'center' | { [scale: string]: number };
+
+  /**
+   * Stack group. Axes at the same `position` with same `stack` are stacked.
+   */
+  stack?: string;
+
+  /**
+   * Weight of the scale in stack group. Used to determine the amount of allocated space for the scale within the group.
+   * @default 1
+   */
+  stackWeight?: number;
+
   /**
    *   Which type of axis this is. Possible values are: 'x', 'y'. If not set, this is inferred from the first character of the ID which should be 'x' or 'y'.
    */
@@ -2792,7 +2905,7 @@ export interface CartesianScaleOptions extends CoreScaleOptions {
     text: string | string[];
     color: Color;
     font: FontSpec;
-    padding: {
+    padding: number | {
       top: number;
       bottom: number;
     };
@@ -2991,7 +3104,7 @@ export type TimeScaleOptions = CartesianScaleOptions & {
      * If `number`, the index of the first day of the week (0 - Sunday, 6 - Saturday).
      * @default false
      */
-    isoWeekday: false | number;
+    isoWeekday: boolean | number;
     /**
      * Sets how different time units are displayed.
      */
@@ -3104,12 +3217,12 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Background color of the point label.
      * @default undefined
      */
-    backdropColor: Scriptable<Color, ScriptableScaleContext>;
+    backdropColor: Scriptable<Color, ScriptableScalePointLabelContext>;
     /**
      * Padding of label backdrop.
      * @default 2
      */
-    backdropPadding: Scriptable<number | ChartArea, ScriptableScaleContext>;
+    backdropPadding: Scriptable<number | ChartArea, ScriptableScalePointLabelContext>;
 
     /**
      * if true, point labels are shown.
@@ -3120,10 +3233,10 @@ export type RadialLinearScaleOptions = CoreScaleOptions & {
      * Color of label
      * @see Defaults.color
      */
-    color: Scriptable<Color, ScriptableScaleContext>;
+    color: Scriptable<Color, ScriptableScalePointLabelContext>;
     /**
      */
-    font: Scriptable<FontSpec, ScriptableScaleContext>;
+    font: Scriptable<FontSpec, ScriptableScalePointLabelContext>;
 
     /**
      * Callback function to transform data labels to point labels. The default implementation simply returns the current string.
@@ -3253,6 +3366,7 @@ export interface ChartTypeRegistry {
     chartOptions: BarControllerChartOptions;
     datasetOptions: BarControllerDatasetOptions;
     defaultDataPoint: number;
+    metaExtensions: {};
     parsedDataType: BarParsedData,
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3260,6 +3374,7 @@ export interface ChartTypeRegistry {
     chartOptions: LineControllerChartOptions;
     datasetOptions: LineControllerDatasetOptions & FillerControllerDatasetOptions;
     defaultDataPoint: ScatterDataPoint | number | null;
+    metaExtensions: {};
     parsedDataType: CartesianParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3267,6 +3382,7 @@ export interface ChartTypeRegistry {
     chartOptions: ScatterControllerChartOptions;
     datasetOptions: ScatterControllerDatasetOptions;
     defaultDataPoint: ScatterDataPoint | number | null;
+    metaExtensions: {};
     parsedDataType: CartesianParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3274,6 +3390,7 @@ export interface ChartTypeRegistry {
     chartOptions: unknown;
     datasetOptions: BubbleControllerDatasetOptions;
     defaultDataPoint: BubbleDataPoint;
+    metaExtensions: {};
     parsedDataType: BubbleParsedData;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3281,6 +3398,7 @@ export interface ChartTypeRegistry {
     chartOptions: PieControllerChartOptions;
     datasetOptions: PieControllerDatasetOptions;
     defaultDataPoint: PieDataPoint;
+    metaExtensions: PieMetaExtensions;
     parsedDataType: number;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3288,6 +3406,7 @@ export interface ChartTypeRegistry {
     chartOptions: DoughnutControllerChartOptions;
     datasetOptions: DoughnutControllerDatasetOptions;
     defaultDataPoint: DoughnutDataPoint;
+    metaExtensions: DoughnutMetaExtensions;
     parsedDataType: number;
     scales: keyof CartesianScaleTypeRegistry;
   };
@@ -3295,13 +3414,15 @@ export interface ChartTypeRegistry {
     chartOptions: PolarAreaControllerChartOptions;
     datasetOptions: PolarAreaControllerDatasetOptions;
     defaultDataPoint: number;
+    metaExtensions: {};
     parsedDataType: RadialParsedData;
     scales: keyof RadialScaleTypeRegistry;
   };
   radar: {
     chartOptions: RadarControllerChartOptions;
-    datasetOptions: RadarControllerDatasetOptions;
+    datasetOptions: RadarControllerDatasetOptions & FillerControllerDatasetOptions;
     defaultDataPoint: number | null;
+    metaExtensions: {};
     parsedDataType: RadialParsedData;
     scales: keyof RadialScaleTypeRegistry;
   };

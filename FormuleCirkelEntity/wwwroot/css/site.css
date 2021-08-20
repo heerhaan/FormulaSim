@@ -263,6 +263,14 @@ dl.inline-flex {
     margin-right: 2.5%;
 }
 
+.text-left {
+    text-align: left;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
 .table-counter {
     counter-reset: rowNumber;
 }

@@ -370,7 +370,7 @@
 
     function drawRaceChart(res) {
         var ctx = document.getElementById('raceChart');
-        ctx.height = 250;
+        ctx.height = 900;
         ctx.getContext('2d');
         var driversets = [];
 
@@ -406,17 +406,17 @@
             stintlabels.push(stringstint);
         }
 
-        Chart.pluginService.register({
-            beforeDraw: function (chart, easing) {
+        var raceChartPlugin = {
+            beforeDraw: function (chart, args, options) {
             if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
-                    var ctx = chart.chart.ctx;
+                    var ctx = chart.ctx;
                     ctx.save();
                     ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
-                    ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
+                    ctx.fillRect(0, 0, chart.width, chart.height);
                     ctx.restore();
                 }
             }
-        });
+        };
 
         let chart = new Chart(ctx, {
             type: 'line',
@@ -437,7 +437,7 @@
                     //mode: null
                 },
                 scales: {
-                    xAxes: [{
+                    xAxes: {
                         scaleLabel: {
                             display: true,
                             labelString: 'Stints',
@@ -446,7 +446,7 @@
                         ticks: {
                             fontColor: '#e6e6e6'
                         }
-                    }],
+                    },
                     yAxes: [{
                         display: true,
                         scaleLabel: {
@@ -455,7 +455,7 @@
                             fontColor: '#e6e6e6'
                         },
                         ticks: {
-                            reverse: true,
+                            //reverse: true,
                             min: 1,
                             max: @Model.CountDrivers,
                             fontColor: '#e6e6e6'

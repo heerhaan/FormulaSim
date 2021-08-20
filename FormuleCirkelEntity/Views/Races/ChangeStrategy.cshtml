@@ -23,7 +23,7 @@
                         {
                             <span class="custom-badge" style="background-color:@tyre.Tyre.TyreColour;">
                                 S@(tyre.StintNumberApplied) - @tyre.Tyre.TyreName
-                            </span>                        
+                            </span>
                         }
                     </td>
                     <td>
@@ -38,4 +38,7 @@
             }
         </tbody>
     </table>
+    <a class="btn float-lg-start" asp-action="RaceWeekend" asp-route-raceId="@ViewBag.raceId">
+        <i class="fas fa-arrow-alt-circle-left"></i> Back
+    </a>
 </div>
