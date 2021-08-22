@@ -15,7 +15,6 @@ For complete information visit: www.freakflagsprite.com
     position: relative;
     vertical-align: middle;
     box-sizing: content-box;
-    box-shadow: 0 0 0 1px rgb(90,90,90);
 }
 .flag-CH,
 .flag-NP {box-shadow: none!important}

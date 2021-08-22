@@ -16,9 +16,9 @@
     </div>
     <div id="graphic">
         <div class="flex-row justify-content-center mb-1 mt-2">
-            <img src="~/images/formuladreamlogothicc.png" title="Logo" alt="Formula Logo" width="146" height="48" class="mr-auto"/>
+            <img src="~/images/formuladreamlogothicc.png" title="Logo" alt="Formula Logo" width="146" height="48" class="mr-auto" />
             <h2 class="alt-header">
-                <span class="flag flag-@(Model.RaceFlag) ff-lg flag-margin"></span>
+                <span class="flag flag-@(Model.RaceFlag) ff-md flag-margin"></span>
                 @Html.DisplayFor(model => model.FullRaceTitle)
             </h2>
             <i id="weather" class="ml-auto mt-auto mb-auto fas"></i>
@@ -66,15 +66,24 @@
                                 <i class='fas fa-minus' style='color:yellow;font-size:0.7rem;'></i><span class='alt-font ml-1'>@gridChange</span>
                             }
                         </td>
-                        <td data-field="driverNumber"><span class="custom-badge badge-team fullwidth" 
-                                                            style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
-                            @driverResult.SeasonDriver.Driver.DriverNumber</span></td>
-                        <td data-field="driverName" class="text-left primary-force"><span class="ml-cel result-click" style="cursor:pointer;"><span data-field="driverFlag" class="flag flag-@(driverResult.SeasonDriver.Driver.Country) ff-sm flag-margin"></span>
-                            @driverResult.SeasonDriver.Driver.Name
-                              </span></td>
-                        <td data-field="teamName"><span class="custom-badge badge-team fullwidth" 
-                                                        style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
-                            @driverResult.SeasonDriver.SeasonTeam.Name</span></td>
+                        <td data-field="driverNumber">
+                            <span class="custom-badge badge-team badge-number fullwidth"
+                                  style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
+                                @driverResult.SeasonDriver.Driver.DriverNumber
+                            </span>
+                        </td>
+                        <td data-field="driverName" class="text-left primary-force">
+                            <span class="ml-cel result-click" style="cursor:pointer;">
+                                <span data-field="driverFlag" class="flag flag-@(driverResult.SeasonDriver.Driver.Country) ff-sm flag-margin"></span>
+                                @driverResult.SeasonDriver.Driver.Name
+                            </span>
+                        </td>
+                        <td data-field="teamName">
+                            <span class="custom-badge badge-team fullwidth"
+                                  style="background-color:@(driverResult.SeasonDriver.SeasonTeam.Colour);color:@(driverResult.SeasonDriver.SeasonTeam.Accent);border-color:@(driverResult.SeasonDriver.SeasonTeam.Accent);">
+                                @driverResult.SeasonDriver.SeasonTeam.Name
+                            </span>
+                        </td>
                         <td data-field="pwr" class="secondary-force"><b class="alt-font">@(Model.Power[driverResult.Position - 1])</b></td>
                         <td data-field="tyre">
                             <span class="custom-badge fullwidth" style="background-color:@driverResult.CurrTyre.TyreColour;">
@@ -389,9 +398,9 @@
                 label: driverValue.SeasonDriver.Driver.Name,
                 backgroundColor: driverValue.SeasonDriver.SeasonTeam.Accent,
                 borderColor: driverValue.SeasonDriver.SeasonTeam.Colour,
-                data: stintresults,
-                fill: false,
-                teamName: driverValue.SeasonDriver.SeasonTeam.Team.Name
+                data: stintresults
+                //fill: false,
+                //teamName: driverValue.SeasonDriver.SeasonTeam.Team.Name
             };
             if (driversets.some(d => d.backgroundColor === driverValue.SeasonDriver.SeasonTeam.Accent && d.borderColor === driverValue.SeasonDriver.SeasonTeam.Colour)) {
                 driverDataset.borderDash = [5, 5];
@@ -406,15 +415,14 @@
             stintlabels.push(stringstint);
         }
 
-        var raceChartPlugin = {
-            beforeDraw: function (chart, args, options) {
-            if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
-                    var ctx = chart.ctx;
-                    ctx.save();
-                    ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
-                    ctx.fillRect(0, 0, chart.width, chart.height);
-                    ctx.restore();
-                }
+        const chartBackgroundFiller = {
+            beforeDraw: (chart) => {
+                const ctx = chart.canvas.getContext('2d');
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = bodystyle.backgroundColor;
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
             }
         };
 
@@ -424,58 +432,57 @@
                 labels: stintlabels,
                 datasets: driversets
             },
+            plugins: [chartBackgroundFiller],
             options: {
-                title: {
-                    display: true,
-                    text: '@Model.FullRaceTitle',
-                    fontColor: '#e6e6e6'
-                },
-                tooltips: {
-                    //enabled: false
-                },
-                hover: {
-                    //mode: null
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '@Model.FullRaceTitle',
+                        fontColor: '#e6e6e6'
+                    },
                 },
                 scales: {
                     xAxes: {
-                        scaleLabel: {
+                        display: true,
+                        title: {
                             display: true,
-                            labelString: 'Stints',
+                            text: 'Stints',
                             fontColor: '#e6e6e6'
                         },
                         ticks: {
                             fontColor: '#e6e6e6'
                         }
                     },
-                    yAxes: [{
+                    yAxeL: {
                         display: true,
-                        scaleLabel: {
+                        title: {
                             display: true,
-                            labelString: 'Position',
+                            text: 'Position',
                             fontColor: '#e6e6e6'
                         },
                         ticks: {
-                            //reverse: true,
-                            min: 1,
-                            max: @Model.CountDrivers,
                             fontColor: '#e6e6e6'
                         },
-                        position: 'left'
-                    }, {
+                        position: 'left',
+                        max: @Model.CountDrivers,
+                        min: 1,
+                        reverse: true
+                    },
+                    yAxeR: {
                         display: true,
-                        scaleLabel: {
+                        title: {
                             display: true,
-                            labelString: 'Position',
+                            text: 'Position',
                             fontColor: '#e6e6e6'
                         },
                         ticks: {
-                            reverse: true,
-                            min: 1,
-                            max: @Model.CountDrivers,
                             fontColor: '#e6e6e6'
                         },
-                        position: 'right'
-                        }]
+                        position: 'right',
+                        max: @Model.CountDrivers,
+                        min: 1,
+                        reverse: true
+                    },
                 },
                 elements: {
                     line: {
@@ -488,9 +495,6 @@
                         fontSize: 13,
                         fontColor: '#e6e6e6'
                     }
-                },
-                chartCanvas: {
-                    backgroundColor: bodystyle.backgroundColor
                 }
             }
         });

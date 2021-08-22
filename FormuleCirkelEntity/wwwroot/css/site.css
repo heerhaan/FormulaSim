@@ -258,6 +258,11 @@ dl.inline-flex {
     width: auto !important;
 }
 
+.single-line {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .m-sides {
     margin-left: 2.5%;
     margin-right: 2.5%;
@@ -267,8 +272,28 @@ dl.inline-flex {
     text-align: left;
 }
 
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
 .ml-auto {
     margin-left: auto;
+}
+
+.mr-auto {
+    margin-right: auto;
+}
+
+.ml-1 {
+    margin-left: 0.25rem;
+}
+
+.mr-1 {
+    margin-right: 0.25rem;
 }
 
 .table-counter {
@@ -305,6 +330,10 @@ dl.inline-flex {
 /* Modifications for the Bootstrap badges */
 .badge-team {
     border: 1px solid white;
+}
+
+.badge-number {
+    max-width: 2.5em;
 }
 
 .badge-first {

@@ -8,7 +8,7 @@
 
 <div class="d-inline-block">
     <div id="graphic" class="text-left">
-        <h1>Preview of the @Html.DisplayFor(model => model.Race.Name) GP</h1>
+        <h1 class="text-md-center">Preview of the @Html.DisplayFor(model => model.Race.Name) GP</h1>
 
         <div class="mt-4">
             <dl class="flex-row text-left">
@@ -69,7 +69,7 @@
                         <ul class="text-left" style="line-height: 150%;">
                             @foreach (var strategy in Model.Strategies)
                             {
-                                <li>
+                                <li class="single-line">
                                     @foreach (var tyre in strategy.Tyres)
                                     {
                                         <span class="custom-badge" style="background-color:@(tyre.Tyre.TyreColour)">
