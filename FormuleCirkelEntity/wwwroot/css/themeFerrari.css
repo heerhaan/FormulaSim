@@ -70,7 +70,6 @@
 .btn {
     background-color: rgb(32, 32, 32);
     color: white;
-    border-color: rgb(0, 0, 0);
 }
     .btn:hover {
         background-color: rgb(255, 0, 0);

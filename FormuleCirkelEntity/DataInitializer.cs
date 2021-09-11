@@ -14,7 +14,6 @@ namespace FormuleCirkelEntity
     {
         void Initialize();
         void SeedData();
-        void SeedIdentity(UserManager<SimUser> userManager, RoleManager<IdentityRole> roleManager);
     }
 
     public class DataInitializer : IDataInitializer
@@ -52,44 +51,32 @@ namespace FormuleCirkelEntity
             }
         }
 
-        public void SeedIdentity(UserManager<SimUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task SeedIdentity(UserManager<SimUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             // Create the default Identity roles
-            if (!roleManager.RoleExistsAsync("Admin").Result)
-            {
-                var role = new IdentityRole
-                {
-                    Name = "Admin"
-                };
-                _ = roleManager.CreateAsync(role).Result;
-            }
-            if (!roleManager.RoleExistsAsync("Member").Result)
-            {
-                var role = new IdentityRole
-                {
-                    Name = "Member"
-                };
-                _ = roleManager.CreateAsync(role).Result;
-            }
-            if (!roleManager.RoleExistsAsync("Guest").Result)
-            {
-                var role = new IdentityRole
-                {
-                    Name = "Guest"
-                };
-                _ = roleManager.CreateAsync(role).Result;
-            }
+            string[] defaultRoles = new string[] { "Admin", "Member", "Guest" };
+            foreach (var elem in defaultRoles) { await AddRoleToIdentity(elem, roleManager); }
+
             // Create a default admin user
             if (!userManager.Users.Any())
             {
-                var user = new SimUser();
-                user.UserName = "admin";
-                var res = userManager.CreateAsync(user, "password").Result;
+                var user = new SimUser { UserName = "admin" };
+                var result = await userManager.CreateAsync(user, "password");
 
-                if (res.Succeeded)
+                if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user, "Admin").Wait();
+                    await userManager.AddToRoleAsync(user, "Admin");
                 }
+            }
+        }
+
+        private static async Task AddRoleToIdentity(string roleName, RoleManager<IdentityRole> roleManager)
+        {
+            var roleExists = await roleManager.RoleExistsAsync(roleName);
+            if (!roleExists)
+            {
+                var newRole = new IdentityRole { Name = roleName };
+                _ = await roleManager.CreateAsync(newRole);
             }
         }
 

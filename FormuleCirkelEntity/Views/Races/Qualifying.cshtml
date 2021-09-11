@@ -13,13 +13,17 @@
         <label for="two-run-check">2-run</label>
     </div>
 
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-q1-tab" data-toggle="tab" href="#nav-q1" role="tab" aria-controls="nav-q1" aria-selected="true">Q1</a>
-            <a class="nav-item nav-link" id="nav-q2-tab" data-toggle="tab" href="#nav-q2" role="tab" aria-controls="nav-q2" aria-selected="true">Q2</a>
-            <a class="nav-item nav-link" id="nav-q3-tab" data-toggle="tab" href="#nav-q3" role="tab" aria-controls="nav-q3" aria-selected="true">Q3</a>
-        </div>
-    </nav>
+    <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="nav-q1-tab" data-bs-toggle="tab" data-bs-target="#nav-q1" role="tab" aria-controls="nav-q1" aria-selected="true">Q1</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="nav-q2-tab" data-bs-toggle="tab" data-bs-target="#nav-q2" role="tab" aria-controls="nav-q2" aria-selected="false">Q2</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="nav-q3-tab" data-bs-toggle="tab" data-bs-target="#nav-q3" role="tab" aria-controls="nav-q3" aria-selected="false">Q3</button>
+        </li>
+    </ul>
 
     <div class="tab-content" id="nav-tabContent">
         <div class="tab-pane fade show active" id="nav-q1" role="tabpanel" aria-labelledby="nav-q1-tab">
@@ -65,7 +69,7 @@
                 </thead>
                 <tbody id="q3table"></tbody>
             </table>
-            <button class="btn float-right" onclick="takeScreenshot('#graphic3', '.screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+            <button class="btn float-right" onclick="takeScreenshot('#graphic3', '.screenshot')" data-bs-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
                 <i class="fas fa-image fa-2x"></i>
             </button>
         </div>
@@ -76,7 +80,7 @@
     <button id="generateq3" class="btn fullborder float-left w-25">Start Q3!</button>
 
     <form asp-action="Return" asp-route-seasonId="@(race.SeasonId)" asp-route-raceId="@(race.RaceId)" id="return">
-        <div class="form-group">
+        <div class="form-element">
             <input type="submit" value="Finish!" class="btn fullborder float-left w-25" />
         </div>
     </form>

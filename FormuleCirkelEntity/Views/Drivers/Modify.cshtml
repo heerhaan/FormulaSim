@@ -13,32 +13,32 @@
     <div class="fullwidth">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="DriverNumber" class="control-label float-left">Number</label>
                 <input asp-for="DriverNumber" class="form-control" />
                 <span asp-validation-for="DriverNumber" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Name" class="control-label float-left"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Abbreviation" class="control-label float-left"></label>
                 <input asp-for="Abbreviation" class="form-control" />
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="DateOfBirth" class="control-label float-left">Date of Birth</label>
                 <input asp-for="DateOfBirth" type="date" class="form-control" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Country" class="control-label float-left">Country of origin</label>
                 <select asp-for="Country" name="country"></select>
                 <span asp-validation-for="Country" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <input type="submit" value="Save" class="btn fullwidth fullborder" />
             </div>
         </form>

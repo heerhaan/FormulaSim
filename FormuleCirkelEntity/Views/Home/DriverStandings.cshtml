@@ -189,21 +189,35 @@
             roundlabels.push(roundlabel);
         }
 
-        var chart = new Chart(ctx, {
+        const chartBackgroundFiller = {
+            beforeDraw: (chart) => {
+                const ctx = chart.canvas.getContext('2d');
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = bodystyle.backgroundColor;
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
+            }
+        };
+
+        let chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: roundlabels,
                 datasets: driversets
             },
+            plugins: [chartBackgroundFiller],
             options: {
-                title: {
-                    display: true,
-                    text: 'World Driver Championship',
-                    fontColor: '#e6e6e6'
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'World Driver Championship',
+                        fontColor: '#e6e6e6'
+                    }
                 },
                 scales: {
-                    xAxes: [{
-                        scaleLabel: {
+                    xAxes: {
+                        title: {
                             display: true,
                             labelString: 'Rounds',
                             fontColor: '#e6e6e6'
@@ -214,10 +228,10 @@
                         gridLines: {
                             color: "rgba(0, 0, 0, 0.7)",
                         }
-                    }],
-                    yAxes: [{
+                    },
+                    yAxes: {
                         display: true,
-                        scaleLabel: {
+                        title: {
                             display: true,
                             labelString: 'Points',
                             fontColor: '#e6e6e6'
@@ -229,7 +243,7 @@
                             color: "rgba(0, 0, 0, 0.7)",
                         },
                         position: 'right'
-                    }]
+                    },
                 },
                 elements: {
                     line: {
@@ -242,23 +256,8 @@
                         fontSize: 13,
                         fontColor: '#e6e6e6'
                     }
-                },
-                chartCanvas: {
-                    backgroundColor: bodystyle.backgroundColor
                 }
             }
-        });
-
-        Chart.pluginService.register({
-            beforeDraw: function (chart, easing) {
-                // Makes it possible to give a backgroundcolor to the canvas
-            if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
-                var ctx = chart.chart.ctx;
-                ctx.save();
-                ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
-                ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
-                ctx.restore();
-            }}
         });
 
         let legends = chart.legend.legendItems;

@@ -80,9 +80,14 @@
             </tbody>
         </table>
     </div>
-    <button class="btn float-left" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
-        <i class="fas fa-image fa-2x"></i>
-    </button>
+    <div class="flex-row justify-content-between">
+        <a class="btn" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
+        </a>
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+            <i class="fas fa-image fa-2x"></i>
+        </button>
+    </div>
 
     <div id="screenshot"></div>
 </div>

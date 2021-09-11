@@ -62,15 +62,15 @@
                             <input type="hidden" name="strategyId" value="@Model.StrategyId" />
                             <input type="hidden" name="tyreId" value="@tyre.Id" />
                             <div class="col">
-                                <div class="form-group flex-row">
+                                <div class="form-element flex-row">
                                     <label class="col-6 mt-auto mb-auto">Applies in stint no.</label>
                                     <input type="number" class="form-control col-6" name="applyNum" value="@(1 + Model.RaceLen)" />
                                 </div>
-                                <div class="form-group flex-row">
+                                <div class="form-element flex-row">
                                     <label class="col-6 mt-auto mb-auto">Racelength of strategy</label>
                                     <input type="number" class="form-control col-6" name="raceLen" value="@(Model.RaceLen + tyre.StintLen)" />
                                 </div>
-                                <div class="form-group">
+                                <div class="form-element">
                                     <input type="submit" class="btn fullborder fullwidth" value="Add" />
                                 </div>
                             </div>

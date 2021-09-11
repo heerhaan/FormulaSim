@@ -10,7 +10,7 @@
     {
         @Html.ValidationSummary(true)
         @Html.AntiForgeryToken()
-        <div class="form-group">
+        <div class="form-element">
             @Html.TextBoxFor(c => c.ChampionshipId, new { style = "display: none;" })
         </div>
         <div class="col">

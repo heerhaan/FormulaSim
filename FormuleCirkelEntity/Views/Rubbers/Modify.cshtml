@@ -10,37 +10,37 @@
     <div class="fullwidth">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Name" class="control-label float-left"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Colour" class="control-label float-left"></label>
                 <input asp-for="Colour" type="color" class="form-control" />
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Accent" class="control-label float-left"></label>
                 <input asp-for="Accent" type="color" class="form-control" />
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="PaceMod" class="control-label float-left"></label>
                 <input asp-for="PaceMod" class="form-control" />
                 <span asp-validation-for="PaceMod" class="text-danger"></span>
             </div>
             <div class="flex-row justify-content-between">
-                <div class="form-group mr-1">
+                <div class="form-element mr-1">
                     <label asp-for="MaxWearMod" class="control-label float-left"></label>
                     <input asp-for="MaxWearMod" class="form-control" />
                     <span asp-validation-for="MaxWearMod" class="text-danger"></span>
                 </div>
-                <div class="form-group ml-1">
+                <div class="form-element ml-1">
                     <label asp-for="MinWearMod" class="control-label float-left"></label>
                     <input asp-for="MinWearMod" class="form-control" />
                     <span asp-validation-for="MinWearMod" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <input type="submit" value="Save" class="btn fullborder fullwidth" />
             </div>
         </form>

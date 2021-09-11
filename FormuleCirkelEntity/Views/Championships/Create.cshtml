@@ -10,12 +10,12 @@
     <div class="fullwidth">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="ChampionshipName" class="control-label float-left">Championship name</label>
                 <input asp-for="ChampionshipName" class="form-control" />
                 <span asp-validation-for="ChampionshipName" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <input type="submit" value="Save" class="btn fullwidth fullborder" />
             </div>
         </form>

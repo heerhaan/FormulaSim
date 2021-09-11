@@ -751,6 +751,7 @@ namespace FormuleCirkelEntity.Controllers
         [Route("[Controller]/{id}/Driver/Penaltylist/")]
         public async Task<IActionResult> PenaltyList(int id)
         {
+            ViewBag.seasonId = id;
             var drivers = await Context.SeasonDrivers
                 .Include(s => s.DriverResults)
                 .Include(s => s.Driver)

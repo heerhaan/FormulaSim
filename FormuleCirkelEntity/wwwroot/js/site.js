@@ -21,6 +21,31 @@ function takeScreenshot(graphic, imgContainer) {
 	});
 }
 
+// Basic slider creator
+function createSlider(slider, minval, maxval, mininput, maxinput) {
+	noUiSlider.create(slider, {
+		start: [0, 0],
+		connect: true,
+		range: {
+			'min': minval,
+			'max': maxval
+		},
+		step: 1,
+		pips: {
+			mode: 'steps',
+			stepped: true,
+			density: 2
+		},
+		behaviour: 'tap-drag'
+	});
+
+	slider.noUiSlider.on("change", function () {
+		var values = slider.noUiSlider.get();
+		$(`#${mininput}`).val(parseInt(values[0]));
+		$(`#${maxinput}`).val(parseInt(values[1]));
+	});
+}
+
 // Used for development of all values
 function getDev(number) {
 	var element = document.getElementById("old-value-" + number);

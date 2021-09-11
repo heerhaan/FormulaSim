@@ -119,16 +119,16 @@ button.accept-policy {
     line-height: inherit;
 }
 
-ul li {
-    list-style-position: inside;
-}
-
 i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
     opacity: 0.7;
 }
 
 .redirect {
     cursor: pointer;
+}
+
+.form-element {
+    margin-bottom: 0.5em;
 }
 
 /* Home page styling */
