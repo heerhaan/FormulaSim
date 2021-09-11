@@ -48,7 +48,7 @@ namespace FormuleCirkelEntity
                 .AddNewtonsoftJson()
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
 
-            services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:LocalConnectionString"]));
+            services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
             services.AddIdentity<SimUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                     .AddEntityFrameworkStores<FormulaContext>()
                     .AddDefaultTokenProviders();
