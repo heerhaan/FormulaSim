@@ -6,14 +6,24 @@
     int year = ViewBag.year;
 }
 
+<style>
+    .slider-element {
+        margin-left: 1em;
+        margin-bottom: 40px;
+    }
+</style>
+
 <div class="d-inline-block w-60">
     <h1>Driver reliability</h1>
 
-    <div class="flex-row mb-1">
+    <div class="flex-row">
         <div>
-            <button id="develop" class="btn fullborder">Develop</button>
-            <input id="min" class="input-style fullheight" type="number" placeholder="Min. RNG" />
-            <input id="max" class="input-style fullheight" type="number" placeholder="Max. RNG" />
+            <button id="develop" class="btn fullborder">Set dev</button>
+        </div>
+        <div class="slider-element">
+            <div id="dev-slider"></div>
+            <input id="min-rng" type="hidden" />
+            <input id="max-rng" type="hidden" />
         </div>
     </div>
 
@@ -67,12 +77,16 @@
 
 <script>
     $(document).ready(function () {
+        // Creates and handles the slider of the dev
+        var devSlider = document.getElementById("dev-slider");
+        createSlider(devSlider, -3, 3, "min-rng", "max-rng", 0, 0);
+
         $("#save").hide();
 
         $('#develop').click(function () {
             var number = 1;
-            var min = Math.ceil(document.getElementById("min").value);
-            var max = Math.floor(document.getElementById("max").value);
+            var min = Math.ceil(document.getElementById("min-rng").value);
+            var max = Math.floor(document.getElementById("max-rng").value);
             $('#devtable').children('tr').each(function () {
                 var element = document.getElementById("old-value-" + number);
                 var text = element.textContent;

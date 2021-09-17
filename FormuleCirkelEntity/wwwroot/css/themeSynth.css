@@ -82,6 +82,14 @@ i.fas, i.fab, i.far, .link {
     color: rgb(238, 114, 241);
 }
 
+.noUi-connect {
+    background: rgb(232, 9, 154);
+}
+
+.noUi-handle {
+    background-color: rgb(10, 14, 41);
+}
+
 .btn {
     background-color: rgb(10, 14, 41);
     color: white;

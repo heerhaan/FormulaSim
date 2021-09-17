@@ -22,9 +22,9 @@ function takeScreenshot(graphic, imgContainer) {
 }
 
 // Basic slider creator
-function createSlider(slider, minval, maxval, mininput, maxinput) {
+function createSlider(slider, minval, maxval, mininput, maxinput, minDefault, maxDefault) {
 	noUiSlider.create(slider, {
-		start: [0, 0],
+		start: [minDefault ?? 0, maxDefault ?? 0],
 		connect: true,
 		range: {
 			'min': minval,

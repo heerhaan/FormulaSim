@@ -83,6 +83,14 @@ i.fas, i.fab, i.far, .link {
     color: white;
 }
 
+.noUi-connect {
+    background: rgb(189, 33, 48);
+}
+
+.noUi-handle {
+    background-color: rgb(52, 58, 64);
+}
+
 .fullborder {
     border: 1px solid rgb(189, 33, 48) !important;
 }

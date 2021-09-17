@@ -50,26 +50,6 @@
             <div class="w-50">
                 <div class="float-right">
                     <div class="form-element w-75 ml-auto mr-auto">
-                        <label asp-for="MinTyreWear" class="control-label float-left">Minimum wear of the tyre</label>
-                        <input asp-for="MinTyreWear" class="form-control" />
-                        <span asp-validation-for="MinTyreWear" class="text-danger"></span>
-                    </div>
-                    <div class="form-element w-75 ml-auto mr-auto">
-                        <label asp-for="MaxTyreWear" class="control-label float-left">Maximum wear of the tyre</label>
-                        <input asp-for="MaxTyreWear" class="form-control" />
-                        <span asp-validation-for="MaxTyreWear" class="text-danger"></span>
-                    </div>
-                    <div class="form-element w-75 ml-auto mr-auto">
-                        <label asp-for="MaximumRNG" class="control-label float-left">Maximum RNG modifier</label>
-                        <input asp-for="MaximumRNG" class="form-control" />
-                        <span asp-validation-for="MaximumRNG" class="text-danger"></span>
-                    </div>
-                    <div class="form-element w-75 ml-auto mr-auto">
-                        <label asp-for="MinimumRNG" class="control-label float-left">Minimum RNG modifier</label>
-                        <input asp-for="MinimumRNG" class="form-control" />
-                        <span asp-validation-for="MinimumRNG" class="text-danger"></span>
-                    </div>
-                    <div class="form-element w-75 ml-auto mr-auto">
                         <label asp-for="ChassisReliability" class="control-label float-left">Chassis reliability modifier</label>
                         <input asp-for="ChassisReliability" class="form-control" />
                         <span asp-validation-for="ChassisReliability" class="text-danger"></span>
@@ -78,6 +58,18 @@
                         <label asp-for="DriverReliability" class="control-label float-left">Driver reliability modifier</label>
                         <input asp-for="DriverReliability" class="form-control" />
                         <span asp-validation-for="DriverReliability" class="text-danger"></span>
+                    </div>
+                    <div class="form-element slider-element w-75 ml-auto mr-auto">
+                        <label>Tyre wear modifier</label>
+                        <div id="tyre-wear-slider"></div>
+                        <input id="min-tyre-wear" type="hidden" asp-for="MinTyreWear" />
+                        <input id="max-tyre-wear" type="hidden" asp-for="MaxTyreWear" />
+                    </div>
+                    <div class="form-element slider-element w-75 ml-auto mr-auto">
+                        <label>RNG modifier</label>
+                        <div id="rng-slider"></div>
+                        <input id="min-rng" type="hidden" asp-for="MinimumRNG" />
+                        <input id="max-rng" type="hidden" asp-for="MaximumRNG" />
                     </div>
                 </div>
             </div>
@@ -98,3 +90,11 @@
         </a>    
     </div>
 </div>
+
+<script type="text/javascript">
+    var tyreslider = document.getElementById("tyre-wear-slider");
+    createSlider(tyreslider, -5, 5, "min-tyre-wear", "max-tyre-wear", 0, 0);
+
+    var rngslider = document.getElementById("rng-slider");
+    createSlider(rngslider, -10, 10, "min-rng", "max-rng", 0, 0);
+</script>
