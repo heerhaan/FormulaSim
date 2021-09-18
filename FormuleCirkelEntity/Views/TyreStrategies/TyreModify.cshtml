@@ -1,10 +1,17 @@
 ﻿@model FormuleCirkelEntity.Models.Tyre
 
 @{
-    ViewData["Title"] = "Tyre - edit";
+    ViewData["Title"] = "Tyre - Modify";
 }
 <div class="d-inline-block">
-    <h1>Edit tyre - @Html.DisplayFor(model => model.TyreName)</h1>
+    @if (!String.IsNullOrWhiteSpace(Model.TyreName))
+    {
+        <h1>Create tyre</h1>
+    }
+    else
+    {
+        <h1>Edit tyre - @Html.DisplayFor(model => model.TyreName)</h1>
+    }
 
     <div class="fullwidth">
         <form method="post">
