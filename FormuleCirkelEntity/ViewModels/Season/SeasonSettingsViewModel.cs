@@ -12,7 +12,7 @@ namespace FormuleCirkelEntity.ViewModels
             PitMax = -55;
         }
 
-        public SeasonSettingsViewModel(Season season)
+        public SeasonSettingsViewModel(FormuleCirkelEntity.Models.Season season)
         {
             SeasonId = season.SeasonId;
             SeasonNumber = season.SeasonNumber;

@@ -88,8 +88,7 @@ namespace FormuleCirkelEntity.ResultGenerators
                 for (int i = 0; i < appConfig.MistakeAmountRolls; i++)
                 {
                     mistake = GetReliabilityResult(driver.Reliability + weatherDNF + driverResult.DriverRelMod) == -1;
-                    if (!mistake)
-                        break;
+                    if (!mistake) { break; }
                 }
                 // If the bool mistake is true then we have to subtract from the result
                 if (mistake)
@@ -160,8 +159,7 @@ namespace FormuleCirkelEntity.ResultGenerators
         // Calculate a score generated in qualifying
         public int GetQualifyingResult(SeasonDriver driver, int qualyRNG, Track track, int qualypace)
         {
-            if (driver is null || track is null)
-                throw new NullReferenceException();
+            if (driver is null || track is null) { throw new NullReferenceException(); }
 
             var result = 0;
             result += driver.Skill;
@@ -169,7 +167,7 @@ namespace FormuleCirkelEntity.ResultGenerators
             result += driver.SeasonTeam.Chassis;
             result += driver.SeasonTeam.Engine.Power;
             result += Helpers.GetChassisBonus(Helpers.CreateTeamSpecDictionary(driver.SeasonTeam), track.Specification.ToString());
-            result += _rng.Next(0, (qualyRNG + 1));
+            result += _rng.Next(0, qualyRNG + 1);
             return result;
         }
 

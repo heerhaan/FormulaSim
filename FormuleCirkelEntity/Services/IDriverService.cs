@@ -55,14 +55,12 @@ namespace FormuleCirkelEntity.Services
 
         public async Task<List<Driver>> GetArchivedDrivers()
         {
-            var drivers = await Data
+            return await Data
                 .IgnoreQueryFilters()
                 .AsNoTracking()
                 .Where(res => res.Archived)
                 .OrderBy(res => res.Name)
                 .ToListAsync();
-
-            return drivers;
         }
 
         public List<int> GetDriverChampionsIds(List<Season> seasons)
@@ -77,8 +75,7 @@ namespace FormuleCirkelEntity.Services
                     .OrderByDescending(res => res.Points)
                     .FirstOrDefault();
                 // If the result works out correctly then the winner can be added to the list of driverIds
-                if (winner != null)
-                    driverIds.Add(winner.DriverId);
+                if (winner != null) { driverIds.Add(winner.DriverId); }
             }
             return driverIds;
         }
@@ -131,6 +128,8 @@ namespace FormuleCirkelEntity.Services
         public async Task<List<Team>> GetDistinctTeamsHistoryByDriver(int driverId)
         {
             return await Context.SeasonDrivers
+                .IgnoreAutoIncludes()
+                .AsNoTracking()
                 .Where(s => s.Driver.Id == driverId)
                 .Include(s => s.SeasonTeam)
                     .Where(st => st.Season.Championship.ActiveChampionship)

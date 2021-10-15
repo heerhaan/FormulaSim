@@ -1,24 +1,31 @@
-﻿@model IEnumerable<FormuleCirkelEntity.Models.Season>
+﻿@model FormuleCirkelEntity.ViewModels.Season.SeasonIndexModel
 
 @{
     bool isAdmin = this.User.IsInRole(Constants.RoleAdmin);
 }
 
 <div class="d-inline-block w-75">
-    <h1>Seasons in @ViewBag.championship</h1>
+    @if (Model.ChampionshipName != null)
+    {
+        <h1>Seasons in @Model.ChampionshipName</h1>
+    }
+    else
+    {
+        <h1>Seasons</h1>
+    }
     <div class="flex-row justify-content-between">
         @if (isAdmin)
         {
             <a class="btn fullborder float-left mb-1" asp-action="Create">New season</a>
         }
         <div class="dropdown show">
-            <a class="btn dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="btn dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-flag-checkered"></i> Championship
             </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                @foreach (var item in ViewBag.champs)
+            <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink">
+                @foreach (var item in Model.AllChampionships)
                 {
-                    <a class="dropdown-item" asp-action="ChampionshipSelect" asp-route-championshipId="@item.ChampionshipId">@item.ChampionshipName</a>
+                    <a class="dropdown-item" asp-action="ChampionshipSelect" asp-route-championshipID="@item.Key">@item.Value</a>
                 }
             </div>
         </div>
@@ -35,39 +42,37 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.SeasonIndex)
             {
-                var topDriver = item.Drivers.OrderByDescending(d => d.Points).FirstOrDefault();
-                var topTeam = item.Teams.OrderByDescending(t => t.Points).FirstOrDefault();
                 <tr>
                     <td><b>@Html.DisplayFor(modelItem => item.SeasonNumber)</b></td>
-                    @if (topDriver == null || topTeam == null)
-                    {
-                        <td>X</td>
-                        <td>X</td>
-                    }
-                    else
+                    @if (item.HasTop)
                     {
                         <td>
                             <span class="custom-badge badge-team fullwidth text-left mr-2"
-                                  style="background-color:@(topDriver.SeasonTeam.Colour);color:@(topDriver.SeasonTeam.Accent);border-color:@(topDriver.SeasonTeam.Accent);">
-                                <span class="flag flag-@(topDriver.Driver.Country) ff-sm flag-margin"></span>@topDriver.Driver.Name
+                                  style="background-color:@(item.TopDriverTeamColour);color:@(item.TopDriverTeamAccent);border-color:@(item.TopDriverTeamAccent);">
+                                <span class="flag flag-@(item.TopDriverCountry) ff-sm flag-margin"></span>@item.TopDriverName
                             </span>
                         </td>
                         <td>
                             <span class="custom-badge badge-team fullwidth text-left ml-1"
-                                  style="background-color:@(topTeam.Colour);color:@(topTeam.Accent);border-color:@(topTeam.Accent);">
-                                <span class="flag flag-@(topTeam.Team.Country) ff-sm flag-margin"></span>@topTeam.Name
+                                  style="background-color:@(item.TopTeamColour);color:@(item.TopTeamAccent);border-color:@(item.TopTeamAccent);">
+                                <span class="flag flag-@(item.TopTeamCountry) ff-sm flag-margin"></span>@item.TopTeamName
                             </span>
                         </td>
                     }
+                    else
+                    {
+                        <td>X</td>
+                        <td>X</td>
+                    }
                     <td>
-                        <a asp-action="Detail" asp-route-id="@item.SeasonId">
+                        <a asp-action="Detail" asp-route-seasonID="@item.SeasonID">
                             <i class="fas fa-forward fa-2x"></i>
                         </a>
                     </td>
                     <td>
-                        <a asp-action="SeasonStats" asp-route-id="@item.SeasonId">
+                        <a asp-action="SeasonStats" asp-route-seasonID="@item.SeasonID">
                             <i class="fas fa-signal fa-2x"></i>
                         </a>
                     </td>

@@ -20,6 +20,7 @@
             <tr>
                 <th>#</th>
                 <th>Driver</th>
+                <th>Age</th>
                 <th>Skill</th>
                 <th>Rel.</th>
                 <th>Team</th>
@@ -46,6 +47,7 @@
                     { @driver.Driver.Name}
                         </span>
                     </td>
+                    <td>@(ViewBag.number - driver.Driver.DateOfBirth.Year)</td>
                     <td class="onclick-hide">@driver.Skill</td>
                     <td><span class="alt-color small">@driver.Reliability</span></td>
                     <td><span class="badge badge-team fullwidth" 

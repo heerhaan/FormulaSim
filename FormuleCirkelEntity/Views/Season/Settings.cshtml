@@ -67,12 +67,12 @@
             </div>
             <div class="form-element flex-row justify-content-between">
                 <input type="submit" value="Save" class="btn mb-2" />
-                <a asp-action="SetPoints" asp-route-id="@Model.SeasonId" class="btn fullborder">Setup points</a>
+                <a asp-action="SetPoints" asp-route-seasonID="@Model.SeasonId" class="btn fullborder">Setup points</a>
             </div>
         </form>
     </div>
 
-    <a asp-action="Detail" asp-route-id="@Model.SeasonId" class="btn float-left">
+    <a asp-action="Detail" asp-route-seasonID="@Model.SeasonId" class="btn float-left">
         <i class="fas fa-arrow-alt-circle-left"></i> Back
     </a>
 </div>

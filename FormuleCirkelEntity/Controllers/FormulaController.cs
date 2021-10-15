@@ -20,15 +20,11 @@ namespace FormuleCirkelEntity.Controllers
         protected FormulaContext Context { get; }
         protected UserManager<SimUser> UserManager { get; }
 
-        protected static Task<IActionResult> AsTask(IActionResult result)
-        {
-            return Task.FromResult(result);
-        }
-
         protected static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
 
-        protected static ContentResult Json<TObject>(TObject obj) => AsJson<TObject>(obj);
+        protected static Task<IActionResult> AsTask(IActionResult result) => Task.FromResult(result);
 
+        protected static ContentResult Json<TObject>(TObject obj) => AsJson(obj);
         protected static ContentResult AsJson<TContent>(TContent input)
         {
             return new ContentResult()
