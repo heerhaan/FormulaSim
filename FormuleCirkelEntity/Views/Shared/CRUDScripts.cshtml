@@ -1,0 +1,284 @@
+﻿@using FormuleCirkelEntity.ViewModels.Shared;
+@model CRUDVariables
+
+<script type="text/javascript">
+    var listItemTemplate;
+    var @CRUDVariables.DetailItemTemplateObject;
+
+    //Conditional event scripting
+    @if(Model.HasFilter)
+    {
+        <text>
+    $(document).ready(function () {
+        var toggler = $("#filter-toggler");
+        var togglerTarget = $(toggler.data("target"));
+        var isExpandedKey = "isSearchAndFilterExpanded";
+
+        function resetSearchAndFilter() { $("#@CRUDVariables.ListFilterContainerID input").text(""); $("#global-crud-hidden-reset-button").trigger("click"); }
+        togglerTarget
+            .on("shown.bs.collapse", function () { //Expand complete
+                resetSearchAndFilter();
+                $("#@CRUDVariables.ListFilterContainerID input:visible").first().focus();
+                setUserPreference(isExpandedKey, true);
+            })
+            .on("hidden.bs.collapse", function () { //Collapse start
+                resetSearchAndFilter();
+                setUserPreference(isExpandedKey, "");
+            });
+
+        if (!!readUserPreference(isExpandedKey)) {
+            toggler.click();
+        }
+    });
+        </text>
+    }
+
+    //Attach actionbutton-menu callback handlers
+    $(document).ready(function () {
+        $(".crud-list-actionbutton").click(function (evt) {
+            evt.preventDefault();
+            var action = $(this).data("action-name");
+            eval(action);
+        });
+    });
+
+    $(document).ready(function () {
+        //Define content helpers
+        Handlebars.registerHelper("plural", function (pluralPostfix, collection) {
+            if (!!collection && !!collection.length && collection.length !== 1) {
+                return pluralPostfix;
+            }
+            else { return ""; }
+        });
+
+        Handlebars.registerHelper("pluralChoice", function (singularTerm, pluralTerm, collection) {
+            if (!!collection && !!collection.length && collection.length !== 1) {
+                return pluralTerm;
+            }
+            else { return singularTerm; }
+        });
+
+        //Kick-off retrieval
+        $.post("@Html.Raw(Model.DataURL)")
+            .done(processDone)
+            .fail(processFail);
+
+        //Precompile templates
+        listItemTemplate = Handlebars.compile($("#@Model.ListItemTemplate").html());
+        @CRUDVariables.DetailItemTemplateObject = Handlebars.compile($("#@Model.DetailItemTemplate").html());
+    });
+
+    function loadAdditionalContent(result) {
+        @if (Model.HasAdditionalControls)
+        {
+        <text>
+            var template = Handlebars.compile($("#@Model.AdditionalControlsContainer").html());
+            $("#content-additional-controls").html(template(result));
+        </text>
+        }
+    }
+
+    function selectItem(item) {
+        $("#@CRUDVariables.ListContentContainerID .@CRUDVariables.ListItemClass").removeClass("selected preselected")
+        if (!!item) { $(item).addClass("selected"); }
+    }
+
+    function scrollToActiveItem() {
+        if (!!document.location.hash) {
+            let hashValue;
+            if (!document.location.hash.startsWith("#")) { hashValue = document.location.hash; }
+            else { hashValue = document.location.hash.substr(1); }
+            // When a value is set we want to scroll down to the actively modified element
+            var activeItem = $("#@CRUDVariables.ListContentContainerID .@(CRUDVariables.ListItemClass)[data-@Model.IDProperty='" + hashValue + "']").first();
+            // A small delay is given to scrolling to the active view, due to an automatic focus by the input
+            if ($("#crud-list-filter-content").is(":visible")) {
+                setTimeout(function () {
+                    activeItem[0].scrollIntoView();
+                }, 250);
+            } else {
+                activeItem[0].scrollIntoView();
+            }
+        }
+    }
+
+    function processDone(result) {
+        function rerender(substituteResult) {
+            $("#@CRUDVariables.ListContentContainerID").html(listItemTemplate({ data: substituteResult || result }));
+            @(CRUDVariables.AttachDefaultActionsFunction)();
+            @if (Model.HasCallbackHandler)
+            {
+                @:@(Model.OnLoadedCallbackHandler)(substituteResult || result); //Callback handler
+            }
+        }
+
+        var hashValue, hashTargetListElement;
+
+        if (!!document.location.hash) {
+            if (!document.location.hash.startsWith("#")) { hashValue = document.location.hash; }
+            else { hashValue = document.location.hash.substr(1); }
+        } else { hashValue = null; }
+
+
+        $("#@CRUDVariables.ListContentContainerID").html(listItemTemplate({ data: result }));
+
+
+        @if (Model.HasFilter) {
+            @:$("#@CRUDVariables.ListFilterContainerID").html($("#@(Model.FilterContainerID)").html());
+            @:$("#@CRUDVariables.ListFilterContainerID").append($("#global-crud-hidden-reset-button-template").html());
+        }
+
+        loadAdditionalContent(result);
+
+
+        @(CRUDVariables.AttachDefaultActionsFunction)();
+
+
+        @if (!Model.DisableAutolist) {
+            if(Model.HasCallbackHandler)
+            {
+                @:@(Model.OnLoadedCallbackHandler)(result); //Callback handler
+            }
+            <text>
+
+        $("#global-list-wrapper").jplist({
+            itemsBox: "#@CRUDVariables.ListContentContainerID",
+            panelPath: "#@CRUDVariables.ListFilterContainerID, #@CRUDVariables.ListFooterContainerID, .jplist-filter-dropdown",
+            itemPath: ".@CRUDVariables.ListItemClass"
+        });
+
+        $(".jplist-no-results").removeClass("hidden"); //This is hidden by default; re-enable rendering only after the data arrives
+            </text>
+        }
+        else if (Model.HasCallbackHandler)
+        {
+            if (Model.DisableAutolist)
+            {
+                @:@(Model.OnLoadedCallbackHandler)(result, rerender); //Callback handler
+            }
+            else
+            {
+                @:@(Model.OnLoadedCallbackHandler)(result); //Callback handler
+            }
+        }
+
+        if (!!hashValue) {
+            hashTargetListElement = $("#@CRUDVariables.ListContentContainerID .@(CRUDVariables.ListItemClass)[data-@Model.IDProperty='" + hashValue + "']").first();
+
+            if (!!hashTargetListElement && !!hashTargetListElement.length) {
+                @if (!Model.DisableAutolist)
+                {
+                    <text>
+                var siblings = hashTargetListElement.siblings(".@(CRUDVariables.ListItemClass)");
+                if (!!siblings.length) {
+                    hashTargetListElement.detach();
+                    hashTargetListElement.insertBefore(siblings.first());
+                }
+                    </text>
+                }
+            }
+
+            //Load permalink-subject through triggering full click-event below; it enables highlighting and other view-defined handling.
+            if (!!hashTargetListElement.length) { hashTargetListElement.click().addClass("preselected"); } else { @(CRUDVariables.LoadDetailsFunction)(hashValue); }
+            document.location.hash = hashValue; //Explicitly re-set hash to trigger the anchor.
+        }
+        else {
+            // If no item is preselected through the URL then we take the first item in the list as our selected item on opening the page
+            hashTargetListElement = null;
+            var firstItem = $("#@CRUDVariables.ListContentContainerID .@CRUDVariables.ListItemClass").first();
+            if (!!firstItem && !!firstItem.length) {
+                firstItem.click(); // Triggers the click event which loads the detail view for the corresponding page
+                document.location.hash = $(firstItem).data("@Model.IDProperty");
+            }
+        }
+    }
+
+    function @(CRUDVariables.AttachDefaultActionsFunction)(elementCollection, overrideDetailsURL) {
+        var elements = !!elementCollection ? elementCollection : $("#@CRUDVariables.ListContentContainerID .@CRUDVariables.ListItemClass");
+        elements.click(function (evt) {
+            evt.stopPropagation();
+            var itemID = $(this).data("@Model.IDProperty");
+
+            if (!$(this).is(".selected")) {
+                selectItem(this);
+                @(CRUDVariables.LoadDetailsFunction)(itemID, overrideDetailsURL);
+            }
+        });
+    }
+
+    function @(CRUDVariables.LoadDetailsFunction)(itemID, overrideDetailURL) {
+        $.post(overrideDetailURL || "@Html.Raw(Model.DataURL)", { @Model.IDProperty: itemID })
+            .done(function (result) {
+                if (!!result) {
+                    $("#@CRUDVariables.BodyContentContainerID").html(@(CRUDVariables.DetailItemTemplateObject)(result));
+
+                    if (history.replaceState) { history.replaceState(null, null, "#" + itemID); }
+                    else if (history.pushState) { history.pushState(null, null, "#" + itemID); }
+                    else { location.hash = itemID; }
+
+                    @if (Model.HasDetailsCallbackHandler)
+                    {
+                        @:@(Model.OnDetailsCallbackHandler)(result);
+                    }
+                }
+                else {
+                    $("#@CRUDVariables.BodyContentContainerID").html($("#@Model.DetailEmptyTemplate").html());
+                }
+            })
+            .fail(processFail);
+        $("#@CRUDVariables.BodyFooterContainerID").empty();
+    }
+
+    function processFail(result, status) {
+        //TODO: Error afhandeling
+        console.log({ result: result, status: status });
+    }
+
+    function @(CRUDVariables.LoadEditorContentFunction)(content, controls) {
+        $("#@CRUDVariables.BodyContentContainerID").html(content);
+        if (controls !== undefined) { $("#@CRUDVariables.BodyFooterContainerID").html(controls); }
+
+        //Transform controls
+        $("#@CRUDVariables.BodyContentContainerID select").each(function () {
+            $(this).selectize({
+                allowEmptyOption: !!$(this).data("allow-empty"),
+                plugins: !!$(this).attr("multiple") ? ["remove_button"] : null,
+            });
+        }); //Create searchable and filterable dropdown controls
+        $("#@CRUDVariables.BodyContentContainerID input[type=datetime]").each(function () { $(this).attr("type", "datetime-local"); }); //Transform datetime inputs to datetimelocal inputs
+
+        $.validator.unobtrusive.parse($("#@CRUDVariables.BodyContentContainerID form"));
+    }
+</script>
+@await Html.PartialAsync("UserPreferences")
+<script type="text/x-jquery-tmpl" id="global-crud-hidden-reset-button-template">
+    <button type="button" id="global-crud-hidden-reset-button"
+            class="jplist-reset-btn hidden"
+            data-control-type="reset"
+            data-control-name="reset"
+            data-control-action="reset">
+        Reset
+    </button>
+</script>
+
+@await Html.PartialAsync("Popup")
+
+<!-- Helper functions -->
+<script type="text/javascript">
+    function copyTextToClipboard(text, button) { //Uses https://www.w3.org/TR/clipboard-apis/#async-clipboard-api
+        if (!!navigator.clipboard) {
+            navigator.clipboard.writeText(text)
+                .then(function () {
+                    var currentButtonContent = $(button).html();
+                    $(button).text("Gekopieerd").prop("disabled", true);
+                    setTimeout(function () { $(button).html(currentButtonContent).prop("disabled", false); }, 2000);
+                }, function (err) { feedbackCopyingErrorMessage(text, "De kopieer-functie heeft geen toegang verkregen van uw browser."); });
+        }
+        else {
+            feedbackCopyingErrorMessage(text, "De kopieer-functie is nog niet beschikbaar in uw browser. Selecteer en kopieer de code handmatig.");
+        }
+    }
+
+    function feedbackCopyingErrorMessage(text, message) {
+        window.prompt(message, text);
+    }
+</script>

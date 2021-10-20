@@ -1,0 +1,499 @@
+﻿@using FormuleCirkelEntity.ViewModels.Shared;
+@model CRUDVariables
+
+<style type="text/css">
+
+    /* list controls */
+    #@CRUDVariables.ListContentContainerID div.row, .jplist-no-results, .fake-list-item {
+        border-bottom: 1px solid #e7eaec;
+        padding: 0.7em 0 0.7em 1.5em;
+        border-left: 0.2em solid rgba(0, 0, 0, 0);
+    }
+
+    #@CRUDVariables.ListContentContainerID div.row.selected {
+        border-left-color: #00b9e1;
+        color: #000;
+    }
+
+    .container-header, .container-footer, #@CRUDVariables.BodyContentContainerID {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    #global-list-wrapper .container-header, #global-list-wrapper .container-footer {
+        padding-left: 1.5em;
+        padding-right: 1.5em;
+    }
+
+
+    .clickable {
+        cursor: pointer;
+    }
+
+    .clickable-list-action {
+        cursor: pointer;
+        display: inline;
+        color: #00b9e1;
+        padding-left: 0.5em;
+    }
+
+    .list-info {
+        display: inline;
+        cursor: default;
+        color: #888;
+        padding-left: 0.5em;
+    }
+
+    .help-icon {
+        cursor: help;
+        color: #00b9e1;
+        font-size: 0.85em;
+        vertical-align: super
+    }
+
+    /* Inspinia text-warning colour */
+    .list-info.list-warning, .list-warning {
+        color: #f8ac59;
+    }
+
+    .jplist-no-results {
+        color: #800;
+    }
+
+    .jplist-pagination {
+        margin: 0;
+    }
+
+    .jplist-pagination-info {
+        margin-top: .4em;
+    }
+
+    .jplist-selected {
+        color: #00b9e1 !important;
+    }
+
+    .pagination.jplist-pagination .jplist-current.active > a {
+        background-color: #00b9e1;
+        color: #fff;
+    }
+
+    .sorter-box {
+        margin-top: 1em;
+    }
+
+    /* editing and detail elements */
+    .edit-detail-controls {
+        float: right;
+    }
+
+    .edit-detail-controls > button {
+        margin-left: 1em;
+    }
+
+    .selectize-input .item {
+        margin-right: 0.5em !important;
+    }
+
+    .crud-detail-identification {
+        display: block;
+        color: #888;
+    }
+
+    .crud-detail-identification-humanreadable {
+        margin-top: .4em;
+        font-size: 20px;
+        text-transform: uppercase;
+    }
+
+    .crud-detail-identification-technical {
+        color: #ccc;
+        margin-top: 0.5em;
+        font-size: 1em;
+    }
+
+    .prop {
+        display: block;
+    }
+
+    ul.prop {
+        padding-left: 1.5em;
+    }
+
+    ul.prop li {
+        padding-left: 0.5em;
+    }
+
+
+    ul.prop li a {
+        color: #888;
+        text-decoration: none;
+    }
+
+    ul.prop li a:hover {
+        cursor: pointer;
+        color: #00b9e1;
+    }
+
+
+    .prop-title {
+        margin-top: 1.8em;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .prop-explanatory {
+        font-size: 0.9em;
+        color: #888;
+    }
+
+    .prop-value {
+        margin-top: 0.3em;
+    }
+
+    .prop-value-label {
+        font-weight: normal;
+        margin-left: 0.5em;
+    }
+
+    .mimic-li > .mimic-dot {
+        display: inline-block;
+        text-align: center;
+        width: 1.5em;
+    }
+
+    .mimic-li > .mimic-text {
+        padding-left: 0.5em;
+    }
+
+    .flags {
+        padding-left: 1em;
+        cursor: default;
+    }
+
+    /* Deemphasize muted text a little more */
+    .text-muted {
+        color: #aaa;
+    }
+</style>
+<style type="text/css">
+    /* replacement layout */
+    .validation-summary-errors {
+        margin-top: 2em;
+        margin-bottom: 1em;
+    }
+
+    #container-additional-controls {
+        height: @Model.AdditionalControlsHeight !important;
+    }
+
+    #container-additional-controls > * {
+        padding: 1em;
+        padding-bottom: 0;
+    }
+
+    .full-size{
+        height: calc(100% - @(Model.AdditionalControlsHeight ?? "0px"));
+    }
+
+    .full-size, .container-wrapper {
+        display: block;
+        position: relative;
+        margin: 0 !important;
+        padding: 0;
+    }
+
+    .inner-full-size {
+        padding: 1em;
+        padding-bottom: 0;
+        height: 100%;
+    }
+
+    .container-wrapper {
+        display: block;
+        position: relative;
+        padding: 1em;
+        border: 1px solid #ddd;
+        background-color: #fff;
+        border-radius: 0.5em;
+    }
+
+    .container-wrapper {
+        height: 100%;
+    }
+
+    .container-header, .container-footer {
+        display: block;
+        position: relative;
+        height: 3em;
+    }
+
+        .container-header .text-aligner {
+            padding-top: 0.3em;
+        }
+
+    .container-footer {
+        padding-top: 1em;
+    }
+
+        .container-header > .pull-left, .container-footer > .pull-left {
+            margin-right: 1em;
+        }
+
+        .container-header > .pull-right, .container-footer > .pull-right {
+            margin-left: 1em;
+        }
+
+    .container-content {
+        display: block;
+        position: relative;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        width: 100%;
+        height: -moz-calc(100% - 6em);
+        height: -webkit-calc(100% - 6em);
+        height: calc(100% - 6em);
+        overflow-y: auto;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    #crud-main-container {
+        padding-right: 1em;
+    }
+
+    .@CRUDVariables.ListItemClass {
+        position: relative;
+    }
+    .@CRUDVariables.ListItemClass:not(:hover) .hover-only {
+        display: none;
+        /* opacity: 0; */
+    }
+
+    .@(CRUDVariables.ListItemClass).preselected {
+        font-style: italic;
+        text-shadow: 0 0 1em #ff0;
+    }
+    .@(CRUDVariables.ListItemClass).preselected:before {
+        position: absolute;
+        left: .5em;
+        top: 0;
+        content: '*';
+        font-size: 1.5em;
+        color: #dd0;
+        text-shadow: 0 0 .5em #ff0;
+    }
+
+    .hovercontainer:not(:hover) .hover-only {
+        display: none;
+        /* opacity: 0; */
+    }
+
+    /* vendor-specific styling details */
+    .container-content::-webkit-input-placeholder {
+        font-style: italic;
+    }
+
+    .container-content:-moz-placeholder {
+        font-style: italic;
+    }
+
+    .container-content::-moz-placeholder {
+        font-style: italic;
+    }
+
+    .container-content:-ms-input-placeholder {
+        font-style: italic;
+    }
+
+    .container-content::-webkit-scrollbar {
+        width: .5em;
+    }
+
+    .container-content::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 .25em #888;
+        border-radius: .5em;
+    }
+
+    .container-content::-webkit-scrollbar-thumb {
+        background: #aaa;
+        border-radius: .5em;
+    }
+
+        .container-content::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+
+
+    #@CRUDVariables.BodyContentContainerID > form {
+        margin-bottom: 2em;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="~/Content/override-fixes.css" />
+
+@if (Model.HasAdditionalControls)
+{
+    <div class="row full-size" id="container-additional-controls">
+        <div class="col-md-12 hidden-sm inner-full-size">
+            <div class="container-wrapper clearfix" id="content-additional-controls">
+
+            </div>
+        </div>
+    </div>
+}
+<div class="row full-size">
+    <div class="col-md-6 inner-full-size">
+        <section class="container-wrapper" id="global-list-wrapper">
+            <div class="container-header clearfix">
+                @foreach (var button in (Model.ActionButtons ?? new CRUDActionButtonBase[0]).Where(e => e != null))
+                {
+                    if (button is CRUDActionButton)
+                    {
+                        var actionButton = button as CRUDActionButton;
+                        <div class="pull-left">
+                            <div class="control-group">
+                                <button id="@(button.ID ?? Guid.NewGuid().ToString())" class="btn btn-sm btn-@actionButton.Type.ToString().ToLowerInvariant() crud-list-actionbutton" data-action-name="@actionButton.CallbackHandler">
+                                    @if (!string.IsNullOrEmpty(actionButton.IconClass))
+                                    {
+                                        <i class="far fa-@actionButton.IconClass"></i>
+                                    }
+                                    @actionButton.Text
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    else if (button is CRUDPulldownButton)
+                    {
+                        var pulldownButton = button as CRUDPulldownButton;
+                        <div class="pull-left btn-group">
+                            <button id="@(button.ID ?? Guid.NewGuid().ToString())" type="button" class="btn btn-sm btn-@pulldownButton.Type.ToString().ToLowerInvariant() dropdown-toggle" data-toggle="dropdown">
+                                @if (!string.IsNullOrEmpty(pulldownButton.IconClass))
+                                {
+                                    <i class="far fa-@pulldownButton.IconClass"></i>
+                                }
+                                @pulldownButton.Text
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                @foreach (var menuButton in pulldownButton.DropdownMenu.Where(e => e != null))
+                                {
+                                    <li>
+                                        <a id="@(menuButton.ID ?? Guid.NewGuid().ToString())" href="#" class="crud-list-actionbutton" data-action-name="@menuButton.CallbackHandler">
+                                            @if (!string.IsNullOrEmpty(menuButton.IconClass))
+                                            {
+                                                <i class="far fa-@menuButton.IconClass"></i>
+                                            }
+                                            @menuButton.Text
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    else if (button is FilterPulldownButton)
+                    {
+                        var filterPulldown = button as FilterPulldownButton;
+                        <div class="jplist-filter-dropdown">
+                            <div class="pull-left btn-group dropdown"
+                                 data-control-type="boot-filter-drop-down"
+                                 data-control-name="category-filter"
+                                 data-control-action="filter">
+
+                                <button class="btn btn-sm btn-@filterPulldown.Type.ToString().ToLowerInvariant()" type="button" data-toggle="dropdown" id="dropdown-menu-2" aria-expanded="true">
+                                    <span data-type="selected-text">Filter op organisatie</span>
+                                    <span class="caret"></span>
+                                </button>
+
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-menu-2">
+                                    @foreach (var menuButton in filterPulldown.DropdownMenu.Where(e => e != null))
+                                    {
+                                        <li role="presentation">
+                                            <a role="menuitem" tabindex="-1" href="#" data-path=".@menuButton.ID">@menuButton.Text</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="ibox-tools pull-right text-aligner">
+                    @if (Model.HasFilter)
+                    {
+                        <a class="collapsed" data-toggle="collapse" data-target="#@CRUDVariables.ListFilterContainerID" id="filter-toggler">
+                            <i class="collapse-icon pull-right" style="color: #00b9e1; width: 1em; padding: 0 0.2em"></i>
+                            <span class="filter pull-right">Zoek en filter</span>
+                        </a>
+                    }
+                </div>
+            </div>
+            <div id="crud-main-container" class="container-content">
+                <div id="@CRUDVariables.ListFilterContainerID" style="padding: 15px 20px;" class="collapse">
+
+                </div>
+                <div id="global-list-wrapper">
+                    <div id="@CRUDVariables.ListContentContainerID">
+
+                    </div>
+                    <!-- no results found -->
+                    <div class="jplist-no-results hidden">
+                        <div>Geen resultaten gevonden</div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-footer" id="@CRUDVariables.ListFooterContainerID">
+                <div class="pull-left">
+                    <ul class="pagination jplist-pagination"
+                        data-control-type="boot-pagination"
+                        data-control-name="paging"
+                        data-control-action="paging"
+                        data-range="5"
+                        data-mode="google-like"></ul>
+                </div>
+
+                <div class="jplist-pagination-info pull-left"
+                     data-type="{start} - {end} van {all}"
+                     data-control-type="pagination-info"
+                     data-control-name="paging"
+                     data-control-action="paging"></div>
+
+                <div class="pull-right hidden">
+                    <div class="dropup jplist-items-per-page"
+                         data-control-type="boot-items-per-page-dropdown"
+                         data-control-name="paging"
+                         data-control-action="paging">
+                        <button class="btn btn-sm btn-default dropdown-toggle"
+                                type="button"
+                                data-toggle="dropdown"
+                                id="dropdown-menu-1"
+                                aria-expanded="true">
+                            <span data-type="selected-text">Items per pagina</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-menu-1">
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-number="5">5 per pagina</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-number="15">15 per pagina</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-number="17" data-default="true">17 pp = perfect fit</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-number="20">20 per pagina</a></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-number="50">50 per pagina</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-number="all">Alles weergeven</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-md-6 inner-full-size">
+        <section class="container-wrapper">
+            <div class="container-header">
+                <!-- content-bound action panel -->
+            </div>
+            <div class="container-content" id="@CRUDVariables.BodyContentContainerID">
+                <!-- CRUD body content -->
+            </div>
+            <div class="container-footer" id="@CRUDVariables.BodyFooterContainerID">
+                <!-- CRUD body footer -->
+            </div>
+        </section>
+    </div>
+</div>
