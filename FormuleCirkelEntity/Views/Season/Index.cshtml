@@ -16,7 +16,12 @@
     <div class="flex-row justify-content-between">
         @if (isAdmin)
         {
-            <a class="btn fullborder float-left mb-1" asp-action="Create">New season</a>
+        <div class="btn-group float-left mb-1">
+            <a class="btn fullborder" asp-action="Create">New season</a>
+            <a class="btn fullborder" asp-action="CopyLast" asp-route-championshipID="@Model.ChampionshipID" data-toggle="tooltip" data-placement="top" title="@Constants.ToolTipDefaultSeasonBtn">
+                <i class="fas fa-recycle"></i> Copy last
+            </a>
+        </div>
         }
         <div class="dropdown show">
             <a class="btn dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -25,7 +30,7 @@
             <div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuLink">
                 @foreach (var item in Model.AllChampionships)
                 {
-                    <a class="dropdown-item" asp-action="ChampionshipSelect" asp-route-championshipID="@item.Key">@item.Value</a>
+                    <a class="dropdown-item" asp-action="Index" asp-route-championshipID="@item.Key">@item.Value</a>
                 }
             </div>
         </div>

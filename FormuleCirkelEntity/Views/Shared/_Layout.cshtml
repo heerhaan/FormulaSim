@@ -5,18 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Formula Sim</title>
 
-    <environment exclude="Development">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
-              crossorigin="anonymous"/>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" 
-              asp-fallback-href="~/lib/select2/dist/css/select2.min.css"/>
-    </environment>
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/select2/dist/css/select2.min.css" />
-    </environment>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/select2/dist/css/select2.min.css" />
 
     <link rel="stylesheet" href="~/lib/nouislider/dist/nouislider.min.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.1/css/all.css" crossorigin="anonymous">
@@ -25,6 +15,9 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css//navigation.css" />
     <link id="theme" rel="stylesheet" href="~/css/themeDark.css" />
+
+    <script src="~/lib/jquery.min.js"></script>
+    <script src="~/js/site.js"></script>
 </head>
 
 <body class="body-wrapper primary">
@@ -35,7 +28,13 @@
         @RenderBody()
     </main>
 
-    @await Html.PartialAsync("_LayoutScriptsPartial")
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/lib/select2/dist/js/select2.min.js"></script>
+    <script src="~/lib/chart.js/dist/chart.min.js"></script>
+    <script src="~/lib/html2canvas.min.js"></script>
+    <script src="~/lib/handlebars-v4.7.7.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="~/lib/nouislider/dist/nouislider.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

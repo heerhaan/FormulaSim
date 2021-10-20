@@ -26,9 +26,6 @@
                     <a asp-action="Start" asp-route-seasonID="@Model.Season.SeasonId" class="btn fullborder">Start season!</a>
                     <a asp-controller="Races" asp-action="AddTracks" asp-route-seasonID="@Model.Season.SeasonId" class="btn fullborder">Add race</a>
                     <a asp-action="Settings" asp-route-seasonID="@Model.Season.SeasonId" class="btn fullborder"><i class="fas fa-cog"></i> Settings</a>
-                    <a asp-action="AddDefault" asp-route-seasonID="@Model.Season.SeasonId" class="btn fullborder" data-toggle="tooltip" data-placement="top" title="@Constants.ToolTipDefaultSeasonBtn">
-                        <i class="fas fa-recycle"></i> Default
-                    </a>
                 }
                 <a asp-action="AddDrivers" asp-route-seasonID="@Model.Season.SeasonId" class="btn fullborder"><i class="fas fa-plus"></i> Add driver</a>
                 <a asp-action="AddTeams" asp-route-seasonID="@Model.Season.SeasonId" class="btn fullborder"><i class="fas fa-plus"></i> Add team</a>

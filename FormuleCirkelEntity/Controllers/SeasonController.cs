@@ -44,13 +44,14 @@ namespace FormuleCirkelEntity.Controllers
             else { return await Index(championship.ChampionshipId); }
         }
 
-        [ActionName("ChampionshipSelect")]
+        [Route("[controller]/[action]/{championshipID}")]
         public async Task<IActionResult> Index(int championshipID)
         {
             var championships = await _championships.GetChampionships();
             var seasonIndex = await _seasons.GetSeasonIndexListOfChampionship(championshipID);
             var viewModel = new SeasonIndexModel()
             {
+                ChampionshipID = championshipID,
                 ChampionshipName = championships.FirstOrDefault(e => e.ActiveChampionship).ChampionshipName,
                 AllChampionships = championships.ToDictionary(e => e.ChampionshipId, e => e.ChampionshipName),
                 SeasonIndex = seasonIndex
@@ -72,65 +73,9 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddDefault(int seasonID)
+        public async Task<IActionResult> CopyLast(int championshipID)
         {
-            // gets the current and previous season in this championship
-            var season = await Context.Seasons
-                .Include(s => s.Races)
-                .SingleOrDefaultAsync(s => s.SeasonId == seasonID);
-
-            var lastSeason = Context.Seasons
-                .Include(s => s.Races)
-                    .ThenInclude(r => r.Stints)
-                .Include(s => s.Championship)
-                .ToList()
-                .LastOrDefault(s => s.State == SeasonState.Finished && s.ChampionshipId == season.ChampionshipId);
-
-            if (lastSeason != null)
-            {
-                foreach (var pointPosition in lastSeason.PointsPerPosition) { season.PointsPerPosition.Add(pointPosition); }
-                season.PolePoints = lastSeason.PolePoints;
-                season.QualificationRemainingDriversQ2 = lastSeason.QualificationRemainingDriversQ2;
-                season.QualificationRemainingDriversQ3 = lastSeason.QualificationRemainingDriversQ3;
-                season.QualificationRNG = lastSeason.QualificationRNG;
-                season.QualyBonus = lastSeason.QualyBonus;
-                season.SeasonNumber = (lastSeason.SeasonNumber + 1);
-                season.PitMax = lastSeason.PitMax;
-                season.PitMin = lastSeason.PitMin;
-
-                // Adds the previous season races if there aren't any added yet.
-                if (season.Races.Count == 0)
-                {
-                    foreach (var race in lastSeason.Races.OrderBy(res => res.Round))
-                    {
-                        var track = await _tracks.GetTrackById(race.TrackId);
-                        var newStints = new List<Stint>();
-                        foreach (var oldStint in race.Stints.OrderBy(res => res.Number))
-                        {
-                            var newStint = new Stint
-                            {
-                                Number = oldStint.Number,
-                                ApplyDriverLevel = oldStint.ApplyDriverLevel,
-                                ApplyChassisLevel = oldStint.ApplyChassisLevel,
-                                ApplyEngineLevel = oldStint.ApplyEngineLevel,
-                                ApplyQualifyingBonus = oldStint.ApplyQualifyingBonus,
-                                ApplyReliability = oldStint.ApplyReliability,
-                                RNGMaximum = oldStint.RNGMaximum,
-                                RNGMinimum = oldStint.RNGMinimum
-                            };
-                            newStints.Add(newStint);
-                        }
-                        var newRace = _raceBuilder
-                            .InitializeRace(track, season)
-                            .AddModifiedStints(newStints)
-                            .GetResultAndRefresh();
-
-                        season.Races.Add(newRace);
-                    }
-                }
-                _seasons.Update(season);
-                await _seasons.SaveChangesAsync();
-            }
+            var seasonID = await _seasons.CreateCopyOfLastSeason(championshipID);
             return RedirectToAction(nameof(Detail), new { seasonID });
         }
 

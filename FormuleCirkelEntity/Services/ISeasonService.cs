@@ -8,6 +8,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.ViewModels.Season;
+using FormuleCirkelEntity.Builders;
+using FormuleCirkelEntity.ViewModels;
 
 namespace FormuleCirkelEntity.Services
 {
@@ -17,11 +19,16 @@ namespace FormuleCirkelEntity.Services
         Task<Season> GetSeasonById(int id, bool withRace = false, bool withDriver = false);
         Task<Season> FindActiveSeason(bool withRaces = false);
         Task<SeasonIndexList[]> GetSeasonIndexListOfChampionship(int championshipID);
+        Task<int> CreateCopyOfLastSeason(int championshipID);
     }
 
     public class SeasonService : DataService<Season>, ISeasonService
     {
-        public SeasonService(FormulaContext context) : base(context) { }
+        private readonly RaceBuilder _raceBuilder;
+        public SeasonService(FormulaContext context, RaceBuilder raceBuilder) : base(context)
+        {
+            _raceBuilder = raceBuilder;
+        }
 
         public async Task<List<Season>> GetSeasons(bool activeChamp = false, bool withDriver = false)
         {
@@ -81,5 +88,70 @@ namespace FormuleCirkelEntity.Services
             }
             return indexList.ToArray();
         }
+
+        public async Task<int> CreateCopyOfLastSeason(int championshipID)
+        {
+            var newSeason = new Season();
+            var lastSeason = await Data.AsNoTracking()
+                .Where(e => e.ChampionshipId == championshipID)
+                .Include(e => e.Championship)
+                .OrderByDescending(e => e.SeasonNumber)
+                .FirstOrDefaultAsync();
+
+            if (lastSeason != null)
+            {
+                var lastRaces = await Context.Races
+                    .Where(e => e.SeasonId == lastSeason.SeasonId)
+                    .Include(e => e.Stints)
+                    .ToListAsync();
+
+                foreach(var pos in lastSeason.PointsPerPosition) { newSeason.PointsPerPosition.Add(pos); }
+                newSeason.PolePoints = lastSeason.PolePoints;
+                newSeason.QualificationRemainingDriversQ2 = lastSeason.QualificationRemainingDriversQ2;
+                newSeason.QualificationRemainingDriversQ3 = lastSeason.QualificationRemainingDriversQ3;
+                newSeason.QualificationRNG = lastSeason.QualificationRNG;
+                newSeason.QualyBonus = lastSeason.QualyBonus;
+                newSeason.SeasonNumber = (lastSeason.SeasonNumber + 1);
+                newSeason.PitMax = lastSeason.PitMax;
+                newSeason.PitMin = lastSeason.PitMin;
+
+                foreach (var race in lastRaces.OrderBy(e => e.Round))
+                {
+                    var track = Context.Tracks.SingleOrDefaultAsync(e => e.Id == race.TrackId);
+                    var stints = new List<Stint>();
+                    foreach (var lastStint in race.Stints.OrderBy(e => e.Number))
+                    {
+                        var stint = new Stint
+                        {
+                            Number = lastStint.Number,
+                            ApplyDriverLevel = lastStint.ApplyDriverLevel,
+                            ApplyChassisLevel = lastStint.ApplyChassisLevel,
+                            ApplyEngineLevel = lastStint.ApplyEngineLevel,
+                            ApplyQualifyingBonus = lastStint.ApplyQualifyingBonus,
+                            ApplyReliability = lastStint.ApplyReliability,
+                            RNGMaximum = lastStint.RNGMaximum,
+                            RNGMinimum = lastStint.RNGMinimum
+                        };
+                        stints.Add(stint);
+                    }
+                    var newRace = _raceBuilder
+                        .InitializeRace(await track, newSeason)
+                        .AddModifiedStints(stints)
+                        .GetResultAndRefresh();
+
+                    newSeason.Races.Add(newRace);
+                }
+            }
+            newSeason.ChampionshipId = championshipID;
+            await Add(newSeason);
+            await SaveChangesAsync();
+
+            return newSeason.SeasonId;
+        }
+
+        //public async Task<SeasonDetailModel> GenerateSeasonDetailModel(int seasonID)
+        //{
+
+        //}
     }
 }

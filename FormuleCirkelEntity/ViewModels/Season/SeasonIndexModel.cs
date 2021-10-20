@@ -8,6 +8,7 @@ namespace FormuleCirkelEntity.ViewModels.Season
 {
     public class SeasonIndexModel
     {
+        public int ChampionshipID { get; set; }
         public string ChampionshipName { get; set; }
         public Dictionary<int, string> AllChampionships { get; set; }
         public SeasonIndexList[] SeasonIndex { get; set; }
