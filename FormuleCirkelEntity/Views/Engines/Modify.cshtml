@@ -10,17 +10,17 @@
     <div class="fullwidth">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Name" class="control-label float-left"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Power" class="control-label float-left"></label>
                 <input asp-for="Power" class="form-control" />
                 <span asp-validation-for="Power" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <input type="submit" value="Save" class="btn fullborder fullwidth" />
             </div>
         </form>

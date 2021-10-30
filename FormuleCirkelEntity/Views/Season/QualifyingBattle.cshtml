@@ -6,7 +6,6 @@
 
 <div class="d-inline-block">
     <h1>Qualifying battles</h1>
-    <hr />
     <table id="graphic" class="ctable fullborder fullwidth min-width-index-table">
         <thead class="fullborder">
             <tr>
@@ -38,10 +37,10 @@
         </tbody>
     </table>
     <div class="flex-row justify-content-between mb-1">
-        <a class="btn" asp-action="Detail" asp-route-id="@Model.SeasonId">
+        <a class="btn" asp-action="Detail" asp-route-seasonID="@Model.SeasonId">
             <i class="fas fa-arrow-alt-circle-left"></i> Back
         </a>
-        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@TextResources.TooltipImageButton">
             <i class="fas fa-image fa-2x"></i>
         </button>
     </div>

@@ -1,0 +1,59 @@
+{
+  "_from": "html2canvas-proxy",
+  "_id": "html2canvas-proxy@1.0.1",
+  "_inBundle": false,
+  "_integrity": "sha1-jRWi20PY9S+IQCJ1KOXLui7SDy0=",
+  "_location": "/html2canvas-proxy",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "html2canvas-proxy",
+    "name": "html2canvas-proxy",
+    "escapedName": "html2canvas-proxy",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/html2canvas-proxy/-/html2canvas-proxy-1.0.1.tgz",
+  "_shasum": "8d15a2db43d8f52f8840227528e5cbba2ed20f2d",
+  "_spec": "html2canvas-proxy",
+  "_where": "C:\\Users\\Mika\\Documents\\ICT",
+  "author": {
+    "name": "Niklas von Hertzen"
+  },
+  "bugs": {
+    "url": "https://github.com/niklasvh/html2canvas-proxy-nodejs/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "cors": "2.8.4",
+    "request": "2.87.0"
+  },
+  "deprecated": false,
+  "description": "Cross-origin content proxy for html2canvas",
+  "homepage": "https://github.com/niklasvh/html2canvas-proxy-nodejs",
+  "keywords": [
+    "html2canvas",
+    "proxy"
+  ],
+  "license": "MIT",
+  "main": "server.js",
+  "name": "html2canvas-proxy",
+  "peerDependencies": {
+    "express": "4.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niklasvh/html2canvas-proxy-nodejs.git"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "exit 0"
+  },
+  "version": "1.0.1"
+}

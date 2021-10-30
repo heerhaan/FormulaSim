@@ -108,6 +108,7 @@ namespace FormuleCirkelEntity.Controllers
                 TrackName = track.Name,
             };
             // Finds the last time track was used and uses same stintsetup as then if it exists
+            // Haalt de laatste keer dat een circuit gebruikt is op en past dezelfde stintsetup toe
             var lastracemodel = await _raceService.GetLastRace(season.ChampionshipId, trackId);
             if (lastracemodel != null)
             {
@@ -122,8 +123,7 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> ModifyRace(RacesModifyRaceModel raceModel)
         {
             // Those gosh darn warnings against checking for nulls, but here we are
-            if (raceModel == null)
-                return NotFound();
+            if (raceModel == null) return NotFound();
 
             var track = await _trackService.GetTrackById(raceModel.TrackId);
             var season = await _seasonService.GetSeasonById(raceModel.SeasonId, true, true);
@@ -247,8 +247,7 @@ namespace FormuleCirkelEntity.Controllers
             {
                 // Checks if the user activating the race is the admin
                 SimUser user = await UserManager.GetUserAsync(User);
-                var result = await UserManager.IsInRoleAsync(user, Constants.RoleAdmin);
-                if (result)
+                if (User.Identity.IsAuthenticated && await UserManager.IsInRoleAsync(user, Constants.RoleAdmin))
                 {
                     race = _raceBuilder
                         .Use(race)
@@ -312,10 +311,9 @@ namespace FormuleCirkelEntity.Controllers
                     return Forbid();
                 }
             }
-            return RedirectToAction("RaceWeekend", new { id, raceId });
+            return RedirectToAction("RaceWeekend", new { raceId });
         }
 
-        [Route("Season/{id}/[Controller]/{raceId}/Weekend")]
         public async Task<IActionResult> RaceWeekend(int raceId)
         {
             var race = await Context.Races

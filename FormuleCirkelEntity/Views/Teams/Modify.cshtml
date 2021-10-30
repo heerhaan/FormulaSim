@@ -13,17 +13,17 @@
     <div class="fullwidth">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Abbreviation" class="control-label float-left"></label>
                 <input asp-for="Abbreviation" class="form-control" />
                 <span asp-validation-for="Abbreviation" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Country" class="control-label float-left">Country of origin</label>
                 <select asp-for="Country" name="country"></select>
                 <span asp-validation-for="Country" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <input type="submit" value="Save" class="btn fullborder fullwidth" />
             </div>
         </form>

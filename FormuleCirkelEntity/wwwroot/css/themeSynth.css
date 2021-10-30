@@ -82,6 +82,14 @@ i.fas, i.fab, i.far, .link {
     color: rgb(238, 114, 241);
 }
 
+.noUi-connect {
+    background: rgb(232, 9, 154);
+}
+
+.noUi-handle {
+    background-color: rgb(10, 14, 41);
+}
+
 .btn {
     background-color: rgb(10, 14, 41);
     color: white;
@@ -120,4 +128,19 @@ i.fas, i.fab, i.far, .link {
 
 .rightline {
     border-right: 1px solid rgb(0, 243, 255) !important;
+}
+
+/*Navigation menu*/
+
+.nav > li > a:hover, .nav > li > form > button:hover {
+    background-color: rgb(15, 21, 62);
+}
+
+.nav.nav-second-level li {
+    background-color: rgb(15, 21, 62);
+}
+
+li.active {
+    border-left: 3px solid rgb(0, 243, 255) !important;
+    background-color: rgb(15, 21, 62);
 }

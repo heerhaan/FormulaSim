@@ -14,31 +14,31 @@
     <div class="fullwidth">
         <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Name" class="control-label float-left"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Location" class="control-label float-left"></label>
                 <input asp-for="Location" class="form-control" />
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="LengthKM" class="control-label float-left">Length</label>
                 <input asp-for="LengthKM" class="form-control" />
                 <span asp-validation-for="LengthKM" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label class="control-label float-left">Specification</label>
                 @Html.DropDownListFor(model => model.Specification, new SelectList(Enum.GetValues(typeof(Specification))), new { @class = "form-control" })
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <label asp-for="Country" class="control-label float-left">Country of origin</label>
                 <select asp-for="Country" name="country"></select>
                 <span asp-validation-for="Country" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <input type="submit" value="Save" class="btn fullborder fullwidth" />
             </div>
         </form>

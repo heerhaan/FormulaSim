@@ -11,37 +11,37 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="row">
             <div class="w-50">
-                <div class="form-group w-75 ml-auto mr-auto">
+                <div class="form-element w-75 ml-auto mr-auto">
                     <label asp-for="Name" class="control-label float-left">Name</label>
                     <input asp-for="Name" class="form-control" />
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                <div class="form-group w-75 ml-auto mr-auto">
+                <div class="form-element w-75 ml-auto mr-auto">
                     <label asp-for="TraitGroup" class="control-label float-left">Group</label>
                     @Html.DropDownListFor(model => model.TraitGroup, new SelectList(Enum.GetValues(typeof(TraitGroup))), new { @class = "form-control" })
                     <span asp-validation-for="TraitGroup" class="text-danger"></span>
                 </div>
-                <div class="form-group w-75 ml-auto mr-auto">
+                <div class="form-element w-75 ml-auto mr-auto">
                     <label asp-for="QualyPace" class="control-label float-left">Qualification pace</label>
                     <input asp-for="QualyPace" class="form-control" />
                     <span asp-validation-for="QualyPace" class="text-danger"></span>
                 </div>
-                <div class="form-group w-75 ml-auto mr-auto">
+                <div class="form-element w-75 ml-auto mr-auto">
                     <label asp-for="DriverRacePace" class="control-label float-left">Racepace Driver</label>
                     <input asp-for="DriverRacePace" class="form-control" />
                     <span asp-validation-for="DriverRacePace" class="text-danger"></span>
                 </div>
-                <div class="form-group w-75 ml-auto mr-auto">
+                <div class="form-element w-75 ml-auto mr-auto">
                     <label asp-for="ChassisRacePace" class="control-label float-left">Racepace Chassis</label>
                     <input asp-for="ChassisRacePace" class="form-control" />
                     <span asp-validation-for="ChassisRacePace" class="text-danger"></span>
                 </div>
-                <div class="form-group w-75 ml-auto mr-auto">
+                <div class="form-element w-75 ml-auto mr-auto">
                     <label asp-for="EngineRacePace" class="control-label float-left">Racepace Engine</label>
                     <input asp-for="EngineRacePace" class="form-control" />
                     <span asp-validation-for="EngineRacePace" class="text-danger"></span>
                 </div>
-                <div class="form-group w-75 ml-auto mr-auto">
+                <div class="form-element w-75 ml-auto mr-auto">
                     <label asp-for="WetWeatherPace" class="control-label float-left">Wet weather pace</label>
                     <input asp-for="WetWeatherPace" class="form-control" />
                     <span asp-validation-for="WetWeatherPace" class="text-danger"></span>
@@ -49,45 +49,37 @@
             </div>
             <div class="w-50">
                 <div class="float-right">
-                    <div class="form-group w-75 ml-auto mr-auto">
-                        <label asp-for="MinTyreWear" class="control-label float-left">Minimum wear of the tyre</label>
-                        <input asp-for="MinTyreWear" class="form-control" />
-                        <span asp-validation-for="MinTyreWear" class="text-danger"></span>
-                    </div>
-                    <div class="form-group w-75 ml-auto mr-auto">
-                        <label asp-for="MaxTyreWear" class="control-label float-left">Maximum wear of the tyre</label>
-                        <input asp-for="MaxTyreWear" class="form-control" />
-                        <span asp-validation-for="MaxTyreWear" class="text-danger"></span>
-                    </div>
-                    <div class="form-group w-75 ml-auto mr-auto">
-                        <label asp-for="MaximumRNG" class="control-label float-left">Maximum RNG modifier</label>
-                        <input asp-for="MaximumRNG" class="form-control" />
-                        <span asp-validation-for="MaximumRNG" class="text-danger"></span>
-                    </div>
-                    <div class="form-group w-75 ml-auto mr-auto">
-                        <label asp-for="MinimumRNG" class="control-label float-left">Minimum RNG modifier</label>
-                        <input asp-for="MinimumRNG" class="form-control" />
-                        <span asp-validation-for="MinimumRNG" class="text-danger"></span>
-                    </div>
-                    <div class="form-group w-75 ml-auto mr-auto">
+                    <div class="form-element w-75 ml-auto mr-auto">
                         <label asp-for="ChassisReliability" class="control-label float-left">Chassis reliability modifier</label>
                         <input asp-for="ChassisReliability" class="form-control" />
                         <span asp-validation-for="ChassisReliability" class="text-danger"></span>
                     </div>
-                    <div class="form-group w-75 ml-auto mr-auto">
+                    <div class="form-element w-75 ml-auto mr-auto">
                         <label asp-for="DriverReliability" class="control-label float-left">Driver reliability modifier</label>
                         <input asp-for="DriverReliability" class="form-control" />
                         <span asp-validation-for="DriverReliability" class="text-danger"></span>
                     </div>
+                    <div class="form-element slider-element w-75 ml-auto mr-auto">
+                        <label>Tyre wear modifier</label>
+                        <div id="tyre-wear-slider"></div>
+                        <input id="min-tyre-wear" type="hidden" asp-for="MinTyreWear" />
+                        <input id="max-tyre-wear" type="hidden" asp-for="MaxTyreWear" />
+                    </div>
+                    <div class="form-element slider-element w-75 ml-auto mr-auto">
+                        <label>RNG modifier</label>
+                        <div id="rng-slider"></div>
+                        <input id="min-rng" type="hidden" asp-for="MinimumRNG" />
+                        <input id="max-rng" type="hidden" asp-for="MaximumRNG" />
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="form-group fullwidth ml-auto mr-auto">
+        <div class="form-element fullwidth ml-auto mr-auto">
             <label asp-for="TraitDescription" class="control-label float-left">Description</label>
             <input asp-for="TraitDescription" class="form-control" />
             <span asp-validation-for="TraitDescription" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="form-element">
             <input type="submit" value="Create" class="btn fullborder fullwidth" />
         </div>
     </form>
@@ -98,3 +90,11 @@
         </a>    
     </div>
 </div>
+
+<script type="text/javascript">
+    var tyreslider = document.getElementById("tyre-wear-slider");
+    createSlider(tyreslider, -5, 5, "min-tyre-wear", "max-tyre-wear", 0, 0);
+
+    var rngslider = document.getElementById("rng-slider");
+    createSlider(rngslider, -10, 10, "min-rng", "max-rng", 0, 0);
+</script>

@@ -19,13 +19,13 @@
                     <td>@Html.DisplayFor(modelItem => item.DriverNumber)</td>
                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
                     <td>@(ViewBag.year - item.DateOfBirth.Year)</td>
-                    <td><a asp-action="AddDriver" asp-route-id="@ViewBag.seasonId" asp-route-globalDriverId="@item.Id" class="btn fullborder">Add</a></td>
+                    <td><a asp-action="AddDriver" asp-route-seasonID="@ViewBag.seasonId" asp-route-globalDriverID="@item.Id" class="btn fullborder">Add</a></td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <a class="btn float-left" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+    <a class="btn float-left" asp-action="Detail" asp-route-seasonID="@ViewBag.seasonId">
         <i class="fas fa-arrow-alt-circle-left"></i> Back
     </a>
 </div>

@@ -24,8 +24,7 @@ namespace FormuleCirkelEntity.Services
 
         public async Task<List<Track>> GetTracks(bool noFilter = false)
         {
-            return await Data.If(noFilter, res => res.IgnoreQueryFilters())
-                .AsNoTracking().ToListAsync();
+            return await Data.If(noFilter, res => res.IgnoreQueryFilters()).AsNoTracking().ToListAsync();
         }
 
         public async Task<Track> GetTrackById(int id, bool noFilter = false)

@@ -1,0 +1,6 @@
+﻿<script type="text/javascript">
+    function localiseLocalstorageKey(key, purpose) { return purpose + "." + "(ViewContext.ControllerName()).(ViewContext.ActionName())" + "." + key; }
+    function setUserPreference(key, value) { if (!!localStorage) { localStorage.setItem(localiseLocalstorageKey(key, "userPreference"), value); } }
+    function readUserPreference(key) { return !!localStorage ? localStorage.getItem(localiseLocalstorageKey(key, "userPreference")) : undefined; }
+    function deleteUserPreference(key) { if (!!localStorage) { localStorage.removeItem(localiseLocalstorageKey(key, "userPreference")); } }
+</script>

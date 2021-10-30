@@ -7,33 +7,21 @@
     <h1>@ViewData["Title"]</h1>
     <form id="account" method="post">
         <h4>Log in with a registered account.</h4>
-        <hr />
         <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="form-group">
+        <div class="form-element">
             <label asp-for="Username"></label>
             <input asp-for="Username" class="form-control" />
             <span asp-validation-for="Username" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="form-element">
             <label asp-for="Password"></label>
             <input asp-for="Password" class="form-control" />
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <div class="checkbox">
-                <label asp-for="RememberMe">
-                    <input asp-for="RememberMe" />
-                    @Html.DisplayNameFor(m => m.RememberMe)
-                </label>
-            </div>
-        </div>
-        <div class="form-group">
+        <div class="form-element">
             <button type="submit" class="btn fullborder">Log in</button>
         </div>
-        <div class="form-group">
-            <p>
-                <a id="forgot-password" asp-action="ForgotPassword">Forgot your password?</a>
-            </p>
+        <div class="form-element">
             <p>
                 <a asp-action="Register">Register as a new user</a>
             </p>

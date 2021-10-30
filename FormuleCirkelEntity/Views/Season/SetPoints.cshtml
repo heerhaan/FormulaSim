@@ -9,7 +9,7 @@
 
     @using (Html.BeginForm())
     {
-        <div class="form-group">
+        <div class="form-element">
             @Html.TextBoxFor(p => p.SeasonId, new { style = "display: none;" })
         </div>
 
@@ -39,7 +39,7 @@
         </table>
     }
 
-    <a asp-action="Settings" asp-route-id="@Model.SeasonId" class="btn float-left">
+    <a asp-action="Settings" asp-route-seasonID="@Model.SeasonId" class="btn float-left">
         <i class="fas fa-arrow-alt-circle-left"></i> Back
     </a>
 

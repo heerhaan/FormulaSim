@@ -2,129 +2,12 @@
 
 @{
     ViewData["Title"] = "WDC Standings";
-    int increment = 0;
 }
 
 <div class="d-inline-block">
     <div id="graphic">
         <h1 class="text-left">World Drivers' Championship - @Html.DisplayFor(model => model.Year)</h1>
-
-        <table class="ctable standings-border fullborder">
-            <thead>
-                <tr>
-                    <th class="fullborder">
-                        POS
-                    </th>
-                    <th class="fullborder">
-                        No
-                    </th>
-                    <th class="fullborder">
-                        Driver
-                    </th>
-                    <th class="fullborder">
-                        Team
-                    </th>
-                    @foreach (var track in Model.Tracks)
-                    {
-                        <th class="fullborder">@(track.Location.Substring(0, 3).ToUpper())
-                            <br /><span class="flag flag-@(track.Country) ff-sm"></span></th>
-                    }
-                    <th class="fullborder">
-                        Pts
-                    </th>
-                    <th class="fullborder">
-                        Avg
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.SeasonDrivers)
-                {
-                    <tr>
-                        <td>
-                            <b>@(1 + increment)</b>
-                        </td>
-                        <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
-                            <b>@Html.DisplayFor(modelItem => item.Driver.DriverNumber)</b>
-                        </td>
-                        <td class="text-left pr-2">
-                            <span class="ml-cel"><span class="flag flag-@(item.Driver.Country) ff-sm flag-margin"></span>
-                            @Html.DisplayFor(modelItem => item.Driver.Name)</span>
-                        </td>
-                        <td style="background-color:@(item.SeasonTeam.Colour);color:@(item.SeasonTeam.Accent);">
-                            <span class="pl-1 pr-1">@item.SeasonTeam.Name</span>
-                        </td>
-                        @foreach (var round in Model.Rounds)
-                        {
-                            DriverResult result = item.DriverResults.FirstOrDefault(r => r.RaceId == round);
-                            if (result is null || result.Position == 0)
-                            {
-                                <td><span>-</span></td>
-                            }
-                            else
-                            {
-                                if (result.Status == Status.DNF)
-                                {
-                                    <td class="result-dnf">
-                                        DNF
-                                        @if (result.Grid == 1) { <b class="pole">P</b> }
-                                    </td>
-                                }
-                                else if (result.Status == Status.DSQ)
-                                {
-                                    <td class="badge-dsq">
-                                        DSQ
-                                        @if (result.Grid == 1) { <b class="pole">P</b> }
-                                    </td>
-                                }
-                                else if (result.Position == 1)
-                                {
-                                    <td class="badge-first">
-                                        @result.Position
-                                        @if (result.Grid == 1) { <b class="pole">P</b> }
-                                    </td>
-                                }
-                                else if (result.Position == 2)
-                                {
-                                    <td class="badge-second">
-                                        @result.Position
-                                        @if (result.Grid == 1) { <b class="pole">P</b> }
-                                    </td>
-                                }
-                                else if (result.Position == 3)
-                                {
-                                    <td class="badge-third">
-                                        @result.Position
-                                        @if (result.Grid == 1) { <b class="pole">P</b> }
-                                    </td>
-
-                                }
-                                else if (result.Position <= Model.LastPointPos)
-                                {
-                                    <td class="result-points">
-                                        @result.Position
-                                        @if (result.Grid == 1) { <b class="pole">P</b> }
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td class="result-none">
-                                        @result.Position
-                                        @if (result.Grid == 1) { <b class="pole">P</b> }
-                                    </td>
-                                }
-                            }
-                        }
-                        <td>
-                            <span>@Html.DisplayFor(modelItem => item.Points)</span>
-                        </td>
-                        <td>
-                            <span class='alt-font ml-1'>@(Model.Averages[increment++])</span>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div id="driver-standings"></div>
     </div>
     <div class="flex-row justify-content-between">
         <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')"><i class="fas fa-image fa-2x"></i></button>
@@ -134,7 +17,129 @@
     <canvas id="standingsChart" style="display: none;"></canvas>
 </div>
 
-<script>
+<script id="driver-standings-template" type="text/x-handlebars-template">
+    <table class="ctable standings-border fullborder">
+        <thead>
+            <tr>
+                <th class="fullborder">POS</th>
+                <th class="fullborder">No</th>
+                <th class="fullborder">Driver</th>
+                <th class="fullborder">Team</th>
+                {{#each Tracks}}
+                <th class="fullborder">
+                    <div>{{trimString this.Location 3}}</div><span class="flag flag-{{this.Country}} ff-sm"></span>
+                </th>
+                {{/each}}
+                <th class="fullborder">Pts</th>
+                <th class="fullborder">Avg</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each SeasonDrivers as | iterDriver |}}
+            <tr>
+                <td><b>{{getIncrementingValue}}</b></td>
+                <td style="background-color:{{iterDriver.SeasonTeam.Colour}};color:{{iterDriver.SeasonTeam.Accent}}">
+                    <b>{{iterDriver.Driver.DriverNumber}}</b>
+                </td>
+                <td class="text-left pr-2">
+                    <div class="ml-cel">
+                        <span class="flag flag-{{iterDriver.Driver.Country}} ff-sm flag-margin"></span>{{iterDriver.Driver.Name}}
+                    </div>
+                </td>
+                <td style="background-color:{{iterDriver.SeasonTeam.Colour}};color:{{iterDriver.SeasonTeam.Accent}}">
+                    <span class="pl-1 pr-1">{{iterDriver.SeasonTeam.Name}}</span>
+                </td>
+                {{#each ../Rounds}}
+                <td class="{{returnResultClassName iterDriver.DriverResults this}}">
+                    {{returnResultValue iterDriver.DriverResults this}}
+                </td>
+                {{/each}}
+                <td>{{iterDriver.Points}}</td>
+                <td>{{getAverageValue ../Averages}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</script>
+
+<script type="text/javascript">
+    var standingsData;
+    var lastPointPosition = @Model.LastPointPos;
+    var increment = 0;
+
+        $(document).ready(function () {
+        // Registratie van Handlebars helpers vindt hier plaats
+        Handlebars.registerHelper("trimString", function (passedString, charCount) {
+            var retString = passedString.substring(0, charCount).toUpperCase();
+            return new Handlebars.SafeString(retString);
+        });
+        Handlebars.registerHelper("returnResultClassName", function (driverResults, raceid) {
+            var raceResult = driverResults.find(res => { return res.RaceId == raceid; });
+            if (raceResult == null) { return; }
+            return returnResultClass(raceResult.Status, raceResult.Position);
+        });
+        Handlebars.registerHelper("returnResultValue", function (driverResults, raceid) {
+            if (driverResults == null) { return "-"; }
+            var raceResult = driverResults.find(res => { return res.RaceId == raceid; });
+            // Retourneert een lege cel als er geen resultaat of positie is
+            if (raceResult == null || raceResult.Position == 0) { return "-"; }
+            else {
+                var cellResult = contentResultCell(raceResult.Status, raceResult.Position, raceResult.Grid);
+                return new Handlebars.SafeString(cellResult);
+            }
+        });
+        Handlebars.registerHelper("getIncrementingValue", function () {
+            return increment + 1;
+        });
+        Handlebars.registerHelper("getAverageValue", function (averages) {
+            var iterAverage = averages[increment];
+            increment = increment + 1;
+            return iterAverage;
+        });
+
+        // Opstart data ophalen
+        $.post("@Url.Action("GetDriverStandingsData", new { seasonId = Model.SeasonId })")
+            .done(retrievalDone)
+            .fail(retrievalFail);
+    });
+
+    function retrievalDone(res) {
+        standingsData = res;
+        var standingsTemplate = $("#driver-standings-template").html();
+        var templateScript = Handlebars.compile(standingsTemplate);
+        var htmlResult = templateScript(standingsData);
+        $("#driver-standings").html(htmlResult);
+    }
+
+    function retrievalFail(res, status) {
+        console.log({ result: res, status: status }); // Errors moeten nog wel afgehandeld worden
+    }
+
+    function returnResultClass(status, position) {
+        // Geeft een klasse voor opmaak terug afhankelijk van de opmaak
+        if (status == 1) { return "result-dnf"; }
+        else if (status == 2) { return "badge-dsq"; }
+        else if (position == 1) { return "badge-first"; }
+        else if (position == 2) { return "badge-second"; }
+        else if (position == 3) { return "badge-third"; }
+        else if (position <= lastpointpos) { return "result-points"; }
+        else { return "result-none"; }
+    }
+
+    function contentResultCell(status, position, grid) {
+        var retString = "";
+        // Tekst voor de cel op basis van status coureur of finishende positie
+        if (status == 1) { retString += "DNF"; }
+        else if (status == 2) { retString += "DSQ"; }
+        else { retString += position; }
+        // Voeg ook de kenmerk toe voor de polesitter
+        if (grid == 1) { retString += " <b class='pole'>P</b>" }
+        return retString;
+    }
+</script>
+
+<script type="text/javascript">
+    // Het ophalen van de gegevens en genereren van de grafiek wordt in deze script-tag gemaakt
     const polepoint = @Model.PolePoints;
     const lastpointpos = @Model.LastPointPos;
     const points = @(Html.Raw(Model.Points));
@@ -184,21 +189,35 @@
             roundlabels.push(roundlabel);
         }
 
-        var chart = new Chart(ctx, {
+        const chartBackgroundFiller = {
+            beforeDraw: (chart) => {
+                const ctx = chart.canvas.getContext('2d');
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = bodystyle.backgroundColor;
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
+            }
+        };
+
+        let chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: roundlabels,
                 datasets: driversets
             },
+            plugins: [chartBackgroundFiller],
             options: {
-                title: {
-                    display: true,
-                    text: 'World Driver Championship',
-                    fontColor: '#e6e6e6'
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'World Driver Championship',
+                        fontColor: '#e6e6e6'
+                    }
                 },
                 scales: {
-                    xAxes: [{
-                        scaleLabel: {
+                    xAxes: {
+                        title: {
                             display: true,
                             labelString: 'Rounds',
                             fontColor: '#e6e6e6'
@@ -209,10 +228,10 @@
                         gridLines: {
                             color: "rgba(0, 0, 0, 0.7)",
                         }
-                    }],
-                    yAxes: [{
+                    },
+                    yAxes: {
                         display: true,
-                        scaleLabel: {
+                        title: {
                             display: true,
                             labelString: 'Points',
                             fontColor: '#e6e6e6'
@@ -224,7 +243,7 @@
                             color: "rgba(0, 0, 0, 0.7)",
                         },
                         position: 'right'
-                    }]
+                    },
                 },
                 elements: {
                     line: {
@@ -237,23 +256,8 @@
                         fontSize: 13,
                         fontColor: '#e6e6e6'
                     }
-                },
-                chartCanvas: {
-                    backgroundColor: bodystyle.backgroundColor
                 }
             }
-        });
-
-        Chart.pluginService.register({
-            beforeDraw: function (chart, easing) {
-                // Makes it possible to give a backgroundcolor to the canvas
-            if (chart.config.options.chartCanvas && chart.config.options.chartCanvas.backgroundColor) {
-                var ctx = chart.chart.ctx;
-                ctx.save();
-                ctx.fillStyle = chart.config.options.chartCanvas.backgroundColor;
-                ctx.fillRect(0, 0, chart.chart.width, chart.chart.height);
-                ctx.restore();
-            }}
         });
 
         let legends = chart.legend.legendItems;
@@ -263,8 +267,8 @@
     }
 
     function getStandingsGraph() {
-        fetch("/Home/@Model.SeasonId/GetDriverGraphData", { method: "POST" })
-            .then(response => response.json())
-            .then(result => drawStandingsChart(result));
+        $.get("@Url.Action("GetDriverGraphData", new { Model.SeasonId })", function (res) {
+            drawStandingsChart(res);
+        });
     }
 </script>

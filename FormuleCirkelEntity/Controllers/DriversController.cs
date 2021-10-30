@@ -81,7 +81,6 @@ namespace FormuleCirkelEntity.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var item = await _drivers.GetDriverById(id, true);
-
             if (item == null)
                 return NotFound();
 

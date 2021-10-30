@@ -5,52 +5,58 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create" class="btn fullborder mr-auto">
+<div class="d-inline-block">
+    <h1>Index</h1>
+    <a asp-action="Create" class="btn fullborder float-left">
         <i class="fas fa-plus"></i><span class="ml-1">New</span>
     </a>
-</p>
-<table class="ctable fullborder fullwidth min-width-index-table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ValueKey)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MinDev)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaxDev)
-            </th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValueKey)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MinDev)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxDev)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MinMaxDevId">
-                    <i class="fas fa-wrench fa-2x"></i>
-                </a>
-            </td>
-            <td>
-                <a asp-action="Delete" asp-route-id="@item.MinMaxDevId">
-                    <i class="fas fa-trash-alt fa-2x"></i>
-                </a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+    <table class="ctable fullborder fullwidth min-width-index-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ValueKey)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MinDev)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaxDev)
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ValueKey)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MinDev)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaxDev)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.MinMaxDevId">
+                            <i class="fas fa-wrench fa-2x"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.MinMaxDevId">
+                            <i class="fas fa-trash-alt fa-2x"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="float-left">
+        <a class="btn" asp-action="Index" asp-controller="Championships">
+            <i class="fas fa-arrow-alt-circle-left"></i> Back
+        </a>
+    </div>
+</div>

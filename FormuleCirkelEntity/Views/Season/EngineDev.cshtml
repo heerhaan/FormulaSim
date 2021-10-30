@@ -4,16 +4,30 @@
     ViewData["Title"] = "Engine development";
 }
 
+<style>
+    .slider-element {
+        margin-left: 1em;
+        margin-bottom: 40px;
+    }
+</style>
+
 <div class="d-inline-block w-60">
     <h1>Engine development</h1>
 
-    <div class="row justify-content-between mb-1">
-        <div>
-            <button id="develop" class="btn fullborder">Develop</button>
-            <input id="min" class="input-style fullheight" type="number" placeholder="Min. RNG" />
-            <input id="max" class="input-style fullheight" type="number" placeholder="Max. RNG" />
+    <div class="flex-row justify-content-between mb-1">
+        <div class="flex-row">
+            <div>
+                <button id="rateddevelop" class="btn fullborder">Default dev</button>
+                <button id="develop" class="btn fullborder">Set dev</button>
+            </div>
+            <div class="slider-element">
+                <div id="dev-slider"></div>
+                <input id="min-rng" type="hidden" />
+                <input id="max-rng" type="hidden" />
+            </div>
         </div>
-        <button id="custom" class="btn fullborder">Custom</button>
+        <button id="showcustom" class="btn fullborder">Custom dev</button>
+        <button id="custom" class="btn fullborder customdev" style="display:none;">Custom</button>
     </div>
 
     <table id="graphic" class="ctable fullborder fullwidth">
@@ -23,7 +37,7 @@
                 <th onclick="hideElements()" style="cursor:pointer;">Old</th>
                 <th onclick="hideElements()" style="cursor:pointer;">Change</th>
                 <th onclick="hideElements()" style="cursor:pointer;">New</th>
-                <th class="w-25">Custom</th>
+                <th class="w-25 customdev" style="display:none;">Custom</th>
             </tr>
         </thead>
         <tbody id="devtable">
@@ -36,7 +50,7 @@
                         <td id="old-value-@number" class="onclick-hide">@engine.Power</td>
                         <td id="custom-change-@number">?</td>
                         <td id="custom-new-@number" class="onclick-hide">-</td>
-                        <td>
+                        <td class="customdev" style="display:none;">
                             <input id="custom-min-@number" class="input-style" type="number" placeholder="Min. RNG" />
                             <input id="custom-max-@number" class="input-style" type="number" placeholder="Max. RNG" />
                         </td>
@@ -48,8 +62,8 @@
     </table>
     <button id="save" class="btn fullborder fullwidth">Save</button>
 
-    <div class="row justify-content-between">
-        <a class="btn" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+    <div class="flex-row justify-content-between">
+        <a class="btn" asp-action="Detail" asp-route-seasonID="@ViewBag.seasonId">
             <i class="fas fa-arrow-alt-circle-left"></i> Back
         </a>
         <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
@@ -62,12 +76,16 @@
 
 <script>
     $(document).ready(function () {
+        // Creates and handles the slider of the dev
+        var devSlider = document.getElementById("dev-slider");
+        createSlider(devSlider, -5, 5, "min-rng", "max-rng", 0, 0);
+
         $("#save").hide();
 
         $('#develop').click(function () {
             var number = 1;
-            var min = Math.ceil(document.getElementById("min").value);
-            var max = Math.floor(document.getElementById("max").value);
+            var min = Math.ceil(document.getElementById("min-rng").value);
+            var max = Math.floor(document.getElementById("max-rng").value);
             $('#devtable').children('tr').each(function () {
                 var element = document.getElementById("old-value-" + number);
                 var text = element.textContent;
@@ -82,6 +100,14 @@
             });
 
             $("#save").show();
+        });
+
+        $("#showcustom").click(function () {
+            var customElems = document.getElementsByClassName("customdev");
+            for (var i = 0; i < customElems.length; i++) {
+                customElems[i].style.display = "initial";
+            }
+            $("#showcustom").css('display', 'none');
         });
 
         $('#custom').click(function () {

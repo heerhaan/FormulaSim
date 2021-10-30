@@ -24,7 +24,7 @@
                     <td>@Html.DisplayFor(modelItem => item.Name)</td>
                     <td>@Html.DisplayFor(modelItem => item.Location)</td>
                     <td>@Html.DisplayFor(modelItem => item.Specification)</td>
-                    <td data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipModifyRaceBtn">
+                    <td data-toggle="tooltip" data-placement="right" title="@TextResources.TooltipModifyRaceButton">
                         <a asp-action="ModifyRace" asp-route-id="@ViewBag.seasonId" asp-route-trackId="@item.Id">
                             <i class="fas fa-cog fa-2x"></i>
                         </a>
@@ -40,7 +40,7 @@
         </tbody>
     </table>
 
-    <a class="btn float-left" asp-controller="Season" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+    <a class="btn float-left" asp-controller="Season" asp-action="Detail" asp-route-seasonID="@ViewBag.seasonId">
         <i class="fas fa-arrow-alt-circle-left"></i> Back
     </a>
 </div>

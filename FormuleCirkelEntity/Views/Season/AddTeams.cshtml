@@ -19,12 +19,12 @@
                         <span class="flag flag-@(item.Country) ff-sm flag-margin"></span>
                         @Html.DisplayFor(modelItem => item.Abbreviation)
                     </td>
-                    <td><a asp-action="AddTeam" asp-route-id="@ViewBag.seasonId" asp-route-globalTeamId="@item.Id" class="btn fullborder fullwidth">Add</a></td>
+                    <td><a asp-action="AddTeam" asp-route-seasonID="@ViewBag.seasonId" asp-route-globalTeamID="@item.Id" class="btn fullborder fullwidth">Add</a></td>
                 </tr>
             }
         </tbody>
     </table>
-    <a class="btn float-left" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+    <a class="btn float-left" asp-action="Detail" asp-route-seasonID="@ViewBag.seasonId">
         <i class="fas fa-arrow-alt-circle-left"></i> Back
     </a>
 </div>

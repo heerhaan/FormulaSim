@@ -32,19 +32,23 @@ html {
     }
 }
 
-body {
+.body-wrapper {
     display: flex;
     flex-direction: column;
     width: 100%;
     min-height: 100vh;
-    line-height: 1.0;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 1em;
 }
 
-main {
+.d-inline-block {
+    margin-top: 1em;
+}
+
+.page-content {
     flex: 1;
     text-align: center;
+    padding-left: 13.75em;
 }
 
 h1 {
@@ -74,29 +78,12 @@ a.navbar-brand {
     padding-right: 5px;
 }
 
-footer {
-    position: relative;
-    width: 100%;
-    white-space: nowrap;
-    line-height: 60px;
-}
-
-.theme-button {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-}
-
-.theme-buttons {
-    float: right;
-}
-
 .cursor-pointer:hover {
     cursor: pointer;
 }
 
 .ctable {
-    width: 96vw;
+    /*width: 96vw;*/
     margin-bottom: 10px;
     text-align: center;
     line-height: normal;
@@ -132,12 +119,16 @@ button.accept-policy {
     line-height: inherit;
 }
 
-ul li {
-    list-style-position: inside;
-}
-
 i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
     opacity: 0.7;
+}
+
+.redirect {
+    cursor: pointer;
+}
+
+.form-element {
+    margin-bottom: 0.5em;
 }
 
 /* Home page styling */
@@ -181,6 +172,11 @@ i.fas:hover, i.fab:hover, i.far:hover, .link:hover {
 
 .min-width-index-table {
     min-width:800px;
+}
+
+.slider-element {
+    min-width: 350px;
+    margin-bottom: 35px;
 }
 
 .flag-text {
@@ -267,9 +263,42 @@ dl.inline-flex {
     width: auto !important;
 }
 
+.single-line {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .m-sides {
     margin-left: 2.5%;
     margin-right: 2.5%;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.mr-auto {
+    margin-right: auto;
+}
+
+.ml-1 {
+    margin-left: 0.25rem;
+}
+
+.mr-1 {
+    margin-right: 0.25rem;
 }
 
 .table-counter {
@@ -306,6 +335,10 @@ dl.inline-flex {
 /* Modifications for the Bootstrap badges */
 .badge-team {
     border: 1px solid white;
+}
+
+.badge-number {
+    max-width: 2.5em;
 }
 
 .badge-first {

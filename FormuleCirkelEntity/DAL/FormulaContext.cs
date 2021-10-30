@@ -39,6 +39,7 @@ namespace FormuleCirkelEntity.DAL
         public DbSet<Tyre> Tyres { get; set; }
         public DbSet<Strategy> Strategies { get; set; }
         public DbSet<TyreStrategy> TyreStrategies { get; set; }
+        public DbSet<MinMaxDevRange> MinMaxDevRange { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -147,9 +148,6 @@ namespace FormuleCirkelEntity.DAL
             return builder.Model.GetEntityTypes()
                 .Where(et => typeof(IArchivable).IsAssignableFrom(et.ClrType));
         }
-
-        public DbSet<MinMaxDevRange> MinMaxDevRange { get; set; }
-
         #endregion
     }
 }

@@ -44,15 +44,14 @@ namespace FormuleCirkelEntity
 
             services.AddMvc()
                 .WithRazorPagesAtContentRoot()
+                .AddRazorRuntimeCompilation()
+                .AddNewtonsoftJson()
                 .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
 
-            services.AddControllers()
-                .AddNewtonsoftJson();
-
             services.AddDbContext<FormulaContext>(options => options.UseSqlServer(Configuration["DatabaseSettings:ConnectionString"]));
-            services.AddDefaultIdentity<SimUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                    .AddRoles<IdentityRole>()
-                    .AddEntityFrameworkStores<FormulaContext>();
+            services.AddIdentity<SimUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+                    .AddEntityFrameworkStores<FormulaContext>()
+                    .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -90,6 +89,7 @@ namespace FormuleCirkelEntity
             services.AddScoped(typeof(IDataService<>), typeof(DataService<>));
             services.AddScoped(typeof(IChampionshipService), typeof(ChampionshipService));
             services.AddScoped(typeof(IDriverService), typeof(DriverService));
+            services.AddScoped(typeof(IDriverResultService), typeof(DriverResultService));
             services.AddScoped(typeof(IEngineService), typeof(EngineService));
             services.AddScoped(typeof(IRubberService), typeof(RubberService));
             services.AddScoped(typeof(IRaceService), typeof(RaceService));
@@ -100,7 +100,7 @@ namespace FormuleCirkelEntity
             services.AddScoped(typeof(ISeasonTeamService), typeof(SeasonTeamService));
             services.AddScoped(typeof(ITraitService), typeof(TraitService));
             services.AddScoped(typeof(ITyreStrategyService), typeof(TyreStrategyService));
-            // Custom services related to [fill in]
+
             services.AddTransient<RaceResultGenerator>();
             services.AddTransient<RaceBuilder>();
             services.AddTransient<SeasonSettingsValidator>();

@@ -11,30 +11,30 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
                 <div class="col-8">
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="Name" class="control-label float-left"></label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="Principal" class="control-label float-left">Team principal</label>
                         <input asp-for="Principal" class="form-control" />
                         <span asp-validation-for="Principal" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="Colour" class="control-label float-left"></label>
                         <input asp-for="Colour" type="color" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="Accent" class="control-label float-left"></label>
                         <input asp-for="Accent" type="color" class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="Chassis" class="control-label float-left"></label>
                         <input asp-for="Chassis" class="form-control" />
                         <span asp-validation-for="Chassis" class="text-danger"></span>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-element row">
                         <div class="col-10">
                             <label asp-for="Reliability" class="control-label float-left"></label>
                             <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right"
@@ -49,41 +49,41 @@
                             </button>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="EngineId" value="Motor" class="control-label float-left">Engine</label>
                         <select asp-for="EngineId" class="form-control" asp-items="@ViewBag.engines"></select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="RubberId" value="Rubber" class="control-label float-left">Tyre Manufacturer</label>
                         <select asp-for="RubberId" class="form-control" asp-items="@ViewBag.rubbers"></select>
                     </div>
                 </div>
                 <div class="col-4">
                     <h4>Specifications</h4><i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipTeamSpecification"></i>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="Topspeed" class="control-label float-left"></label>
                         <input asp-for="Topspeed" class="form-control" />
                         <span asp-validation-for="Topspeed" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="Acceleration" class="control-label float-left"></label>
                         <input asp-for="Acceleration" class="form-control" />
                         <span asp-validation-for="Acceleration" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="Handling" class="control-label float-left"></label>
                         <input asp-for="Handling" class="form-control" />
                         <span asp-validation-for="Handling" class="text-danger"></span>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-element">
                 <input type="submit" value="Save" class="btn fullborder fullwidth" />
             </div>
         </form>
 
         <div class="float-left">
-            <a class="btn" asp-action="Detail" asp-route-id="@ViewBag.seasonId">
+            <a class="btn" asp-action="Detail" asp-route-seasonID="@ViewBag.seasonId">
                 <i class="fas fa-arrow-alt-circle-left"></i> Back
             </a>
         </div>

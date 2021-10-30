@@ -27,9 +27,9 @@ namespace FormuleCirkelEntity.Controllers
         }
 
         [SortResult(nameof(Track.Location)), PagedResult]
-        public override async Task<IActionResult> Index()
+        public override Task<IActionResult> Index()
         {
-            return base.Index().Result;
+            return Task.FromResult(base.Index().Result);
         }
 
         [Authorize(Roles = "Admin")]

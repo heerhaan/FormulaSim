@@ -11,26 +11,26 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="flex-row">
                 <div class="col-6">
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="SeasonNumber" class="control-label float-left">Year</label>
                         <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="left" title="@Constants.ToolTipSeasonSettingsYear"></i>
                         <input asp-for="SeasonNumber" class="form-control" />
                         <span asp-validation-for="SeasonNumber" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="PolePoints" class="control-label float-left">Points for pole</label>
                         <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="left" title="@Constants.ToolTipSeasonSettingsPolePoints"></i>
                         <input asp-for="PolePoints" class="form-control" />
                         <span asp-validation-for="PolePoints" class="text-danger"></span>
                     </div>
                     <div class="flex-row">
-                        <div class="form-group col-6 mr-1">
+                        <div class="form-element col-6 mr-1">
                             <label asp-for="PitMin" class="control-label float-left">Minimum value pitstop</label>
                             <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="left" title="@Constants.ToolTipSeasonSettingsPitMin"></i>
                             <input asp-for="PitMin" class="form-control" />
                             <span asp-validation-for="PitMin" class="text-danger"></span>
                         </div>
-                        <div class="form-group col-6 ml-1">
+                        <div class="form-element col-6 ml-1">
                             <label asp-for="PitMax" class="control-label float-left">Maximum value pitstop</label>
                             <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="left" title="@Constants.ToolTipSeasonSettingsPitMax"></i>
                             <input asp-for="PitMax" class="form-control" />
@@ -39,25 +39,25 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="QualificationRNG" class="control-label float-left">Maximum RNG in Qualifications</label>
                         <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipSeasonSettingsQualyRng"></i>
                         <input asp-for="QualificationRNG" class="form-control" />
                         <span asp-validation-for="QualificationRNG" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="QualificationRemainingDriversQ2" class="control-label float-left">Drivers in Q2</label>
                         <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipSeasonSettingsQualyQ2"></i>
                         <input asp-for="QualificationRemainingDriversQ2" class="form-control" />
                         <span asp-validation-for="QualificationRemainingDriversQ2" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="QualificationRemainingDriversQ3" class="control-label float-left">Drivers in Q3</label>
                         <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipSeasonSettingsQualyQ3"></i>
                         <input asp-for="QualificationRemainingDriversQ3" class="form-control" />
                         <span asp-validation-for="QualificationRemainingDriversQ3" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-element">
                         <label asp-for="QualyBonus" class="control-label float-left">Grid bonus</label>
                         <i class="fas fa-info-circle float-right" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipSeasonSettingsQualyBonus"></i>
                         <input asp-for="QualyBonus" class="form-control" />
@@ -65,14 +65,14 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group flex-row justify-content-between">
+            <div class="form-element flex-row justify-content-between">
                 <input type="submit" value="Save" class="btn mb-2" />
-                <a asp-action="SetPoints" asp-route-id="@Model.SeasonId" class="btn fullborder">Setup points</a>
+                <a asp-action="SetPoints" asp-route-seasonID="@Model.SeasonId" class="btn fullborder">Setup points</a>
             </div>
         </form>
     </div>
 
-    <a asp-action="Detail" asp-route-id="@Model.SeasonId" class="btn float-left">
+    <a asp-action="Detail" asp-route-seasonID="@Model.SeasonId" class="btn float-left">
         <i class="fas fa-arrow-alt-circle-left"></i> Back
     </a>
 </div>

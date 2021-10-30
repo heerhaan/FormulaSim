@@ -55,12 +55,15 @@
 .btn {
     background-color: rgb(213, 213, 213);
     color: black;
-    border-color: rgb(53, 205, 255);
 }
     .btn:hover {
         background-color: rgb(230, 230, 230);
         color: black;
     }
+
+.custom-badge {
+    color: white;
+}
 
 #graphic {
     background-color: rgb(235, 235, 235);
@@ -68,6 +71,14 @@
 
 i.fas, i.fab, i.far, .link {
     color: black;
+}
+
+.noUi-connect {
+    background: rgb(53, 205, 255);
+}
+
+.noUi-handle {
+    background-color: rgb(213, 213, 213)
 }
 
 .fullborder {
@@ -88,4 +99,22 @@ i.fas, i.fab, i.far, .link {
 
 .rightline {
     border-right: 1px solid rgb(53, 205, 255) !important;
+}
+
+/*Navigation menu*/
+.nav > li > a {
+    color: black;
+}
+
+.nav > li > a:hover, .nav > li > form > button:hover {
+    background-color: rgb(235, 235, 235);
+}
+
+.nav.nav-second-level li {
+    background-color: rgb(235, 235, 235);
+}
+
+li.active {
+    border-left: 3px solid rgb(53, 205, 255) !important;
+    background-color: rgb(235, 235, 235);
 }

@@ -10,12 +10,8 @@
     <div class="flex-row justify-content-between">
         <h3>Power rankings</h3>
         <div>
-            <a asp-controller="Home" asp-action="PastDriverStandings" asp-route-seasonId="@ViewBag.seasonId">
-                <span class="custom-badge badge-light">WDC</span>
-            </a>
-            <a asp-controller="Home" asp-action="PastTeamStandings" asp-route-seasonId="@ViewBag.seasonId">
-                <span class="custom-badge badge-light">WCC</span>
-            </a>
+            <span class="custom-badge badge-light redirect" onclick="window.location.href='@Url.Action("DriverStandings", "Home", new { seasonId = ViewBag.seasonId })'">WDC</span>
+            <span class="custom-badge badge-light redirect" onclick="window.location.href='@Url.Action("TeamStandings", "Home", new { seasonId = ViewBag.seasonId })'">WCC</span>
         </div>
     </div>
     
@@ -24,6 +20,7 @@
             <tr>
                 <th>#</th>
                 <th>Driver</th>
+                <th>Age</th>
                 <th>Skill</th>
                 <th>Rel.</th>
                 <th>Team</th>
@@ -50,6 +47,7 @@
                     { @driver.Driver.Name}
                         </span>
                     </td>
+                    <td>@(ViewBag.number - driver.Driver.DateOfBirth.Year)</td>
                     <td class="onclick-hide">@driver.Skill</td>
                     <td><span class="alt-color small">@driver.Reliability</span></td>
                     <td><span class="badge badge-team fullwidth" 
@@ -74,7 +72,7 @@
         <a class="btn" asp-action="Index">
             <i class="fas fa-arrow-alt-circle-left"></i> Back
         </a>
-        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@Constants.ToolTipImageBtn">
+        <button class="btn" onclick="takeScreenshot('#graphic', '#screenshot')" data-toggle="tooltip" data-placement="right" title="@TextResources.TooltipImageButton">
             <i class="fas fa-image fa-2x"></i>
         </button>
     </div>

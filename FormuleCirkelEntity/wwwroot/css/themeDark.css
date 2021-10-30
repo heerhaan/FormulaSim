@@ -69,7 +69,6 @@
 .btn {
     background-color: rgb(40, 44, 52);
     color: white;
-    border-color: rgb(189, 33, 48);
 }
     .btn:hover {
         background-color: black;
@@ -82,6 +81,14 @@
 
 i.fas, i.fab, i.far, .link {
     color: white;
+}
+
+.noUi-connect {
+    background: rgb(189, 33, 48);
+}
+
+.noUi-handle {
+    background-color: rgb(52, 58, 64);
 }
 
 .fullborder {
@@ -102,4 +109,19 @@ i.fas, i.fab, i.far, .link {
 
 .rightline {
     border-right: 1px solid rgb(189, 33, 48) !important;
+}
+
+/*Navigation menu*/
+
+.nav > li > a:hover, .nav > li > form > button:hover {
+    background-color: rgb(30,34,39);
+}
+
+.nav.nav-second-level li {
+    background-color: rgb(30,34,39);
+}
+
+li.active {
+    border-left: 3px solid rgb(189, 33, 48) !important;
+    background-color: rgb(30,34,39);
 }

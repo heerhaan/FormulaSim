@@ -70,7 +70,6 @@
 .btn {
     background-color: rgb(32, 32, 32);
     color: white;
-    border-color: rgb(0, 0, 0);
 }
     .btn:hover {
         background-color: rgb(255, 0, 0);
@@ -83,6 +82,14 @@
 
 i.fas, i.fab, i.far, .link {
     color: white;
+}
+
+.noUi-connect {
+    background: rgb(32, 32, 32);
+}
+
+.noUi-handle {
+    background-color: rgb(0, 0, 0);
 }
 
 .fullborder {
@@ -103,4 +110,19 @@ i.fas, i.fab, i.far, .link {
 
 .rightline {
     border-right: 1px solid rgb(255, 215, 0) !important;
+}
+
+/*Navigation menu*/
+
+.nav > li > a:hover, .nav > li > form > button:hover {
+    background-color: rgb(176, 0, 0);
+}
+
+.nav.nav-second-level li {
+    background-color: rgb(176, 0, 0);
+}
+
+li.active {
+    border-left: 3px solid rgb(255, 215, 0) !important;
+    background-color: rgb(176, 0, 0);
 }

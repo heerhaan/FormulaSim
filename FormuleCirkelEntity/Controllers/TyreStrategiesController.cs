@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FormuleCirkelEntity.Services;
+using Microsoft.AspNetCore.Authorization;
+using FormuleCirkelEntity.Filters;
 
 namespace FormuleCirkelEntity.Controllers
 {
@@ -29,46 +31,59 @@ namespace FormuleCirkelEntity.Controllers
             return View(tyres);
         }
 
+        [Authorize(Roles = "Admin")]
+        [Route("TyreCreate")]
         public IActionResult TyreCreate()
         {
-            return View();
+            var newTyre = new Tyre();
+            return View("TyreModify", newTyre);
         }
 
-        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [HttpPost("TyreCreate")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TyreCreate(Tyre tyre)
         {
-            if (ModelState.IsValid)
-            {
-                await _tyreStrats.AddTyre(tyre);
-                await _tyreStrats.SaveChangesAsync();
-                return RedirectToAction(nameof(TyreIndex));
-            }
-            return View(tyre);
+            if (tyre is null) { return NotFound(); }
+            tyre.Id = default;
+            if (!ModelState.IsValid)
+                return View("TyreModify", tyre);
+
+            await _tyreStrats.AddTyre(tyre);
+            await _tyreStrats.SaveChangesAsync();
+            return RedirectToAction(nameof(TyreIndex));
         }
 
+        [Authorize(Roles = "Admin")]
+        [Route("TyreModify/{id}")]
+        [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> TyreEdit(int id)
         {
             var tyre = await _tyreStrats.GetTyreById(id);
-            return View(tyre);
+            if (tyre == null) { return NotFound(); }
+
+            return View("TyreModify", tyre);
         }
 
-        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [HttpPost("TyreModify/{id}")]
         [ValidateAntiForgeryToken]
+        [HttpErrorsToPagesRedirect]
         public async Task<IActionResult> TyreEdit(int id, Tyre tyre)
         {
-            if (tyre is null || id != tyre.Id)
-            {
-                return NotFound();
-            }
+            if (tyre is null) { return NotFound(); }
+            tyre.Id = id;
 
-            if (ModelState.IsValid)
-            {
-                _tyreStrats.UpdateTyre(tyre);
-                await _tyreStrats.SaveChangesAsync();
-                return RedirectToAction(nameof(TyreIndex));
-            }
-            return View(tyre);
+            if (!ModelState.IsValid)
+                return View("TyreModify", tyre);
+
+            var availableTyres = await _tyreStrats.GetTyres();
+            if (availableTyres.FirstOrDefault(res => res.Id == id) is null)
+                return NotFound();
+
+            _tyreStrats.UpdateTyre(tyre);
+            await _tyreStrats.SaveChangesAsync();
+            return RedirectToAction(nameof(TyreIndex));
         }
 
         public async Task<IActionResult> StrategyIndex()

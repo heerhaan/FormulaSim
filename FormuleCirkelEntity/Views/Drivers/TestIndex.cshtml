@@ -1,0 +1,127 @@
+﻿@using FormuleCirkelEntity.ViewModels.Shared
+
+@{
+    ViewBag.Title = "Gebruikers";
+    var crudVariables = new CRUDVariables()
+    {
+        FilterContainerID = "user-list-filter-template",
+
+        DataURL = Url.Action("GetAllUsers"),
+        ListItemTemplate = "user-list-item-template",
+        DetailItemTemplate = "user-detail-template",
+        DetailEmptyTemplate = "user-detail-empty-template",
+        IDProperty = "userid",
+        OnLoadedCallbackHandler = "attachButtonHandlers",
+        OnDetailsCallbackHandler = "attachDetailButtonHandlers"
+    };
+}
+
+@* View configuration *@
+@await Html.PartialAsync("CRUDContent", crudVariables)
+
+@section Scripts {
+    @await Html.PartialAsync("CRUDScripts", crudVariables)
+
+    <script type="text/javascript">
+        var authorisationsTemplate;
+        
+        $(document).ready(function () {
+            Handlebars.registerHelper("formatDateTime", function (dateString, highPrecision) {
+                if (!!dateString) {
+                    var date = new Date(dateString);
+                    var formattedDate = prefix(date.getDate()) + '-' + prefix(date.getMonth() + 1) + '-' + prefix(date.getFullYear(), 4);
+                    var formattedTime = prefix(date.getHours()) + ":" + prefix(date.getMinutes()) + (!!highPrecision ? ":" + prefix(date.getSeconds()) + "." + prefix(date.getMilliseconds(), 3) : "");
+                    return formattedDate + " " + formattedTime;
+                }
+                else { return ""; }
+            });
+
+            Handlebars.registerHelper("mostRecent", function (count, events, options) {
+                var output = "";
+                events = events
+                    .map(e => e.EventDetails)
+                    .sort((l, r) => new Date(l.DateTimeStamp) - new Date(r.DateTimeStamp))
+                    .reverse();
+                for (var i = 0; i < events.length && i < count; i++) {
+                    output += options.fn(events[i]);
+                }
+                if (i === 0) { output = options.inverse(); }
+                return output;
+            });
+
+            authorisationsTemplate = Handlebars.compile($("#user-authorisations-template").html());
+        });
+
+        function prefix(text, minLength) {
+            var prefixed = "" + text;
+            minLength = minLength || 2;
+            while (prefixed.length < minLength) { prefixed = "0" + prefixed; }
+            return prefixed;
+        }
+
+
+        function attachButtonHandlers(users, element) {
+            var container = !!element ? element : $("#@CRUDVariables.ListContentContainerID");
+            container.find(".action-edit").click(function (evt) { evt.stopPropagation(); localSelect(this); loadEdit($(this).data("userid")); });
+            container.find(".action-email-credentials").click(function (evt) { evt.stopPropagation(); localSelect(this); sendWelcomeEmail($(this).data("userid")); });
+        }
+
+        function attachDetailButtonHandlers(user) {
+        }
+
+
+        function loadEdit(userID) {
+            $.get("@Url.Action("EditUser")", { userID: userID }, function (content) { loadEditOrCreate(content, userID); });
+        }
+        function createUser() {
+            $.get("@Url.Action("CreateUser")", function (content) { loadEditOrCreate(content); });
+        }
+
+        function localSelect(item) {
+            selectItem($(item).parentsUntil(".@CRUDVariables.ListItemClass").parent());
+        }
+
+        function loadEditOrCreate(content, returnToUserID) {
+            @(CRUDVariables.LoadEditorContentFunction)(content, $("#user-edit-buttons").html()); //Load content and add buttons to footer
+
+            $("#button-edit-save").click(function () { $("#@CRUDVariables.BodyContentContainerID form").submit(); }); //Handler for save button
+            $("#button-edit-cancel").click(function () { !!returnToUserID ? @(CRUDVariables.LoadDetailsFunction)(returnToUserID) : $("#@CRUDVariables.BodyContentContainerID").empty(); }); //Handler for cancel button
+        }
+    </script>
+    <script id="user-edit-buttons" type="text/x-handlebars-template">
+        <div class="edit-detail-controls">
+            <button id="button-edit-cancel" type="button" class="btn btn-default">Annuleren</button>
+            <button id="button-edit-save" type="button" class="btn btn-primary">Opslaan</button>
+        </div>
+    </script>
+    <script id="user-list-item-template" type="text/x-handlebars-template">
+        {{#each data}}
+        <div class="row no-margins @CRUDVariables.ListItemClass" data-userid="{{id}}">
+        </div>
+        {{/each}}
+    </script>
+
+    <script id="user-detail-empty-template" type="text/x-jquery-tmpl">
+    </script>
+
+    <script id="user-detail-template" type="text/x-handlebars-template">
+    </script>
+
+    <script id="user-list-filter-template" type="text/x-handlebars-template">
+        <!-- filter by title -->
+        <div class="text-filter-box input-group">
+            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+            <!--[if lt IE 10]>
+            <div class="jplist-label">Filter op login of naam:</div>
+            <![endif]-->
+            <input data-path=".user-display-name, .user-login-name"
+                   type="text"
+                   value=""
+                   placeholder="Filter op login of naam"
+                   data-control-type="textbox"
+                   data-control-name="title-filter"
+                   data-control-action="filter"
+                   class="form-control" />
+        </div>
+    </script>
+}

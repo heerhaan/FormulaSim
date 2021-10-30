@@ -14,22 +14,22 @@
         <div class="col-md-4">
             <form asp-action="Create">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
+                <div class="form-element">
                     <label asp-for="ValueKey" class="control-label"></label>
                     <input asp-for="ValueKey" class="form-control" />
                     <span asp-validation-for="ValueKey" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-element">
                     <label asp-for="MinDev" class="control-label"></label>
                     <input asp-for="MinDev" class="form-control" />
                     <span asp-validation-for="MinDev" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-element">
                     <label asp-for="MaxDev" class="control-label"></label>
                     <input asp-for="MaxDev" class="form-control" />
                     <span asp-validation-for="MaxDev" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-element">
                     <input type="submit" value="Create" class="btn fullborder" />
                 </div>
             </form>

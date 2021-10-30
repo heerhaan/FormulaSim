@@ -1,0 +1,54 @@
+﻿@{
+    string stage = (string)ViewData["Stage"];
+    string title = (string)ViewData["Title"];
+    if (stage == null) { throw new ArgumentNullException("Stage"); }
+    else if (stage == "Begin")
+    {
+        <link rel="stylesheet" type="text/css" href="~/Content/override-fixes.css" />
+        <style type="text/css">
+            .container-wrapper {
+                padding: 1em;
+                border: 1px solid #ddd;
+                background-color: #fff;
+                border-radius: 0.5em;
+                margin: 1em;
+                height: calc(100% - 1em);
+                overflow-y: auto;
+            }
+
+            .inner-container-wrapper {
+                @if (string.IsNullOrEmpty(title))
+                {
+                    @:height: 100%;
+                }
+                else
+                {
+                    @:height: calc(100% - 6.75em);
+                }
+            }
+
+            .button-bar {
+                position: fixed;
+                right: calc(2em + 1px); /* 1px compensates for the container border */
+                top: 2.5em;
+            }
+
+                .button-bar button {
+                    margin-left: 1.5em;
+                }
+        </style>
+        @Html.Raw(@"<div class=""container-wrapper"">");
+        if (!string.IsNullOrEmpty(title))
+        {
+            <h2 id="plain-page-title">@title</h2>
+            <hr />
+        }
+        @Html.Raw(@"<div class=""inner-container-wrapper"">");
+    }
+    else if (stage == "End")
+    {
+        @Html.Raw("</div>");
+        @Html.Raw("</div>");
+    }
+    else { throw new NotImplementedException(); }
+}
